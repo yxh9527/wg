@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package services;
+
+import "base.proto";
+
+
+service LotteryService {
+    //Lottery
+    rpc Lottery (LotteryReq) returns (LotteryResp);
+    //获取游戏记录
+    rpc GetGameState(GetGameStateReq) returns (GetGameStateResp);
+}
+
+
+message GetGameStateReq {
+    uint32 userId = 1;
+    string symbol = 2;
+}
+
+message GetGameStateResp{
+    error_code code = 1;
+    string data = 2;
+}
+
+message SaveGameStateReq {
+    uint32 userId = 1;
+    string symbol = 2;
+    string data   = 3;
+}
+
+message SaveGameStateResp {
+    error_code code = 1;
+}
+
+
+message LotteryReq {
+    uint32 playerId = 1;
+    string currencyType = 5;
+	int64  agentId = 6;
+    string symbol = 7;
+    string profitLoss = 8;      //开奖
+    string bet = 9;             //下注
+    string state = 10;          //状态
+    string action = 11;         //操作 bet|betFs|saveState|award
+    int64  roundID = 12;        //局号 --下注时使用
+    string maxProfitLoss = 13;  //最大赔付
+    bool   complete = 14;       //注单是否结束
+}
+
+message LotteryResp {
+    //玩家最新的金币数
+    string newCurrency = 1;
+    bool result = 2;
+    //当前可赔付值
+    string pay = 3;
+    error_code code = 4;
+}

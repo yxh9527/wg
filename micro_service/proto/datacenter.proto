@@ -1,0 +1,282 @@
+syntax = "proto3";
+
+package services;
+
+import "player.proto";
+import "base.proto";
+
+service DataCenterService {
+    //获取玩家信息
+    rpc GetPlayer (GetPlayerReq) returns (GetPlayerResp);
+    //获取指定键值
+    rpc GetValue (GetValueReq) returns (GetValueResp);
+    //缓存
+    rpc SetValue (SetValueReq) returns (SetValueResp);
+    //获取自增字段
+    rpc Incr(IncrReq) returns(IncrResp);
+    //修改玩家信息
+    rpc UpdatePlayerAvatarAndGender (UpdatePlayerAvatarAndGenderReq) returns (UpdatePlayerAvatarAndGenderResp);
+    //局号种子
+    rpc GetSerialIdSeed (GetSerialIdSeedReq) returns (GetSerialIdSeedResp);
+    //获取注单信息
+    rpc GetRecords(GetRecordsReq) returns (GetRecordsResp);
+    //获取注单信息
+    rpc GetRecordsByRoundId(GetRecordsByRoundIdReq) returns (GetRecordsByRoundIdResp);
+    //获取注单信息
+    rpc GetReplayDataByRoundId(GetReplayDataByRoundIdReq) returns (GetReplayDataByRoundIdResp);
+    //获取注单信息
+    rpc GetReplayDataByToken(GetReplayDataByTokenReq) returns (GetReplayDataByTokenResp);
+    //获取rtp>10的注单信息
+    rpc GetRtpGreaterThan10(GetRtpGreaterThan10Req) returns (GetRtpGreaterThan10Resp);
+    //保存最近玩的游戏记录
+    rpc SaveLastPlay(SaveLastPlayReq) returns (SaveLastPlayResp);
+    //获取最近玩的游戏记录
+    rpc GetLastPlay(GetLastPlayReq) returns (GetLastPlayResp);
+    //获取游戏列表
+    rpc GetGameList(GetGameListReq) returns (GetGameListResp);
+    //加锁
+	rpc UserLock(UserLockReq) returns (UserLockResp);
+    //解锁
+	rpc UserUnLock(UserUnLockReq) returns (UserUnLockResp);
+
+}
+
+message GetGameListReq {
+
+}
+
+message GetGameListResp {
+    error_code   code = 1;
+    //热门游戏的symbol
+    repeated string hot  = 2;
+    //新游戏
+    repeated string new  = 3;
+    //推荐游戏
+    repeated string recommend = 4;
+    //所有游戏及状态
+    repeated  GameInfoItem all = 5;
+
+    message GameInfoItem {
+        //游戏标志
+        string symbol = 1;
+        //游戏状态 1 正常 2 维护
+        int32   state = 2; 
+    }
+}
+
+message IncrReq {
+    string key = 1;
+}
+
+message IncrResp {
+    int64 seed = 1;
+}
+
+message UserLockReq {
+	uint32 userId = 1;
+}
+
+message UserLockResp{
+	string result = 1;
+}
+
+message UserUnLockReq{
+	uint32 userId = 1;
+	string token = 2;
+}
+
+message UserUnLockResp{
+	bool result = 1;
+}
+
+message GetLastPlayReq {
+    int64 userId = 1;
+}
+
+message GetLastPlayResp{
+    error_code code = 1;
+    SaveLastPlayReq data = 2;
+}
+
+message SaveLastPlayReq {
+    int64 userId = 1;
+    repeated LastPlay items = 2;
+}
+
+message LastPlay {
+    string symbol = 1;
+    int64  playTime = 2;
+}
+
+message SaveLastPlayResp {
+    error_code code = 1;
+}
+
+message GetReplayDataByTokenReq{
+    string token = 1; 
+}
+
+message GetReplayDataByTokenResp{
+    error_code code = 1;
+    repeated RecordItem data = 2;
+}
+
+message GetReplayDataByRoundIdReq{
+    string roundId = 1; 
+}
+
+message GetReplayDataByRoundIdResp{
+    error_code code = 1;
+    repeated RecordItem data = 2;
+}
+
+message GetRtpGreaterThan10Req{
+    string symbol = 1;
+    int64  userId = 2;
+}
+
+message GetRtpGreaterThan10Resp{
+    error_code code = 1;
+    repeated RecordItem data = 2;
+}
+
+message GetRecordsByRoundIdReq {
+    string symbol = 1;
+    string roundId = 2; 
+}
+
+message GetRecordsByRoundIdResp{
+    error_code code = 1;
+    repeated RecordItem data = 2;
+}
+
+message GetRecordsReq {
+    int64  UserId = 1;
+    string Symbol = 2;
+    string Hash = 3; //hash不为空，则以hash为准忽略其他参数
+}
+
+message RecordItem {
+    uint32 agentId = 1; //代理id
+    uint32 userId = 2; //玩家id
+    double bet = 3; //有效下注
+    string currency = 4;
+    string currencySymbol = 5;
+    double base_bet = 6;
+    double win = 7;
+    double rtp = 8;
+    int64  playedDate = 9;
+    int64  roundID =10;
+    string init = 11;
+    repeated RecordLog log = 12; //详细
+    string symbol = 13; //游戏id
+    double balance = 14;
+    double balance_cash = 15 ;
+    double balance_bonus = 16;
+    string hash = 17;
+}
+
+message GetRecordsResp{
+    error_code code = 1;
+    repeated RecordItem data = 2;
+}
+
+message RecordLog {
+    string cr = 1;
+    string sr = 2;
+    int64  roundId = 3;
+}
+
+message CacheRecordsReq {
+    uint32 agentId = 1; //代理id
+    uint32 userId = 2; //玩家id
+    double bet = 3; //有效下注
+    string currency = 4;
+    string currencySymbol = 5;
+    double base_bet = 6;
+    double win = 7;
+    double rtp = 8;
+    int64  playedDate = 9;
+    int64  roundID =10;
+    string init = 11;
+    repeated RecordLog log = 12; //详细
+    string symbol = 13; //游戏id
+    double balance = 14;
+    double balance_cash = 15 ;
+    double balance_bonus = 16;
+    string account = 17;
+    string nickName = 18;
+}
+
+message CacheBillsReq {
+    uint32 userId = 1; //玩家id
+    uint32 agentId = 2;//代理id
+    string symbol = 3; //游戏id
+    double bet = 4; //当前下注
+    string currency = 5; //当前货币名称
+    string currencySymbol = 6; //货币符号
+    int64  createTime = 9;//当前货币类型
+    int64  roundId = 10;
+    string flowingWaterOn = 11;
+    string desc = 12;
+    double currentScore = 13;
+    string hash = 14;
+}
+
+message CacheBillsResp{
+    error_code code = 1;
+}
+
+message CacheRecordsResp{
+    error_code code = 1;
+}
+
+message GetPlayerReq {
+    uint32 PlayerId = 1;
+	uint32 Factory =  2;
+}
+
+message GetPlayerResp {
+    services.HumanPlayer HumanPlayer = 1;
+}
+
+
+message GetValueReq {
+    string key = 1;
+    int64 timeOut = 2;
+}
+message GetValueResp {
+    error_code code = 1;
+    string value = 2;
+}
+
+message SetValueReq {
+    string key = 1;
+    string value = 2;
+    int32 time_out = 3;
+}
+message SetValueResp {
+    error_code code = 1;
+}
+
+
+message UpdatePlayerAvatarAndGenderReq {
+    uint32 PlayerId = 1;
+    string Avatar = 2;
+    uint32 Gender = 3;
+	uint32 Factory = 4;
+	string head_frame = 5;
+    string name = 6;//昵称
+}
+
+message UpdatePlayerAvatarAndGenderResp {
+
+}
+
+message GetSerialIdSeedReq {
+
+}
+
+message GetSerialIdSeedResp {
+    int64 seed = 1;
+}

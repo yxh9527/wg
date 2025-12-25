@@ -1,0 +1,25 @@
+redis:
+  host:
+    - '172.21.211.215:9531' 
+  user: '' 
+  pwd: ''  
+mysql:
+  player:
+    host: '172.21.211.215'
+    user: 'root'
+    port: 3306
+    password: "yxh2362023!@#"
+    database: "player"
+  manager:
+    host: '172.21.211.215'
+    user: 'root'
+    port: 3306
+    password: "yxh2362023!@#"
+    database: "web-manager"
+elastic:
+  hosts:
+    - "http://172.21.211.215:9200"
+  username: "elastic"
+  password: "000000"
+#日志保存路径
+log: ''

@@ -1,0 +1,113 @@
+{
+    "mappings": {
+      "properties": {
+        "webId":{
+          "type": "integer"
+        },
+        "userId":{
+          "type": "integer"
+        },
+        "agentId":{
+          "type": "integer"
+        },
+        "gameId":{
+          "type": "integer"
+        },
+        "account":{
+          "type": "text"
+        },
+        "nickName":{
+          "type": "text"
+        },
+        "bet":{
+          "type": "scaled_float",
+          "scaling_factor": 1000.0
+        },
+        "exBet":{
+          "type": "scaled_float",
+          "scaling_factor": 1000.0
+        },
+        "currency":{
+          "type": "text"
+        },
+        "currencySymbol":{
+          "type": "text"
+        },
+        "base_bet":{
+          "type": "integer"
+        },
+        "win":{
+          "type": "scaled_float",
+          "scaling_factor": 1000.0
+        },
+        "exWin":{
+          "type":"scaled_float",
+          "scaling_factor": 1000.0
+        },
+        "rtp":{
+          "type": "integer"
+        },
+        "playedDate":{
+          "type": "long"
+        },
+        "roundID":{
+          "type": "long"
+        },
+        "init":{
+          "type": "text"
+        },
+        "log.cr":{
+          "type": "text"
+        },
+        "log.sr":{
+          "type": "text"
+        },
+        "log.roundId":{
+          "type": "long"
+        },
+        "symbol":{
+          "type": "text"
+        },
+        "hash":{
+          "type": "text"
+        },
+        "balance":{
+          "type": "scaled_float",
+          "scaling_factor": 1000.0
+        },
+        "balance_cash":{
+          "type": "scaled_float",
+          "scaling_factor": 1000.0
+        },
+        "balance_bonus":{
+          "type": "scaled_float",
+          "scaling_factor": 1000.0
+        },
+        "rowVersion":{
+          "type": "long"
+        },
+        "revenue":{
+          "type": "scaled_float",
+          "scaling_factor": 1000.0
+        },
+        "exRevenue":{
+          "type": "scaled_float",
+          "scaling_factor": 1000.0
+        },
+        "pmup":{
+          "type": "scaled_float",
+          "scaling_factor": 1000.0
+        },
+        "gameName":{
+          "type": "text"
+        },
+        "chips":{
+          "type": "scaled_float",
+          "scaling_factor": 1000.0
+        },
+        "complete":{
+          "type":"boolean"
+        }
+      }
+    }
+  }
