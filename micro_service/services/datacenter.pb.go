@@ -179,84 +179,6 @@ func (m *GetGameListResp_GameInfoItem) GetState() int32 {
 	return 0
 }
 
-type IncrReq struct {
-	Key                  string   `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *IncrReq) Reset()         { *m = IncrReq{} }
-func (m *IncrReq) String() string { return proto.CompactTextString(m) }
-func (*IncrReq) ProtoMessage()    {}
-func (*IncrReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{2}
-}
-
-func (m *IncrReq) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_IncrReq.Unmarshal(m, b)
-}
-func (m *IncrReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_IncrReq.Marshal(b, m, deterministic)
-}
-func (m *IncrReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_IncrReq.Merge(m, src)
-}
-func (m *IncrReq) XXX_Size() int {
-	return xxx_messageInfo_IncrReq.Size(m)
-}
-func (m *IncrReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_IncrReq.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_IncrReq proto.InternalMessageInfo
-
-func (m *IncrReq) GetKey() string {
-	if m != nil {
-		return m.Key
-	}
-	return ""
-}
-
-type IncrResp struct {
-	Seed                 int64    `protobuf:"varint,1,opt,name=seed,proto3" json:"seed,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *IncrResp) Reset()         { *m = IncrResp{} }
-func (m *IncrResp) String() string { return proto.CompactTextString(m) }
-func (*IncrResp) ProtoMessage()    {}
-func (*IncrResp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{3}
-}
-
-func (m *IncrResp) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_IncrResp.Unmarshal(m, b)
-}
-func (m *IncrResp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_IncrResp.Marshal(b, m, deterministic)
-}
-func (m *IncrResp) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_IncrResp.Merge(m, src)
-}
-func (m *IncrResp) XXX_Size() int {
-	return xxx_messageInfo_IncrResp.Size(m)
-}
-func (m *IncrResp) XXX_DiscardUnknown() {
-	xxx_messageInfo_IncrResp.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_IncrResp proto.InternalMessageInfo
-
-func (m *IncrResp) GetSeed() int64 {
-	if m != nil {
-		return m.Seed
-	}
-	return 0
-}
-
 type UserLockReq struct {
 	UserId               uint32   `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -268,7 +190,7 @@ func (m *UserLockReq) Reset()         { *m = UserLockReq{} }
 func (m *UserLockReq) String() string { return proto.CompactTextString(m) }
 func (*UserLockReq) ProtoMessage()    {}
 func (*UserLockReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{4}
+	return fileDescriptor_f3733bc645feed7a, []int{2}
 }
 
 func (m *UserLockReq) XXX_Unmarshal(b []byte) error {
@@ -307,7 +229,7 @@ func (m *UserLockResp) Reset()         { *m = UserLockResp{} }
 func (m *UserLockResp) String() string { return proto.CompactTextString(m) }
 func (*UserLockResp) ProtoMessage()    {}
 func (*UserLockResp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{5}
+	return fileDescriptor_f3733bc645feed7a, []int{3}
 }
 
 func (m *UserLockResp) XXX_Unmarshal(b []byte) error {
@@ -347,7 +269,7 @@ func (m *UserUnLockReq) Reset()         { *m = UserUnLockReq{} }
 func (m *UserUnLockReq) String() string { return proto.CompactTextString(m) }
 func (*UserUnLockReq) ProtoMessage()    {}
 func (*UserUnLockReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{6}
+	return fileDescriptor_f3733bc645feed7a, []int{4}
 }
 
 func (m *UserUnLockReq) XXX_Unmarshal(b []byte) error {
@@ -393,7 +315,7 @@ func (m *UserUnLockResp) Reset()         { *m = UserUnLockResp{} }
 func (m *UserUnLockResp) String() string { return proto.CompactTextString(m) }
 func (*UserUnLockResp) ProtoMessage()    {}
 func (*UserUnLockResp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{7}
+	return fileDescriptor_f3733bc645feed7a, []int{5}
 }
 
 func (m *UserUnLockResp) XXX_Unmarshal(b []byte) error {
@@ -421,585 +343,6 @@ func (m *UserUnLockResp) GetResult() bool {
 	return false
 }
 
-type GetLastPlayReq struct {
-	UserId               int64    `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GetLastPlayReq) Reset()         { *m = GetLastPlayReq{} }
-func (m *GetLastPlayReq) String() string { return proto.CompactTextString(m) }
-func (*GetLastPlayReq) ProtoMessage()    {}
-func (*GetLastPlayReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{8}
-}
-
-func (m *GetLastPlayReq) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetLastPlayReq.Unmarshal(m, b)
-}
-func (m *GetLastPlayReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetLastPlayReq.Marshal(b, m, deterministic)
-}
-func (m *GetLastPlayReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetLastPlayReq.Merge(m, src)
-}
-func (m *GetLastPlayReq) XXX_Size() int {
-	return xxx_messageInfo_GetLastPlayReq.Size(m)
-}
-func (m *GetLastPlayReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetLastPlayReq.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetLastPlayReq proto.InternalMessageInfo
-
-func (m *GetLastPlayReq) GetUserId() int64 {
-	if m != nil {
-		return m.UserId
-	}
-	return 0
-}
-
-type GetLastPlayResp struct {
-	Code                 ErrorCode        `protobuf:"varint,1,opt,name=code,proto3,enum=services.ErrorCode" json:"code,omitempty"`
-	Data                 *SaveLastPlayReq `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
-	XXX_unrecognized     []byte           `json:"-"`
-	XXX_sizecache        int32            `json:"-"`
-}
-
-func (m *GetLastPlayResp) Reset()         { *m = GetLastPlayResp{} }
-func (m *GetLastPlayResp) String() string { return proto.CompactTextString(m) }
-func (*GetLastPlayResp) ProtoMessage()    {}
-func (*GetLastPlayResp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{9}
-}
-
-func (m *GetLastPlayResp) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetLastPlayResp.Unmarshal(m, b)
-}
-func (m *GetLastPlayResp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetLastPlayResp.Marshal(b, m, deterministic)
-}
-func (m *GetLastPlayResp) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetLastPlayResp.Merge(m, src)
-}
-func (m *GetLastPlayResp) XXX_Size() int {
-	return xxx_messageInfo_GetLastPlayResp.Size(m)
-}
-func (m *GetLastPlayResp) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetLastPlayResp.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetLastPlayResp proto.InternalMessageInfo
-
-func (m *GetLastPlayResp) GetCode() ErrorCode {
-	if m != nil {
-		return m.Code
-	}
-	return ErrorCode_OK
-}
-
-func (m *GetLastPlayResp) GetData() *SaveLastPlayReq {
-	if m != nil {
-		return m.Data
-	}
-	return nil
-}
-
-type SaveLastPlayReq struct {
-	UserId               int64       `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
-	Items                []*LastPlay `protobuf:"bytes,2,rep,name=items,proto3" json:"items,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
-	XXX_unrecognized     []byte      `json:"-"`
-	XXX_sizecache        int32       `json:"-"`
-}
-
-func (m *SaveLastPlayReq) Reset()         { *m = SaveLastPlayReq{} }
-func (m *SaveLastPlayReq) String() string { return proto.CompactTextString(m) }
-func (*SaveLastPlayReq) ProtoMessage()    {}
-func (*SaveLastPlayReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{10}
-}
-
-func (m *SaveLastPlayReq) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_SaveLastPlayReq.Unmarshal(m, b)
-}
-func (m *SaveLastPlayReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_SaveLastPlayReq.Marshal(b, m, deterministic)
-}
-func (m *SaveLastPlayReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SaveLastPlayReq.Merge(m, src)
-}
-func (m *SaveLastPlayReq) XXX_Size() int {
-	return xxx_messageInfo_SaveLastPlayReq.Size(m)
-}
-func (m *SaveLastPlayReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_SaveLastPlayReq.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_SaveLastPlayReq proto.InternalMessageInfo
-
-func (m *SaveLastPlayReq) GetUserId() int64 {
-	if m != nil {
-		return m.UserId
-	}
-	return 0
-}
-
-func (m *SaveLastPlayReq) GetItems() []*LastPlay {
-	if m != nil {
-		return m.Items
-	}
-	return nil
-}
-
-type LastPlay struct {
-	Symbol               string   `protobuf:"bytes,1,opt,name=symbol,proto3" json:"symbol,omitempty"`
-	PlayTime             int64    `protobuf:"varint,2,opt,name=playTime,proto3" json:"playTime,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *LastPlay) Reset()         { *m = LastPlay{} }
-func (m *LastPlay) String() string { return proto.CompactTextString(m) }
-func (*LastPlay) ProtoMessage()    {}
-func (*LastPlay) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{11}
-}
-
-func (m *LastPlay) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_LastPlay.Unmarshal(m, b)
-}
-func (m *LastPlay) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_LastPlay.Marshal(b, m, deterministic)
-}
-func (m *LastPlay) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_LastPlay.Merge(m, src)
-}
-func (m *LastPlay) XXX_Size() int {
-	return xxx_messageInfo_LastPlay.Size(m)
-}
-func (m *LastPlay) XXX_DiscardUnknown() {
-	xxx_messageInfo_LastPlay.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_LastPlay proto.InternalMessageInfo
-
-func (m *LastPlay) GetSymbol() string {
-	if m != nil {
-		return m.Symbol
-	}
-	return ""
-}
-
-func (m *LastPlay) GetPlayTime() int64 {
-	if m != nil {
-		return m.PlayTime
-	}
-	return 0
-}
-
-type SaveLastPlayResp struct {
-	Code                 ErrorCode `protobuf:"varint,1,opt,name=code,proto3,enum=services.ErrorCode" json:"code,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
-	XXX_unrecognized     []byte    `json:"-"`
-	XXX_sizecache        int32     `json:"-"`
-}
-
-func (m *SaveLastPlayResp) Reset()         { *m = SaveLastPlayResp{} }
-func (m *SaveLastPlayResp) String() string { return proto.CompactTextString(m) }
-func (*SaveLastPlayResp) ProtoMessage()    {}
-func (*SaveLastPlayResp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{12}
-}
-
-func (m *SaveLastPlayResp) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_SaveLastPlayResp.Unmarshal(m, b)
-}
-func (m *SaveLastPlayResp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_SaveLastPlayResp.Marshal(b, m, deterministic)
-}
-func (m *SaveLastPlayResp) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SaveLastPlayResp.Merge(m, src)
-}
-func (m *SaveLastPlayResp) XXX_Size() int {
-	return xxx_messageInfo_SaveLastPlayResp.Size(m)
-}
-func (m *SaveLastPlayResp) XXX_DiscardUnknown() {
-	xxx_messageInfo_SaveLastPlayResp.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_SaveLastPlayResp proto.InternalMessageInfo
-
-func (m *SaveLastPlayResp) GetCode() ErrorCode {
-	if m != nil {
-		return m.Code
-	}
-	return ErrorCode_OK
-}
-
-type GetReplayDataByTokenReq struct {
-	Token                string   `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GetReplayDataByTokenReq) Reset()         { *m = GetReplayDataByTokenReq{} }
-func (m *GetReplayDataByTokenReq) String() string { return proto.CompactTextString(m) }
-func (*GetReplayDataByTokenReq) ProtoMessage()    {}
-func (*GetReplayDataByTokenReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{13}
-}
-
-func (m *GetReplayDataByTokenReq) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetReplayDataByTokenReq.Unmarshal(m, b)
-}
-func (m *GetReplayDataByTokenReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetReplayDataByTokenReq.Marshal(b, m, deterministic)
-}
-func (m *GetReplayDataByTokenReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetReplayDataByTokenReq.Merge(m, src)
-}
-func (m *GetReplayDataByTokenReq) XXX_Size() int {
-	return xxx_messageInfo_GetReplayDataByTokenReq.Size(m)
-}
-func (m *GetReplayDataByTokenReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetReplayDataByTokenReq.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetReplayDataByTokenReq proto.InternalMessageInfo
-
-func (m *GetReplayDataByTokenReq) GetToken() string {
-	if m != nil {
-		return m.Token
-	}
-	return ""
-}
-
-type GetReplayDataByTokenResp struct {
-	Code                 ErrorCode     `protobuf:"varint,1,opt,name=code,proto3,enum=services.ErrorCode" json:"code,omitempty"`
-	Data                 []*RecordItem `protobuf:"bytes,2,rep,name=data,proto3" json:"data,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
-	XXX_unrecognized     []byte        `json:"-"`
-	XXX_sizecache        int32         `json:"-"`
-}
-
-func (m *GetReplayDataByTokenResp) Reset()         { *m = GetReplayDataByTokenResp{} }
-func (m *GetReplayDataByTokenResp) String() string { return proto.CompactTextString(m) }
-func (*GetReplayDataByTokenResp) ProtoMessage()    {}
-func (*GetReplayDataByTokenResp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{14}
-}
-
-func (m *GetReplayDataByTokenResp) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetReplayDataByTokenResp.Unmarshal(m, b)
-}
-func (m *GetReplayDataByTokenResp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetReplayDataByTokenResp.Marshal(b, m, deterministic)
-}
-func (m *GetReplayDataByTokenResp) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetReplayDataByTokenResp.Merge(m, src)
-}
-func (m *GetReplayDataByTokenResp) XXX_Size() int {
-	return xxx_messageInfo_GetReplayDataByTokenResp.Size(m)
-}
-func (m *GetReplayDataByTokenResp) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetReplayDataByTokenResp.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetReplayDataByTokenResp proto.InternalMessageInfo
-
-func (m *GetReplayDataByTokenResp) GetCode() ErrorCode {
-	if m != nil {
-		return m.Code
-	}
-	return ErrorCode_OK
-}
-
-func (m *GetReplayDataByTokenResp) GetData() []*RecordItem {
-	if m != nil {
-		return m.Data
-	}
-	return nil
-}
-
-type GetReplayDataByRoundIdReq struct {
-	RoundId              string   `protobuf:"bytes,1,opt,name=roundId,proto3" json:"roundId,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GetReplayDataByRoundIdReq) Reset()         { *m = GetReplayDataByRoundIdReq{} }
-func (m *GetReplayDataByRoundIdReq) String() string { return proto.CompactTextString(m) }
-func (*GetReplayDataByRoundIdReq) ProtoMessage()    {}
-func (*GetReplayDataByRoundIdReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{15}
-}
-
-func (m *GetReplayDataByRoundIdReq) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetReplayDataByRoundIdReq.Unmarshal(m, b)
-}
-func (m *GetReplayDataByRoundIdReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetReplayDataByRoundIdReq.Marshal(b, m, deterministic)
-}
-func (m *GetReplayDataByRoundIdReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetReplayDataByRoundIdReq.Merge(m, src)
-}
-func (m *GetReplayDataByRoundIdReq) XXX_Size() int {
-	return xxx_messageInfo_GetReplayDataByRoundIdReq.Size(m)
-}
-func (m *GetReplayDataByRoundIdReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetReplayDataByRoundIdReq.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetReplayDataByRoundIdReq proto.InternalMessageInfo
-
-func (m *GetReplayDataByRoundIdReq) GetRoundId() string {
-	if m != nil {
-		return m.RoundId
-	}
-	return ""
-}
-
-type GetReplayDataByRoundIdResp struct {
-	Code                 ErrorCode     `protobuf:"varint,1,opt,name=code,proto3,enum=services.ErrorCode" json:"code,omitempty"`
-	Data                 []*RecordItem `protobuf:"bytes,2,rep,name=data,proto3" json:"data,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
-	XXX_unrecognized     []byte        `json:"-"`
-	XXX_sizecache        int32         `json:"-"`
-}
-
-func (m *GetReplayDataByRoundIdResp) Reset()         { *m = GetReplayDataByRoundIdResp{} }
-func (m *GetReplayDataByRoundIdResp) String() string { return proto.CompactTextString(m) }
-func (*GetReplayDataByRoundIdResp) ProtoMessage()    {}
-func (*GetReplayDataByRoundIdResp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{16}
-}
-
-func (m *GetReplayDataByRoundIdResp) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetReplayDataByRoundIdResp.Unmarshal(m, b)
-}
-func (m *GetReplayDataByRoundIdResp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetReplayDataByRoundIdResp.Marshal(b, m, deterministic)
-}
-func (m *GetReplayDataByRoundIdResp) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetReplayDataByRoundIdResp.Merge(m, src)
-}
-func (m *GetReplayDataByRoundIdResp) XXX_Size() int {
-	return xxx_messageInfo_GetReplayDataByRoundIdResp.Size(m)
-}
-func (m *GetReplayDataByRoundIdResp) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetReplayDataByRoundIdResp.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetReplayDataByRoundIdResp proto.InternalMessageInfo
-
-func (m *GetReplayDataByRoundIdResp) GetCode() ErrorCode {
-	if m != nil {
-		return m.Code
-	}
-	return ErrorCode_OK
-}
-
-func (m *GetReplayDataByRoundIdResp) GetData() []*RecordItem {
-	if m != nil {
-		return m.Data
-	}
-	return nil
-}
-
-type GetRtpGreaterThan10Req struct {
-	Symbol               string   `protobuf:"bytes,1,opt,name=symbol,proto3" json:"symbol,omitempty"`
-	UserId               int64    `protobuf:"varint,2,opt,name=userId,proto3" json:"userId,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GetRtpGreaterThan10Req) Reset()         { *m = GetRtpGreaterThan10Req{} }
-func (m *GetRtpGreaterThan10Req) String() string { return proto.CompactTextString(m) }
-func (*GetRtpGreaterThan10Req) ProtoMessage()    {}
-func (*GetRtpGreaterThan10Req) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{17}
-}
-
-func (m *GetRtpGreaterThan10Req) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetRtpGreaterThan10Req.Unmarshal(m, b)
-}
-func (m *GetRtpGreaterThan10Req) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetRtpGreaterThan10Req.Marshal(b, m, deterministic)
-}
-func (m *GetRtpGreaterThan10Req) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetRtpGreaterThan10Req.Merge(m, src)
-}
-func (m *GetRtpGreaterThan10Req) XXX_Size() int {
-	return xxx_messageInfo_GetRtpGreaterThan10Req.Size(m)
-}
-func (m *GetRtpGreaterThan10Req) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetRtpGreaterThan10Req.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetRtpGreaterThan10Req proto.InternalMessageInfo
-
-func (m *GetRtpGreaterThan10Req) GetSymbol() string {
-	if m != nil {
-		return m.Symbol
-	}
-	return ""
-}
-
-func (m *GetRtpGreaterThan10Req) GetUserId() int64 {
-	if m != nil {
-		return m.UserId
-	}
-	return 0
-}
-
-type GetRtpGreaterThan10Resp struct {
-	Code                 ErrorCode     `protobuf:"varint,1,opt,name=code,proto3,enum=services.ErrorCode" json:"code,omitempty"`
-	Data                 []*RecordItem `protobuf:"bytes,2,rep,name=data,proto3" json:"data,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
-	XXX_unrecognized     []byte        `json:"-"`
-	XXX_sizecache        int32         `json:"-"`
-}
-
-func (m *GetRtpGreaterThan10Resp) Reset()         { *m = GetRtpGreaterThan10Resp{} }
-func (m *GetRtpGreaterThan10Resp) String() string { return proto.CompactTextString(m) }
-func (*GetRtpGreaterThan10Resp) ProtoMessage()    {}
-func (*GetRtpGreaterThan10Resp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{18}
-}
-
-func (m *GetRtpGreaterThan10Resp) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetRtpGreaterThan10Resp.Unmarshal(m, b)
-}
-func (m *GetRtpGreaterThan10Resp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetRtpGreaterThan10Resp.Marshal(b, m, deterministic)
-}
-func (m *GetRtpGreaterThan10Resp) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetRtpGreaterThan10Resp.Merge(m, src)
-}
-func (m *GetRtpGreaterThan10Resp) XXX_Size() int {
-	return xxx_messageInfo_GetRtpGreaterThan10Resp.Size(m)
-}
-func (m *GetRtpGreaterThan10Resp) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetRtpGreaterThan10Resp.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetRtpGreaterThan10Resp proto.InternalMessageInfo
-
-func (m *GetRtpGreaterThan10Resp) GetCode() ErrorCode {
-	if m != nil {
-		return m.Code
-	}
-	return ErrorCode_OK
-}
-
-func (m *GetRtpGreaterThan10Resp) GetData() []*RecordItem {
-	if m != nil {
-		return m.Data
-	}
-	return nil
-}
-
-type GetRecordsByRoundIdReq struct {
-	Symbol               string   `protobuf:"bytes,1,opt,name=symbol,proto3" json:"symbol,omitempty"`
-	RoundId              string   `protobuf:"bytes,2,opt,name=roundId,proto3" json:"roundId,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GetRecordsByRoundIdReq) Reset()         { *m = GetRecordsByRoundIdReq{} }
-func (m *GetRecordsByRoundIdReq) String() string { return proto.CompactTextString(m) }
-func (*GetRecordsByRoundIdReq) ProtoMessage()    {}
-func (*GetRecordsByRoundIdReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{19}
-}
-
-func (m *GetRecordsByRoundIdReq) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetRecordsByRoundIdReq.Unmarshal(m, b)
-}
-func (m *GetRecordsByRoundIdReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetRecordsByRoundIdReq.Marshal(b, m, deterministic)
-}
-func (m *GetRecordsByRoundIdReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetRecordsByRoundIdReq.Merge(m, src)
-}
-func (m *GetRecordsByRoundIdReq) XXX_Size() int {
-	return xxx_messageInfo_GetRecordsByRoundIdReq.Size(m)
-}
-func (m *GetRecordsByRoundIdReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetRecordsByRoundIdReq.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetRecordsByRoundIdReq proto.InternalMessageInfo
-
-func (m *GetRecordsByRoundIdReq) GetSymbol() string {
-	if m != nil {
-		return m.Symbol
-	}
-	return ""
-}
-
-func (m *GetRecordsByRoundIdReq) GetRoundId() string {
-	if m != nil {
-		return m.RoundId
-	}
-	return ""
-}
-
-type GetRecordsByRoundIdResp struct {
-	Code                 ErrorCode     `protobuf:"varint,1,opt,name=code,proto3,enum=services.ErrorCode" json:"code,omitempty"`
-	Data                 []*RecordItem `protobuf:"bytes,2,rep,name=data,proto3" json:"data,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
-	XXX_unrecognized     []byte        `json:"-"`
-	XXX_sizecache        int32         `json:"-"`
-}
-
-func (m *GetRecordsByRoundIdResp) Reset()         { *m = GetRecordsByRoundIdResp{} }
-func (m *GetRecordsByRoundIdResp) String() string { return proto.CompactTextString(m) }
-func (*GetRecordsByRoundIdResp) ProtoMessage()    {}
-func (*GetRecordsByRoundIdResp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{20}
-}
-
-func (m *GetRecordsByRoundIdResp) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetRecordsByRoundIdResp.Unmarshal(m, b)
-}
-func (m *GetRecordsByRoundIdResp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetRecordsByRoundIdResp.Marshal(b, m, deterministic)
-}
-func (m *GetRecordsByRoundIdResp) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetRecordsByRoundIdResp.Merge(m, src)
-}
-func (m *GetRecordsByRoundIdResp) XXX_Size() int {
-	return xxx_messageInfo_GetRecordsByRoundIdResp.Size(m)
-}
-func (m *GetRecordsByRoundIdResp) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetRecordsByRoundIdResp.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetRecordsByRoundIdResp proto.InternalMessageInfo
-
-func (m *GetRecordsByRoundIdResp) GetCode() ErrorCode {
-	if m != nil {
-		return m.Code
-	}
-	return ErrorCode_OK
-}
-
-func (m *GetRecordsByRoundIdResp) GetData() []*RecordItem {
-	if m != nil {
-		return m.Data
-	}
-	return nil
-}
-
 type GetRecordsReq struct {
 	UserId               int64    `protobuf:"varint,1,opt,name=UserId,proto3" json:"UserId,omitempty"`
 	Symbol               string   `protobuf:"bytes,2,opt,name=Symbol,proto3" json:"Symbol,omitempty"`
@@ -1013,7 +356,7 @@ func (m *GetRecordsReq) Reset()         { *m = GetRecordsReq{} }
 func (m *GetRecordsReq) String() string { return proto.CompactTextString(m) }
 func (*GetRecordsReq) ProtoMessage()    {}
 func (*GetRecordsReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{21}
+	return fileDescriptor_f3733bc645feed7a, []int{6}
 }
 
 func (m *GetRecordsReq) XXX_Unmarshal(b []byte) error {
@@ -1082,7 +425,7 @@ func (m *RecordItem) Reset()         { *m = RecordItem{} }
 func (m *RecordItem) String() string { return proto.CompactTextString(m) }
 func (*RecordItem) ProtoMessage()    {}
 func (*RecordItem) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{22}
+	return fileDescriptor_f3733bc645feed7a, []int{7}
 }
 
 func (m *RecordItem) XXX_Unmarshal(b []byte) error {
@@ -1234,7 +577,7 @@ func (m *GetRecordsResp) Reset()         { *m = GetRecordsResp{} }
 func (m *GetRecordsResp) String() string { return proto.CompactTextString(m) }
 func (*GetRecordsResp) ProtoMessage()    {}
 func (*GetRecordsResp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{23}
+	return fileDescriptor_f3733bc645feed7a, []int{8}
 }
 
 func (m *GetRecordsResp) XXX_Unmarshal(b []byte) error {
@@ -1282,7 +625,7 @@ func (m *RecordLog) Reset()         { *m = RecordLog{} }
 func (m *RecordLog) String() string { return proto.CompactTextString(m) }
 func (*RecordLog) ProtoMessage()    {}
 func (*RecordLog) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{24}
+	return fileDescriptor_f3733bc645feed7a, []int{9}
 }
 
 func (m *RecordLog) XXX_Unmarshal(b []byte) error {
@@ -1324,386 +667,6 @@ func (m *RecordLog) GetRoundId() int64 {
 	return 0
 }
 
-type CacheRecordsReq struct {
-	AgentId              uint32       `protobuf:"varint,1,opt,name=agentId,proto3" json:"agentId,omitempty"`
-	UserId               uint32       `protobuf:"varint,2,opt,name=userId,proto3" json:"userId,omitempty"`
-	Bet                  float64      `protobuf:"fixed64,3,opt,name=bet,proto3" json:"bet,omitempty"`
-	Currency             string       `protobuf:"bytes,4,opt,name=currency,proto3" json:"currency,omitempty"`
-	CurrencySymbol       string       `protobuf:"bytes,5,opt,name=currencySymbol,proto3" json:"currencySymbol,omitempty"`
-	BaseBet              float64      `protobuf:"fixed64,6,opt,name=base_bet,json=baseBet,proto3" json:"base_bet,omitempty"`
-	Win                  float64      `protobuf:"fixed64,7,opt,name=win,proto3" json:"win,omitempty"`
-	Rtp                  float64      `protobuf:"fixed64,8,opt,name=rtp,proto3" json:"rtp,omitempty"`
-	PlayedDate           int64        `protobuf:"varint,9,opt,name=playedDate,proto3" json:"playedDate,omitempty"`
-	RoundID              int64        `protobuf:"varint,10,opt,name=roundID,proto3" json:"roundID,omitempty"`
-	Init                 string       `protobuf:"bytes,11,opt,name=init,proto3" json:"init,omitempty"`
-	Log                  []*RecordLog `protobuf:"bytes,12,rep,name=log,proto3" json:"log,omitempty"`
-	Symbol               string       `protobuf:"bytes,13,opt,name=symbol,proto3" json:"symbol,omitempty"`
-	Balance              float64      `protobuf:"fixed64,14,opt,name=balance,proto3" json:"balance,omitempty"`
-	BalanceCash          float64      `protobuf:"fixed64,15,opt,name=balance_cash,json=balanceCash,proto3" json:"balance_cash,omitempty"`
-	BalanceBonus         float64      `protobuf:"fixed64,16,opt,name=balance_bonus,json=balanceBonus,proto3" json:"balance_bonus,omitempty"`
-	Account              string       `protobuf:"bytes,17,opt,name=account,proto3" json:"account,omitempty"`
-	NickName             string       `protobuf:"bytes,18,opt,name=nickName,proto3" json:"nickName,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
-	XXX_unrecognized     []byte       `json:"-"`
-	XXX_sizecache        int32        `json:"-"`
-}
-
-func (m *CacheRecordsReq) Reset()         { *m = CacheRecordsReq{} }
-func (m *CacheRecordsReq) String() string { return proto.CompactTextString(m) }
-func (*CacheRecordsReq) ProtoMessage()    {}
-func (*CacheRecordsReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{25}
-}
-
-func (m *CacheRecordsReq) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CacheRecordsReq.Unmarshal(m, b)
-}
-func (m *CacheRecordsReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CacheRecordsReq.Marshal(b, m, deterministic)
-}
-func (m *CacheRecordsReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CacheRecordsReq.Merge(m, src)
-}
-func (m *CacheRecordsReq) XXX_Size() int {
-	return xxx_messageInfo_CacheRecordsReq.Size(m)
-}
-func (m *CacheRecordsReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_CacheRecordsReq.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CacheRecordsReq proto.InternalMessageInfo
-
-func (m *CacheRecordsReq) GetAgentId() uint32 {
-	if m != nil {
-		return m.AgentId
-	}
-	return 0
-}
-
-func (m *CacheRecordsReq) GetUserId() uint32 {
-	if m != nil {
-		return m.UserId
-	}
-	return 0
-}
-
-func (m *CacheRecordsReq) GetBet() float64 {
-	if m != nil {
-		return m.Bet
-	}
-	return 0
-}
-
-func (m *CacheRecordsReq) GetCurrency() string {
-	if m != nil {
-		return m.Currency
-	}
-	return ""
-}
-
-func (m *CacheRecordsReq) GetCurrencySymbol() string {
-	if m != nil {
-		return m.CurrencySymbol
-	}
-	return ""
-}
-
-func (m *CacheRecordsReq) GetBaseBet() float64 {
-	if m != nil {
-		return m.BaseBet
-	}
-	return 0
-}
-
-func (m *CacheRecordsReq) GetWin() float64 {
-	if m != nil {
-		return m.Win
-	}
-	return 0
-}
-
-func (m *CacheRecordsReq) GetRtp() float64 {
-	if m != nil {
-		return m.Rtp
-	}
-	return 0
-}
-
-func (m *CacheRecordsReq) GetPlayedDate() int64 {
-	if m != nil {
-		return m.PlayedDate
-	}
-	return 0
-}
-
-func (m *CacheRecordsReq) GetRoundID() int64 {
-	if m != nil {
-		return m.RoundID
-	}
-	return 0
-}
-
-func (m *CacheRecordsReq) GetInit() string {
-	if m != nil {
-		return m.Init
-	}
-	return ""
-}
-
-func (m *CacheRecordsReq) GetLog() []*RecordLog {
-	if m != nil {
-		return m.Log
-	}
-	return nil
-}
-
-func (m *CacheRecordsReq) GetSymbol() string {
-	if m != nil {
-		return m.Symbol
-	}
-	return ""
-}
-
-func (m *CacheRecordsReq) GetBalance() float64 {
-	if m != nil {
-		return m.Balance
-	}
-	return 0
-}
-
-func (m *CacheRecordsReq) GetBalanceCash() float64 {
-	if m != nil {
-		return m.BalanceCash
-	}
-	return 0
-}
-
-func (m *CacheRecordsReq) GetBalanceBonus() float64 {
-	if m != nil {
-		return m.BalanceBonus
-	}
-	return 0
-}
-
-func (m *CacheRecordsReq) GetAccount() string {
-	if m != nil {
-		return m.Account
-	}
-	return ""
-}
-
-func (m *CacheRecordsReq) GetNickName() string {
-	if m != nil {
-		return m.NickName
-	}
-	return ""
-}
-
-type CacheBillsReq struct {
-	UserId               uint32   `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
-	AgentId              uint32   `protobuf:"varint,2,opt,name=agentId,proto3" json:"agentId,omitempty"`
-	Symbol               string   `protobuf:"bytes,3,opt,name=symbol,proto3" json:"symbol,omitempty"`
-	Bet                  float64  `protobuf:"fixed64,4,opt,name=bet,proto3" json:"bet,omitempty"`
-	Currency             string   `protobuf:"bytes,5,opt,name=currency,proto3" json:"currency,omitempty"`
-	CurrencySymbol       string   `protobuf:"bytes,6,opt,name=currencySymbol,proto3" json:"currencySymbol,omitempty"`
-	CreateTime           int64    `protobuf:"varint,9,opt,name=createTime,proto3" json:"createTime,omitempty"`
-	RoundId              int64    `protobuf:"varint,10,opt,name=roundId,proto3" json:"roundId,omitempty"`
-	FlowingWaterOn       string   `protobuf:"bytes,11,opt,name=flowingWaterOn,proto3" json:"flowingWaterOn,omitempty"`
-	Desc                 string   `protobuf:"bytes,12,opt,name=desc,proto3" json:"desc,omitempty"`
-	CurrentScore         float64  `protobuf:"fixed64,13,opt,name=currentScore,proto3" json:"currentScore,omitempty"`
-	Hash                 string   `protobuf:"bytes,14,opt,name=hash,proto3" json:"hash,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *CacheBillsReq) Reset()         { *m = CacheBillsReq{} }
-func (m *CacheBillsReq) String() string { return proto.CompactTextString(m) }
-func (*CacheBillsReq) ProtoMessage()    {}
-func (*CacheBillsReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{26}
-}
-
-func (m *CacheBillsReq) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CacheBillsReq.Unmarshal(m, b)
-}
-func (m *CacheBillsReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CacheBillsReq.Marshal(b, m, deterministic)
-}
-func (m *CacheBillsReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CacheBillsReq.Merge(m, src)
-}
-func (m *CacheBillsReq) XXX_Size() int {
-	return xxx_messageInfo_CacheBillsReq.Size(m)
-}
-func (m *CacheBillsReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_CacheBillsReq.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CacheBillsReq proto.InternalMessageInfo
-
-func (m *CacheBillsReq) GetUserId() uint32 {
-	if m != nil {
-		return m.UserId
-	}
-	return 0
-}
-
-func (m *CacheBillsReq) GetAgentId() uint32 {
-	if m != nil {
-		return m.AgentId
-	}
-	return 0
-}
-
-func (m *CacheBillsReq) GetSymbol() string {
-	if m != nil {
-		return m.Symbol
-	}
-	return ""
-}
-
-func (m *CacheBillsReq) GetBet() float64 {
-	if m != nil {
-		return m.Bet
-	}
-	return 0
-}
-
-func (m *CacheBillsReq) GetCurrency() string {
-	if m != nil {
-		return m.Currency
-	}
-	return ""
-}
-
-func (m *CacheBillsReq) GetCurrencySymbol() string {
-	if m != nil {
-		return m.CurrencySymbol
-	}
-	return ""
-}
-
-func (m *CacheBillsReq) GetCreateTime() int64 {
-	if m != nil {
-		return m.CreateTime
-	}
-	return 0
-}
-
-func (m *CacheBillsReq) GetRoundId() int64 {
-	if m != nil {
-		return m.RoundId
-	}
-	return 0
-}
-
-func (m *CacheBillsReq) GetFlowingWaterOn() string {
-	if m != nil {
-		return m.FlowingWaterOn
-	}
-	return ""
-}
-
-func (m *CacheBillsReq) GetDesc() string {
-	if m != nil {
-		return m.Desc
-	}
-	return ""
-}
-
-func (m *CacheBillsReq) GetCurrentScore() float64 {
-	if m != nil {
-		return m.CurrentScore
-	}
-	return 0
-}
-
-func (m *CacheBillsReq) GetHash() string {
-	if m != nil {
-		return m.Hash
-	}
-	return ""
-}
-
-type CacheBillsResp struct {
-	Code                 ErrorCode `protobuf:"varint,1,opt,name=code,proto3,enum=services.ErrorCode" json:"code,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
-	XXX_unrecognized     []byte    `json:"-"`
-	XXX_sizecache        int32     `json:"-"`
-}
-
-func (m *CacheBillsResp) Reset()         { *m = CacheBillsResp{} }
-func (m *CacheBillsResp) String() string { return proto.CompactTextString(m) }
-func (*CacheBillsResp) ProtoMessage()    {}
-func (*CacheBillsResp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{27}
-}
-
-func (m *CacheBillsResp) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CacheBillsResp.Unmarshal(m, b)
-}
-func (m *CacheBillsResp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CacheBillsResp.Marshal(b, m, deterministic)
-}
-func (m *CacheBillsResp) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CacheBillsResp.Merge(m, src)
-}
-func (m *CacheBillsResp) XXX_Size() int {
-	return xxx_messageInfo_CacheBillsResp.Size(m)
-}
-func (m *CacheBillsResp) XXX_DiscardUnknown() {
-	xxx_messageInfo_CacheBillsResp.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CacheBillsResp proto.InternalMessageInfo
-
-func (m *CacheBillsResp) GetCode() ErrorCode {
-	if m != nil {
-		return m.Code
-	}
-	return ErrorCode_OK
-}
-
-type CacheRecordsResp struct {
-	Code                 ErrorCode `protobuf:"varint,1,opt,name=code,proto3,enum=services.ErrorCode" json:"code,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
-	XXX_unrecognized     []byte    `json:"-"`
-	XXX_sizecache        int32     `json:"-"`
-}
-
-func (m *CacheRecordsResp) Reset()         { *m = CacheRecordsResp{} }
-func (m *CacheRecordsResp) String() string { return proto.CompactTextString(m) }
-func (*CacheRecordsResp) ProtoMessage()    {}
-func (*CacheRecordsResp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{28}
-}
-
-func (m *CacheRecordsResp) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CacheRecordsResp.Unmarshal(m, b)
-}
-func (m *CacheRecordsResp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CacheRecordsResp.Marshal(b, m, deterministic)
-}
-func (m *CacheRecordsResp) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CacheRecordsResp.Merge(m, src)
-}
-func (m *CacheRecordsResp) XXX_Size() int {
-	return xxx_messageInfo_CacheRecordsResp.Size(m)
-}
-func (m *CacheRecordsResp) XXX_DiscardUnknown() {
-	xxx_messageInfo_CacheRecordsResp.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CacheRecordsResp proto.InternalMessageInfo
-
-func (m *CacheRecordsResp) GetCode() ErrorCode {
-	if m != nil {
-		return m.Code
-	}
-	return ErrorCode_OK
-}
-
 type GetPlayerReq struct {
 	PlayerId             uint32   `protobuf:"varint,1,opt,name=PlayerId,proto3" json:"PlayerId,omitempty"`
 	Factory              uint32   `protobuf:"varint,2,opt,name=Factory,proto3" json:"Factory,omitempty"`
@@ -1716,7 +679,7 @@ func (m *GetPlayerReq) Reset()         { *m = GetPlayerReq{} }
 func (m *GetPlayerReq) String() string { return proto.CompactTextString(m) }
 func (*GetPlayerReq) ProtoMessage()    {}
 func (*GetPlayerReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{29}
+	return fileDescriptor_f3733bc645feed7a, []int{10}
 }
 
 func (m *GetPlayerReq) XXX_Unmarshal(b []byte) error {
@@ -1762,7 +725,7 @@ func (m *GetPlayerResp) Reset()         { *m = GetPlayerResp{} }
 func (m *GetPlayerResp) String() string { return proto.CompactTextString(m) }
 func (*GetPlayerResp) ProtoMessage()    {}
 func (*GetPlayerResp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{30}
+	return fileDescriptor_f3733bc645feed7a, []int{11}
 }
 
 func (m *GetPlayerResp) XXX_Unmarshal(b []byte) error {
@@ -1802,7 +765,7 @@ func (m *GetValueReq) Reset()         { *m = GetValueReq{} }
 func (m *GetValueReq) String() string { return proto.CompactTextString(m) }
 func (*GetValueReq) ProtoMessage()    {}
 func (*GetValueReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{31}
+	return fileDescriptor_f3733bc645feed7a, []int{12}
 }
 
 func (m *GetValueReq) XXX_Unmarshal(b []byte) error {
@@ -1849,7 +812,7 @@ func (m *GetValueResp) Reset()         { *m = GetValueResp{} }
 func (m *GetValueResp) String() string { return proto.CompactTextString(m) }
 func (*GetValueResp) ProtoMessage()    {}
 func (*GetValueResp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{32}
+	return fileDescriptor_f3733bc645feed7a, []int{13}
 }
 
 func (m *GetValueResp) XXX_Unmarshal(b []byte) error {
@@ -1897,7 +860,7 @@ func (m *SetValueReq) Reset()         { *m = SetValueReq{} }
 func (m *SetValueReq) String() string { return proto.CompactTextString(m) }
 func (*SetValueReq) ProtoMessage()    {}
 func (*SetValueReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{33}
+	return fileDescriptor_f3733bc645feed7a, []int{14}
 }
 
 func (m *SetValueReq) XXX_Unmarshal(b []byte) error {
@@ -1950,7 +913,7 @@ func (m *SetValueResp) Reset()         { *m = SetValueResp{} }
 func (m *SetValueResp) String() string { return proto.CompactTextString(m) }
 func (*SetValueResp) ProtoMessage()    {}
 func (*SetValueResp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{34}
+	return fileDescriptor_f3733bc645feed7a, []int{15}
 }
 
 func (m *SetValueResp) XXX_Unmarshal(b []byte) error {
@@ -1994,7 +957,7 @@ func (m *UpdatePlayerAvatarAndGenderReq) Reset()         { *m = UpdatePlayerAvat
 func (m *UpdatePlayerAvatarAndGenderReq) String() string { return proto.CompactTextString(m) }
 func (*UpdatePlayerAvatarAndGenderReq) ProtoMessage()    {}
 func (*UpdatePlayerAvatarAndGenderReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{35}
+	return fileDescriptor_f3733bc645feed7a, []int{16}
 }
 
 func (m *UpdatePlayerAvatarAndGenderReq) XXX_Unmarshal(b []byte) error {
@@ -2067,7 +1030,7 @@ func (m *UpdatePlayerAvatarAndGenderResp) Reset()         { *m = UpdatePlayerAva
 func (m *UpdatePlayerAvatarAndGenderResp) String() string { return proto.CompactTextString(m) }
 func (*UpdatePlayerAvatarAndGenderResp) ProtoMessage()    {}
 func (*UpdatePlayerAvatarAndGenderResp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{36}
+	return fileDescriptor_f3733bc645feed7a, []int{17}
 }
 
 func (m *UpdatePlayerAvatarAndGenderResp) XXX_Unmarshal(b []byte) error {
@@ -2088,107 +1051,18 @@ func (m *UpdatePlayerAvatarAndGenderResp) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_UpdatePlayerAvatarAndGenderResp proto.InternalMessageInfo
 
-type GetSerialIdSeedReq struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GetSerialIdSeedReq) Reset()         { *m = GetSerialIdSeedReq{} }
-func (m *GetSerialIdSeedReq) String() string { return proto.CompactTextString(m) }
-func (*GetSerialIdSeedReq) ProtoMessage()    {}
-func (*GetSerialIdSeedReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{37}
-}
-
-func (m *GetSerialIdSeedReq) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetSerialIdSeedReq.Unmarshal(m, b)
-}
-func (m *GetSerialIdSeedReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetSerialIdSeedReq.Marshal(b, m, deterministic)
-}
-func (m *GetSerialIdSeedReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetSerialIdSeedReq.Merge(m, src)
-}
-func (m *GetSerialIdSeedReq) XXX_Size() int {
-	return xxx_messageInfo_GetSerialIdSeedReq.Size(m)
-}
-func (m *GetSerialIdSeedReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetSerialIdSeedReq.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetSerialIdSeedReq proto.InternalMessageInfo
-
-type GetSerialIdSeedResp struct {
-	Seed                 int64    `protobuf:"varint,1,opt,name=seed,proto3" json:"seed,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GetSerialIdSeedResp) Reset()         { *m = GetSerialIdSeedResp{} }
-func (m *GetSerialIdSeedResp) String() string { return proto.CompactTextString(m) }
-func (*GetSerialIdSeedResp) ProtoMessage()    {}
-func (*GetSerialIdSeedResp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f3733bc645feed7a, []int{38}
-}
-
-func (m *GetSerialIdSeedResp) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetSerialIdSeedResp.Unmarshal(m, b)
-}
-func (m *GetSerialIdSeedResp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetSerialIdSeedResp.Marshal(b, m, deterministic)
-}
-func (m *GetSerialIdSeedResp) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetSerialIdSeedResp.Merge(m, src)
-}
-func (m *GetSerialIdSeedResp) XXX_Size() int {
-	return xxx_messageInfo_GetSerialIdSeedResp.Size(m)
-}
-func (m *GetSerialIdSeedResp) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetSerialIdSeedResp.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetSerialIdSeedResp proto.InternalMessageInfo
-
-func (m *GetSerialIdSeedResp) GetSeed() int64 {
-	if m != nil {
-		return m.Seed
-	}
-	return 0
-}
-
 func init() {
 	proto.RegisterType((*GetGameListReq)(nil), "services.GetGameListReq")
 	proto.RegisterType((*GetGameListResp)(nil), "services.GetGameListResp")
 	proto.RegisterType((*GetGameListResp_GameInfoItem)(nil), "services.GetGameListResp.GameInfoItem")
-	proto.RegisterType((*IncrReq)(nil), "services.IncrReq")
-	proto.RegisterType((*IncrResp)(nil), "services.IncrResp")
 	proto.RegisterType((*UserLockReq)(nil), "services.UserLockReq")
 	proto.RegisterType((*UserLockResp)(nil), "services.UserLockResp")
 	proto.RegisterType((*UserUnLockReq)(nil), "services.UserUnLockReq")
 	proto.RegisterType((*UserUnLockResp)(nil), "services.UserUnLockResp")
-	proto.RegisterType((*GetLastPlayReq)(nil), "services.GetLastPlayReq")
-	proto.RegisterType((*GetLastPlayResp)(nil), "services.GetLastPlayResp")
-	proto.RegisterType((*SaveLastPlayReq)(nil), "services.SaveLastPlayReq")
-	proto.RegisterType((*LastPlay)(nil), "services.LastPlay")
-	proto.RegisterType((*SaveLastPlayResp)(nil), "services.SaveLastPlayResp")
-	proto.RegisterType((*GetReplayDataByTokenReq)(nil), "services.GetReplayDataByTokenReq")
-	proto.RegisterType((*GetReplayDataByTokenResp)(nil), "services.GetReplayDataByTokenResp")
-	proto.RegisterType((*GetReplayDataByRoundIdReq)(nil), "services.GetReplayDataByRoundIdReq")
-	proto.RegisterType((*GetReplayDataByRoundIdResp)(nil), "services.GetReplayDataByRoundIdResp")
-	proto.RegisterType((*GetRtpGreaterThan10Req)(nil), "services.GetRtpGreaterThan10Req")
-	proto.RegisterType((*GetRtpGreaterThan10Resp)(nil), "services.GetRtpGreaterThan10Resp")
-	proto.RegisterType((*GetRecordsByRoundIdReq)(nil), "services.GetRecordsByRoundIdReq")
-	proto.RegisterType((*GetRecordsByRoundIdResp)(nil), "services.GetRecordsByRoundIdResp")
 	proto.RegisterType((*GetRecordsReq)(nil), "services.GetRecordsReq")
 	proto.RegisterType((*RecordItem)(nil), "services.RecordItem")
 	proto.RegisterType((*GetRecordsResp)(nil), "services.GetRecordsResp")
 	proto.RegisterType((*RecordLog)(nil), "services.RecordLog")
-	proto.RegisterType((*CacheRecordsReq)(nil), "services.CacheRecordsReq")
-	proto.RegisterType((*CacheBillsReq)(nil), "services.CacheBillsReq")
-	proto.RegisterType((*CacheBillsResp)(nil), "services.CacheBillsResp")
-	proto.RegisterType((*CacheRecordsResp)(nil), "services.CacheRecordsResp")
 	proto.RegisterType((*GetPlayerReq)(nil), "services.GetPlayerReq")
 	proto.RegisterType((*GetPlayerResp)(nil), "services.GetPlayerResp")
 	proto.RegisterType((*GetValueReq)(nil), "services.GetValueReq")
@@ -2197,109 +1071,73 @@ func init() {
 	proto.RegisterType((*SetValueResp)(nil), "services.SetValueResp")
 	proto.RegisterType((*UpdatePlayerAvatarAndGenderReq)(nil), "services.UpdatePlayerAvatarAndGenderReq")
 	proto.RegisterType((*UpdatePlayerAvatarAndGenderResp)(nil), "services.UpdatePlayerAvatarAndGenderResp")
-	proto.RegisterType((*GetSerialIdSeedReq)(nil), "services.GetSerialIdSeedReq")
-	proto.RegisterType((*GetSerialIdSeedResp)(nil), "services.GetSerialIdSeedResp")
 }
 
 func init() { proto.RegisterFile("datacenter.proto", fileDescriptor_f3733bc645feed7a) }
 
 var fileDescriptor_f3733bc645feed7a = []byte{
-	// 1508 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x58, 0x5f, 0x4f, 0x1b, 0xc7,
-	0x16, 0x97, 0xbd, 0x36, 0xd8, 0xc7, 0xc6, 0x90, 0x09, 0x21, 0xcb, 0x26, 0xe1, 0xc2, 0xe6, 0x26,
-	0x72, 0x1e, 0xc2, 0xbd, 0xa5, 0xaa, 0x9a, 0x54, 0xb4, 0x51, 0x08, 0x89, 0xa1, 0x42, 0x49, 0xb4,
-	0x0e, 0xad, 0x54, 0xa9, 0x42, 0xc3, 0xee, 0x04, 0x5c, 0xec, 0xdd, 0xcd, 0xcc, 0x18, 0xe4, 0x8f,
-	0xd6, 0xd7, 0x7e, 0x88, 0xbe, 0xf5, 0x63, 0xf4, 0xb1, 0x52, 0x75, 0x66, 0xf6, 0xbf, 0xd7, 0x50,
-	0x2a, 0xf1, 0x50, 0xa9, 0x6f, 0x73, 0xfe, 0xce, 0x99, 0x73, 0x7e, 0xf3, 0xe7, 0x0c, 0x2c, 0x79,
-	0x54, 0x52, 0x97, 0xf9, 0x92, 0xf1, 0xcd, 0x90, 0x07, 0x32, 0x20, 0x0d, 0xc1, 0xf8, 0xf9, 0xc0,
-	0x65, 0xc2, 0x6a, 0x87, 0x43, 0x3a, 0x89, 0xf9, 0x16, 0x1c, 0x53, 0xc1, 0xf4, 0xd8, 0x5e, 0x82,
-	0x4e, 0x8f, 0xc9, 0x1e, 0x1d, 0xb1, 0x83, 0x81, 0x90, 0x0e, 0xfb, 0x64, 0xff, 0x5e, 0x81, 0xc5,
-	0x1c, 0x4b, 0x84, 0xa4, 0x0b, 0x35, 0x37, 0xf0, 0x98, 0x59, 0x59, 0xaf, 0x74, 0x3b, 0x5b, 0xcb,
-	0x9b, 0xb1, 0xe3, 0x4d, 0xc6, 0x79, 0xc0, 0x8f, 0x50, 0xe6, 0x28, 0x0d, 0xb2, 0x04, 0xc6, 0x69,
-	0x20, 0xcd, 0xea, 0xba, 0xd1, 0x6d, 0x3a, 0x38, 0x44, 0x8e, 0xcf, 0x2e, 0x4c, 0x43, 0x73, 0x7c,
-	0x76, 0x41, 0xee, 0x43, 0x93, 0x33, 0x37, 0x18, 0x8d, 0x98, 0xef, 0x99, 0x35, 0xc5, 0x4f, 0x19,
-	0xe4, 0x19, 0x18, 0x74, 0x38, 0x34, 0xeb, 0xeb, 0x46, 0xb7, 0xb5, 0xf5, 0x38, 0x9d, 0xaa, 0x10,
-	0xd3, 0x26, 0x12, 0xfb, 0xfe, 0xc7, 0x60, 0x5f, 0xb2, 0x91, 0x83, 0x26, 0xd6, 0x36, 0xb4, 0xb3,
-	0x4c, 0xb2, 0x02, 0x73, 0x62, 0x32, 0x3a, 0x0e, 0x86, 0x2a, 0xee, 0xa6, 0x13, 0x51, 0x64, 0x19,
-	0xea, 0x42, 0x52, 0xc9, 0xcc, 0xea, 0x7a, 0xa5, 0x5b, 0x77, 0x34, 0x61, 0xdf, 0x83, 0xf9, 0x7d,
-	0xdf, 0xe5, 0x0e, 0xfb, 0x84, 0x21, 0x9f, 0xb1, 0x49, 0x64, 0x85, 0x43, 0x7b, 0x0d, 0x1a, 0x5a,
-	0x28, 0x42, 0x42, 0xa0, 0x26, 0x18, 0xf3, 0x94, 0xd8, 0x70, 0xd4, 0xd8, 0x7e, 0x04, 0xad, 0x43,
-	0xc1, 0xf8, 0x41, 0xe0, 0x9e, 0xa1, 0x83, 0x15, 0x98, 0x1b, 0x0b, 0xc6, 0xf7, 0xb5, 0xd2, 0x82,
-	0x13, 0x51, 0xf6, 0x63, 0x68, 0xa7, 0x6a, 0x22, 0x44, 0x3d, 0xce, 0xc4, 0x78, 0x28, 0xe3, 0x08,
-	0x35, 0x65, 0x7f, 0x0d, 0x0b, 0xa8, 0x77, 0xe8, 0x5f, 0xe1, 0x10, 0x97, 0x22, 0x83, 0x33, 0xe6,
-	0xab, 0xa5, 0x34, 0x1d, 0x4d, 0xd8, 0x5d, 0xe8, 0x64, 0xcd, 0xa7, 0x26, 0x6a, 0x24, 0x13, 0x75,
-	0x55, 0xf9, 0x0f, 0xa8, 0x90, 0xef, 0x87, 0x74, 0x32, 0x3d, 0x93, 0x91, 0x84, 0xfe, 0x93, 0x42,
-	0x45, 0xaa, 0x79, 0x2d, 0x54, 0x3c, 0x85, 0x1a, 0xa2, 0x53, 0x45, 0xd9, 0xda, 0x5a, 0x4d, 0x35,
-	0xfb, 0xf4, 0x9c, 0x65, 0x66, 0x77, 0x94, 0x9a, 0xdd, 0x87, 0xc5, 0x82, 0x60, 0x56, 0x58, 0xa4,
-	0x0b, 0xf5, 0x81, 0x64, 0x23, 0xa1, 0x10, 0xd7, 0xda, 0x22, 0xa9, 0xeb, 0xc4, 0x5a, 0x2b, 0xd8,
-	0xdf, 0x40, 0x23, 0x66, 0xcd, 0x44, 0x86, 0x05, 0x0d, 0xdc, 0x29, 0x1f, 0x06, 0x23, 0x0d, 0x0e,
-	0xc3, 0x49, 0x68, 0x7b, 0x1b, 0x96, 0xf2, 0x41, 0x5d, 0x27, 0x03, 0xf6, 0xff, 0xe0, 0x6e, 0x8f,
-	0x49, 0x87, 0xa1, 0xbb, 0x5d, 0x2a, 0xe9, 0xce, 0xe4, 0x03, 0x96, 0x0a, 0x97, 0x96, 0xd4, 0xb0,
-	0x92, 0xad, 0xa1, 0x0f, 0x66, 0xb9, 0xc1, 0xb5, 0x12, 0xdf, 0x4d, 0x12, 0x8f, 0xd9, 0xc9, 0x68,
-	0x3a, 0xcc, 0x0d, 0xb8, 0xa7, 0xf6, 0x8e, 0xce, 0xf9, 0x17, 0xb0, 0x5a, 0x98, 0xcf, 0x09, 0xc6,
-	0xbe, 0xb7, 0xef, 0x61, 0x88, 0x26, 0xcc, 0x73, 0x4d, 0x45, 0x41, 0xc6, 0xa4, 0x1d, 0x82, 0x35,
-	0xcb, 0xec, 0x86, 0x02, 0xdd, 0x83, 0x15, 0x9c, 0x51, 0x86, 0x3d, 0xce, 0xa8, 0x64, 0xfc, 0xc3,
-	0x29, 0xf5, 0x3f, 0xfb, 0x7f, 0x84, 0x91, 0xd2, 0xaa, 0xa6, 0xd8, 0xa9, 0xe6, 0x20, 0x3d, 0xd2,
-	0x35, 0x99, 0xf2, 0x74, 0x43, 0x81, 0x7f, 0xab, 0x03, 0x57, 0x6c, 0x91, 0x4b, 0xef, 0xac, 0xc0,
-	0x33, 0x69, 0xaf, 0xe6, 0xd3, 0x1e, 0x85, 0x3e, 0xe5, 0xeb, 0x86, 0x42, 0xef, 0xc3, 0x42, 0x3a,
-	0x5d, 0x14, 0xf1, 0x61, 0x6e, 0x3b, 0x6a, 0x0a, 0xf9, 0x7d, 0xbd, 0x12, 0x1d, 0x70, 0x44, 0xe1,
-	0x99, 0xb9, 0x47, 0xc5, 0xa9, 0x69, 0x28, 0xae, 0x1a, 0xdb, 0xbf, 0x1a, 0x00, 0xe9, 0x4c, 0xb8,
-	0x58, 0x7a, 0xc2, 0x7c, 0x99, 0x9c, 0x71, 0x31, 0x59, 0xa8, 0x5f, 0x7a, 0xf8, 0x2d, 0x81, 0x71,
-	0xcc, 0xa4, 0xf2, 0x59, 0x71, 0x70, 0x88, 0xfb, 0xd7, 0x1d, 0x73, 0xce, 0x7c, 0x77, 0x62, 0xd6,
-	0xd4, 0x54, 0x09, 0x4d, 0x1e, 0x43, 0x27, 0x1e, 0x47, 0x21, 0xd6, 0x95, 0x46, 0x81, 0x4b, 0x56,
-	0xa1, 0x81, 0xf7, 0xe3, 0x11, 0xba, 0x9e, 0x53, 0xae, 0xe7, 0x91, 0xde, 0x61, 0xea, 0x2a, 0xbb,
-	0x18, 0xf8, 0xe6, 0xbc, 0x9e, 0xf0, 0x62, 0xe0, 0x23, 0x87, 0xcb, 0xd0, 0x6c, 0x68, 0x0e, 0x97,
-	0x21, 0x59, 0x03, 0x50, 0x97, 0xad, 0xb7, 0x8b, 0x37, 0x4c, 0x53, 0x65, 0x27, 0xc3, 0x49, 0x6b,
-	0xba, 0x6b, 0x82, 0x12, 0xc6, 0x24, 0xe6, 0x68, 0xe0, 0x0f, 0xa4, 0xd9, 0xd2, 0x39, 0xc2, 0x31,
-	0x79, 0x04, 0xc6, 0x30, 0x38, 0x31, 0xdb, 0xaa, 0x42, 0xb7, 0x8b, 0x15, 0x3a, 0x08, 0x4e, 0x1c,
-	0x94, 0x67, 0x00, 0xb4, 0x50, 0x04, 0xd0, 0x31, 0x1d, 0x52, 0xdf, 0x65, 0x66, 0x27, 0x5e, 0x8a,
-	0x22, 0xc9, 0x06, 0xb4, 0xa3, 0xe1, 0x91, 0x8b, 0x85, 0x59, 0x54, 0xe2, 0x56, 0xc4, 0x7b, 0x45,
-	0xc5, 0x29, 0x79, 0x08, 0x0b, 0xb1, 0xca, 0x71, 0xe0, 0x8f, 0x85, 0xb9, 0xa4, 0x74, 0x62, 0xbb,
-	0x1d, 0xe4, 0x61, 0xd0, 0xa7, 0x68, 0x7f, 0x4b, 0x07, 0x8d, 0x63, 0xdb, 0x53, 0x97, 0x4a, 0x82,
-	0x96, 0x1b, 0xc2, 0xe4, 0x6b, 0x68, 0x26, 0x59, 0x20, 0x1d, 0xa8, 0xba, 0x3c, 0xda, 0x3d, 0x55,
-	0x97, 0x23, 0x2d, 0x78, 0x84, 0xc1, 0xaa, 0xe0, 0xd9, 0x9d, 0x64, 0x64, 0xb3, 0xee, 0xd9, 0x7f,
-	0x18, 0xb0, 0xf8, 0x8a, 0xba, 0xa7, 0x2c, 0x83, 0xee, 0x7f, 0xa1, 0xf8, 0x4f, 0x84, 0x22, 0x56,
-	0xcd, 0x75, 0x83, 0xb1, 0x2f, 0x23, 0x34, 0xc6, 0x24, 0xd6, 0xc2, 0x1f, 0xb8, 0x67, 0x6f, 0xe9,
-	0x88, 0x99, 0x44, 0xd7, 0x22, 0xa6, 0xed, 0xdf, 0xaa, 0xb0, 0xa0, 0xea, 0xbf, 0x33, 0x18, 0x0e,
-	0xc5, 0x65, 0x6f, 0xad, 0x0c, 0x2a, 0xaa, 0x53, 0xa8, 0x88, 0xd6, 0x6c, 0xe4, 0xd6, 0x1c, 0xa1,
-	0xa2, 0x56, 0x8e, 0x8a, 0xfa, 0x95, 0xa8, 0x98, 0x2b, 0x45, 0xc5, 0x1a, 0x80, 0xab, 0x2e, 0x2c,
-	0xf5, 0x4c, 0x89, 0xca, 0x9a, 0x72, 0xb2, 0x58, 0xcf, 0x95, 0xd5, 0xc3, 0x19, 0x3e, 0x0e, 0x83,
-	0x8b, 0x81, 0x7f, 0xf2, 0x3d, 0xde, 0x77, 0xef, 0xfc, 0xa8, 0xc0, 0x05, 0x2e, 0x96, 0xdf, 0x63,
-	0xc2, 0x35, 0xdb, 0xba, 0xfc, 0x38, 0x26, 0x36, 0xb4, 0x75, 0x1c, 0xb2, 0xef, 0x06, 0x9c, 0xa9,
-	0xea, 0x56, 0x9c, 0x1c, 0x2f, 0x39, 0x0c, 0x3a, 0x99, 0xc3, 0xe0, 0x2b, 0xe8, 0x64, 0xd3, 0x7b,
-	0xad, 0x47, 0xd3, 0x36, 0x2c, 0xe5, 0xb7, 0xe6, 0xb5, 0xac, 0x77, 0xa1, 0xdd, 0x63, 0xea, 0xad,
-	0xc6, 0xd4, 0xab, 0xde, 0x82, 0x86, 0x26, 0x92, 0xca, 0x26, 0x34, 0xe6, 0xec, 0x0d, 0x75, 0x65,
-	0xc0, 0x27, 0x71, 0x6d, 0x23, 0xd2, 0xde, 0x53, 0x57, 0x5f, 0xec, 0x45, 0x84, 0xe4, 0x4b, 0x68,
-	0xed, 0x8d, 0x47, 0xd4, 0xd7, 0x2c, 0xe5, 0xa9, 0xb5, 0x75, 0x27, 0x8d, 0x23, 0x23, 0x74, 0xb2,
-	0x9a, 0xf6, 0x73, 0x68, 0xf5, 0x98, 0xfc, 0x8e, 0x0e, 0xc7, 0xac, 0xb4, 0xc9, 0xc0, 0x20, 0xe4,
-	0x60, 0xc4, 0xde, 0x8d, 0x65, 0xf4, 0x50, 0x89, 0x49, 0xfb, 0xad, 0x5a, 0x4a, 0x64, 0x7a, 0xad,
-	0xf3, 0x74, 0x19, 0xea, 0xe7, 0x68, 0x16, 0x37, 0x08, 0x8a, 0xb0, 0xdf, 0x43, 0xab, 0x7f, 0x69,
-	0x28, 0xa5, 0x66, 0x78, 0x1e, 0x61, 0x44, 0x47, 0xc1, 0x58, 0x1f, 0x75, 0xf5, 0x34, 0xc2, 0x67,
-	0xd0, 0xee, 0xff, 0xad, 0x08, 0xed, 0x9f, 0x2b, 0xb0, 0x76, 0x18, 0x7a, 0x54, 0x32, 0x9d, 0xa7,
-	0x97, 0xe7, 0x54, 0x52, 0xfe, 0xd2, 0xf7, 0x7a, 0xcc, 0xf7, 0xae, 0xae, 0xdc, 0x0a, 0xcc, 0x69,
-	0x8b, 0xf8, 0xc5, 0xa1, 0x29, 0xe4, 0x6b, 0x07, 0x2a, 0xd2, 0x05, 0x27, 0xa2, 0xb2, 0x95, 0xae,
-	0xe5, 0x2a, 0x4d, 0x1e, 0x00, 0x9c, 0x32, 0xea, 0x1d, 0x7d, 0xe4, 0x78, 0x4e, 0xe8, 0xdd, 0xd9,
-	0x44, 0xce, 0x1b, 0x64, 0x20, 0xb8, 0x7d, 0x14, 0xe8, 0x4d, 0xa9, 0xc6, 0xf6, 0x06, 0xfc, 0xe7,
-	0xd2, 0xd0, 0x45, 0x68, 0x2f, 0x03, 0xe9, 0x31, 0xd9, 0x67, 0x7c, 0x40, 0x87, 0xfb, 0x5e, 0x9f,
-	0x31, 0x7c, 0xf1, 0xd9, 0x4f, 0xe0, 0xf6, 0x14, 0xb7, 0xbc, 0xb5, 0xdc, 0xfa, 0xa5, 0x09, 0xb7,
-	0xf0, 0x65, 0xfd, 0x4a, 0xb5, 0xf6, 0x7d, 0x9d, 0x47, 0xb2, 0x0d, 0xcd, 0x04, 0x96, 0x64, 0x25,
-	0xd7, 0x25, 0x27, 0x88, 0xb7, 0xee, 0x96, 0xf2, 0x45, 0x48, 0x9e, 0x43, 0x23, 0xc6, 0x13, 0xb9,
-	0x93, 0x53, 0x8a, 0x31, 0x61, 0xad, 0x94, 0xb1, 0xb5, 0x69, 0xbf, 0xc4, 0xb4, 0x5f, 0x6e, 0x9a,
-	0xc3, 0xc4, 0x53, 0xa8, 0x61, 0x13, 0x4d, 0x6e, 0xa5, 0xf2, 0xa8, 0xe3, 0xb6, 0x48, 0x91, 0x25,
-	0x42, 0xc2, 0xe1, 0xde, 0x25, 0xc9, 0x25, 0xdd, 0xd4, 0xe4, 0x72, 0xf8, 0x58, 0x4f, 0xfe, 0xa2,
-	0xa6, 0x08, 0xc9, 0x5b, 0xd5, 0xe5, 0x66, 0xeb, 0x42, 0xee, 0xe7, 0x12, 0x51, 0x28, 0xa4, 0xf5,
-	0xe0, 0x12, 0xa9, 0x08, 0xc9, 0x0b, 0x80, 0xf4, 0x29, 0x44, 0xf2, 0xf5, 0x48, 0x1f, 0x1c, 0x96,
-	0x59, 0x2e, 0x10, 0x21, 0xf9, 0x41, 0x01, 0xa5, 0xf8, 0xd0, 0x27, 0xeb, 0x65, 0x06, 0xd9, 0x9e,
-	0xc2, 0xda, 0xb8, 0x42, 0x43, 0x84, 0xc4, 0x8d, 0x1a, 0x92, 0xa9, 0xde, 0x8d, 0x3c, 0x2c, 0x18,
-	0x97, 0x35, 0x85, 0xd6, 0x7f, 0xaf, 0x56, 0x12, 0x21, 0xf9, 0x11, 0x96, 0xcb, 0xfa, 0x58, 0xb2,
-	0x31, 0xd3, 0x3a, 0x6e, 0x8c, 0x2d, 0xfb, 0x2a, 0x95, 0x34, 0x3f, 0x85, 0x1e, 0xae, 0x98, 0x9f,
-	0xe9, 0x66, 0xb1, 0x98, 0x9f, 0xb2, 0x26, 0xf0, 0x35, 0xb4, 0xb3, 0x1d, 0x3f, 0x99, 0xfd, 0x6f,
-	0x61, 0x59, 0xb3, 0x44, 0x22, 0x24, 0x3b, 0xea, 0xdc, 0x4f, 0xbc, 0xe4, 0x6b, 0x9d, 0x75, 0xb2,
-	0x3a, 0x43, 0x92, 0xf8, 0x88, 0xff, 0xbf, 0x0a, 0x3e, 0x32, 0xbf, 0x77, 0x05, 0x1f, 0xb9, 0x4f,
-	0xbc, 0xe7, 0xd0, 0x88, 0x3f, 0x9f, 0xb2, 0x3b, 0x37, 0xf3, 0x6f, 0x95, 0xdd, 0xb9, 0xb9, 0x7f,
-	0xaa, 0x17, 0x00, 0xe9, 0x87, 0x52, 0x16, 0xc6, 0xb9, 0x5f, 0xaa, 0x2c, 0x8c, 0xf3, 0xff, 0x4f,
-	0xc7, 0x73, 0xea, 0xb7, 0xf1, 0xf3, 0x3f, 0x03, 0x00, 0x00, 0xff, 0xff, 0xcf, 0x34, 0x62, 0xe1,
-	0xa5, 0x14, 0x00, 0x00,
+	// 967 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x56, 0xcd, 0x6e, 0x1b, 0x37,
+	0x10, 0x86, 0xb4, 0x92, 0x2d, 0x8d, 0x7e, 0xa2, 0xb0, 0x8e, 0xcb, 0x6c, 0xdb, 0xd4, 0xd9, 0x22,
+	0x86, 0x7a, 0xf1, 0xc1, 0x3d, 0x34, 0x01, 0x52, 0x04, 0x71, 0xdc, 0xc8, 0x06, 0x8c, 0x36, 0x58,
+	0xc1, 0xbd, 0x1a, 0xd4, 0xee, 0xc4, 0x16, 0x2c, 0x71, 0xd7, 0x24, 0x65, 0x43, 0x8f, 0x56, 0xa0,
+	0xcf, 0xd1, 0x37, 0xe9, 0xbd, 0x18, 0x72, 0x7f, 0x53, 0xc5, 0x69, 0x72, 0xe3, 0xf7, 0x71, 0x66,
+	0xf8, 0x71, 0x38, 0xb3, 0xb3, 0x30, 0x8a, 0x85, 0x11, 0x11, 0x4a, 0x83, 0xea, 0x20, 0x55, 0x89,
+	0x49, 0x58, 0x47, 0xa3, 0xba, 0x9d, 0x47, 0xa8, 0xfd, 0x7e, 0xba, 0x10, 0xeb, 0x9c, 0xf7, 0x61,
+	0x26, 0x34, 0xba, 0x75, 0x30, 0x82, 0xe1, 0x04, 0xcd, 0x44, 0x2c, 0xf1, 0x6c, 0xae, 0x4d, 0x88,
+	0x37, 0xc1, 0x3f, 0x0d, 0x78, 0x50, 0xa3, 0x74, 0xca, 0xc6, 0xd0, 0x8a, 0x92, 0x18, 0x79, 0x63,
+	0xaf, 0x31, 0x1e, 0x1e, 0xee, 0x1c, 0xe4, 0x81, 0x0f, 0x50, 0xa9, 0x44, 0x5d, 0xd0, 0x5e, 0x68,
+	0x2d, 0xd8, 0x08, 0xbc, 0xab, 0xc4, 0xf0, 0xe6, 0x9e, 0x37, 0xee, 0x86, 0xb4, 0x24, 0x46, 0xe2,
+	0x1d, 0xf7, 0x1c, 0x23, 0xf1, 0x8e, 0x7d, 0x0b, 0x5d, 0x85, 0x51, 0xb2, 0x5c, 0xa2, 0x8c, 0x79,
+	0xcb, 0xf2, 0x25, 0xc1, 0x9e, 0x83, 0x27, 0x16, 0x0b, 0xde, 0xde, 0xf3, 0xc6, 0xbd, 0xc3, 0xfd,
+	0xf2, 0xa8, 0x0f, 0x34, 0x1d, 0x10, 0x38, 0x95, 0xef, 0x93, 0x53, 0x83, 0xcb, 0x90, 0x5c, 0xfc,
+	0x97, 0xd0, 0xaf, 0x92, 0x6c, 0x17, 0xb6, 0xf4, 0x7a, 0x39, 0x4b, 0x16, 0x56, 0x77, 0x37, 0xcc,
+	0x10, 0xdb, 0x81, 0xb6, 0x36, 0xc2, 0x20, 0x6f, 0xee, 0x35, 0xc6, 0xed, 0xd0, 0x81, 0xe0, 0x19,
+	0xf4, 0xce, 0x35, 0xaa, 0xb3, 0x24, 0xba, 0x0e, 0xf1, 0x86, 0x9c, 0x57, 0x1a, 0xd5, 0x69, 0x6c,
+	0x9d, 0x07, 0x61, 0x86, 0x82, 0x7d, 0xe8, 0x97, 0x66, 0x3a, 0x25, 0x3b, 0x85, 0x7a, 0xb5, 0x30,
+	0xf9, 0x21, 0x0e, 0x05, 0xbf, 0xc0, 0x80, 0xec, 0xce, 0xe5, 0x27, 0x02, 0x92, 0x1a, 0x93, 0x5c,
+	0xa3, 0xb4, 0x6a, 0xba, 0xa1, 0x03, 0xc1, 0x18, 0x86, 0x55, 0xf7, 0xff, 0x1c, 0xd4, 0x29, 0x0e,
+	0x9a, 0xc2, 0x60, 0x82, 0x26, 0xc4, 0x28, 0x51, 0xb1, 0xce, 0x0e, 0x3a, 0x2f, 0x0f, 0xf2, 0xc2,
+	0x0c, 0x11, 0x3f, 0x75, 0xe9, 0x70, 0x27, 0x65, 0x88, 0x31, 0x68, 0x9d, 0x08, 0x7d, 0xc5, 0x3d,
+	0xcb, 0xda, 0x75, 0xf0, 0xb7, 0x07, 0xe0, 0x42, 0xda, 0x4c, 0x72, 0xd8, 0x16, 0x97, 0x28, 0x4d,
+	0x21, 0x3e, 0x87, 0x95, 0x5b, 0x35, 0x6b, 0xb7, 0x1a, 0x81, 0x37, 0x43, 0x63, 0x63, 0x36, 0x42,
+	0x5a, 0x32, 0x1f, 0x3a, 0xd1, 0x4a, 0x29, 0x94, 0xd1, 0x9a, 0xb7, 0xec, 0x51, 0x05, 0x66, 0xfb,
+	0x30, 0xcc, 0xd7, 0x99, 0xc4, 0xb6, 0xb5, 0xf8, 0x80, 0x65, 0x8f, 0xa1, 0x43, 0xb5, 0x7b, 0x41,
+	0xa1, 0xb7, 0x6c, 0xe8, 0x6d, 0xc2, 0x47, 0x68, 0xcb, 0xec, 0x6e, 0x2e, 0xf9, 0xb6, 0x3b, 0xf0,
+	0x6e, 0x2e, 0x89, 0x51, 0x26, 0xe5, 0x1d, 0xc7, 0x28, 0x93, 0xb2, 0x27, 0x00, 0xb6, 0x11, 0xe2,
+	0x63, 0x7a, 0xfd, 0xae, 0xcd, 0x4e, 0x85, 0xa1, 0x6b, 0xaa, 0x64, 0x25, 0xe3, 0xd3, 0x63, 0x0e,
+	0x76, 0x33, 0x87, 0x94, 0xa3, 0xb9, 0x9c, 0x1b, 0xde, 0x73, 0x39, 0xa2, 0x35, 0x7b, 0x06, 0xde,
+	0x22, 0xb9, 0xe4, 0x7d, 0x5b, 0xa8, 0x5f, 0x95, 0x85, 0xea, 0xf2, 0x76, 0x96, 0x5c, 0x86, 0xb4,
+	0x5f, 0xa9, 0xc2, 0x41, 0xad, 0x0a, 0x39, 0x6c, 0xcf, 0xc4, 0x42, 0xc8, 0x08, 0xf9, 0x30, 0xbf,
+	0x8a, 0x85, 0xec, 0x29, 0xf4, 0xb3, 0xe5, 0x45, 0x44, 0x0f, 0xf3, 0xc0, 0x6e, 0xf7, 0x32, 0xee,
+	0x8d, 0xd0, 0x57, 0xec, 0x07, 0x18, 0xe4, 0x26, 0xb3, 0x44, 0xae, 0x34, 0x1f, 0x59, 0x9b, 0xdc,
+	0xef, 0x88, 0x38, 0x12, 0x7d, 0x45, 0xfe, 0x0f, 0x9d, 0x68, 0x5a, 0x07, 0xb1, 0xed, 0xf7, 0xa2,
+	0x5a, 0x3e, 0xab, 0xb7, 0xc7, 0xd0, 0xa2, 0x6f, 0x8c, 0x6d, 0xee, 0x5e, 0xd5, 0xb2, 0xac, 0x94,
+	0xd0, 0x5a, 0x04, 0xbf, 0x42, 0xb7, 0xc8, 0x02, 0x1b, 0x42, 0x33, 0x52, 0x59, 0x77, 0x34, 0x23,
+	0x45, 0x58, 0xab, 0xac, 0x06, 0x9b, 0x5a, 0x95, 0x59, 0x8f, 0x6d, 0xb9, 0x14, 0x59, 0x8f, 0x83,
+	0x63, 0xe8, 0x4f, 0xd0, 0xbc, 0xb3, 0xdf, 0x2e, 0xaa, 0x6c, 0x1f, 0x3a, 0x0e, 0x14, 0x75, 0x58,
+	0x60, 0x8a, 0xf2, 0x56, 0x44, 0x26, 0x51, 0xeb, 0xac, 0x12, 0x73, 0x18, 0x9c, 0xd8, 0x06, 0xc9,
+	0xa3, 0xe8, 0x94, 0xfd, 0x0c, 0xbd, 0x93, 0xd5, 0x52, 0x48, 0x47, 0xd9, 0x48, 0xbd, 0xc3, 0x47,
+	0xe5, 0x75, 0x2a, 0x9b, 0x61, 0xd5, 0x32, 0x78, 0x01, 0xbd, 0x09, 0x9a, 0x3f, 0xc4, 0x62, 0x85,
+	0x24, 0x67, 0x04, 0xde, 0x35, 0xae, 0xb3, 0x9b, 0xd1, 0x92, 0x44, 0x98, 0xf9, 0x12, 0x7f, 0x5f,
+	0x19, 0x2b, 0xc2, 0x0b, 0x73, 0x18, 0xfc, 0x66, 0xaf, 0x92, 0xb9, 0x7e, 0x56, 0xd6, 0x77, 0xa0,
+	0x7d, 0x4b, 0x6e, 0xf9, 0xf7, 0xc1, 0x82, 0xe0, 0x1d, 0xf4, 0xa6, 0xf7, 0x4a, 0xd9, 0xe8, 0x46,
+	0x0d, 0x44, 0x8a, 0x2e, 0x92, 0x95, 0xeb, 0xcd, 0x76, 0xa9, 0xf0, 0x39, 0xf4, 0xa7, 0x5f, 0xa4,
+	0x30, 0xf8, 0xb3, 0x01, 0x4f, 0xce, 0xd3, 0x58, 0x18, 0x74, 0x79, 0x7a, 0x7d, 0x2b, 0x8c, 0x50,
+	0xaf, 0x65, 0x3c, 0x41, 0x19, 0x7f, 0xfa, 0xe5, 0x76, 0x61, 0xcb, 0x79, 0xe4, 0xdf, 0x25, 0x87,
+	0x88, 0x77, 0x01, 0xac, 0xd2, 0x41, 0x98, 0xa1, 0xea, 0x4b, 0xb7, 0x6a, 0x2f, 0xcd, 0xbe, 0x03,
+	0xb8, 0x42, 0x11, 0x5f, 0xbc, 0x57, 0x62, 0x89, 0xd9, 0x27, 0xa4, 0x4b, 0xcc, 0x5b, 0x22, 0xa8,
+	0x1f, 0x24, 0x6d, 0x6c, 0xb9, 0x7e, 0xa0, 0x75, 0xf0, 0x14, 0xbe, 0xbf, 0x57, 0xba, 0x4e, 0x0f,
+	0xff, 0x6a, 0xc1, 0xc3, 0x63, 0x61, 0xc4, 0x1b, 0x3b, 0x5b, 0xa7, 0x2e, 0x0d, 0xec, 0x25, 0x74,
+	0x8b, 0xaa, 0x62, 0xbb, 0xb5, 0x31, 0x55, 0x14, 0xac, 0xff, 0xf5, 0x46, 0x5e, 0xa7, 0xec, 0x05,
+	0x74, 0xf2, 0x72, 0x60, 0x8f, 0x6a, 0x46, 0xf9, 0x93, 0xfa, 0xbb, 0x9b, 0x68, 0xe7, 0x3a, 0xdd,
+	0xe0, 0x3a, 0xdd, 0xec, 0x5a, 0x7b, 0x52, 0x05, 0xdf, 0xdc, 0x73, 0x59, 0x36, 0x2e, 0xdd, 0xee,
+	0x7f, 0x4e, 0xff, 0xc7, 0xff, 0x69, 0xa9, 0x53, 0xf6, 0x0a, 0xa0, 0xfc, 0xe0, 0xb0, 0x7a, 0x42,
+	0xca, 0xa1, 0xe5, 0xf3, 0xcd, 0x1b, 0x3a, 0x65, 0x47, 0xb6, 0xe9, 0xf2, 0xd1, 0xcf, 0xf8, 0x47,
+	0xfe, 0x08, 0x6e, 0xfc, 0xc7, 0x1f, 0xfd, 0x57, 0xa0, 0x9c, 0xe5, 0x43, 0xbb, 0x9a, 0xb3, 0xca,
+	0xbc, 0xaf, 0xe6, 0xac, 0x36, 0xdf, 0x5f, 0x01, 0x94, 0x83, 0xb8, 0xaa, 0xbf, 0x36, 0xdd, 0xab,
+	0xfa, 0xeb, 0x73, 0x7b, 0xb6, 0x65, 0x7f, 0xb4, 0x7e, 0xfa, 0x37, 0x00, 0x00, 0xff, 0xff, 0x07,
+	0x10, 0xae, 0x0a, 0xa0, 0x09, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -2320,26 +1158,10 @@ type DataCenterServiceClient interface {
 	GetValue(ctx context.Context, in *GetValueReq, opts ...grpc.CallOption) (*GetValueResp, error)
 	// 缓存
 	SetValue(ctx context.Context, in *SetValueReq, opts ...grpc.CallOption) (*SetValueResp, error)
-	// 获取自增字段
-	Incr(ctx context.Context, in *IncrReq, opts ...grpc.CallOption) (*IncrResp, error)
 	// 修改玩家信息
 	UpdatePlayerAvatarAndGender(ctx context.Context, in *UpdatePlayerAvatarAndGenderReq, opts ...grpc.CallOption) (*UpdatePlayerAvatarAndGenderResp, error)
-	// 局号种子
-	GetSerialIdSeed(ctx context.Context, in *GetSerialIdSeedReq, opts ...grpc.CallOption) (*GetSerialIdSeedResp, error)
 	// 获取注单信息
 	GetRecords(ctx context.Context, in *GetRecordsReq, opts ...grpc.CallOption) (*GetRecordsResp, error)
-	// 获取注单信息
-	GetRecordsByRoundId(ctx context.Context, in *GetRecordsByRoundIdReq, opts ...grpc.CallOption) (*GetRecordsByRoundIdResp, error)
-	// 获取注单信息
-	GetReplayDataByRoundId(ctx context.Context, in *GetReplayDataByRoundIdReq, opts ...grpc.CallOption) (*GetReplayDataByRoundIdResp, error)
-	// 获取注单信息
-	GetReplayDataByToken(ctx context.Context, in *GetReplayDataByTokenReq, opts ...grpc.CallOption) (*GetReplayDataByTokenResp, error)
-	// 获取rtp>10的注单信息
-	GetRtpGreaterThan10(ctx context.Context, in *GetRtpGreaterThan10Req, opts ...grpc.CallOption) (*GetRtpGreaterThan10Resp, error)
-	// 保存最近玩的游戏记录
-	SaveLastPlay(ctx context.Context, in *SaveLastPlayReq, opts ...grpc.CallOption) (*SaveLastPlayResp, error)
-	// 获取最近玩的游戏记录
-	GetLastPlay(ctx context.Context, in *GetLastPlayReq, opts ...grpc.CallOption) (*GetLastPlayResp, error)
 	// 获取游戏列表
 	GetGameList(ctx context.Context, in *GetGameListReq, opts ...grpc.CallOption) (*GetGameListResp, error)
 	// 加锁
@@ -2383,15 +1205,6 @@ func (c *dataCenterServiceClient) SetValue(ctx context.Context, in *SetValueReq,
 	return out, nil
 }
 
-func (c *dataCenterServiceClient) Incr(ctx context.Context, in *IncrReq, opts ...grpc.CallOption) (*IncrResp, error) {
-	out := new(IncrResp)
-	err := c.cc.Invoke(ctx, "/services.DataCenterService/Incr", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *dataCenterServiceClient) UpdatePlayerAvatarAndGender(ctx context.Context, in *UpdatePlayerAvatarAndGenderReq, opts ...grpc.CallOption) (*UpdatePlayerAvatarAndGenderResp, error) {
 	out := new(UpdatePlayerAvatarAndGenderResp)
 	err := c.cc.Invoke(ctx, "/services.DataCenterService/UpdatePlayerAvatarAndGender", in, out, opts...)
@@ -2401,72 +1214,9 @@ func (c *dataCenterServiceClient) UpdatePlayerAvatarAndGender(ctx context.Contex
 	return out, nil
 }
 
-func (c *dataCenterServiceClient) GetSerialIdSeed(ctx context.Context, in *GetSerialIdSeedReq, opts ...grpc.CallOption) (*GetSerialIdSeedResp, error) {
-	out := new(GetSerialIdSeedResp)
-	err := c.cc.Invoke(ctx, "/services.DataCenterService/GetSerialIdSeed", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *dataCenterServiceClient) GetRecords(ctx context.Context, in *GetRecordsReq, opts ...grpc.CallOption) (*GetRecordsResp, error) {
 	out := new(GetRecordsResp)
 	err := c.cc.Invoke(ctx, "/services.DataCenterService/GetRecords", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dataCenterServiceClient) GetRecordsByRoundId(ctx context.Context, in *GetRecordsByRoundIdReq, opts ...grpc.CallOption) (*GetRecordsByRoundIdResp, error) {
-	out := new(GetRecordsByRoundIdResp)
-	err := c.cc.Invoke(ctx, "/services.DataCenterService/GetRecordsByRoundId", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dataCenterServiceClient) GetReplayDataByRoundId(ctx context.Context, in *GetReplayDataByRoundIdReq, opts ...grpc.CallOption) (*GetReplayDataByRoundIdResp, error) {
-	out := new(GetReplayDataByRoundIdResp)
-	err := c.cc.Invoke(ctx, "/services.DataCenterService/GetReplayDataByRoundId", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dataCenterServiceClient) GetReplayDataByToken(ctx context.Context, in *GetReplayDataByTokenReq, opts ...grpc.CallOption) (*GetReplayDataByTokenResp, error) {
-	out := new(GetReplayDataByTokenResp)
-	err := c.cc.Invoke(ctx, "/services.DataCenterService/GetReplayDataByToken", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dataCenterServiceClient) GetRtpGreaterThan10(ctx context.Context, in *GetRtpGreaterThan10Req, opts ...grpc.CallOption) (*GetRtpGreaterThan10Resp, error) {
-	out := new(GetRtpGreaterThan10Resp)
-	err := c.cc.Invoke(ctx, "/services.DataCenterService/GetRtpGreaterThan10", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dataCenterServiceClient) SaveLastPlay(ctx context.Context, in *SaveLastPlayReq, opts ...grpc.CallOption) (*SaveLastPlayResp, error) {
-	out := new(SaveLastPlayResp)
-	err := c.cc.Invoke(ctx, "/services.DataCenterService/SaveLastPlay", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dataCenterServiceClient) GetLastPlay(ctx context.Context, in *GetLastPlayReq, opts ...grpc.CallOption) (*GetLastPlayResp, error) {
-	out := new(GetLastPlayResp)
-	err := c.cc.Invoke(ctx, "/services.DataCenterService/GetLastPlay", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2508,26 +1258,10 @@ type DataCenterServiceServer interface {
 	GetValue(context.Context, *GetValueReq) (*GetValueResp, error)
 	// 缓存
 	SetValue(context.Context, *SetValueReq) (*SetValueResp, error)
-	// 获取自增字段
-	Incr(context.Context, *IncrReq) (*IncrResp, error)
 	// 修改玩家信息
 	UpdatePlayerAvatarAndGender(context.Context, *UpdatePlayerAvatarAndGenderReq) (*UpdatePlayerAvatarAndGenderResp, error)
-	// 局号种子
-	GetSerialIdSeed(context.Context, *GetSerialIdSeedReq) (*GetSerialIdSeedResp, error)
 	// 获取注单信息
 	GetRecords(context.Context, *GetRecordsReq) (*GetRecordsResp, error)
-	// 获取注单信息
-	GetRecordsByRoundId(context.Context, *GetRecordsByRoundIdReq) (*GetRecordsByRoundIdResp, error)
-	// 获取注单信息
-	GetReplayDataByRoundId(context.Context, *GetReplayDataByRoundIdReq) (*GetReplayDataByRoundIdResp, error)
-	// 获取注单信息
-	GetReplayDataByToken(context.Context, *GetReplayDataByTokenReq) (*GetReplayDataByTokenResp, error)
-	// 获取rtp>10的注单信息
-	GetRtpGreaterThan10(context.Context, *GetRtpGreaterThan10Req) (*GetRtpGreaterThan10Resp, error)
-	// 保存最近玩的游戏记录
-	SaveLastPlay(context.Context, *SaveLastPlayReq) (*SaveLastPlayResp, error)
-	// 获取最近玩的游戏记录
-	GetLastPlay(context.Context, *GetLastPlayReq) (*GetLastPlayResp, error)
 	// 获取游戏列表
 	GetGameList(context.Context, *GetGameListReq) (*GetGameListResp, error)
 	// 加锁
@@ -2549,35 +1283,11 @@ func (*UnimplementedDataCenterServiceServer) GetValue(ctx context.Context, req *
 func (*UnimplementedDataCenterServiceServer) SetValue(ctx context.Context, req *SetValueReq) (*SetValueResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetValue not implemented")
 }
-func (*UnimplementedDataCenterServiceServer) Incr(ctx context.Context, req *IncrReq) (*IncrResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Incr not implemented")
-}
 func (*UnimplementedDataCenterServiceServer) UpdatePlayerAvatarAndGender(ctx context.Context, req *UpdatePlayerAvatarAndGenderReq) (*UpdatePlayerAvatarAndGenderResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdatePlayerAvatarAndGender not implemented")
 }
-func (*UnimplementedDataCenterServiceServer) GetSerialIdSeed(ctx context.Context, req *GetSerialIdSeedReq) (*GetSerialIdSeedResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetSerialIdSeed not implemented")
-}
 func (*UnimplementedDataCenterServiceServer) GetRecords(ctx context.Context, req *GetRecordsReq) (*GetRecordsResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRecords not implemented")
-}
-func (*UnimplementedDataCenterServiceServer) GetRecordsByRoundId(ctx context.Context, req *GetRecordsByRoundIdReq) (*GetRecordsByRoundIdResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetRecordsByRoundId not implemented")
-}
-func (*UnimplementedDataCenterServiceServer) GetReplayDataByRoundId(ctx context.Context, req *GetReplayDataByRoundIdReq) (*GetReplayDataByRoundIdResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetReplayDataByRoundId not implemented")
-}
-func (*UnimplementedDataCenterServiceServer) GetReplayDataByToken(ctx context.Context, req *GetReplayDataByTokenReq) (*GetReplayDataByTokenResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetReplayDataByToken not implemented")
-}
-func (*UnimplementedDataCenterServiceServer) GetRtpGreaterThan10(ctx context.Context, req *GetRtpGreaterThan10Req) (*GetRtpGreaterThan10Resp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetRtpGreaterThan10 not implemented")
-}
-func (*UnimplementedDataCenterServiceServer) SaveLastPlay(ctx context.Context, req *SaveLastPlayReq) (*SaveLastPlayResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SaveLastPlay not implemented")
-}
-func (*UnimplementedDataCenterServiceServer) GetLastPlay(ctx context.Context, req *GetLastPlayReq) (*GetLastPlayResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetLastPlay not implemented")
 }
 func (*UnimplementedDataCenterServiceServer) GetGameList(ctx context.Context, req *GetGameListReq) (*GetGameListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGameList not implemented")
@@ -2647,24 +1357,6 @@ func _DataCenterService_SetValue_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DataCenterService_Incr_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IncrReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DataCenterServiceServer).Incr(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/services.DataCenterService/Incr",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DataCenterServiceServer).Incr(ctx, req.(*IncrReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _DataCenterService_UpdatePlayerAvatarAndGender_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdatePlayerAvatarAndGenderReq)
 	if err := dec(in); err != nil {
@@ -2683,24 +1375,6 @@ func _DataCenterService_UpdatePlayerAvatarAndGender_Handler(srv interface{}, ctx
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DataCenterService_GetSerialIdSeed_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetSerialIdSeedReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DataCenterServiceServer).GetSerialIdSeed(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/services.DataCenterService/GetSerialIdSeed",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DataCenterServiceServer).GetSerialIdSeed(ctx, req.(*GetSerialIdSeedReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _DataCenterService_GetRecords_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetRecordsReq)
 	if err := dec(in); err != nil {
@@ -2715,114 +1389,6 @@ func _DataCenterService_GetRecords_Handler(srv interface{}, ctx context.Context,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DataCenterServiceServer).GetRecords(ctx, req.(*GetRecordsReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DataCenterService_GetRecordsByRoundId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetRecordsByRoundIdReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DataCenterServiceServer).GetRecordsByRoundId(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/services.DataCenterService/GetRecordsByRoundId",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DataCenterServiceServer).GetRecordsByRoundId(ctx, req.(*GetRecordsByRoundIdReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DataCenterService_GetReplayDataByRoundId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetReplayDataByRoundIdReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DataCenterServiceServer).GetReplayDataByRoundId(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/services.DataCenterService/GetReplayDataByRoundId",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DataCenterServiceServer).GetReplayDataByRoundId(ctx, req.(*GetReplayDataByRoundIdReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DataCenterService_GetReplayDataByToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetReplayDataByTokenReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DataCenterServiceServer).GetReplayDataByToken(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/services.DataCenterService/GetReplayDataByToken",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DataCenterServiceServer).GetReplayDataByToken(ctx, req.(*GetReplayDataByTokenReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DataCenterService_GetRtpGreaterThan10_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetRtpGreaterThan10Req)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DataCenterServiceServer).GetRtpGreaterThan10(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/services.DataCenterService/GetRtpGreaterThan10",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DataCenterServiceServer).GetRtpGreaterThan10(ctx, req.(*GetRtpGreaterThan10Req))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DataCenterService_SaveLastPlay_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SaveLastPlayReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DataCenterServiceServer).SaveLastPlay(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/services.DataCenterService/SaveLastPlay",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DataCenterServiceServer).SaveLastPlay(ctx, req.(*SaveLastPlayReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DataCenterService_GetLastPlay_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetLastPlayReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DataCenterServiceServer).GetLastPlay(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/services.DataCenterService/GetLastPlay",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DataCenterServiceServer).GetLastPlay(ctx, req.(*GetLastPlayReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2898,44 +1464,12 @@ var _DataCenterService_serviceDesc = grpc.ServiceDesc{
 			Handler:    _DataCenterService_SetValue_Handler,
 		},
 		{
-			MethodName: "Incr",
-			Handler:    _DataCenterService_Incr_Handler,
-		},
-		{
 			MethodName: "UpdatePlayerAvatarAndGender",
 			Handler:    _DataCenterService_UpdatePlayerAvatarAndGender_Handler,
 		},
 		{
-			MethodName: "GetSerialIdSeed",
-			Handler:    _DataCenterService_GetSerialIdSeed_Handler,
-		},
-		{
 			MethodName: "GetRecords",
 			Handler:    _DataCenterService_GetRecords_Handler,
-		},
-		{
-			MethodName: "GetRecordsByRoundId",
-			Handler:    _DataCenterService_GetRecordsByRoundId_Handler,
-		},
-		{
-			MethodName: "GetReplayDataByRoundId",
-			Handler:    _DataCenterService_GetReplayDataByRoundId_Handler,
-		},
-		{
-			MethodName: "GetReplayDataByToken",
-			Handler:    _DataCenterService_GetReplayDataByToken_Handler,
-		},
-		{
-			MethodName: "GetRtpGreaterThan10",
-			Handler:    _DataCenterService_GetRtpGreaterThan10_Handler,
-		},
-		{
-			MethodName: "SaveLastPlay",
-			Handler:    _DataCenterService_SaveLastPlay_Handler,
-		},
-		{
-			MethodName: "GetLastPlay",
-			Handler:    _DataCenterService_GetLastPlay_Handler,
 		},
 		{
 			MethodName: "GetGameList",

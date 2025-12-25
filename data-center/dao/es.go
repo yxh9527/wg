@@ -51,20 +51,6 @@ func (esDao *ESDao) BulkBillsSave(data []*entity.CacheBillsReq) error {
 	return nil
 }
 
-func (esDao *ESDao) BulkLastPlaySave(data []*services.SaveLastPlayReq) error {
-	bulkService := esDao.es.Bulk()
-	records := make([]elastic.BulkableRequest, 0)
-	for _, req := range data {
-		records = append(records, elastic.NewBulkIndexRequest().Index("pp_last_play").Id(fmt.Sprintf("%d", req.UserId)).Doc(req))
-	}
-	bulkService.Add(records...)
-	_, err := bulkService.Do(context.Background())
-	if err != nil {
-		zap.L().Error("BulkLastPlaySave,批量插入数据失败", zap.Any("err", err), zap.Any("data", data))
-	}
-	return nil
-}
-
 func (esDao *ESDao) BulkGameStateSave(data []*services.SaveGameStateReq) error {
 	bulkService := esDao.es.Bulk()
 	records := make([]elastic.BulkableRequest, 0)
@@ -234,29 +220,4 @@ func (esDao *ESDao) GetRtpGreaterThan10(symbol string, userId int64) []*services
 		records = append(records, r)
 	}
 	return records
-}
-
-func (esDao *ESDao) GetLastPlay(userId int64) *services.SaveLastPlayReq {
-	querys := make([]elastic.Query, 0)
-	querys = append(querys, elastic.NewTermQuery("userId", userId))
-	boolQuery := elastic.NewBoolQuery().Must(querys...)
-	resp, err := esDao.es.Search().Index("pp_last_play").
-		Query(boolQuery).
-		Pretty(true).
-		Size(100).
-		Do(context.Background())
-	if err != nil {
-		return nil
-	}
-	records := make([]*services.SaveLastPlayReq, 0)
-	for _, v := range resp.Hits.Hits {
-		b, _ := v.Source.MarshalJSON()
-		r := &services.SaveLastPlayReq{}
-		json.Unmarshal(b, r)
-		records = append(records, r)
-	}
-	if len(records) > 0 {
-		return records[0]
-	}
-	return nil
 }

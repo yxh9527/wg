@@ -9,7 +9,7 @@ var GameCacheIns *GameCacheMgr
 
 type GameCacheMgr struct {
 	lock  *sync.Mutex
-	Games map[int64]*manager.Game
+	Games map[string]*manager.Game
 }
 
 func loadGameData() {
@@ -18,7 +18,7 @@ func loadGameData() {
 	games := make([]*manager.Game, 0, 128)
 	Mysql().Manager.Model(manager.Game{}).Debug().Find(&games)
 	for _, v := range games {
-		GameCacheIns.Games[int64(v.Number)] = v
+		GameCacheIns.Games[v.ConfName] = v
 	}
 }
 
@@ -27,21 +27,21 @@ func InitGameCacheMgr() {
 	if GameCacheIns == nil {
 		GameCacheIns = &GameCacheMgr{
 			lock:  &sync.Mutex{},
-			Games: make(map[int64]*manager.Game),
+			Games: make(map[string]*manager.Game),
 		}
 		loadGameData()
 	}
 }
 
-func (gcm *GameCacheMgr) GetGame(number int64) *manager.Game {
+func (gcm *GameCacheMgr) GetGame(symbol string) *manager.Game {
 	gcm.lock.Lock()
 	defer gcm.lock.Unlock()
 
-	game := gcm.Games[number]
+	game := gcm.Games[symbol]
 	if game == nil {
 		game = &manager.Game{}
-		Mysql().Manager.Model(manager.Game{}).Debug().Where("number = ?", number).Take(game)
-		gcm.Games[number] = game
+		Mysql().Manager.Model(manager.Game{}).Debug().Where("confName = ?", symbol).Take(game)
+		gcm.Games[symbol] = game
 	}
 	return game
 }

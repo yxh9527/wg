@@ -45,21 +45,21 @@ func Login(ctx *gin.Context, params url.Values, agent *manager.Agent) {
 	nickName := params.Get("nickName")
 	ip := params.Get("ip")
 	money := params.Get("money")
-	number, _ := strconv.ParseInt(params.Get("gameId"), 10, 0)
+	symbol := params.Get("gameId")
 	currencyType := params.Get("currencyType")
 	lang := params.Get("lang")
 	if lang == "" {
 		lang = "zh"
 	}
-	game := dao.GameCacheIns.GetGame(number)
+	game := dao.GameCacheIns.GetGame(symbol)
 	if game == nil {
 		ctx.JSON(http.StatusOK, GetJsonObj(API_LOGIN.String(), &SimpleResp{Code: int(CODE_GAME_NOT)}))
-		zap.L().Error("游戏不存在", zap.Any("gameId", number))
+		zap.L().Error("游戏不存在", zap.Any("gameId", symbol))
 		return
 	}
 	if game.State != 1 {
 		ctx.JSON(http.StatusOK, GetJsonObj(API_LOGIN.String(), &SimpleResp{Code: int(CODE_GAME_PROHIBIT)}))
-		zap.L().Error("游戏维护中", zap.Any("gameId", number), zap.Any("state", game.State))
+		zap.L().Error("游戏维护中", zap.Any("gameId", symbol), zap.Any("state", game.State))
 		return
 	}
 	var userId int64 = 0
@@ -86,7 +86,7 @@ func Login(ctx *gin.Context, params url.Values, agent *manager.Agent) {
 	sessionStr, _ := Redis().Get(sessionKey)
 	if sessionStr != "" {
 		if jsoniter.UnmarshalFromString(sessionStr, session) == nil {
-			session.GameId = number
+			session.GameId, _ = strconv.ParseInt(symbol, 10, 0)
 			session.CurrencyType = currencyType
 			session.Lang = lang
 		}

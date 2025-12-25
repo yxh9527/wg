@@ -124,7 +124,7 @@ func FreezeGame(data interface{}) {
 	GameCacheIns.lock.Lock()
 	defer GameCacheIns.lock.Unlock()
 
-	if g := GameCacheIns.Games[msg.Number]; g != nil {
+	if g := GameCacheIns.Games[msg.Symbol]; g != nil {
 		g.State = int16(msg.Status)
 	}
 }
