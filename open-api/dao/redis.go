@@ -413,6 +413,16 @@ func (r *RedisDao) UpdatePlayerCurrency(playerId uint32, currencyDelta int64) (n
 	return newCurrency, nil
 }
 
+func (r *RedisDao) LoadAllGateways() []string {
+	arr, err := r.redis.SMembers(context.Background(), "gateways").Result()
+	if err != nil {
+		zap.L().Error("获取网关信息失败", zap.Any("err", err))
+		return []string{}
+	} else {
+		return arr
+	}
+}
+
 func LoadConfig() *config.SystemConfig {
 	var sysConfig *config.SystemConfig = &config.SystemConfig{}
 	value, err := Redis().Get("/config/system")

@@ -74,7 +74,7 @@ func (gm *GamesManager) load(db *gorm.DB) {
 	db.Model(manager.Game{}).Debug().Find(&tmp)
 	for _, item := range tmp {
 		gm.games[item.ConfName] = item
-		gm.gamesIdMap[item.Id] = item
+		gm.gamesIdMap[int64(item.Number)] = item
 	}
 }
 
@@ -87,7 +87,7 @@ func (gm *GamesManager) Get(symbol string) *manager.Game {
 		gm.db.Model(manager.Game{}).Debug().Where("confName = ?", symbol).Take(tmp)
 		gm.lock.Lock()
 		gm.games[tmp.ConfName] = tmp
-		gm.gamesIdMap[tmp.Id] = tmp
+		gm.gamesIdMap[int64(tmp.Number)] = tmp
 		gm.lock.Unlock()
 		return tmp
 	} else {
@@ -95,16 +95,17 @@ func (gm *GamesManager) Get(symbol string) *manager.Game {
 	}
 }
 
-func (gm *GamesManager) GetById(id int64) *manager.Game {
+// id = number
+func (gm *GamesManager) GetById(number int64) *manager.Game {
 	gm.lock.Lock()
 	tmp := &manager.Game{}
-	g := gm.gamesIdMap[id]
+	g := gm.gamesIdMap[number]
 	gm.lock.Unlock()
 	if g == nil {
-		gm.db.Model(manager.Game{}).Debug().Where("id = ?", id).Take(tmp)
+		gm.db.Model(manager.Game{}).Debug().Where("number = ?", number).Take(tmp)
 		gm.lock.Lock()
 		gm.games[tmp.ConfName] = tmp
-		gm.gamesIdMap[tmp.Id] = tmp
+		gm.gamesIdMap[int64(tmp.Number)] = tmp
 		gm.lock.Unlock()
 		return tmp
 	} else {
@@ -116,7 +117,7 @@ func (gm *GamesManager) Add(g *manager.Game) {
 	gm.lock.RLock()
 	defer gm.lock.RUnlock()
 
-	gm.gamesIdMap[g.Id] = g
+	gm.gamesIdMap[int64(g.Number)] = g
 	gm.games[g.ConfName] = g
 }
 

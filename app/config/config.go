@@ -116,6 +116,11 @@ type CurrencyMgr struct {
 	Data map[string]decimal.Decimal `json:"currency"`
 }
 
+type GatewaysMgr struct {
+	Urls       []string
+	UpdateTime int64
+}
+
 type Configs struct {
 	Lock     *sync.RWMutex
 	Pool     *PoolMgr
@@ -123,6 +128,19 @@ type Configs struct {
 	System   *SystemConfig
 	Currency *CurrencyMgr
 	AC       *AutoCtrlMgr
+	Gateway  *GatewaysMgr
+}
+
+func (cfg *Configs) SetGatewayCfg(c *GatewaysMgr) {
+	cfg.Lock.Lock()
+	defer cfg.Lock.Unlock()
+	cfg.Gateway = c
+}
+
+func (cfg *Configs) GetGatewayCfg() GatewaysMgr {
+	cfg.Lock.Lock()
+	defer cfg.Lock.Unlock()
+	return *cfg.Gateway
 }
 
 func (cfg *Configs) SetSystemConfig(c *SystemConfig) {

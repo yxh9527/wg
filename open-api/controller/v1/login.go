@@ -40,12 +40,27 @@ func Update3rdParams(userId int64, currencyType string) {
 	txPlayer.Commit()
 }
 
+func GatewayList() []string {
+	cm := config.CfgIns.GetGatewayCfg()
+	if cm.UpdateTime < time.Now().Unix() {
+		cm.Urls = Redis().LoadAllGateways()
+		cm.UpdateTime = time.Now().Unix()
+		config.CfgIns.SetGatewayCfg(&cm)
+	}
+	tmp := []string{}
+	for _, v := range cm.Urls {
+		arr := strings.Split(v, "-")
+		tmp = append(tmp, fmt.Sprintf("%s:%s", arr[1], arr[2]))
+	}
+	return tmp
+}
+
 func Login(ctx *gin.Context, params url.Values, agent *manager.Agent) {
 	account := params.Get("account")
 	nickName := params.Get("nickName")
 	ip := params.Get("ip")
 	money := params.Get("money")
-	symbol := params.Get("gameId")
+	symbol := params.Get("gameId") //这里把gameId等价于 symbol 减少修改量
 	currencyType := params.Get("currencyType")
 	lang := params.Get("lang")
 	if lang == "" {
@@ -118,8 +133,7 @@ func Login(ctx *gin.Context, params url.Values, agent *manager.Agent) {
 	arr := config.CfgIns.System.GameUrls
 	if len(arr) > 0 {
 		//https://vv85w4t.ezmkpkwldso.com:23438/clientv3/index.html?gameId=3031&lang=zh&sc=2066&currencyCode=CNY&other=https:%2F%2F146.103.80.204:5029;https:%2F%2F00okccnheh.buwqo.com:5030;https:%2F%2F146.103.88.77:5012;https:%2F%2Fsze8t.qzqgsewldxu.com:31530
-		routs := []string{}
-		requestUrl := fmt.Sprintf("%s/clientv3/index.html?agentId=%d&gameId=%d&lang=%s&token=%s&sc=2066&currencyCode=%s&sessionKey=%s&other=%s", arr[rand.Intn(len(arr))], player.AgentId, game.Number, lang, session.Mgckey, currencyType, sessionKey, strings.Join(routs, ";"))
+		requestUrl := fmt.Sprintf("%s/clientv3/index.html?agentId=%d&gameId=%d&lang=%s&token=%s&sc=2066&currencyCode=%s&sessionKey=%s&other=%s", arr[rand.Intn(len(arr))], player.AgentId, game.Number, lang, session.Mgckey, currencyType, sessionKey, strings.Join(GatewayList(), ";"))
 		ctx.PureJSON(http.StatusOK, GetJsonObj(API_LOGIN.String(), &LoginResp{
 			Code: int(CODE_OK),
 			Url:  requestUrl,
