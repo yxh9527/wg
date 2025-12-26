@@ -46,6 +46,7 @@ message LotteryReq {
     int64  roundID = 12;        //局号 --下注时使用
     string maxProfitLoss = 13;  //最大赔付
     bool   complete = 14;       //注单是否结束
+    string account = 15;        //三方平台账号
 }
 
 message LotteryResp {

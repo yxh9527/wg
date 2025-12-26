@@ -57,7 +57,7 @@ func (dc *DataCenterService) syncRecords() {
 			case <-t.C:
 				if len(data) > 0 {
 					dc.es.BulkRecordsSave(data)
-					ids := make([]int64, 0, 64)
+					ids := make([]string, 0, 64)
 					for _, v := range data {
 						ids = append(ids, v.RoundID)
 					}
@@ -68,7 +68,7 @@ func (dc *DataCenterService) syncRecords() {
 				data = append(data, req)
 				if len(data) >= 8 {
 					dc.es.BulkRecordsSave(data)
-					ids := make([]int64, 0, 64)
+					ids := make([]string, 0, 64)
 					for _, v := range data {
 						ids = append(ids, v.RoundID)
 					}

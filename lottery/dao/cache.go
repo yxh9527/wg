@@ -58,16 +58,16 @@ type RoundItem struct {
 	MaxPay  decimal.Decimal `json:"maxPay"`  //最大赔付
 	Over    bool            `json:"over"`    //是否完成
 	AgentId int64           `json:"agentId"` //所属代理
-	RoundId int64           `json:"roundId"` //注单id
+	RoundId string          `json:"roundId"` //注单id
 	Saved   bool            `json:"saved"`   //是否保存
 }
 
 type AgentData struct {
 	lock       *sync.RWMutex
 	Id         int64
-	gameCache  map[string]*Game     //key:{symbol}
-	userCache  map[uint32]*User     //
-	RoundCache map[int64]*RoundItem //key:注单号 value:最大赔付值
+	gameCache  map[string]*Game      //key:{symbol}
+	userCache  map[uint32]*User      //
+	RoundCache map[string]*RoundItem //key:注单号 value:最大赔付值
 }
 
 func (ad *AgentData) GetUser(userId uint32) *User {
@@ -240,7 +240,7 @@ func (gcm *GameCacheMgr) GetAgent(agentId int64) *AgentData {
 			userCache:  make(map[uint32]*User),
 			lock:       &sync.RWMutex{},
 			Id:         agentId,
-			RoundCache: make(map[int64]*RoundItem),
+			RoundCache: make(map[string]*RoundItem),
 		}
 		gcm.agents[agentId] = agent
 	}
@@ -320,30 +320,6 @@ func (gcm *GameCacheMgr) Bet(agentId int64, userId int32, pc *config.Pool, symbo
 	return true
 }
 
-// 下注触发免费的下注，此次下注打码，税收统计以award为准
-func (gcm *GameCacheMgr) BetFs(agentId int64, userId int32, pc *config.Pool, symbol, currencyType string, bet, award decimal.Decimal) bool {
-	agent := gcm.GetAgent(agentId)
-	//细分代理锁
-	agent.lock.Lock()
-	defer agent.lock.Unlock()
-
-	game := agent.GetGame(symbol)
-	//所有情况都需要扣除水池值 记录赔付
-	game.TotalProfLoss = game.TotalProfLoss.Add(award)
-	//增加水池
-	game.TotalEffectBet = game.TotalEffectBet.Add(bet)
-	//触发更新
-	game.UpdateTime = time.Now().Unix()
-
-	user := agent.GetUser(uint32(userId))
-	//记录玩家有效投注
-	user.TotalEffectBet = user.TotalEffectBet.Add(bet)
-	//记录玩家局数
-	user.Count = user.Count.Add(decimal.NewFromInt(1))
-	user.UpdateTime = time.Now().Unix()
-	return true
-}
-
 func (gcm *GameCacheMgr) GetPool(agentId int64, symbol string) decimal.Decimal {
 	agent := gcm.GetAgent(agentId)
 	//细分代理锁
@@ -357,7 +333,7 @@ func (gcm *GameCacheMgr) GetPool(agentId int64, symbol string) decimal.Decimal {
 }
 
 // 保存注单信息
-func (gcm *GameCacheMgr) SaveRoundData(agentId, roundId int64, maxPay decimal.Decimal) {
+func (gcm *GameCacheMgr) SaveRoundData(agentId int64, roundId string, maxPay decimal.Decimal) {
 	agent := gcm.GetAgent(agentId)
 	//细分代理锁
 	agent.lock.RLock()
@@ -377,7 +353,7 @@ func (gcm *GameCacheMgr) SaveRoundData(agentId, roundId int64, maxPay decimal.De
 }
 
 // 获取注单信息
-func (gcm *GameCacheMgr) GetRoundData(agentId, roundId int64) *RoundItem {
+func (gcm *GameCacheMgr) GetRoundData(agentId int64, roundId string) *RoundItem {
 	agent := gcm.GetAgent(agentId)
 	//细分代理锁
 	agent.lock.RLock()
@@ -410,7 +386,7 @@ func (gcm *GameCacheMgr) GetRoundData(agentId, roundId int64) *RoundItem {
 
 单控时：水池余额*百分比、A*20(可配置倍数)；取两者最小值。
 */
-func (gcm *GameCacheMgr) Lottery(agentId int64, userId int32, pc *config.Pool, symbol, currencyType string, bet, award decimal.Decimal, roundId int64) (decimal.Decimal, bool) {
+func (gcm *GameCacheMgr) Lottery(agentId int64, userId int32, pc *config.Pool, symbol, currencyType string, bet, award decimal.Decimal, roundId string) (decimal.Decimal, bool) {
 	agent := gcm.GetAgent(agentId)
 	//细分代理锁
 	agent.lock.Lock()
