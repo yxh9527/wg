@@ -2,13 +2,8 @@ package rpc
 
 import (
 	"app/entity"
-	"bytes"
-	"compress/flate"
-	"compress/gzip"
 	"context"
 	"data-center/dao"
-	"fmt"
-	"io"
 	"micro_service/services"
 	"time"
 
@@ -23,21 +18,18 @@ type DataCenterService struct {
 	rds *dao.RedisDao
 	es  *dao.ESDao
 
-	RecordChan    chan *entity.CacheRecordsReq
-	GameStateChan chan *services.SaveGameStateReq
+	RecordChan chan *entity.CacheRecordsReq
 }
 
 func NewDataCenterService(db, mdb *gorm.DB, es *elastic.Client) *DataCenterService {
 	tmp := &DataCenterService{
-		db:            dao.NewDBDao(db, mdb),
-		rds:           dao.RedisIns(),
-		es:            dao.NewESDao(es),
-		RecordChan:    make(chan *entity.CacheRecordsReq, 10240),
-		GameStateChan: make(chan *services.SaveGameStateReq, 512),
+		db:         dao.NewDBDao(db, mdb),
+		rds:        dao.RedisIns(),
+		es:         dao.NewESDao(es),
+		RecordChan: make(chan *entity.CacheRecordsReq, 10240),
 	}
 
 	tmp.syncRecords()
-	tmp.syncSaveGameState()
 	return tmp
 }
 
@@ -74,35 +66,6 @@ func (dc *DataCenterService) syncRecords() {
 					}
 					zap.L().Debug("批量写入注单信息", zap.Any("roundIds", ids))
 					data = make([]*entity.CacheRecordsReq, 0, 16)
-				}
-			}
-		}
-	}()
-}
-
-// 最近玩的游戏
-func (dc *DataCenterService) syncSaveGameState() {
-	go func() {
-		defer func() {
-			if e := recover(); e != nil {
-				zap.L().Error("syncSaveGameState,数据落地协程panic", zap.Any("recover", e))
-			}
-		}()
-		data := make([]*services.SaveGameStateReq, 0, 64)
-		//十秒写一次
-		t := time.NewTicker(10 * time.Second)
-		for {
-			select {
-			case <-t.C:
-				if len(data) > 0 {
-					dc.es.BulkGameStateSave(data)
-					data = make([]*services.SaveGameStateReq, 0, 64)
-				}
-			case req := <-dc.GameStateChan:
-				data = append(data, req)
-				if len(data) >= 32 {
-					dc.es.BulkGameStateSave(data)
-					data = make([]*services.SaveGameStateReq, 0, 64)
 				}
 			}
 		}
@@ -191,73 +154,6 @@ func (d *DataCenterService) UserLock(ctx context.Context, req *services.UserLock
 func (d *DataCenterService) UserUnLock(ctx context.Context, req *services.UserUnLockReq) (resp *services.UserUnLockResp, err error) {
 	resp = &services.UserUnLockResp{}
 	resp.Result = d.rds.UserUnLock(req.UserId, req.Token)
-	return resp, nil
-}
-
-func Compress(s string) ([]byte, error) {
-	var buf bytes.Buffer
-	gz, err := gzip.NewWriterLevel(&buf, flate.BestCompression)
-	if err != nil {
-		return nil, err
-	}
-	// 将字符串转换为[]byte并写入到gzip writer
-	if _, err := gz.Write([]byte(s)); err != nil {
-		return nil, err
-	}
-	// 关闭writer，完成压缩
-	if err := gz.Close(); err != nil {
-		return nil, err
-	}
-	return buf.Bytes(), nil
-}
-
-func Decompress(compressedData []byte) (string, error) {
-	b := bytes.NewBuffer(compressedData)
-	gzr, err := gzip.NewReader(b)
-	if err != nil {
-		return "", err
-	}
-	defer gzr.Close() // 确保在函数结束时关闭reader
-	// 读取解压后的数据
-	result, err := io.ReadAll(gzr) // 注意：在Go 1.16及以后应使用io/ioutil替换掉旧的ioutil包功能
-	if err != nil {
-		return "", err
-	}
-	return string(result), nil
-}
-
-// 保存游戏状态
-func (d *DataCenterService) SaveGameState(ctx context.Context, req *services.SaveGameStateReq) (resp *services.SaveGameStateResp, err error) {
-	// cs, err := Compress(req.Data)
-	// if err != nil {
-	// 	zap.L().Error("压缩数据失败", zap.Any("err", err))
-	// 	return nil, err
-	// }
-	//1、写入缓存
-	key := fmt.Sprintf("game_state_%d_%s", req.UserId, req.Symbol)
-	err = d.rds.Client.Set(context.Background(), key, req.Data, time.Second*300).Err()
-	if err != nil {
-		return nil, err
-	}
-	//2、入库
-	resp = &services.SaveGameStateResp{}
-	d.GameStateChan <- req
-	return resp, nil
-}
-
-// 获取游戏状态
-func (d *DataCenterService) GetGameState(ctx context.Context, req *services.GetGameStateReq) (resp *services.GetGameStateResp, err error) {
-	resp = &services.GetGameStateResp{}
-	//1、首先获取redis
-	state := d.rds.Client.Get(context.Background(), fmt.Sprintf("game_state_%d_%s", req.UserId, req.Symbol)).Val()
-	if state == "" {
-		data := d.es.GetGameState(req)
-		if data != nil {
-			resp.Data = data.Data
-		}
-	} else {
-		resp.Data = state
-	}
 	return resp, nil
 }
 
