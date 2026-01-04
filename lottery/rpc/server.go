@@ -57,7 +57,7 @@ func (s *Server) Serve(rds *dao.RedisDao, db *dao.DBDao) {
 	// 注册服务
 	services.RegisterLotteryServiceServer(ss, s.handler)
 	// 注册ETCD
-	service, err := NewDefNamingService(rds, "pp-lottery", s.address, int32(s.port))
+	service, err := NewDefNamingService(rds, "wg-lottery", s.address, int32(s.port))
 	if err != nil {
 		zap.L().Fatal("failed to create NamingService", zap.Any("err", err))
 	}

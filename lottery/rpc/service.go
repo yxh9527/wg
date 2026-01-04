@@ -147,7 +147,7 @@ func (d *LotteryService) SaveRecord(record *entity.CacheRecordsReq) *entity.Cach
 	d.recordsCache.lock.Lock()
 	defer d.recordsCache.lock.Unlock()
 
-	hashStr := fmt.Sprintf("%d|%d|%d", record.AgentId, record.UserId, record.RoundID)
+	hashStr := fmt.Sprintf("%d|%d|%s", record.AgentId, record.UserId, record.RoundID)
 	record.Hash = fmt.Sprintf("%x", md5.Sum([]byte(hashStr)))
 	d.recordsCache.records[record.Hash] = &RecordItem{
 		TimeOut: time.Now().Unix() + 10,
