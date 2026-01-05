@@ -45,12 +45,13 @@ func GatewayList() []string {
 	if cm.UpdateTime < time.Now().Unix() {
 		cm.Urls = Redis().LoadAllGateways()
 		cm.UpdateTime = time.Now().Unix()
+		zap.L().Debug("获取最新的gateway配置", zap.Any("cm", cm))
 		config.CfgIns.SetGatewayCfg(&cm)
 	}
 	tmp := []string{}
 	for _, v := range cm.Urls {
 		arr := strings.Split(v, "-")
-		tmp = append(tmp, fmt.Sprintf("%s:%s", arr[1], arr[2]))
+		tmp = append(tmp, fmt.Sprintf("%s:%s", arr[2], arr[3]))
 	}
 	return tmp
 }

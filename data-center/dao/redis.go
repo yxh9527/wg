@@ -598,6 +598,8 @@ func ConfigsInit() {
 			Currency: &config.CurrencyMgr{
 				Data: make(map[string]decimal.Decimal),
 			},
+			Gateway: &config.GatewaysMgr{},
+			AC:      &config.AutoCtrlMgr{},
 		}
 		//加载默认配置
 		LoadConfigs(RedisIns(), "/config/*")
