@@ -48,12 +48,7 @@ func GatewayList() []string {
 		zap.L().Debug("获取最新的gateway配置", zap.Any("cm", cm))
 		config.CfgIns.SetGatewayCfg(&cm)
 	}
-	tmp := []string{}
-	for _, v := range cm.Urls {
-		arr := strings.Split(v, "-")
-		tmp = append(tmp, fmt.Sprintf("%s:%s", arr[2], arr[3]))
-	}
-	return tmp
+	return cm.Urls
 }
 
 func Login(ctx *gin.Context, params url.Values, agent *manager.Agent) {

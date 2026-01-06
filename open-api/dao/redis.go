@@ -415,13 +415,14 @@ func (r *RedisDao) UpdatePlayerCurrency(playerId uint32, currencyDelta int64) (n
 	return newCurrency, nil
 }
 
+// 加载gateway配置
 func (r *RedisDao) LoadAllGateways() []string {
-	arr, err := r.redis.SMembers(context.Background(), "gateways").Result()
+	gs, err := r.redis.Get(context.Background(), "/config/gateways").Result()
 	if err != nil {
 		zap.L().Error("获取网关信息失败", zap.Any("err", err))
 		return []string{}
 	} else {
-		return arr
+		return strings.Split(gs, ",")
 	}
 }
 

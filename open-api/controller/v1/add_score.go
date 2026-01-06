@@ -14,11 +14,6 @@ import (
 	"go.uber.org/zap"
 )
 
-var (
-	aesKey = `8aujwbasg^&2jns)`
-	aesIv  = `18xpow[q&@xsa96t`
-)
-
 func AddScore(ctx *gin.Context, params url.Values, agent *manager.Agent) {
 	acc := params.Get("account")
 	moneyStr := params.Get("money")
