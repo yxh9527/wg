@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"net/url"
 	. "open-api/common"
-	"open-api/dao"
 	. "open-api/dao"
 	"strconv"
 	"strings"
@@ -22,15 +21,15 @@ import (
 
 func Update3rdParams(userId int64, currencyType string) {
 	key := fmt.Sprintf("player_%d", userId)
-	txManager := dao.Mysql().Manager.Begin()
-	txPlayer := dao.Mysql().Player.Begin()
+	txManager := Mysql().Manager.Begin()
+	txPlayer := Mysql().Player.Begin()
 	txManager.Model(&manager.User{}).Debug().Where("id=?", userId).Updates(map[string]interface{}{"currencyType": currencyType})
 	txPlayer.Model(&player.Player{}).Debug().Where("user_id = ?", userId).Updates(map[string]interface{}{"currency_type": currencyType})
-	if dao.Redis().Exists(key) {
-		if dao.Redis().TTL(key) <= 5 {
-			dao.Redis().Del(key)
+	if Redis().Exists(key) {
+		if Redis().TTL(key) <= 5 {
+			Redis().Del(key)
 		} else {
-			if !dao.Redis().HSet(key, "currency_type", currencyType) {
+			if !Redis().HSet(key, "currency_type", currencyType) {
 				txManager.Rollback()
 				txPlayer.Rollback()
 			}
@@ -62,7 +61,7 @@ func Login(ctx *gin.Context, params url.Values, agent *manager.Agent) {
 	if lang == "" {
 		lang = "zh"
 	}
-	game := dao.GameCacheIns.GetGame(symbol)
+	game := GameCacheIns.GetGame(symbol)
 	if game == nil {
 		ctx.JSON(http.StatusOK, GetJsonObj(API_LOGIN.String(), &SimpleResp{Code: int(CODE_GAME_NOT)}))
 		zap.L().Error("游戏不存在", zap.Any("gameId", symbol))
@@ -130,7 +129,7 @@ func Login(ctx *gin.Context, params url.Values, agent *manager.Agent) {
 	arr := config.CfgIns.System.GameUrls
 	if len(arr) > 0 {
 		//https://vv85w4t.ezmkpkwldso.com:23438/clientv3/index.html?gameId=3031&lang=zh&sc=2066&currencyCode=CNY&other=https:%2F%2F146.103.80.204:5029;https:%2F%2F00okccnheh.buwqo.com:5030;https:%2F%2F146.103.88.77:5012;https:%2F%2Fsze8t.qzqgsewldxu.com:31530
-		requestUrl := fmt.Sprintf("%s/clientv3/index.html?agentId=%d&gameId=%d&lang=%s&token=%s&sc=2066&currencyCode=%s&sessionKey=%s&other=%s", arr[rand.Intn(len(arr))], player.AgentId, game.Number, lang, session.Mgckey, currencyType, sessionKey, strings.Join(GatewayList(), ";"))
+		requestUrl := fmt.Sprintf("%s/clientv3/index.html?agent=%d&userId=%d&account=%s&gameId=%d&lang=%s&token=%s&sc=2066&currencyCode=%s&sessionKey=%s&other=%s&dev=true", arr[rand.Intn(len(arr))], player.AgentId, player.Id, player.UserId, game.Number, lang, session.Mgckey, currencyType, sessionKey, url.QueryEscape(strings.Join(GatewayList(), ";")))
 		//TODO:测试暂时注释
 		// ctx.PureJSON(http.StatusOK, GetJsonObj(API_LOGIN.String(), &LoginResp{
 		// 	Code: int(CODE_OK),

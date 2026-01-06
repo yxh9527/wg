@@ -7,7 +7,7 @@ type Session struct {
 	NickName     string `json:"nickName"`
 	AuthToken    string `json:"authToken"`
 	Mgckey       string `json:"mgckey"`
-	Lang         string `json:"zh"`
+	Lang         string `json:"lang"`
 	GameId       int64  `json:"gameId"`
 	Account      string `json:"account"`
 	LastAuthTime int64  `json:"lastAuthTime"`
