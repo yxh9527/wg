@@ -110,7 +110,7 @@ func Login(ctx *gin.Context, params url.Values, agent *manager.Agent) {
 		session = &Session{
 			AgentId:      agent.Id,
 			UserId:       player.Id,
-			GameId:       game.Id,
+			GameId:       int64(game.Number),
 			NickName:     player.NickName,
 			AuthToken:    res,
 			Mgckey:       sessionKey,
