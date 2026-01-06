@@ -55,7 +55,7 @@ func Login(ctx *gin.Context, params url.Values, agent *manager.Agent) {
 	nickName := params.Get("nickName")
 	ip := params.Get("ip")
 	money := params.Get("money")
-	symbol := params.Get("gameId") //这里把gameId等价于 symbol 减少修改量
+	symbol := params.Get("symbol") //这里把gameId等价于 symbol 减少修改量
 	currencyType := params.Get("currencyType")
 	lang := params.Get("lang")
 	if lang == "" {
