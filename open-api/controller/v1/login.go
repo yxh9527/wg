@@ -44,7 +44,7 @@ func GatewayList() []string {
 	cm := config.CfgIns.GetGatewayCfg()
 	if cm.UpdateTime < time.Now().Unix() {
 		cm.Urls = Redis().LoadAllGateways()
-		cm.UpdateTime = time.Now().Unix()
+		cm.UpdateTime = time.Now().Unix() + 10
 		zap.L().Debug("获取最新的gateway配置", zap.Any("cm", cm))
 		config.CfgIns.SetGatewayCfg(&cm)
 	}
