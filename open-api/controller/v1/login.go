@@ -130,7 +130,7 @@ func Login(ctx *gin.Context, params url.Values, agent *manager.Agent) {
 	arr := config.CfgIns.System.GameUrls
 	if len(arr) > 0 {
 		//https://vv85w4t.ezmkpkwldso.com:23438/clientv3/index.html?gameId=3031&lang=zh&sc=2066&currencyCode=CNY&other=https:%2F%2F146.103.80.204:5029;https:%2F%2F00okccnheh.buwqo.com:5030;https:%2F%2F146.103.88.77:5012;https:%2F%2Fsze8t.qzqgsewldxu.com:31530
-		requestUrl := fmt.Sprintf("%s/clientv3/index.html?agent=%d&userId=%d&account=%s&gameId=%d&lang=%s&token=%s&sc=2066&currencyCode=%s&sessionKey=%s&other=%s&dev=true", arr[rand.Intn(len(arr))], player.AgentId, player.Id, player.UserId, game.Number, lang, session.Mgckey, currencyType, sessionKey, url.QueryEscape(strings.Join(GatewayList(), ";")))
+		requestUrl := fmt.Sprintf("%s/clientv3/index.html?agent=%d&userId=%d&account=%s&gameId=%d&lang=%s&token=%s&sc=2066&currencyCode=%s&sessionKey=%s&other=%s&symbol=%s&dev=true", arr[rand.Intn(len(arr))], player.AgentId, player.Id, player.UserId, game.Number, lang, session.Mgckey, currencyType, sessionKey, url.QueryEscape(strings.Join(GatewayList(), ";")), symbol)
 		//TODO:测试暂时注释
 		// ctx.PureJSON(http.StatusOK, GetJsonObj(API_LOGIN.String(), &LoginResp{
 		// 	Code: int(CODE_OK),
