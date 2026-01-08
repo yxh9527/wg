@@ -113,6 +113,7 @@ func Login(ctx *gin.Context, params url.Values, agent *manager.Agent) {
 			LastAuthTime: time.Now().Unix(),
 			AuthCount:    0,
 			CurrencyType: currencyType,
+			Symbol:       game.ConfName,
 		}
 	}
 	session.LastAuthTime = time.Now().Unix()
