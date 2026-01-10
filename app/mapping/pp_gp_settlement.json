@@ -51,7 +51,7 @@
           "type": "long"
         },
         "roundID":{
-          "type": "string"
+          "type": "text"
         },
         "init":{
           "type": "text"
