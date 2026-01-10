@@ -50,7 +50,7 @@ func clearPool() {
 func clearSettlementData() {
 	t := time.Now().Unix() - 3*30*24*60*60
 	zap.L().Debug("定时清理数据开始")
-	dao.Es().DeleteByQuery("pp_gp_settlement").Query(elastic.NewBoolQuery().Filter(elastic.NewRangeQuery("playedDate").Lte(t * 1000))).WaitForCompletion(false).Do(context.Background())
+	dao.Es().DeleteByQuery("pp_gp_settlement").Query(elastic.NewBoolQuery().Filter(elastic.NewRangeQuery("playedDate").Lte(t))).WaitForCompletion(false).Do(context.Background())
 	dao.Es().DeleteByQuery("pp_flowing_water").Query(elastic.NewBoolQuery().Filter(elastic.NewRangeQuery("beginTime").Lte(t))).WaitForCompletion(false).Do(context.Background())
 	dao.Es().DeleteByQuery("pp_pool_record_log").Query(elastic.NewBoolQuery().Filter(elastic.NewRangeQuery("beginTime").Lte(t))).WaitForCompletion(false).Do(context.Background())
 	zap.L().Debug("定时清理数据结束")

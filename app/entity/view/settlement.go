@@ -6,7 +6,7 @@ type Settlement struct {
 	GameId          int64   `json:"gameId"`
 	Account         string  `json:"account"`
 	NickName        string  `json:"nickName"`
-	OfficeNumber    int64   `json:"roundID"`
+	OfficeNumber    string  `json:"roundID"`
 	BeginTime       int64   `json:"playedDate"`
 	EffectiveBets   float64 `json:"bet"`
 	ProfitLoss      float64 `json:"win"`

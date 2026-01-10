@@ -214,7 +214,7 @@ export default {
         {
           title: "游戏名称",
           key: "gameName",
-          minWidth:250,
+          minWidth:150,
           render(h, params) {
             return h("span", {}, params.row.gameName);
           },
@@ -222,7 +222,7 @@ export default {
         {
           title: "局号",
           key: "roundID",
-          width: 180,
+          width: 280,
           render(h, params) {
             return <div>{params.row.roundID}</div>;
           },
@@ -267,24 +267,24 @@ export default {
             );
           },
         },
-        {
-          title: "详情",
-          align: "center",
-          width: 80,
-          render: (h, params) => {
-            return h(
-              "a",
-              {
-                on: {
-                  click: () => {
-                    _this.imgClick(params.row);
-                  },
-                },
-              },
-              "查看"
-            );
-          },
-        },
+        // {
+        //   title: "详情",
+        //   align: "center",
+        //   width: 80,
+        //   render: (h, params) => {
+        //     return h(
+        //       "a",
+        //       {
+        //         on: {
+        //           click: () => {
+        //             _this.imgClick(params.row);
+        //           },
+        //         },
+        //       },
+        //       "查看"
+        //     );
+        //   },
+        // },
         { title: "有效下注", key: "bet", width: 100 },
         {
           title: "返奖",
