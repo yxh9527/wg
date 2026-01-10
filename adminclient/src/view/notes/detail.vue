@@ -310,7 +310,7 @@ export default {
           key: "playedDate",
           width: 180,
           render(h, params) {
-            return <span>{getDate(params.row.playedDate)}</span>;
+            return <span>{getDate(params.row.playedDate*1000)}</span>;
           },
         },
       ],
