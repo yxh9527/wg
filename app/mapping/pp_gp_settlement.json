@@ -56,14 +56,8 @@
         "init":{
           "type": "text"
         },
-        "log.cr":{
+        "log":{
           "type": "text"
-        },
-        "log.sr":{
-          "type": "text"
-        },
-        "log.roundId":{
-          "type": "long"
         },
         "symbol":{
           "type": "text"

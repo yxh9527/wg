@@ -640,7 +640,7 @@ func SyncRoundData() {
 			for _, v := range rc {
 				n++
 				str, _ := jsoniter.MarshalToString(v)
-				piple.HSet(context.Background(), "rund_records", fmt.Sprintf("%d", v.RoundId), str)
+				piple.HSet(context.Background(), "rund_records", v.RoundId, str)
 				if n >= 50 {
 					_, err := piple.Exec(context.Background())
 					if err != nil {
@@ -675,7 +675,7 @@ func SyncRoundData() {
 			piple = RedisIns().cli.Pipeline()
 			for _, v := range ro {
 				n++
-				piple.HDel(context.Background(), "rund_records", fmt.Sprintf("%d", v.RoundId))
+				piple.HDel(context.Background(), "rund_records", v.RoundId)
 				if n >= 50 {
 					_, err := piple.Exec(context.Background())
 					if err != nil {
