@@ -73,16 +73,29 @@ func Login(ctx *gin.Context, params url.Values, agent *manager.Agent) {
 		return
 	}
 	var userId int64 = 0
+	// var pp *player.Player = nil
 	//查询玩家是否已经存在
 	player := Mysql().GetAgentPlayerInfoByAgentIdAndAcc(agent.Id, account)
 	if player == nil {
 		score, _ := strconv.ParseFloat(money, 64)
 		//新建玩家信息
-		player = Mysql().AddNewPlayer(agent.Id, agent.WebId, score, account, nickName, ip, currencyType)
+		player, _ = Mysql().AddNewPlayer(agent.Id, agent.WebId, score, account, nickName, ip, currencyType)
 		if player.Id <= 0 {
 			ctx.JSON(http.StatusOK, GetJsonObj(API_LOGIN.String(), &SimpleResp{Code: int(CODE_REQUEST_ERR)}))
 			return
 		}
+		// p := ConvertUserEntityToHumanPlayer(pp)
+		// if pe := Redis().SetPlayer(p); pe != nil {
+		// 	zap.L().Warn("向redis写入玩家信息缓存失败", zap.Any("req", params), zap.Error(pe))
+		// 	ctx.JSON(http.StatusOK, GetJsonObj(API_ADD_SCORE.String(), &SimpleResp{Code: int(CODE_UP_ACCOUNT_SCORE_ERR)}))
+		// 	return
+		// }
+		// _, err := Redis().UpdatePlayerCurrency(uint32(pp.UserId), int64(score*100))
+		// if err != nil {
+		// 	zap.L().Error("更新玩家游戏币和经验失败", zap.Any("req", params), zap.Error(err))
+		// 	ctx.JSON(http.StatusOK, GetJsonObj(API_ADD_SCORE.String(), &SimpleResp{Code: int(CODE_UP_ACCOUNT_SCORE_ERR)}))
+		// 	return
+		// }
 	} else {
 		userId = int64(player.Id)
 		Update3rdParams(player.Id, currencyType)

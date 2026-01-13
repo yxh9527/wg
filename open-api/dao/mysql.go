@@ -72,7 +72,7 @@ func (d *DbDao) GetGamePlayer(agentId, id int64) *player.Player {
 	return p
 }
 
-func (d *DbDao) AddNewPlayer(agentId, webId int64, money float64, acc, nickName, ip, currencyType string) *manager.User {
+func (d *DbDao) AddNewPlayer(agentId, webId int64, money float64, acc, nickName, ip, currencyType string) (*manager.User, *player.Player) {
 	txAgent := d.Manager.Begin()
 	n := time.Now().Unix()
 	u := &manager.User{
@@ -92,7 +92,7 @@ func (d *DbDao) AddNewPlayer(agentId, webId int64, money float64, acc, nickName,
 		if e := txAgent.Rollback(); e != nil {
 			zap.L().Error("增加代理库玩家信息失败，回滚异常", zap.Any("err", e), zap.Any("acc", acc))
 		}
-		return nil
+		return nil, nil
 	}
 	txPlayer := d.Player.Begin()
 	ui := &player.Player{
@@ -112,11 +112,11 @@ func (d *DbDao) AddNewPlayer(agentId, webId int64, money float64, acc, nickName,
 		zap.L().Error("插入新玩家数据失败", zap.Any("err", err))
 		_ = txPlayer.Rollback()
 		_ = txAgent.Rollback()
-		return nil
+		return nil, nil
 	}
 	_ = txAgent.Commit()
 	_ = txPlayer.Commit()
-	return u
+	return u, ui
 }
 
 func (d *DbDao) AddScoreLog(userId int, agentId int64, acc string, score float64, logType int, userNewScore decimal.Decimal) bool {
