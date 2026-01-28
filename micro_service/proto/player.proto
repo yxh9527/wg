@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-package services;
+option go_package = "./services;services";
+
+package player;
 
 message HumanPlayer {
 	uint32 Id = 1; // 玩家id
@@ -22,6 +24,7 @@ message HumanPlayer {
 	string value = 17;//身价
 	string reward = 18;//赏金
 	int32 all_times = 19;//总手数
+	int32 isTourist = 20;//是否是游客账户
 }
 
 message PlayerStatistics {

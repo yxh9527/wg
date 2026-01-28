@@ -27,8 +27,9 @@ func getSettlementStat(start, end time.Time) map[string]*view.DataAnalysisItem {
 	gameAggs.SubAggregation("chipsTotal", elastic.NewSumAggregation().Field("chips"))
 	aggs.SubAggregation("gameId", gameAggs)
 	webIdAggs.SubAggregation("agentId", aggs)
-	query := elastic.NewRangeQuery("playedDate").Gte(start.UnixMilli()).Lt(end.UnixMilli())
-	boolQuery := elastic.NewBoolQuery().Must(query)
+	query1 := elastic.NewRangeQuery("playedDate").Gte(start.UnixMilli()).Lt(end.UnixMilli())
+	query2 := elastic.NewRangeQuery("isTourist").Lte(0)
+	boolQuery := elastic.NewBoolQuery().Must(query1, query2)
 	resp, err := dao.Es().Search().Index("pp_gp_settlement").Query(boolQuery).Aggregation("webId", webIdAggs).Size(0).Do(context.Background())
 	if err != nil {
 		zap.L().Error("获取注单打点数据异常", zap.Any("err", err))

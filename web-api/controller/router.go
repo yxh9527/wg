@@ -154,7 +154,9 @@ func NewRouter() *gin.Engine {
 	Register(g, "get", "/api/auth/v2/game/gameUrl", v2.GameUrls, []ACCOUNT_TYPE{M, A})
 	Register(g, "get", "/api/auth/v2/clear/gameState", v2.ClearGameState, []ACCOUNT_TYPE{M, A})
 	Register(g, "get", "/api/auth/v2/queryOrder", v2.QueryOrder, []ACCOUNT_TYPE{M, A, S})
+	Register(g, "get", "/api/auth/v2/exchange", v2.GetExchange, []ACCOUNT_TYPE{M, A, S})
 
+	Register(g, "post", "/api/auth/v2/editExchange", v2.EditExchange, []ACCOUNT_TYPE{M, A, S})
 	Register(g, "post", "/api/auth/v1/web/add", v1.WebAdd, []ACCOUNT_TYPE{M})
 	Register(g, "post", "/api/auth/v1/web/edit", v1.WebEdit, []ACCOUNT_TYPE{M})
 	Register(g, "post", "/api/auth/v2/agent/add", v2.AgentAdd, []ACCOUNT_TYPE{M})
@@ -173,7 +175,7 @@ func NewRouter() *gin.Engine {
 	Register(g, "post", "/api/auth/v2/game/apiConfigUpdate", v2.ApiConfigUpdate, []ACCOUNT_TYPE{M})
 	Register(g, "post", "/api/auth/v2/govern/user", v2.GovernUser, []ACCOUNT_TYPE{M})
 	Register(g, "post", "/api/auth/v2/govern/edit", v2.PoolEdit, []ACCOUNT_TYPE{M})
-	Register(g, "post", "/api/auth/v2/game/getGameCurrency", nil, []ACCOUNT_TYPE{M})
+	Register(g, "post", "/api/auth/v2/game/getGameCurrency", v2.GameCurrencys, []ACCOUNT_TYPE{M})
 	Register(g, "post", "/api/auth/v2/game/changeStatus", v2.ChangeStatus, []ACCOUNT_TYPE{M})
 	Register(g, "post", "/api/auth/v2/user/saveAutoSingleControl", v2.SaveSingleCtrlConfig, []ACCOUNT_TYPE{M})
 	Register(g, "post", "/api/auth/v2/user/getAutoSingleControl", v2.GetSingleCtrlConfig, []ACCOUNT_TYPE{M})

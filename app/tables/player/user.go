@@ -20,6 +20,7 @@ type Player struct {
 	CurrencyType string          `gorm:"column:currency_type;size:32;"`
 	Revenue      decimal.Decimal `gorm:"column:revenue;default:0"`
 	AllTimes     int32           `gorm:"column:all_times;default:0;"`
+	IsTourist    int32           `gorm:"column:isTourist;default:0;comment:是否是游客账户 0 否  1 是" json:"isTourist"`
 }
 
 func (p *Player) TableName() string {

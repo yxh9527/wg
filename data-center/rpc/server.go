@@ -35,12 +35,16 @@ func (s *Server) Serve(rds *dao.RedisDao, db *dao.DBDao) {
 	// 创建一个grpc Server服务对象,Handler非必传
 	ss := grpc.NewServer(grpc.KeepaliveParams(
 		keepalive.ServerParameters{
-			MaxConnectionAge:      2 * time.Minute,
-			MaxConnectionAgeGrace: 30 * time.Second,
-			Time:                  30 * time.Second,
-			Timeout:               15 * time.Second,
+			// MaxConnectionAge:      2 * time.Minute,
+			// MaxConnectionAgeGrace: 30 * time.Second,
+			Time:    60 * time.Second,
+			Timeout: 30 * time.Second,
 		},
-	))
+	), grpc.MaxConcurrentStreams(1000), // 设置每个连接的最大并发流数
+		grpc.MaxRecvMsgSize(1024*1024*100),
+		grpc.MaxSendMsgSize(1024*1024*100),
+		grpc.ReadBufferSize(1024*1024),
+		grpc.WriteBufferSize(1024*1024))
 	// 注册服务
 	services.RegisterDataCenterServiceServer(ss, s.handler)
 	// 注册ETCD

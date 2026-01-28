@@ -114,6 +114,22 @@
         <div>玩家id:
           <Input v-model="iClearPlayerGameId"   placeholder=""/>
         </div>
+        <div>
+          货币类型：
+          <Select
+            v-model="currency"
+            filterable
+            filter-by-label
+          >
+            <Option
+              v-for="item in gameCurrency"
+              :value="item"
+              :key="item"
+              :label="item"
+              >{{ item }}</Option
+            >
+          </Select>
+        </div>
         <div>游戏:
           <Select
             v-model="gameId"
@@ -185,7 +201,7 @@ import Cookies from "js-cookie";
 import * as dayjs from "dayjs";
 import Tables from "_c/tables";
 import { setting } from "@/config";
-import { getPlayerData, editPlayerState, agentScoreLog,clearPlayerGameState } from "@/api/data";
+import { getPlayerData, editPlayerState, agentScoreLog,clearPlayerGameState,getGameCurrency } from "@/api/data";
 import { getToken } from "@/libs/util";
 import axios from "@/libs/api.request";
 export default {
@@ -233,9 +249,9 @@ export default {
       modal1: false,
 
       req: [
-        { label: "三方ID：", key: "userId", type: "text", value: "" },
-        { label: "玩家昵称：", key: "name", type: "text", value: "" },
-        { label: "ID：", key: "id", type: "text", value: "" },
+        { label: "三方ID:", key: "userId", type: "text", value: "" },
+        { label: "昵称：", key: "name", type: "text", value: "" },
+        { label: "ID:", key: "id", type: "text", value: "" },
       ],
       columns: [
         {
@@ -246,18 +262,34 @@ export default {
           fixed: "left",
         },
         {
-          title: "玩家ID",
+          title: "ID",
           key: "id",
           width: 85,
           align: "center",
           tooltip: true,
         },
         {
-          title: "玩家昵称",
+          title: "昵称",
           key: "nickName",
           width: 140,
           align: "center",
           tooltip: true,
+        },
+        {
+          title: "账号",
+          key: "userId",
+          width: 140,
+          align: "center",
+          tooltip: true,
+        },
+        {
+          title: "试玩",
+          key: "isTourist",
+          width: 80,
+          align: "center",
+          render(h, params) {
+            return params.row.isTourist>0?(<span style="color:red;">是</span>):(<span style="color:green;">否</span>);
+          },
         },
         {
           title: "代理",
@@ -281,7 +313,7 @@ export default {
         {
           title: "最近登录时间",
           key: "logTime",
-          width: 180,
+          width: 170,
           sortable: true,
           sortType: "desc",
           align: "center",
@@ -299,7 +331,7 @@ export default {
         {
           title: "有效下注",
           key: "totalEffBet",
-          width: 120,
+          width: 110,
           align: "center",
           render(h, params) {
             return (
@@ -314,7 +346,7 @@ export default {
         {
           title: "总盈利",
           key: "totalProfLoss",
-          width: 130,
+          width: 120,
           align: "center",
           sortable: "custom",
           render(h, params) {
@@ -330,7 +362,7 @@ export default {
         {
           title: "区间局数",
           key: "month_docCount",
-          width: 140,
+          width: 130,
           render(h, params) {
             return <span>{params.row.month_docCount || 0}</span>;
           },
@@ -431,7 +463,7 @@ export default {
           title: "操作",
           key: "handle",
           align: "center",
-          width: 270,
+          width: 250,
           fixed: "right",
           button: [
             (h, params) => {
@@ -687,6 +719,8 @@ export default {
       gameId:0,
       gameOptions: [],
       games: JSON.parse(sessionStorage.getItem("games") || "[]"),
+      gameCurrency:[],
+      currency:"CNY"
     };
   },
   methods: {
@@ -694,6 +728,7 @@ export default {
       let Data = {
         playerId: this.iClearPlayerGameId,
         gameId: this.gameId,
+        currency:this.currency
       };
       clearPlayerGameState(Data).then((res) => {
         if (res.data.code == 200) {
@@ -1004,6 +1039,19 @@ export default {
         mountedfunc();
       }
     }, 500);
+    
+    getGameCurrency([]).then((res) => {
+      if (res.data.code == 200){
+        let tmp = JSON.parse(res.data.data)
+        if(tmp) {
+          let arr = [];
+          Object.keys(tmp["currency"]).forEach(item=>{
+            arr.push(item);
+          })
+          this.gameCurrency = arr;
+        }
+      };
+    });
   },
 };
 </script>

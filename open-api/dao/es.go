@@ -71,15 +71,14 @@ type SettlementRecord struct {
 	Symbol         string  `json:"symbol"`
 	Currency       string  `json:"currency"`
 	CurrencySymbol string  `json:"currencySymbol"`
+	IsTourist      int32   `json:"isTourist"`
 }
 
 func (esc *EsClient) GetListWithRowVersion(agentId, rowVersion int64) []interface{} {
 	querys := make([]elastic.Query, 0, 64)
 	querys = append(querys, elastic.NewRangeQuery("rowVersion").Gt(rowVersion))
 	querys = append(querys, elastic.NewTermQuery("agentId", agentId))
-	if rowVersion/1000000000 >= 1750089600 {
-		querys = append(querys, elastic.NewTermQuery("complete", true))
-	}
+	querys = append(querys, elastic.NewTermQuery("complete", true))
 	query := elastic.NewBoolQuery().Must(querys...)
 	sourceQuery := elastic.NewFetchSourceContext(true).Exclude("init", "log")
 	resp, err := esc.es.Search().Index("pp_gp_settlement").
@@ -110,9 +109,7 @@ func (esc *EsClient) GetListWithTimeRange(agentId, startTime, endTime int64) []i
 	querys := make([]elastic.Query, 0, 64)
 	querys = append(querys, elastic.NewRangeQuery("playedDate").Gte(startTime*1000).Lt(endTime*1000))
 	querys = append(querys, elastic.NewTermQuery("agentId", agentId))
-	if startTime >= 1750089600 {
-		querys = append(querys, elastic.NewTermQuery("complete", true))
-	}
+	querys = append(querys, elastic.NewTermQuery("complete", true))
 	query := elastic.NewBoolQuery().Must(querys...)
 	sourceQuery := elastic.NewFetchSourceContext(true).Exclude("init", "log")
 	resp, err := esc.es.Search().Index("pp_gp_settlement").

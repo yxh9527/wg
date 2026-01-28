@@ -101,6 +101,9 @@
         },
         "complete":{
           "type":"boolean"
+        },
+        "isTourist":{
+          "type":"integer"
         }
       }
     }

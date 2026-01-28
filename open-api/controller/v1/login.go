@@ -58,6 +58,7 @@ func Login(ctx *gin.Context, params url.Values, agent *manager.Agent) {
 	symbol := params.Get("symbol") //这里把gameId等价于 symbol 减少修改量
 	currencyType := params.Get("currencyType")
 	lang := params.Get("lang")
+	isTourist, _ := strconv.Atoi(params.Get("isTourist"))
 	if lang == "" {
 		lang = "zh"
 	}
@@ -79,7 +80,7 @@ func Login(ctx *gin.Context, params url.Values, agent *manager.Agent) {
 	if player == nil {
 		score, _ := strconv.ParseFloat(money, 64)
 		//新建玩家信息
-		player, _ = Mysql().AddNewPlayer(agent.Id, agent.WebId, score, account, nickName, ip, currencyType)
+		player, _ = Mysql().AddNewPlayer(agent.Id, agent.WebId, score, account, nickName, ip, currencyType, int32(isTourist))
 		if player.Id <= 0 {
 			ctx.JSON(http.StatusOK, GetJsonObj(API_LOGIN.String(), &SimpleResp{Code: int(CODE_REQUEST_ERR)}))
 			return
@@ -127,6 +128,7 @@ func Login(ctx *gin.Context, params url.Values, agent *manager.Agent) {
 			AuthCount:    0,
 			CurrencyType: currencyType,
 			Symbol:       game.ConfName,
+			IsTourist:    int32(isTourist),
 		}
 	}
 	session.LastAuthTime = time.Now().Unix()

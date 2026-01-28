@@ -317,6 +317,29 @@
           </div>
         </Card>
       </TabPane>
+
+      <TabPane label="汇率配置" name="hlpz">
+        <Card style="margin: 10px 0; min-height: 200px;" title="汇率配置">
+          <div style="height: 800px; overflow-y: auto;">          
+            <Button type="primary" style="margin: 5px 0px 5px 0px" @click="exchangeEditType = 2; exchangeEdit = true;">新增汇率</Button>
+            <Table :columns="exchangeSettings" :data="exchangeData"></Table>
+          </div>
+
+        </Card>
+
+        <Modal v-model="exchangeEdit" title="汇率配置" :width="700">
+          <Card>
+            <div class="inlineForm">
+              货币符号:<Input type="text" style="width:180px"  v-model="currentCurency.currency" />
+              <span style="margin-left:15px">汇率:<Input type="number" style="width:180px;"  v-model="currentCurency.exchange"/></span>
+              <Button type="primary" style="margin-left: 15px" @click="EditCurrency(); exchangeEdit = false;">保存</Button>
+            </div>
+          </Card>
+          <div slot="footer"></div>
+        </Modal>
+
+      </TabPane>
+
     </Tabs>
 
     <Modal v-model="renderLineChartModal" title="曲线图" :width="840">
@@ -347,7 +370,7 @@ export default {
     window.test1 = this;
     this.getUserControlTimeRange();
     this.getGameSettingList();
-
+    this.getCurrencyData();
     //监听网页加载完成
     document.onreadystatechange = () => {
       if (document.readyState == "complete") {
@@ -496,6 +519,8 @@ export default {
       editRoomInfo: false,
       canEditName: true,
       currentEditRoom: { tag: "", data: null, t: 1 },
+      currentCurency:{currency:"",exchange:0,id:0},
+      exchangeEditType: 1,//1 edit 2 add 3 del
       stockGameId: null,
       stockRoomId: null,
       stockPage: 1,
@@ -574,6 +599,10 @@ export default {
       stockData: [],
       myChart: null,
       gameSettingData: [],
+      exchangeData:[
+        // {currency:"USD",exchange:7.1}
+      ],
+      exchangeEdit:false,
       /**
        * 查询参数
        */
@@ -797,6 +826,73 @@ export default {
            },
          }
        ],
+         //汇率配置
+       exchangeSettings: [
+         {
+           title:"货币",
+           key:"currency",
+           align:"center",
+           width:300,
+         },
+         {
+           title: "汇率(对CNY)",
+           key: "exchange",
+           align: "center",
+         },
+         {
+           title: "操作",
+           key: "opt",
+           align: "center",
+           width: 300,
+           render(h, params) {
+             return h("div", {}, [
+             h(
+                 "Button",
+                 {
+                   style: {
+                     marginRight: "10px",
+                   },
+                   props: {
+                     type: "info",
+                     size: "small",
+                   },
+                   on: {
+                     async click() {
+                      _this.exchangeEditType = 1;
+                      _this.exchangeEdit= true;
+                      _this.currentCurency = params.row;
+                     },
+                   },
+                 },
+                 "修改"
+               ),
+               h(
+                 "Button",
+                 {
+                   style: {
+                     marginRight: "10px",
+                   },
+                   props: {
+                     type: "info",
+                     size: "small",
+                   },
+                   on: {
+                     async click() {
+                      _this.exchangeEditType = 3;
+                      _this.exchangeData =  _this.exchangeData.filter(item=>{
+                        return item.currency != params.row.currency
+                      })
+                      _this.EditCurrency()
+                     },
+                   },
+                 },
+                 "删除"
+               )
+             ]);
+           },
+         }
+       ],
+
        showBairenGameSettingData:false,
        currentBairenGameSettingData:{},
        filter:[],
@@ -1202,6 +1298,62 @@ export default {
       if (data && data.data && data.data.code == 200) {
         this.$Message.info("保存成功");
         this.agentSearch();
+      } else {
+        this.$Message.error("修改失败");
+      }
+    },
+
+    //获取汇率配置数据
+    async getCurrencyData() {
+      let params= {
+          token: getToken(),
+        };
+      let data = await axios.request({
+        url: "v2/exchange",
+        method: "get",
+        params
+      });
+      if (data && data.data && data.data.code == 200) {
+        let txd = [];
+        let n = 0;
+        Object.keys(data.data.data.currency).forEach(k=>{
+          txd.push({currency:k,exchange:data.data.data.currency[k],id:n++})
+        })
+        this.exchangeData = txd;
+      } else {
+        this.$Message.error("修改失败");
+      }
+    },
+
+    //修改汇率配置
+    async EditCurrency() {
+      let c = {};
+      let n = 0;
+      this.exchangeData.forEach(item=>{
+        c[item.currency] = item.exchange;
+      })
+
+      if (this.exchangeEditType <3 ) {
+        c[this.currentCurency.currency] = this.currentCurency.exchange;
+      }
+
+      let params= {
+          token: getToken(),
+          config:JSON.stringify({currency:c})
+      };
+      console.log(JSON.stringify(params))
+      let data = await axios.request({
+        url: "v2/editExchange",
+        method: "post",
+        params
+      });
+      if (data && data.data && data.data.code == 200) {
+        let txd = [];
+        Object.keys(data.data.data.currency).forEach(k=>{
+          txd.push({currency:k,exchange:data.data.data.currency[k],id: n++})
+        })
+        this.exchangeData = txd;
+        this.exchangeEdit = false;
       } else {
         this.$Message.error("修改失败");
       }

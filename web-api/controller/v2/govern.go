@@ -485,8 +485,9 @@ func ExportAgentData(ctx *gin.Context) {
 	aggs.SubAggregation("gameId", gameAggs)
 	webIdAggs.SubAggregation("agentId", aggs)
 	zap.L().Debug("====>", zap.Any("startTime", startTime), zap.Any("endTime", endTime))
-	query := elastic.NewRangeQuery("playedDate").Gte(startTime * 1000).Lt(endTime * 1000)
-	boolQuery := elastic.NewBoolQuery().Must(query)
+	query1 := elastic.NewRangeQuery("playedDate").Gte(startTime * 1000).Lt(endTime * 1000)
+	query2 := elastic.NewRangeQuery("isTourist").Lte(0)
+	boolQuery := elastic.NewBoolQuery().Must(query1, query2)
 	resp, err := dao.Es().Search().Index("pp_gp_settlement").Query(boolQuery).Aggregation("webId", webIdAggs).Size(0).Do(context.Background())
 	if err != nil {
 		zap.L().Error("获取注单打点数据异常", zap.Any("err", err))

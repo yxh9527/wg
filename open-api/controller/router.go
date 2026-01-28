@@ -69,7 +69,8 @@ func NewRouter() *gin.Engine {
 			ip := c.Query("ip")
 			money := c.Query("money")
 			symbol := c.Query("symbol")
-			src := fmt.Sprintf("s=%s&account=%s&nickName=%s&ip=%s&money=%s&symbol=%s&currencyType=%s&lang=%s", at, account, nickName, ip, money, symbol, currencyType, lang)
+			isTourist := c.Query("isTourist")
+			src := fmt.Sprintf("s=%s&account=%s&nickName=%s&ip=%s&money=%s&symbol=%s&currencyType=%s&lang=%s&isTourist=%s", at, account, nickName, ip, money, symbol, currencyType, lang, isTourist)
 			dst, err := AesEncrypt(aesKey, aesIv, []byte(src))
 			if err != nil {
 				zap.L().Error("加密失败", zap.Any("src", src), zap.Any("err", err))

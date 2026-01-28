@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-package services;
+option go_package = "./services;services";
+
+package datacenter;
 
 import "player.proto";
 import "base.proto";
@@ -30,7 +32,7 @@ message GetGameListReq {
 }
 
 message GetGameListResp {
-    error_code   code = 1;
+    base.error_code   code = 1;
     //热门游戏的symbol
     repeated string hot  = 2;
     //新游戏
@@ -92,7 +94,7 @@ message RecordItem {
 }
 
 message GetRecordsResp{
-    error_code code = 1;
+    base.error_code code = 1;
     repeated RecordItem data = 2;
 }
 
@@ -108,7 +110,7 @@ message GetPlayerReq {
 }
 
 message GetPlayerResp {
-    services.HumanPlayer HumanPlayer = 1;
+    player.HumanPlayer HumanPlayer = 1;
 }
 
 
@@ -117,7 +119,7 @@ message GetValueReq {
     int64 timeOut = 2;
 }
 message GetValueResp {
-    error_code code = 1;
+    base.error_code code = 1;
     string value = 2;
 }
 
@@ -127,7 +129,7 @@ message SetValueReq {
     int32 time_out = 3;
 }
 message SetValueResp {
-    error_code code = 1;
+    base.error_code code = 1;
 }
 
 

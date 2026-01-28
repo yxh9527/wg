@@ -263,38 +263,45 @@ func (rd *RedisDao) GetPlayerCurrency(playerId uint32) (newCurrency int64, err e
 	return newCurrency, nil
 }
 
-func (rd *RedisDao) GetUserStatData(id uint32) (decimal.Decimal, decimal.Decimal, decimal.Decimal, string) {
+func (rd *RedisDao) GetUserStatData(id uint32) (decimal.Decimal, decimal.Decimal, decimal.Decimal, string, int32) {
 	itemKey := fmt.Sprintf("%d", id)
 	piple := rd.cli.Pipeline()
 	piple.ZIncrBy(context.Background(), "userTotalEffBet", 0, itemKey)
 	piple.ZIncrBy(context.Background(), "userTotalProfLoss", 0, itemKey)
 	piple.ZIncrBy(context.Background(), "userBetCount", 0, itemKey)
 	piple.HGet(context.Background(), fmt.Sprintf("player_%d", id), "account")
+	piple.HGet(context.Background(), fmt.Sprintf("player_%d", id), "isTourist")
 	result, err := piple.Exec(context.Background())
 	if err == nil {
 		eff, effErr := result[0].(*redis.FloatCmd).Result()
 		if effErr != nil {
 			zap.L().Error("获取有效投注失败", zap.Error(effErr))
-			return decimal.Zero, decimal.Zero, decimal.Zero, ""
+			return decimal.Zero, decimal.Zero, decimal.Zero, "", 0
 		}
 		pro, proErr := result[1].(*redis.FloatCmd).Result()
 		if proErr != nil {
 			zap.L().Error("获取盈亏信息失败", zap.Error(proErr))
-			return decimal.Zero, decimal.Zero, decimal.Zero, ""
+			return decimal.Zero, decimal.Zero, decimal.Zero, "", 0
 		}
 		count, cError := result[2].(*redis.FloatCmd).Result()
 		if cError != nil {
 			zap.L().Error("获取下注次数失败", zap.Error(proErr))
-			return decimal.Zero, decimal.Zero, decimal.Zero, ""
+			return decimal.Zero, decimal.Zero, decimal.Zero, "", 0
 		}
 		account, accError := result[3].(*redis.StringCmd).Result()
 		if accError != nil {
 			zap.L().Error("获取下注次数失败", zap.Error(proErr))
-			return decimal.Zero, decimal.Zero, decimal.Zero, ""
+			return decimal.Zero, decimal.Zero, decimal.Zero, "", 0
 		}
-		return decimal.NewFromFloat(eff), decimal.NewFromFloat(pro), decimal.NewFromFloat(count), account
+		isTouristStr, touristErr := result[4].(*redis.StringCmd).Result()
+		if touristErr != nil {
+			zap.L().Error("获取游客标志失败", zap.Error(proErr))
+			return decimal.Zero, decimal.Zero, decimal.Zero, "", 0
+		}
+		isTourist, _ := strconv.Atoi(isTouristStr)
+		return decimal.NewFromFloat(eff), decimal.NewFromFloat(pro), decimal.NewFromFloat(count), account, int32(isTourist)
 	}
-	return decimal.Zero, decimal.Zero, decimal.Zero, ""
+	return decimal.Zero, decimal.Zero, decimal.Zero, "", 0
 }
 
 func (rd *RedisDao) GetGameStatData(id int64, symbol string) (decimal.Decimal, decimal.Decimal, decimal.Decimal, decimal.Decimal, bool) {

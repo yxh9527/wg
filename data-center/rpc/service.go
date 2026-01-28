@@ -14,6 +14,7 @@ import (
 )
 
 type DataCenterService struct {
+	services.UnimplementedDataCenterServiceServer
 	db  *dao.DBDao
 	rds *dao.RedisDao
 	es  *dao.ESDao
@@ -139,7 +140,7 @@ func (d *DataCenterService) SetValue(_ context.Context, req *services.SetValueRe
 func (d *DataCenterService) GetRecords(ctx context.Context, req *services.GetRecordsReq) (resp *services.GetRecordsResp, err error) {
 	resp = &services.GetRecordsResp{}
 	resp.Code = services.ErrorCode_OK
-	resp.Data = d.es.GetRecords(req.UserId, req.Symbol, req.Hash)
+	resp.Data = d.es.GetRecords(req.UserId, req.Symbol, req.Hash, "")
 	return resp, nil
 }
 

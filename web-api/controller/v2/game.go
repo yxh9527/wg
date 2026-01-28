@@ -186,10 +186,11 @@ func GameUrls(ctx *gin.Context) {
 func ClearGameState(ctx *gin.Context) {
 	playerId, _ := strconv.Atoi(ctx.Query("playerId"))
 	gameId, _ := strconv.Atoi(ctx.Query("gameId"))
+	currency := ctx.Query("currency")
 	game := &manager.Game{}
 	dao.Mysql().Manager.Where("number=?", gameId).Take(game)
-	dao.Es().DeleteByQuery("pp_game_states").Query(elastic.NewBoolQuery().Filter(elastic.NewTermQuery("_id", fmt.Sprintf("%d-%s", playerId, game.ConfName)))).WaitForCompletion(false).Do(context.Background())
-	zap.L().Debug("清理玩家指定游戏状态成功", zap.Any("playerId", playerId), zap.Any("name", game.NameZH), zap.Any("symbol", game.ConfName))
+	dao.Es().DeleteByQuery("pp_game_states").Query(elastic.NewBoolQuery().Filter(elastic.NewTermQuery("_id", fmt.Sprintf("%d-%s-%s", playerId, game.ConfName, currency)))).WaitForCompletion(false).Do(context.Background())
+	zap.L().Debug("清理玩家指定游戏状态成功", zap.Any("playerId", playerId), zap.Any("name", game.NameZH), zap.Any("symbol", game.ConfName), zap.Any("currency", currency))
 	ctx.JSON(http.StatusOK, &entity.Response{Code: http.StatusOK, Data: map[string]interface{}{
 		"data": config.CfgIns.GetSystemConfig(),
 	}, Msg: "成功"})
@@ -206,6 +207,7 @@ func QueryOrder(ctx *gin.Context) {
 	if roundId != "" {
 		querys = append(querys, elastic.NewMatchPhraseQuery("roundID", roundId))
 	}
+	querys = append(querys, elastic.NewRangeQuery("isTourist").Lte(0))
 	boolQuery := elastic.NewBoolQuery().Must(querys...)
 	resp, err := dao.Es().Search().Index("pp_gp_settlement").
 		FetchSourceContext(elastic.NewFetchSourceContext(true).Exclude("init", "log")).
@@ -389,4 +391,53 @@ func SyncAllPool(ctx *gin.Context) {
 		dao.RedisIns().Publish("message", msg)
 	}
 	ctx.JSON(http.StatusOK, &entity.Response{Code: http.StatusOK, Msg: "成功", Data: nil})
+}
+
+func GetExchange(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, &entity.Response{Code: http.StatusOK, Data: map[string]interface{}{
+		"currency": config.CfgIns.Currency.Data,
+	}, Msg: "成功"})
+}
+
+// 添加汇率配置
+func EditExchange(ctx *gin.Context) {
+	c := ctx.Query("config")
+	tmp := &config.CurrencyMgr{}
+	if err := jsoniter.UnmarshalFromString(c, tmp); err != nil {
+		ctx.JSON(http.StatusOK, &entity.Response{Code: http.StatusInternalServerError, Data: nil, Msg: "失败"})
+		zap.L().Error("解析汇率配置失败", zap.Any("err", err), zap.Any("config", c))
+		return
+	}
+	//更新配置
+	config.CfgIns.SetCurrency(tmp)
+
+	dataStr, _ := jsoniter.MarshalToString(config.CfgIns.Currency)
+
+	dao.RedisIns().Set("/config/currency", dataStr, -1)
+
+	data := &entity.ConfigMsg{}
+	data.Key = "/config/currency"
+	data.Data = dataStr
+
+	str, _ := jsoniter.MarshalToString(data)
+	msg, _ := jsoniter.MarshalToString(map[string]interface{}{
+		"event": "config",
+		"data":  str,
+	})
+
+	dao.RedisIns().Publish("message", msg)
+
+	ctx.JSON(http.StatusOK, &entity.Response{Code: http.StatusOK, Data: map[string]interface{}{
+		"currency": config.CfgIns.Currency.Data,
+	}, Msg: "成功"})
+}
+
+func GameCurrencys(ctx *gin.Context) {
+	str, err := dao.RedisIns().Get("/config/currency")
+	if err != nil {
+		zap.L().Error("保存自动单控配置失败", zap.Any("err", err))
+		ctx.JSON(http.StatusOK, &entity.Response{Code: http.StatusInternalServerError, Msg: "保存自动单控配置失败", Data: nil})
+		return
+	}
+	ctx.JSON(http.StatusOK, &entity.Response{Code: http.StatusOK, Msg: "成功", Data: str})
 }

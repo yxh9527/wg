@@ -59,7 +59,7 @@ func (esDao *ESDao) BulkGameStateSave(data []*services.SaveGameStateReq) error {
 	bulkService := esDao.Client.Bulk()
 	records := make([]elastic.BulkableRequest, 0)
 	for _, req := range data {
-		records = append(records, elastic.NewBulkIndexRequest().Index("pp_game_states").Id(fmt.Sprintf("%d-%s", req.UserId, req.Symbol)).Doc(req))
+		records = append(records, elastic.NewBulkIndexRequest().Index("pp_game_states").Id(fmt.Sprintf("%d-%s-%s", req.UserId, req.Symbol, req.Currency)).Doc(req))
 	}
 	bulkService.Add(records...)
 	_, err := bulkService.Do(context.Background())
@@ -73,7 +73,7 @@ func (esDao *ESDao) BulkRecordsSave(data []*entity.CacheRecordsReq) error {
 	bulkService := esDao.Client.Bulk()
 	records := make([]elastic.BulkableRequest, 0)
 	for _, req := range data {
-		hashStr := fmt.Sprintf("%d|%d|%s", req.AgentId, req.UserId, req.RoundID)
+		hashStr := fmt.Sprintf("%d|%d|%d", req.AgentId, req.UserId, req.RoundID)
 		req.Hash = fmt.Sprintf("%x", md5.Sum([]byte(hashStr)))
 		records = append(records, elastic.NewBulkIndexRequest().Index("pp_gp_settlement").Id(req.Hash).Doc(req))
 	}
@@ -103,6 +103,8 @@ func (esDao *ESDao) GetGameState(req *services.GetGameStateReq) *services.SaveGa
 	querys := make([]elastic.Query, 0)
 	querys = append(querys, elastic.NewTermQuery("userId", req.UserId))
 	querys = append(querys, elastic.NewTermQuery("symbol", req.Symbol))
+	querys = append(querys, elastic.NewMatchPhraseQuery("currency", req.Currency))
+	// zap.L().Debug("获取游戏状态", zap.Any("req", req))
 	boolQuery := elastic.NewBoolQuery().Must(querys...)
 	resp, err := esDao.Client.Search().Index("pp_game_states").
 		Query(boolQuery).

@@ -214,7 +214,7 @@ export default {
         {
           title: "游戏名称",
           key: "gameName",
-          minWidth:150,
+          minWidth:250,
           render(h, params) {
             return h("span", {}, params.row.gameName);
           },
@@ -222,7 +222,7 @@ export default {
         {
           title: "局号",
           key: "roundID",
-          width: 280,
+          width: 180,
           render(h, params) {
             return <div>{params.row.roundID}</div>;
           },
@@ -230,6 +230,15 @@ export default {
         { title: "用户ID", key: "userId", width: 80 },
         { title: "账号", key: "account" ,minWidth:80,},
         { title: "昵称", key: "nickName", width: 150 },
+        {
+          title: "试玩",
+          key: "isTourist",
+          width: 80,
+          align: "center",
+          render(h, params) {
+            return params.row.isTourist>0?(<span style="color:red;">是</span>):(<span style="color:green;">否</span>);
+          },
+        },
         { title: "Symbol", key: "symbol", width: 150 },
         {
           title: "状态",
@@ -299,6 +308,11 @@ export default {
               <span style="color:red">{Number(params.row.win).toFixed(2)}</span>
             );
           },
+        },
+        {
+          title: "货币",
+          key: "currency",
+          width: 80,
         },
         {
           title: "索引",

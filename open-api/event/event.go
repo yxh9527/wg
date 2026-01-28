@@ -33,6 +33,7 @@ func (em *EventMgr) OnEvent(msg *entity.Msg) {
 					zap.L().Error("panic", zap.Any("err", err))
 				}
 			}()
+			zap.L().Debug("收到事件广播", zap.Any("data", data))
 			event.C(data)
 		}()
 	} else {

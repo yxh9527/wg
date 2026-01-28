@@ -346,6 +346,7 @@ func ConvertUserEntityToHumanPlayer(p *player.Player) *services.HumanPlayer {
 		Account:        p.Account,
 		CurrencyType:   p.CurrencyType,
 		AllTimes:       p.AllTimes,
+		IsTourist:      p.IsTourist,
 	}
 }
 
@@ -367,6 +368,7 @@ func (r *RedisDao) SetPlayer(p *services.HumanPlayer) error {
 		"account":        p.Account,
 		"currency_type":  p.CurrencyType,
 		"all_times":      p.AllTimes,
+		"isTourist":      p.IsTourist,
 	})
 	pipe.Expire(context.Background(), pID, time.Minute*20)
 	pipe.SAdd(context.Background(), "dirty_list", p.Id)

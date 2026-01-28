@@ -147,6 +147,9 @@ func (rd *RedisDao) GetPlayerOrigin(playerId uint32) (*services.HumanPlayer, str
 		case "all_times":
 			allTimes, _ := strconv.Atoi(value)
 			p.AllTimes = int32(allTimes)
+		case "isTourist":
+			isTourist, _ := strconv.Atoi(value)
+			p.IsTourist = int32(isTourist)
 		}
 	}
 
@@ -220,6 +223,9 @@ func (rd *RedisDao) GetPlayer(playerId, factory uint32) (*services.HumanPlayer, 
 		case "all_times":
 			allTimes, _ := strconv.Atoi(value)
 			p.AllTimes = int32(allTimes)
+		case "isTourist":
+			isTourist, _ := strconv.Atoi(value)
+			p.IsTourist = int32(isTourist)
 		}
 	}
 	return &p, nil
@@ -365,7 +371,7 @@ func (rd *RedisDao) SetPlayer(p *services.HumanPlayer, refreshDB bool) error {
 		"account":        p.Account,
 		"currency_type":  p.CurrencyType,
 		"all_times":      p.AllTimes,
-		// "revenue":        p.Revenue,
+		"isTourist":      p.IsTourist,
 	}).Err()
 	if err == nil {
 		rd.Client.Expire(context.Background(), pID, time.Minute*20)

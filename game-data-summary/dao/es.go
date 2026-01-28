@@ -80,7 +80,10 @@ func (esi *EsInfo) GetAllSettlementData(bTime, eTime int64) []*config.DataItem {
 	query := elastic.NewBoolQuery()
 	includesFields := []string{"userId", "gameId", "agentId", "bet", "win", "playedDate"}
 	source := elastic.NewFetchSourceContext(true).Include(includesFields...)
-	query1 := query.Must(elastic.NewRangeQuery("playedDate").Gte(bTime * 1000).Lt(eTime * 1000))
+	query1 := query.Must(
+		elastic.NewRangeQuery("isTourist").Lte(0),
+		elastic.NewRangeQuery("playedDate").Gte(bTime*1000).Lt(eTime*1000),
+	)
 	valueDecode := func(jds []*elastic.SearchHit) {
 		for _, v := range jds {
 			data := &config.DataItem{}
@@ -427,6 +430,8 @@ func (esi *EsInfo) GetAgentEffProByGameId(agentId, gameId, bTime, eTime int64) (
 	query2 := query.Must(elastic.NewTermQuery("gameId", gameId))
 	query3 := query.Must(elastic.NewRangeQuery("playedDate").Lt(eTime * 1000))
 	query4 := query.Must(elastic.NewRangeQuery("playedDate").Gte(bTime * 1000))
+	query5 := query.Must(elastic.NewRangeQuery("isTourist").Lte(0))
+
 	aggsEff := elastic.NewSumAggregation().Field("bet")
 	aggsPro := elastic.NewSumAggregation().Field("win")
 	if res, e := esi.es.Search().Index().Size(0).Index("pp_gp_settlement").
@@ -434,6 +439,7 @@ func (esi *EsInfo) GetAgentEffProByGameId(agentId, gameId, bTime, eTime int64) (
 		Query(query2).
 		Query(query3).
 		Query(query4).
+		Query(query5).
 		FetchSourceContext(source).
 		Aggregation("eff", aggsEff).
 		Aggregation("pro", aggsPro).
@@ -452,12 +458,14 @@ func (esi *EsInfo) GetEffProByGameId(gameId, bTime, eTime int64) (decimal.Decima
 	query2 := query.Must(elastic.NewTermQuery("gameId", gameId))
 	query3 := query.Must(elastic.NewRangeQuery("playedDate").Lt(eTime * 1000))
 	query4 := query.Must(elastic.NewRangeQuery("playedDate").Gte(bTime * 1000))
+	query5 := query.Must(elastic.NewRangeQuery("isTourist").Lte(0))
 	aggsEff := elastic.NewSumAggregation().Field("bet")
 	aggsPro := elastic.NewSumAggregation().Field("win")
 	if res, e := esi.es.Search().Index().Size(0).Index("pp_gp_settlement").
 		Query(query2).
 		Query(query3).
 		Query(query4).
+		Query(query5).
 		FetchSourceContext(source).
 		Aggregation("eff", aggsEff).
 		Aggregation("pro", aggsPro).
@@ -475,11 +483,13 @@ func (esi *EsInfo) GetAllEffPro(bTime, eTime int64) (decimal.Decimal, decimal.De
 	query := elastic.NewBoolQuery()
 	query3 := query.Must(elastic.NewRangeQuery("playedDate").Lt(eTime * 1000))
 	query4 := query.Must(elastic.NewRangeQuery("playedDate").Gte(bTime * 1000))
+	query5 := query.Must(elastic.NewRangeQuery("isTourist").Lte(0))
 	aggsEff := elastic.NewSumAggregation().Field("bet")
 	aggsPro := elastic.NewSumAggregation().Field("win")
 	if res, e := esi.es.Search().Index().Size(0).Index("pp_gp_settlement").
 		Query(query3).
 		Query(query4).
+		Query(query5).
 		FetchSourceContext(source).
 		Aggregation("eff", aggsEff).
 		Aggregation("pro", aggsPro).
@@ -498,11 +508,13 @@ func (esi *EsInfo) GetAgentBetsCountByGameId(agentId, gameId, bTime, eTime int64
 	query2 := query.Must(elastic.NewTermQuery("gameId", gameId))
 	query3 := query.Must(elastic.NewRangeQuery("playedDate").Lt(eTime * 1000))
 	query4 := query.Must(elastic.NewRangeQuery("playedDate").Gte(bTime * 1000))
+	query5 := query.Must(elastic.NewRangeQuery("isTourist").Lte(0))
 	if res, e := esi.es.Count().Index().Index("pp_gp_settlement").
 		Query(query1).
 		Query(query2).
 		Query(query3).
 		Query(query4).
+		Query(query5).
 		Do(context.Background()); e == nil {
 		return res
 	}
@@ -515,10 +527,12 @@ func (esi *EsInfo) GetBetsCountByGameId(gameId, bTime, eTime int64) int64 {
 	query2 := query.Must(elastic.NewTermQuery("gameId", gameId))
 	query3 := query.Must(elastic.NewRangeQuery("playedDate").Lt(eTime * 1000))
 	query4 := query.Must(elastic.NewRangeQuery("playedDate").Gte(bTime * 1000))
+	query5 := query.Must(elastic.NewRangeQuery("isTourist").Lte(0))
 	if res, e := esi.es.Count().Index().Index("pp_gp_settlement").
 		Query(query2).
 		Query(query3).
 		Query(query4).
+		Query(query5).
 		Do(context.Background()); e == nil {
 		return res
 	}
@@ -530,9 +544,11 @@ func (esi *EsInfo) GetAllBetsCount(bTime, eTime int64) int64 {
 	query := elastic.NewBoolQuery()
 	query3 := query.Must(elastic.NewRangeQuery("playedDate").Lt(eTime * 1000))
 	query4 := query.Must(elastic.NewRangeQuery("playedDate").Gte(bTime * 1000))
+	query5 := query.Must(elastic.NewRangeQuery("isTourist").Lte(0))
 	if res, e := esi.es.Count().Index().Index("pp_gp_settlement").
 		Query(query3).
 		Query(query4).
+		Query(query5).
 		Do(context.Background()); e == nil {
 		return res
 	}
@@ -580,7 +596,7 @@ func (esi *EsInfo) GetKeepAliveByGameId(gameId, bTime, eTime int64) (uint32, uin
 		zap.Any("theDayBeforeYesterdayPlayers", theDayBeforeYesterdayPlayers))
 
 	// 前天活跃并且昨天活跃，则次留点数加1， 前天活跃且昨天没活跃，则未次留点加1
-	for user, _ := range theDayBeforeYesterdayPlayers {
+	for user := range theDayBeforeYesterdayPlayers {
 		if _, ok := yesterdayPlayers[user]; ok {
 			keepAlive += 1
 		} else {
@@ -604,7 +620,7 @@ func (esi *EsInfo) GetAllKeepAlive(bTime, eTime int64) (uint32, uint32) {
 		zap.Any("theDayBeforeYesterdayPlayers", theDayBeforeYesterdayPlayers))
 
 	// 前天活跃并且昨天活跃，则次留点数加1， 前天活跃且昨天没活跃，则未次留点加1
-	for user, _ := range theDayBeforeYesterdayPlayers {
+	for user := range theDayBeforeYesterdayPlayers {
 		if _, ok := yesterdayPlayers[user]; ok {
 			keepAlive += 1
 		} else {
@@ -621,6 +637,7 @@ func (esi *EsInfo) GetProRank(bTime, eTime uint32, isAsc bool) []*config.RankRes
 	query := elastic.NewBoolQuery()
 	query2 := query.Must(elastic.NewRangeQuery("playedDate").Lt(eTime * 1000))
 	query3 := query.Must(elastic.NewRangeQuery("playedDate").Gte(bTime * 1000))
+	query5 := query.Must(elastic.NewRangeQuery("isTourist").Lte(0))
 	aggsEff := elastic.NewSumAggregation().Field("bet")
 	aggsPro := elastic.NewSumAggregation().Field("win")
 	termAggs := elastic.NewTermsAggregation().Field("userId").Size(20).
@@ -630,6 +647,7 @@ func (esi *EsInfo) GetProRank(bTime, eTime uint32, isAsc bool) []*config.RankRes
 	if res, e := esi.es.Search().Index().Size(0).Index("pp_gp_settlement").
 		Query(query2).
 		Query(query3).
+		Query(query5).
 		FetchSourceContext(source).
 		Aggregation("user_id", termAggs).
 		Do(context.Background()); e == nil {
@@ -663,6 +681,7 @@ func (esi *EsInfo) GetAgentProRank(agentId, bTime, eTime uint32, isAsc bool) []*
 	query1 := query.Must(elastic.NewTermQuery("agentId", agentId))
 	query2 := query.Must(elastic.NewRangeQuery("playedDate").Lt(eTime * 1000))
 	query3 := query.Must(elastic.NewRangeQuery("playedDate").Gte(bTime * 1000))
+	query5 := query.Must(elastic.NewRangeQuery("isTourist").Lte(0))
 	aggsEff := elastic.NewSumAggregation().Field("bet")
 	aggsPro := elastic.NewSumAggregation().Field("win")
 	termAggs := elastic.NewTermsAggregation().Field("userId").Size(20).
@@ -673,6 +692,7 @@ func (esi *EsInfo) GetAgentProRank(agentId, bTime, eTime uint32, isAsc bool) []*
 		Query(query1).
 		Query(query2).
 		Query(query3).
+		Query(query5).
 		FetchSourceContext(source).
 		Aggregation("user_id", termAggs).
 		Do(context.Background()); e == nil {

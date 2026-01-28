@@ -31,6 +31,7 @@ type User struct {
 	UserId         uint32          //玩家id
 	AgentId        int64           //代理id
 	Account        string          //平台账号
+	IsTourist      int32           //是否是游客账号 0 否  1 是
 }
 
 // 游戏数据对象
@@ -73,7 +74,7 @@ type AgentData struct {
 func (ad *AgentData) GetUser(userId uint32) *User {
 	u := ad.userCache[userId]
 	if u == nil {
-		e, p, c, acc := RedisIns().GetUserStatData(userId)
+		e, p, c, acc, isTourist := RedisIns().GetUserStatData(userId)
 		u = &User{
 			TotalEffectBet: e,
 			TotalProfLoss:  p,
@@ -81,6 +82,7 @@ func (ad *AgentData) GetUser(userId uint32) *User {
 			AgentId:        ad.Id,
 			Count:          c,
 			Account:        acc,
+			IsTourist:      isTourist,
 		}
 		ad.SetUser(userId, u)
 	}
@@ -268,17 +270,19 @@ func (gcm *GameCacheMgr) Complete(agentId int64, userId uint32, symbol string, b
 
 	game := agent.GetGame(symbol)
 	user := agent.GetUser(uint32(userId))
-	chips := award
-	//不会有返奖的情况，直接用bet计算税收
-	if award.LessThan(bet) {
-		//bet作为有效打码
-		chips = bet
+	if user.IsTourist <= 0 {
+		chips := award
+		//不会有返奖的情况，直接用bet计算税收
+		if award.LessThan(bet) {
+			//bet作为有效打码
+			chips = bet
+		}
+		game.TotalChips = game.TotalChips.Add(chips)
+		game.TotalRevenue = game.TotalRevenue.Add(chips.Mul(rate).Truncate(4))
+		game.UpdateTime = time.Now().Unix()
+		user.TotalProfLoss = user.TotalProfLoss.Add(award)
+		user.UpdateTime = time.Now().Unix()
 	}
-	game.TotalChips = game.TotalChips.Add(chips)
-	game.TotalRevenue = game.TotalRevenue.Add(chips.Mul(rate).Truncate(4))
-	game.UpdateTime = time.Now().Unix()
-	user.TotalProfLoss = user.TotalProfLoss.Add(award)
-	user.UpdateTime = time.Now().Unix()
 }
 
 // 返还水池
@@ -303,20 +307,21 @@ func (gcm *GameCacheMgr) Bet(agentId int64, userId int32, pc *config.Pool, symbo
 	agent.lock.Lock()
 	defer agent.lock.Unlock()
 
-	game := agent.GetGame(symbol)
-	//所有情况都需要扣除水池值 记录赔付
-	game.TotalProfLoss = game.TotalProfLoss.Add(award)
-	//增加水池
-	game.TotalEffectBet = game.TotalEffectBet.Add(bet)
-	//触发更新
-	game.UpdateTime = time.Now().Unix()
-
 	user := agent.GetUser(uint32(userId))
-	//记录玩家有效投注
-	user.TotalEffectBet = user.TotalEffectBet.Add(bet)
-	//记录玩家局数
-	user.Count = user.Count.Add(decimal.NewFromInt(1))
-	user.UpdateTime = time.Now().Unix()
+	if user.IsTourist <= 0 {
+		game := agent.GetGame(symbol)
+		//所有情况都需要扣除水池值 记录赔付
+		game.TotalProfLoss = game.TotalProfLoss.Add(award)
+		//增加水池
+		game.TotalEffectBet = game.TotalEffectBet.Add(bet)
+		//触发更新
+		game.UpdateTime = time.Now().Unix()
+		//记录玩家有效投注
+		user.TotalEffectBet = user.TotalEffectBet.Add(bet)
+		//记录玩家局数
+		user.Count = user.Count.Add(decimal.NewFromInt(1))
+		user.UpdateTime = time.Now().Unix()
+	}
 	return true
 }
 
@@ -333,21 +338,24 @@ func (gcm *GameCacheMgr) GetPool(agentId int64, symbol string) decimal.Decimal {
 }
 
 // 保存注单信息
-func (gcm *GameCacheMgr) SaveRoundData(agentId int64, roundId string, maxPay decimal.Decimal) {
+func (gcm *GameCacheMgr) SaveRoundData(agentId int64, roundId string, maxPay decimal.Decimal, playerId uint32) {
 	agent := gcm.GetAgent(agentId)
 	//细分代理锁
 	agent.lock.RLock()
 	defer agent.lock.RUnlock()
 
-	if ri := agent.RoundCache[roundId]; ri != nil {
-		zap.L().Error("重复缓存对局数据", zap.Any("data", ri))
-	} else {
-		agent.RoundCache[roundId] = &RoundItem{
-			MaxPay:  maxPay,
-			Over:    false,
-			AgentId: agentId,
-			RoundId: roundId,
-			Saved:   false,
+	user := agent.GetUser(playerId)
+	if user != nil && user.IsTourist <= 0 {
+		if ri := agent.RoundCache[roundId]; ri != nil {
+			zap.L().Error("重复缓存对局数据", zap.Any("data", ri))
+		} else {
+			agent.RoundCache[roundId] = &RoundItem{
+				MaxPay:  maxPay,
+				Over:    false,
+				AgentId: agentId,
+				RoundId: roundId,
+				Saved:   false,
+			}
 		}
 	}
 }

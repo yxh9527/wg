@@ -72,7 +72,7 @@ func (d *DbDao) GetGamePlayer(agentId, id int64) *player.Player {
 	return p
 }
 
-func (d *DbDao) AddNewPlayer(agentId, webId int64, money float64, acc, nickName, ip, currencyType string) (*manager.User, *player.Player) {
+func (d *DbDao) AddNewPlayer(agentId, webId int64, money float64, acc, nickName, ip, currencyType string, isTourist int32) (*manager.User, *player.Player) {
 	txAgent := d.Manager.Begin()
 	n := time.Now().Unix()
 	u := &manager.User{
@@ -86,6 +86,7 @@ func (d *DbDao) AddNewPlayer(agentId, webId int64, money float64, acc, nickName,
 		UpdateTime:   int32(n),
 		CurrencyType: currencyType,
 		State:        1,
+		IsTourist:    isTourist,
 	}
 	rAgent := txAgent.Create(u)
 	if e := rAgent.Error; e != nil {
@@ -107,6 +108,7 @@ func (d *DbDao) AddNewPlayer(agentId, webId int64, money float64, acc, nickName,
 		LoginIp:      ip,
 		LoginTime:    time.Now().Unix(),
 		CurrencyType: currencyType,
+		IsTourist:    isTourist,
 	}
 	if err := d.Player.Create(ui).Error; err != nil {
 		zap.L().Error("插入新玩家数据失败", zap.Any("err", err))

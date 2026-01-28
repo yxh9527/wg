@@ -13,4 +13,5 @@ type Session struct {
 	LastAuthTime int64  `json:"lastAuthTime"`
 	AuthCount    int64  `json:"authCount"`
 	CurrencyType string `json:"currencyType"`
+	IsTourist    int32  `json:"isTourist"`
 }

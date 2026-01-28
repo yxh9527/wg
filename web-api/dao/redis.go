@@ -332,6 +332,7 @@ func (rd *RedisDao) Subscribe(channel string, registryInfo func() *event.EventMg
 			if err := jsoniter.UnmarshalFromString(msg.Payload, pack); err != nil {
 				zap.L().Error("收到无法解析的推送", zap.Any("msg", msg.Payload), zap.Any("err", err))
 			} else {
+				zap.L().Debug("收到事件广播", zap.Any("data", pack))
 				event.OnEvent(pack)
 			}
 		}

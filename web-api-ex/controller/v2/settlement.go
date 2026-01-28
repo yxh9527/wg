@@ -67,6 +67,7 @@ func SettlementList(ctx *gin.Context) {
 	if nickName != "" {
 		querys = append(querys, elastic.NewMatchQuery("nickName", nickName))
 	}
+	querys = append(querys, elastic.NewRangeQuery("isTourist").Lte(0))
 	boolQuery := elastic.NewBoolQuery().Must(querys...)
 	resp, err := dao.Es().Search().Index("pp_gp_settlement").
 		FetchSourceContext(elastic.NewFetchSourceContext(true).Exclude("init", "log")).

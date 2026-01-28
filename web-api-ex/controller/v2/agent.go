@@ -404,6 +404,7 @@ func UserChart(ctx *gin.Context) {
 	querys := make([]elastic.Query, 0, 16)
 	querys = append(querys, elastic.NewRangeQuery("playedDate").Gte(startTime*1000).Lt(endTime*1000))
 	querys = append(querys, elastic.NewTermQuery("userId", userId))
+	querys = append(querys, elastic.NewRangeQuery("isTourist").Lte(0))
 	boolQuery := elastic.NewBoolQuery().Must(querys...)
 	resp, err := dao.Es().Search().Index("pp_gp_settlement").
 		FetchSourceContext(elastic.NewFetchSourceContext(true).Include("bet", "exBet", "exWin", "win", "playedDate", "symbol")).

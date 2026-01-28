@@ -110,11 +110,12 @@ func (dd *DBDao) GetGameList() *services.GetGameListResp {
 			Symbol: g.ConfName,
 			State:  int32(g.State),
 		})
-		if g.ShowType == 1 {
+		switch g.ShowType {
+		case 1:
 			result.Hot = append(result.Hot, g.ConfName)
-		} else if g.ShowType == 2 {
+		case 2:
 			result.New = append(result.New, g.ConfName)
-		} else if g.ShowType == 3 {
+		case 3:
 			result.Recommend = append(result.Recommend, g.ConfName)
 		}
 	}

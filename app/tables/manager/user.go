@@ -21,6 +21,7 @@ type User struct {
 	CurrencyType  string  `gorm:"column:currencyType;size:30;" json:"currencyType"`
 	Revenue       float64 `gorm:"column:revenue;default:0" json:"revenue"`
 	InCtl         byte    `gorm:"column:isCtl;default:0;comment:是否在控制中 0 否  1 是" json:"isCtl"`
+	IsTourist     int32   `gorm:"column:isTourist;default:0;comment:是否是游客账户 0 否  1 是" json:"isTourist"`
 }
 
 func (t *User) TableName() string {

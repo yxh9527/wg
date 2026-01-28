@@ -39,6 +39,7 @@ type CacheRecordsReq struct {
 	GameName       string  `json:"gameName"`
 	Chips          float64 `json:"chips"`
 	Complete       bool    `json:"complete"`
+	IsTourist      int32   `json:"isTourist"`
 }
 
 type CommonRecord struct {
@@ -78,6 +79,7 @@ type ClientRecordsReq struct {
 	BalanceCash    string `json:"balance_cash"`
 	BalanceBonus   string `json:"balance_bonus"`
 	RowVersion     int64  `json:"rowVersion"`
+	IsTourist      int32  `json:"isTourist"`
 }
 
 type CacheBillsReq struct {

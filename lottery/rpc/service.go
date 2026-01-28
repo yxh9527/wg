@@ -49,6 +49,7 @@ type GameObject struct {
 }
 
 type LotteryService struct {
+	services.UnimplementedLotteryServiceServer
 	db  *dao.DBDao
 	rds *dao.RedisDao
 	es  *dao.ESDao
@@ -549,7 +550,7 @@ func (d *LotteryService) Bet(webId uint32, exchange decimal.Decimal, ur *entity.
 	nc := decimal.NewFromInt(newCurrency).Div(decimal.NewFromInt(100))
 	dao.CacheIns().Bet(int64(req.AgentId), int32(req.PlayerId), pc, req.Symbol, req.CurrencyType, exBet, exAward)
 	if exAwardMax.GreaterThan(decimal.Zero) {
-		dao.CacheIns().SaveRoundData(int64(req.AgentId), ur.Common.RecordId, exAwardMax)
+		dao.CacheIns().SaveRoundData(int64(req.AgentId), ur.Common.RecordId, exAwardMax, req.PlayerId)
 	}
 	d.SaveRecord(ConvertRecord(ur, req, nc, uint32(webId), req.Complete))
 	if bet.GreaterThan(decimal.Zero) {

@@ -21,4 +21,5 @@ type Settlement struct {
 	Hash            string  `json:"hash"`
 	Complete        bool    `json:"complete"`
 	Symbol          string  `json:"symbol"`
+	IsTourist       int32   `json:"isTourist"`
 }

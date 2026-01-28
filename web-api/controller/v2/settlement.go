@@ -129,6 +129,7 @@ func SettlementListWithAgentId(ctx *gin.Context) {
 		querys = append(querys, elastic.NewMatchPhraseQuery("roundID", officeNumber))
 	}
 	querys = append(querys, elastic.NewTermQuery("agentId", agentId))
+	querys = append(querys, elastic.NewRangeQuery("isTourist").Lte(0))
 	boolQuery := elastic.NewBoolQuery().Must(querys...)
 	resp, _ := dao.Es().Search().Index("pp_gp_settlement").
 		Query(boolQuery).
@@ -194,6 +195,7 @@ func ExportSettlmentCountWithAgentId(ctx *gin.Context) {
 	if nickName != "" {
 		querys = append(querys, elastic.NewMatchQuery("nickName", nickName))
 	}
+	querys = append(querys, elastic.NewRangeQuery("isTourist").Lte(0))
 	boolQuery := elastic.NewBoolQuery().Must(querys...)
 	aggs := elastic.NewValueCountAggregation().Field("roundID")
 	resp, err := dao.Es().Search().Index("pp_gp_settlement").
@@ -261,6 +263,7 @@ func ExportSettlementsWithAgentId(ctx *gin.Context) {
 	if nickName != "" {
 		querys = append(querys, elastic.NewMatchQuery("nickName", nickName))
 	}
+	querys = append(querys, elastic.NewRangeQuery("isTourist").Lte(0))
 	boolQuery := elastic.NewBoolQuery().Must(querys...)
 	resp, err := dao.Es().Search().Index("pp_gp_settlement").
 		FetchSourceContext(elastic.NewFetchSourceContext(true).Exclude("init", "log")).

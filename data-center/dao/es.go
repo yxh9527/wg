@@ -55,7 +55,7 @@ func (esDao *ESDao) BulkGameStateSave(data []*services.SaveGameStateReq) error {
 	bulkService := esDao.es.Bulk()
 	records := make([]elastic.BulkableRequest, 0)
 	for _, req := range data {
-		records = append(records, elastic.NewBulkIndexRequest().Index("pp_game_states").Id(fmt.Sprintf("%d-%s", req.UserId, req.Symbol)).Doc(req))
+		records = append(records, elastic.NewBulkIndexRequest().Index("pp_game_states").Id(fmt.Sprintf("%d-%s-%s", req.UserId, req.Symbol, req.Currency)).Doc(req))
 	}
 	bulkService.Add(records...)
 	_, err := bulkService.Do(context.Background())
@@ -69,6 +69,7 @@ func (esDao *ESDao) GetGameState(req *services.GetGameStateReq) *services.SaveGa
 	querys := make([]elastic.Query, 0)
 	querys = append(querys, elastic.NewTermQuery("userId", req.UserId))
 	querys = append(querys, elastic.NewTermQuery("symbol", req.Symbol))
+	querys = append(querys, elastic.NewMatchPhraseQuery("currency", req.Currency))
 	boolQuery := elastic.NewBoolQuery().Must(querys...)
 	resp, err := esDao.es.Search().Index("pp_game_states").
 		Query(boolQuery).
@@ -91,7 +92,7 @@ func (esDao *ESDao) GetGameState(req *services.GetGameStateReq) *services.SaveGa
 	return nil
 }
 
-func (esDao *ESDao) GetRecords(userId int64, symbol, hash string) []*services.RecordItem {
+func (esDao *ESDao) GetRecords(userId int64, symbol, hash, currency string) []*services.RecordItem {
 	querys := make([]elastic.Query, 0)
 	if hash != "" {
 		querys = append(querys, elastic.NewTermQuery("hash", hash))
@@ -100,10 +101,13 @@ func (esDao *ESDao) GetRecords(userId int64, symbol, hash string) []*services.Re
 		querys = append(querys, elastic.NewTermQuery("symbol", symbol))
 		querys = append(querys, elastic.NewTermQuery("complete", true))
 	}
+	if currency != "" {
+		querys = append(querys, elastic.NewMatchPhraseQuery("currency", currency))
+	}
 	boolQuery := elastic.NewBoolQuery().Must(querys...)
 	var sorce []string = nil
 	if hash == "" {
-		sorce = []string{"userId", "agentId", "bet", "currency", "currencySymbol", "base_bet", "win", "rtp", "playedDate", "roundID", "symbol", "hash", "balance", "balance_cash", "balance_bonus"}
+		sorce = []string{"userId", "agentId", "bet", "currency", "currencySymbol", "base_bet", "win", "rtp", "playedDate", "roundID", "symbol", "hash", "balance", "balance_cash", "balance_bonus", "isTourist"}
 	} else {
 		sorce = []string{"init", "log"}
 	}
