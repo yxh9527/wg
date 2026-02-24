@@ -7,7 +7,7 @@ type Bill struct {
 	UserId         int64           `json:"userId"`
 	GameId         int             `json:"gameId"`
 	Symbol         string          `json:"symbol"`
-	OfficeNumber   int64           `json:"roundId"`
+	OfficeNumber   string          `json:"roundId"`
 	Bets           decimal.Decimal `json:"bet"`
 	UserScore      decimal.Decimal `json:"currentScore"`
 	FlowingWaterOn string          `json:"flowingWaterOn"`

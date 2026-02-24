@@ -58,7 +58,7 @@ type SettlementRecord struct {
 	GameId         int64   `json:"gameId"`
 	AgentId        int64   `json:"agentId"`
 	PlayedDate     int64   `json:"playedDate"`
-	RoundId        int64   `json:"roundID"`
+	RoundId        string  `json:"roundID"`
 	Bet            float64 `json:"bet"`
 	Win            float64 `json:"win"`
 	Balance        float64 `json:"balance"`

@@ -5,7 +5,7 @@ package entity
 type RecordLog struct {
 	CR      string `json:"cr"`
 	SR      string `json:"sr"`
-	RoundId int64  `json:"roundId"`
+	RoundId string `json:"roundId"`
 }
 
 type CacheRecordsReq struct {
