@@ -392,7 +392,7 @@ type RecordItem struct {
 	Win            float64                `protobuf:"fixed64,7,opt,name=win,proto3" json:"win,omitempty"`
 	Rtp            float64                `protobuf:"fixed64,8,opt,name=rtp,proto3" json:"rtp,omitempty"`
 	PlayedDate     int64                  `protobuf:"varint,9,opt,name=playedDate,proto3" json:"playedDate,omitempty"`
-	RoundID        int64                  `protobuf:"varint,10,opt,name=roundID,proto3" json:"roundID,omitempty"`
+	RoundID        string                 `protobuf:"bytes,10,opt,name=roundID,proto3" json:"roundID,omitempty"`
 	Init           string                 `protobuf:"bytes,11,opt,name=init,proto3" json:"init,omitempty"`
 	Log            []*RecordLog           `protobuf:"bytes,12,rep,name=log,proto3" json:"log,omitempty"`       //详细
 	Symbol         string                 `protobuf:"bytes,13,opt,name=symbol,proto3" json:"symbol,omitempty"` //游戏id
@@ -497,11 +497,11 @@ func (x *RecordItem) GetPlayedDate() int64 {
 	return 0
 }
 
-func (x *RecordItem) GetRoundID() int64 {
+func (x *RecordItem) GetRoundID() string {
 	if x != nil {
 		return x.RoundID
 	}
-	return 0
+	return ""
 }
 
 func (x *RecordItem) GetInit() string {
@@ -609,7 +609,7 @@ type RecordLog struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Cr            string                 `protobuf:"bytes,1,opt,name=cr,proto3" json:"cr,omitempty"`
 	Sr            string                 `protobuf:"bytes,2,opt,name=sr,proto3" json:"sr,omitempty"`
-	RoundId       int64                  `protobuf:"varint,3,opt,name=roundId,proto3" json:"roundId,omitempty"`
+	RoundId       string                 `protobuf:"bytes,3,opt,name=roundId,proto3" json:"roundId,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -658,11 +658,11 @@ func (x *RecordLog) GetSr() string {
 	return ""
 }
 
-func (x *RecordLog) GetRoundId() int64 {
+func (x *RecordLog) GetRoundId() string {
 	if x != nil {
 		return x.RoundId
 	}
-	return 0
+	return ""
 }
 
 type GetPlayerReq struct {
@@ -1187,7 +1187,7 @@ const file_datacenter_proto_rawDesc = "" +
 	"playedDate\x18\t \x01(\x03R\n" +
 	"playedDate\x12\x18\n" +
 	"\aroundID\x18\n" +
-	" \x01(\x03R\aroundID\x12\x12\n" +
+	" \x01(\tR\aroundID\x12\x12\n" +
 	"\x04init\x18\v \x01(\tR\x04init\x12'\n" +
 	"\x03log\x18\f \x03(\v2\x15.datacenter.RecordLogR\x03log\x12\x16\n" +
 	"\x06symbol\x18\r \x01(\tR\x06symbol\x12\x18\n" +
@@ -1201,7 +1201,7 @@ const file_datacenter_proto_rawDesc = "" +
 	"\tRecordLog\x12\x0e\n" +
 	"\x02cr\x18\x01 \x01(\tR\x02cr\x12\x0e\n" +
 	"\x02sr\x18\x02 \x01(\tR\x02sr\x12\x18\n" +
-	"\aroundId\x18\x03 \x01(\x03R\aroundId\"D\n" +
+	"\aroundId\x18\x03 \x01(\tR\aroundId\"D\n" +
 	"\fGetPlayerReq\x12\x1a\n" +
 	"\bPlayerId\x18\x01 \x01(\rR\bPlayerId\x12\x18\n" +
 	"\aFactory\x18\x02 \x01(\rR\aFactory\"F\n" +

@@ -9,4 +9,8 @@ enum error_code {
     GAME_FROZEN = 1;//游戏暂停服务
     AGENT_FROZEN = 2;//代理被冻结
     SYSTEM_ERROR = 3;//系统错误
+    PARAMS_INVALID = 4;
+    USER_LOGIN_ERROR = 5;
+    AUTH_PARSING_FAILED = 6;
+    AUTH_TOKEN_INVALID = 7;
 }

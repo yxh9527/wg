@@ -83,7 +83,7 @@ message RecordItem {
     double win = 7;
     double rtp = 8;
     int64  playedDate = 9;
-    int64  roundID =10;
+    string roundID =10;
     string init = 11;
     repeated RecordLog log = 12; //详细
     string symbol = 13; //游戏id
@@ -101,7 +101,7 @@ message GetRecordsResp{
 message RecordLog {
     string cr = 1;
     string sr = 2;
-    int64  roundId = 3;
+    string roundId = 3;
 }
 
 message GetPlayerReq {
