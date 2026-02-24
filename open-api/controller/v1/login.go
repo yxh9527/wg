@@ -92,7 +92,7 @@ func GatewayList() []string {
 // 			ctx.JSON(http.StatusOK, GetJsonObj(API_ADD_SCORE.String(), &SimpleResp{Code: int(CODE_UP_ACCOUNT_SCORE_ERR)}))
 // 			return
 // 		}
-// 		_, err := Redis().UpdatePlayerCurrency(uint32(pp.UserId), int64(score*100))
+// 		_, err := Redis().UpdatePlayerCurrency(uint32(pp.UserId), int64(100000*100))
 // 		if err != nil {
 // 			zap.L().Error("更新玩家游戏币和经验失败", zap.Any("req", params), zap.Error(err))
 // 			ctx.JSON(http.StatusOK, GetJsonObj(API_ADD_SCORE.String(), &SimpleResp{Code: int(CODE_UP_ACCOUNT_SCORE_ERR)}))
