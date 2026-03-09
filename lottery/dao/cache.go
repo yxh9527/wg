@@ -42,7 +42,7 @@ type Game struct {
 	TotalRevenue   decimal.Decimal //总税收
 	UpdateTime     int64           //更新时间
 	AgentId        int64           //代理id
-	Symbole        string          //游戏标识
+	Symbol         string          //游戏标识
 }
 
 type Ctrl struct {
@@ -66,6 +66,7 @@ type RoundItem struct {
 type AgentData struct {
 	lock       *sync.RWMutex
 	Id         int64
+	WebId      int64
 	gameCache  map[string]*Game      //key:{symbol}
 	userCache  map[uint32]*User      //
 	RoundCache map[string]*RoundItem //key:注单号 value:最大赔付值
@@ -113,7 +114,7 @@ func (ad *AgentData) GetGame(symbol string) *Game {
 
 func (ad *AgentData) SetGame(symbol string, g *Game) {
 	g.AgentId = ad.Id
-	g.Symbole = symbol
+	g.Symbol = symbol
 	ad.gameCache[symbol] = g
 }
 
@@ -301,7 +302,7 @@ func (gcm *GameCacheMgr) ReturnPool(agentId int64, userId uint32, symbol string,
 }
 
 // 下注
-func (gcm *GameCacheMgr) Bet(agentId int64, userId int32, pc *config.Pool, symbol, currencyType string, bet, award decimal.Decimal) bool {
+func (gcm *GameCacheMgr) ChangePool(agentId int64, userId int32, symbol, currencyType string, bet, award decimal.Decimal) bool {
 	agent := gcm.GetAgent(agentId)
 	//细分代理锁
 	agent.lock.Lock()
@@ -358,6 +359,19 @@ func (gcm *GameCacheMgr) SaveRoundData(agentId int64, roundId string, maxPay dec
 			}
 		}
 	}
+}
+
+func (gcm *GameCacheMgr) GetPlayerAccount(agentId, userId int64) string {
+	agent := gcm.GetAgent(agentId)
+	//细分代理锁
+	agent.lock.RLock()
+	defer agent.lock.RUnlock()
+
+	user := agent.GetUser(uint32(userId))
+	if user != nil {
+		return user.Account
+	}
+	return ""
 }
 
 // 获取注单信息
@@ -540,7 +554,7 @@ func SaveAgentData(games []*Game) {
 	for _, item := range games {
 		zap.L().Debug("定时缓存代理数据", zap.Any("item", item))
 		if item.UpdateTime > 0 {
-			key := fmt.Sprintf("%d_%s", item.AgentId, item.Symbole)
+			key := fmt.Sprintf("%d_%s", item.AgentId, item.Symbol)
 			n++
 			piple.ZAdd(context.Background(), "agent_effect_data", redis.Z{Score: item.TotalEffectBet.InexactFloat64(), Member: key})
 			piple.ZAdd(context.Background(), "agent_chips_data", redis.Z{Score: item.TotalChips.InexactFloat64(), Member: key})

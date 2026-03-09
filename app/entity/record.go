@@ -52,9 +52,14 @@ type ConnectionRecord struct {
 	WinLoseGold float64 `json:"winLoseGold"`
 }
 
+type BetRecord struct {
+	TotalBetGold float64 `json:"totalBetGold"`
+}
+
 type UserRecordInfo struct {
 	Common     *CommonRecord     `json:"commonRecord"`
 	Connection *ConnectionRecord `json:"connectionRecord"`
+	BetRecord  *BetRecord        `json:"betRecord"`
 }
 
 type ClientRecordsReq struct {

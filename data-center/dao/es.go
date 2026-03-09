@@ -51,47 +51,6 @@ func (esDao *ESDao) BulkBillsSave(data []*entity.CacheBillsReq) error {
 	return nil
 }
 
-func (esDao *ESDao) BulkGameStateSave(data []*services.SaveGameStateReq) error {
-	bulkService := esDao.es.Bulk()
-	records := make([]elastic.BulkableRequest, 0)
-	for _, req := range data {
-		records = append(records, elastic.NewBulkIndexRequest().Index("pp_game_states").Id(fmt.Sprintf("%d-%s-%s", req.UserId, req.Symbol, req.Currency)).Doc(req))
-	}
-	bulkService.Add(records...)
-	_, err := bulkService.Do(context.Background())
-	if err != nil {
-		zap.L().Error("BulkGameStateSave,批量插入数据失败", zap.Any("err", err), zap.Any("data", data))
-	}
-	return nil
-}
-
-func (esDao *ESDao) GetGameState(req *services.GetGameStateReq) *services.SaveGameStateReq {
-	querys := make([]elastic.Query, 0)
-	querys = append(querys, elastic.NewTermQuery("userId", req.UserId))
-	querys = append(querys, elastic.NewTermQuery("symbol", req.Symbol))
-	querys = append(querys, elastic.NewMatchPhraseQuery("currency", req.Currency))
-	boolQuery := elastic.NewBoolQuery().Must(querys...)
-	resp, err := esDao.es.Search().Index("pp_game_states").
-		Query(boolQuery).
-		Pretty(true).
-		Do(context.Background())
-	if err != nil {
-		zap.L().Error("获取游戏状态失败", zap.Any("err", err))
-		return nil
-	}
-	records := make([]*services.SaveGameStateReq, 0, 8)
-	for _, v := range resp.Hits.Hits {
-		b, _ := v.Source.MarshalJSON()
-		r := &services.SaveGameStateReq{}
-		json.Unmarshal(b, r)
-		records = append(records, r)
-	}
-	if len(records) > 0 {
-		return records[0]
-	}
-	return nil
-}
-
 func (esDao *ESDao) GetRecords(userId int64, symbol, hash, currency string) []*services.RecordItem {
 	querys := make([]elastic.Query, 0)
 	if hash != "" {

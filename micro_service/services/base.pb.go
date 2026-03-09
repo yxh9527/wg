@@ -24,10 +24,15 @@ const (
 type ErrorCode int32
 
 const (
-	ErrorCode_OK           ErrorCode = 0
-	ErrorCode_GAME_FROZEN  ErrorCode = 1 //游戏暂停服务
-	ErrorCode_AGENT_FROZEN ErrorCode = 2 //代理被冻结
-	ErrorCode_SYSTEM_ERROR ErrorCode = 3 //系统错误
+	ErrorCode_OK                   ErrorCode = 0
+	ErrorCode_GAME_FROZEN          ErrorCode = 1 //游戏暂停服务
+	ErrorCode_AGENT_FROZEN         ErrorCode = 2 //代理被冻结
+	ErrorCode_SYSTEM_ERROR         ErrorCode = 3 //系统错误
+	ErrorCode_PARAMS_INVALID       ErrorCode = 4
+	ErrorCode_USER_LOGIN_ERROR     ErrorCode = 5
+	ErrorCode_AUTH_PARSING_FAILED  ErrorCode = 6
+	ErrorCode_AUTH_TOKEN_INVALID   ErrorCode = 7
+	ErrorCode_NO_ENOUGH_POOL_MONEY ErrorCode = 8 //没有足够水池值
 )
 
 // Enum value maps for ErrorCode.
@@ -37,12 +42,22 @@ var (
 		1: "GAME_FROZEN",
 		2: "AGENT_FROZEN",
 		3: "SYSTEM_ERROR",
+		4: "PARAMS_INVALID",
+		5: "USER_LOGIN_ERROR",
+		6: "AUTH_PARSING_FAILED",
+		7: "AUTH_TOKEN_INVALID",
+		8: "NO_ENOUGH_POOL_MONEY",
 	}
 	ErrorCode_value = map[string]int32{
-		"OK":           0,
-		"GAME_FROZEN":  1,
-		"AGENT_FROZEN": 2,
-		"SYSTEM_ERROR": 3,
+		"OK":                   0,
+		"GAME_FROZEN":          1,
+		"AGENT_FROZEN":         2,
+		"SYSTEM_ERROR":         3,
+		"PARAMS_INVALID":       4,
+		"USER_LOGIN_ERROR":     5,
+		"AUTH_PARSING_FAILED":  6,
+		"AUTH_TOKEN_INVALID":   7,
+		"NO_ENOUGH_POOL_MONEY": 8,
 	}
 )
 
@@ -78,13 +93,18 @@ var File_base_proto protoreflect.FileDescriptor
 const file_base_proto_rawDesc = "" +
 	"\n" +
 	"\n" +
-	"base.proto\x12\x04base*I\n" +
+	"base.proto\x12\x04base*\xbe\x01\n" +
 	"\n" +
 	"error_code\x12\x06\n" +
 	"\x02OK\x10\x00\x12\x0f\n" +
 	"\vGAME_FROZEN\x10\x01\x12\x10\n" +
 	"\fAGENT_FROZEN\x10\x02\x12\x10\n" +
-	"\fSYSTEM_ERROR\x10\x03B\x15Z\x13./services;servicesb\x06proto3"
+	"\fSYSTEM_ERROR\x10\x03\x12\x12\n" +
+	"\x0ePARAMS_INVALID\x10\x04\x12\x14\n" +
+	"\x10USER_LOGIN_ERROR\x10\x05\x12\x17\n" +
+	"\x13AUTH_PARSING_FAILED\x10\x06\x12\x16\n" +
+	"\x12AUTH_TOKEN_INVALID\x10\a\x12\x18\n" +
+	"\x14NO_ENOUGH_POOL_MONEY\x10\bB\x15Z\x13./services;servicesb\x06proto3"
 
 var (
 	file_base_proto_rawDescOnce sync.Once

@@ -33,17 +33,6 @@ type RecordCacheMgr struct {
 	records map[string]*RecordItem
 }
 
-type GameStateItem struct {
-	State   *services.SaveGameStateReq
-	TimeOut int64
-	Delete  int64
-}
-
-type GameStatesCacheMgr struct {
-	lock       *sync.RWMutex
-	gameStates map[string]*GameStateItem //key:userid-symbol
-}
-
 type GameObject struct {
 	Record *entity.ClientRecordsReq `json:"record"`
 }
@@ -54,14 +43,12 @@ type LotteryService struct {
 	rds *dao.RedisDao
 	es  *dao.ESDao
 
-	pcr           *PoolChangeRecord
-	GameStateChan chan *services.SaveGameStateReq
-	poolChange    chan *view.PoolLogItem
-	RecordChan    chan *entity.CacheRecordsReq
-	BillChan      chan *entity.CacheBillsReq
+	pcr        *PoolChangeRecord
+	poolChange chan *view.PoolLogItem
+	RecordChan chan *entity.CacheRecordsReq
+	BillChan   chan *entity.CacheBillsReq
 
 	recordsCache *RecordCacheMgr
-	gameStates   *GameStatesCacheMgr
 }
 
 type PoolChangeRecord struct {
@@ -85,23 +72,20 @@ func (p *PoolChangeRecord) Reset() {
 
 func NewLotteryService(es *elastic.Client) *LotteryService {
 	tmp := &LotteryService{
-		db:            dao.NewDBDao(),
-		rds:           dao.RedisIns(),
-		es:            dao.NewESDao(es),
-		poolChange:    make(chan *view.PoolLogItem, 1024),
-		GameStateChan: make(chan *services.SaveGameStateReq, 10240),
-		RecordChan:    make(chan *entity.CacheRecordsReq, 10240),
-		BillChan:      make(chan *entity.CacheBillsReq, 1024),
+		db:         dao.NewDBDao(),
+		rds:        dao.RedisIns(),
+		es:         dao.NewESDao(es),
+		poolChange: make(chan *view.PoolLogItem, 1024),
+		RecordChan: make(chan *entity.CacheRecordsReq, 10240),
+		BillChan:   make(chan *entity.CacheBillsReq, 1024),
 		pcr: &PoolChangeRecord{
 			lock:   &sync.RWMutex{},
 			record: make(map[string]decimal.Decimal),
 		},
 	}
 	tmp.initRecordsCache()
-	tmp.initStatesCache()
 	tmp.producterPoolLog()
 	tmp.consumerPool()
-	tmp.consumerGameState()
 	tmp.consumerRecord()
 	tmp.consumerBill()
 	return tmp
@@ -190,90 +174,6 @@ func (d *LotteryService) initRecordsCache() {
 	}
 }
 
-func (d *LotteryService) initStatesCache() {
-	if d.gameStates == nil {
-		d.gameStates = &GameStatesCacheMgr{
-			lock:       &sync.RWMutex{},
-			gameStates: make(map[string]*GameStateItem),
-		}
-		go func() {
-			defer func() {
-				if err := recover(); err != nil {
-					zap.L().Error("panic", zap.Any("err", err))
-				}
-			}()
-			ticker := time.NewTicker(5 * time.Second)
-			defer ticker.Stop()
-			for range ticker.C {
-				tmp := make([]*services.SaveGameStateReq, 0, 1024)
-				d.gameStates.lock.Lock()
-				n := time.Now().Unix()
-				for key, item := range d.gameStates.gameStates {
-					if n-item.TimeOut > 0 {
-						//超时保存
-						if item.Delete == 0 {
-							tmp = append(tmp, item.State)
-							item.Delete = n
-						} else {
-							if n-item.Delete > 5*60 {
-								delete(d.gameStates.gameStates, key)
-							}
-						}
-					} else {
-						item.Delete = 0
-					}
-				}
-				zap.L().Debug("清理游戏状态缓存成功")
-				d.gameStates.lock.Unlock()
-				for _, v := range tmp {
-					d.GameStateChan <- v
-				}
-			}
-		}()
-	}
-}
-
-// 获取游戏状态
-func (d *LotteryService) getGameState(userId int64, symbol string) string {
-	key := fmt.Sprintf("%d-%s", userId, symbol)
-	d.gameStates.lock.Lock()
-	if s, ok := d.gameStates.gameStates[key]; ok {
-		s.TimeOut = time.Now().Unix() + 2*60
-		d.gameStates.lock.Unlock()
-		return s.State.Data
-	}
-	d.gameStates.lock.Unlock()
-
-	req := d.es.GetGameState(&services.GetGameStateReq{UserId: uint32(userId), Symbol: symbol})
-	if req != nil {
-		state := req.Data
-		d.gameStates.lock.Lock()
-		if s, ok := d.gameStates.gameStates[key]; !ok {
-			d.gameStates.gameStates[key] = &GameStateItem{
-				TimeOut: time.Now().Unix() + 2*60,
-				State:   req,
-			}
-		} else {
-			state = s.State.Data
-			s.TimeOut = time.Now().Unix() + 2*60
-		}
-		d.gameStates.lock.Unlock()
-		return state
-	}
-	return ""
-}
-
-// 保存游戏状态
-func (d *LotteryService) SaveGameState(req *services.SaveGameStateReq) {
-	d.gameStates.lock.Lock()
-	defer d.gameStates.lock.Unlock()
-
-	d.gameStates.gameStates[fmt.Sprintf("%d-%s", req.UserId, req.Symbol)] = &GameStateItem{
-		TimeOut: time.Now().Unix() + 2*60,
-		State:   req,
-	}
-}
-
 func (d *LotteryService) consumerPool() {
 	gw := &sync.WaitGroup{}
 	gw.Add(1)
@@ -296,38 +196,6 @@ func (d *LotteryService) consumerPool() {
 				if len(data) >= 32 {
 					d.BulkPoolLog(data)
 					data = make([]*view.PoolLogItem, 0, 64)
-				}
-			}
-		}
-	}()
-	gw.Wait()
-}
-
-func (d *LotteryService) consumerGameState() {
-	gw := &sync.WaitGroup{}
-	gw.Add(1)
-	go func() {
-		defer func() {
-			if e := recover(); e != nil {
-				zap.L().Error("syncSaveGameState,数据落地协程panic", zap.Any("recover", e))
-			}
-		}()
-		gw.Done()
-		data := make([]*services.SaveGameStateReq, 0, 64)
-		//十秒写一次
-		t := time.NewTicker(10 * time.Second)
-		for {
-			select {
-			case <-t.C:
-				if len(data) > 0 {
-					d.es.BulkGameStateSave(data)
-					data = make([]*services.SaveGameStateReq, 0, 64)
-				}
-			case req := <-d.GameStateChan:
-				data = append(data, req)
-				if len(data) >= 16 {
-					d.es.BulkGameStateSave(data)
-					data = make([]*services.SaveGameStateReq, 0, 64)
 				}
 			}
 		}
@@ -481,22 +349,8 @@ func (d *LotteryService) updatePlayerCurrency(id uint32, delta int64) (int64, er
 	return newCurrency, nil
 }
 
-// 获取游戏状态
-func (d *LotteryService) GetGameState(_ context.Context, req *services.GetGameStateReq) (resp *services.GetGameStateResp, err error) {
-	defer func() {
-		if err := recover(); err != nil {
-			zap.L().Error("panic", zap.Any("err", err))
-		}
-	}()
-	resp = &services.GetGameStateResp{
-		Code: services.ErrorCode_OK,
-		Data: d.getGameState(int64(req.UserId), req.Symbol),
-	}
-	return resp, nil
-}
-
 // 下注
-func (d *LotteryService) Bet(webId uint32, exchange decimal.Decimal, ur *entity.UserRecordInfo, req *services.LotteryReq) (int64, bool) {
+func (d *LotteryService) SlotsBet(webId uint32, exchange decimal.Decimal, ur *entity.UserRecordInfo, req *services.SlotsLotteryReq) (int64, bool) {
 	var newCurrency int64 = 0
 	award, _ := decimal.NewFromString(req.ProfitLoss)
 	bet, _ := decimal.NewFromString(req.Bet)
@@ -548,11 +402,12 @@ func (d *LotteryService) Bet(webId uint32, exchange decimal.Decimal, ur *entity.
 	}
 	//
 	nc := decimal.NewFromInt(newCurrency).Div(decimal.NewFromInt(100))
-	dao.CacheIns().Bet(int64(req.AgentId), int32(req.PlayerId), pc, req.Symbol, req.CurrencyType, exBet, exAward)
+	dao.CacheIns().ChangePool(int64(req.AgentId), int32(req.PlayerId), req.Symbol, req.CurrencyType, exBet, exAward)
 	if exAwardMax.GreaterThan(decimal.Zero) {
 		dao.CacheIns().SaveRoundData(int64(req.AgentId), ur.Common.RecordId, exAwardMax, req.PlayerId)
 	}
-	d.SaveRecord(ConvertRecord(ur, req, nc, uint32(webId), req.Complete))
+	record := ConvertRecord(uint32(req.AgentId), req.PlayerId, ur.Common.RecordId, req.CurrencyType, req.Symbol, req.Account, req.State, nc, uint32(webId), req.Complete, ur.BetRecord.TotalBetGold, ur.Common.DispatchRewardGold)
+	d.SaveRecord(record)
 	if bet.GreaterThan(decimal.Zero) {
 		//下注流水
 		d.SaveBill(uint32(req.AgentId), req.PlayerId, bet.Neg(), nc.Truncate(2).InexactFloat64(), req.Symbol, "下注", req.CurrencyType, ur.Common.RecordId)
@@ -568,7 +423,7 @@ func (d *LotteryService) Bet(webId uint32, exchange decimal.Decimal, ur *entity.
 }
 
 // 注单结束
-func (d *LotteryService) Complete(webId uint32, exchange decimal.Decimal, ur *entity.UserRecordInfo, req *services.LotteryReq) (int64, bool) {
+func (d *LotteryService) Complete(webId uint32, exchange decimal.Decimal, ur *entity.UserRecordInfo, req *services.SlotsLotteryReq) (int64, bool) {
 	//获取注单信息
 	zap.L().Debug("Complete:收到注单结束请求",
 		zap.Any("agentId", req.AgentId),
@@ -588,7 +443,7 @@ func (d *LotteryService) Complete(webId uint32, exchange decimal.Decimal, ur *en
 	}
 	nc := decimal.NewFromInt(newCurrency).Div(decimal.NewFromInt(100))
 	//保存注单信息
-	record := ConvertRecord(ur, req, nc, uint32(webId), req.Complete)
+	record := ConvertRecord(uint32(req.AgentId), req.PlayerId, ur.Common.RecordId, req.CurrencyType, req.Symbol, req.Account, req.State, nc, uint32(webId), req.Complete, ur.BetRecord.TotalBetGold, ur.Common.DispatchRewardGold)
 	d.SaveRecord(record)
 	bet := decimal.NewFromFloat(record.ExBet)
 	award := decimal.NewFromFloat(record.ExWin)
@@ -620,11 +475,11 @@ func (d *LotteryService) Complete(webId uint32, exchange decimal.Decimal, ur *en
 	return newCurrency, true
 }
 
-func ConvertRecord(data *entity.UserRecordInfo, req *services.LotteryReq, newCurrency decimal.Decimal, webId uint32, complete bool) *entity.CacheRecordsReq {
-	rate, _ := config.CfgIns.GetExchange(req.CurrencyType)
-	p := config.CfgIns.GetPoolCfg(int64(req.AgentId), req.Symbol)
-	bet := decimal.NewFromFloat(data.Connection.BetGold)
-	award := decimal.NewFromFloat(data.Connection.WinLoseGold)
+func ConvertRecord(agentId, userId uint32, recordId, currencyType, symbol, account, log string, newCurrency decimal.Decimal, webId uint32, complete bool, totalBet, win float64) *entity.CacheRecordsReq {
+	rate, _ := config.CfgIns.GetExchange(currencyType)
+	p := config.CfgIns.GetPoolCfg(int64(agentId), symbol)
+	bet := decimal.NewFromFloat(totalBet)
+	award := decimal.NewFromFloat(win)
 	chips := bet
 	if chips.LessThan(award) {
 		chips = award
@@ -632,25 +487,25 @@ func ConvertRecord(data *entity.UserRecordInfo, req *services.LotteryReq, newCur
 	r := chips.Mul(p.Pool[1].Revenue)
 	record := &entity.CacheRecordsReq{
 		WebId:          webId,
-		UserId:         req.PlayerId,
-		AgentId:        uint32(req.AgentId),
+		UserId:         userId,
+		AgentId:        uint32(agentId),
 		GameId:         uint32(p.GameId),
-		Account:        req.Account,
-		NickName:       req.Account,
+		Account:        account,
+		NickName:       account,
 		Bet:            bet.Truncate(4).InexactFloat64(),
 		ExBet:          bet.Mul(rate).Truncate(4).InexactFloat64(),
-		Currency:       req.CurrencyType,
-		CurrencySymbol: req.CurrencyType,
-		BaseBet:        data.Connection.BetGold,
+		Currency:       currencyType,
+		CurrencySymbol: currencyType,
+		BaseBet:        totalBet,
 		Win:            award.Truncate(4).InexactFloat64(),
 		ExWin:          award.Mul(rate).Truncate(4).InexactFloat64(),
 		PlayedDate:     time.Now().Unix(),
-		RoundID:        data.Common.RecordId,
-		Symbol:         req.Symbol,
+		RoundID:        recordId,
+		Symbol:         symbol,
 		RowVersion:     time.Now().UnixNano(),
 		Revenue:        r.Truncate(4).InexactFloat64(),
 		ExRevenue:      r.Mul(rate).Truncate(4).InexactFloat64(),
-		Log:            req.State,
+		Log:            log,
 		GameName:       p.Name,
 		Balance:        newCurrency.Truncate(4).InexactFloat64(),
 		BalanceCash:    newCurrency.Truncate(4).InexactFloat64(),
@@ -661,7 +516,7 @@ func ConvertRecord(data *entity.UserRecordInfo, req *services.LotteryReq, newCur
 }
 
 // 返奖
-func (d *LotteryService) Award(webId uint32, exchange decimal.Decimal, ur *entity.UserRecordInfo, req *services.LotteryReq) (int64, error) {
+func (d *LotteryService) Award(webId uint32, exchange decimal.Decimal, ur *entity.UserRecordInfo, req *services.SlotsLotteryReq) (int64, error) {
 	bet := decimal.NewFromFloat(ur.Connection.BetGold)
 	award := decimal.NewFromFloat(ur.Connection.WinLoseGold)
 	exBet := bet.Mul(exchange)
@@ -686,20 +541,21 @@ func (d *LotteryService) Award(webId uint32, exchange decimal.Decimal, ur *entit
 		return 0, err
 	}
 	nc := decimal.NewFromInt(newCurrency).Div(decimal.NewFromInt(100))
-	d.SaveRecord(ConvertRecord(ur, req, nc, uint32(webId), req.Complete))
+	record := ConvertRecord(uint32(req.AgentId), req.PlayerId, ur.Common.RecordId, req.CurrencyType, req.Symbol, req.Account, req.State, nc, uint32(webId), req.Complete, ur.BetRecord.TotalBetGold, ur.Common.DispatchRewardGold)
+	d.SaveRecord(record)
 	d.SaveBill(uint32(req.AgentId), req.PlayerId, award, nc.Truncate(2).InexactFloat64(), req.Symbol, "返奖", req.CurrencyType, ur.Common.RecordId)
 	//打点水池记录
 	d.pcr.Record(int64(req.AgentId), req.Symbol, dao.CacheIns().GetPool(int64(req.AgentId), req.Symbol))
 	return newCurrency, nil
 }
 
-func (d *LotteryService) Lottery(_ context.Context, req *services.LotteryReq) (resp *services.LotteryResp, err error) {
+func (d *LotteryService) SlotsLottery(_ context.Context, req *services.SlotsLotteryReq) (resp *services.SlotsLotteryResp, err error) {
 	defer func() {
 		if err := recover(); err != nil {
 			zap.L().Error("panic", zap.Any("err", err))
 		}
 	}()
-	resp = &services.LotteryResp{Code: services.ErrorCode_OK}
+	resp = &services.SlotsLotteryResp{Code: services.ErrorCode_OK}
 	award, _ := decimal.NewFromString(req.ProfitLoss)
 	bet, _ := decimal.NewFromString(req.Bet)
 	resp.Result = true
@@ -770,7 +626,7 @@ func (d *LotteryService) Lottery(_ context.Context, req *services.LotteryReq) (r
 	}
 	//下注或购买
 	if bet.GreaterThan(decimal.Zero) {
-		newCurrency, ok := d.Bet(uint32(eAgent.WebId), exchange, ur, req)
+		newCurrency, ok := d.SlotsBet(uint32(eAgent.WebId), exchange, ur, req)
 		if !ok {
 			resp.Result = false
 			resp.Code = services.ErrorCode_SYSTEM_ERROR
