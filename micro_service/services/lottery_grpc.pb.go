@@ -44,9 +44,8 @@ type LotteryServiceClient interface {
 	// 初始化下注
 	//
 	// 流程：
-	// 1. 从 pool 扣除 bet 金额（下注）
-	// 2. 扣除用户余额
-	// 3. 保存游戏状态到 Redis（extra 中包含 initialBet）
+	// 1. 扣除用户余额
+	// 2. 保存游戏状态到 Redis（extra 中包含 initialBet）
 	QKLDoBetInit(ctx context.Context, in *QKLDoBetInitReq, opts ...grpc.CallOption) (*QKLDoBetInitResp, error)
 	// *
 	// 加注
@@ -275,9 +274,8 @@ type LotteryServiceServer interface {
 	// 初始化下注
 	//
 	// 流程：
-	// 1. 从 pool 扣除 bet 金额（下注）
-	// 2. 扣除用户余额
-	// 3. 保存游戏状态到 Redis（extra 中包含 initialBet）
+	// 1. 扣除用户余额
+	// 2. 保存游戏状态到 Redis（extra 中包含 initialBet）
 	QKLDoBetInit(context.Context, *QKLDoBetInitReq) (*QKLDoBetInitResp, error)
 	// *
 	// 加注

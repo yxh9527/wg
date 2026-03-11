@@ -180,6 +180,7 @@ type QKLRecord struct {
 	PlayDate      int64                  `protobuf:"varint,7,opt,name=playDate,proto3" json:"playDate,omitempty"`
 	CurrencyType  string                 `protobuf:"bytes,9,opt,name=currencyType,proto3" json:"currencyType,omitempty"`
 	AgentId       uint32                 `protobuf:"varint,10,opt,name=agentId,proto3" json:"agentId,omitempty"`
+	Account       string                 `protobuf:"bytes,11,opt,name=account,proto3" json:"account,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -275,6 +276,13 @@ func (x *QKLRecord) GetAgentId() uint32 {
 		return x.AgentId
 	}
 	return 0
+}
+
+func (x *QKLRecord) GetAccount() string {
+	if x != nil {
+		return x.Account
+	}
+	return ""
 }
 
 type QKLSaveMultiplayerRecordsReq struct {
@@ -2076,7 +2084,7 @@ const file_lottery_proto_rawDesc = "" +
 	"\bcurrency\x18\x02 \x01(\tR\bcurrency\"{\n" +
 	"\x18QKLSettleMultiplayerResp\x12$\n" +
 	"\x04code\x18\x01 \x01(\x0e2\x10.base.error_codeR\x04code\x129\n" +
-	"\tcurrencys\x18\x02 \x03(\v2\x1b.lottery.QKLNewCurrencyItemR\tcurrencys\"\xe5\x01\n" +
+	"\tcurrencys\x18\x02 \x03(\v2\x1b.lottery.QKLNewCurrencyItemR\tcurrencys\"\xff\x01\n" +
 	"\tQKLRecord\x12\x16\n" +
 	"\x06userId\x18\x01 \x01(\rR\x06userId\x12\x16\n" +
 	"\x06gameId\x18\x02 \x01(\rR\x06gameId\x12\x10\n" +
@@ -2087,7 +2095,8 @@ const file_lottery_proto_rawDesc = "" +
 	"\bplayDate\x18\a \x01(\x03R\bplayDate\x12\"\n" +
 	"\fcurrencyType\x18\t \x01(\tR\fcurrencyType\x12\x18\n" +
 	"\aagentId\x18\n" +
-	" \x01(\rR\aagentId\"L\n" +
+	" \x01(\rR\aagentId\x12\x18\n" +
+	"\aaccount\x18\v \x01(\tR\aaccount\"L\n" +
 	"\x1cQKLSaveMultiplayerRecordsReq\x12,\n" +
 	"\arecords\x18\x01 \x03(\v2\x12.lottery.QKLRecordR\arecords\"E\n" +
 	"\x1dQKLSaveMultiplayerRecordsResp\x12$\n" +

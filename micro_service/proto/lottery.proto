@@ -19,9 +19,8 @@ service LotteryService {
    * 初始化下注
    *
    * 流程：
-   * 1. 从 pool 扣除 bet 金额（下注）
-   * 2. 扣除用户余额
-   * 3. 保存游戏状态到 Redis（extra 中包含 initialBet）
+   * 1. 扣除用户余额
+   * 2. 保存游戏状态到 Redis（extra 中包含 initialBet）
    */
     rpc QKLDoBetInit(QKLDoBetInitReq) returns (QKLDoBetInitResp);    
     /**
@@ -146,6 +145,7 @@ message QKLRecord {
     int64  playDate = 7;
     string currencyType = 9;
     uint32 agentId = 10;
+    string account = 11;
 }
 
 message QKLSaveMultiplayerRecordsReq {
