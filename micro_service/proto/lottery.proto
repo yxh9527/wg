@@ -154,6 +154,7 @@ message QKLSaveMultiplayerRecordsReq {
 
 message QKLSaveMultiplayerRecordsResp {
     base.error_code code = 1;
+    repeated QKLNewCurrencyItem currencys      = 2;
 }
 
 message QKLDoMultiplayerCashoutReq {

@@ -332,6 +332,7 @@ func (x *QKLSaveMultiplayerRecordsReq) GetRecords() []*QKLRecord {
 type QKLSaveMultiplayerRecordsResp struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Code          ErrorCode              `protobuf:"varint,1,opt,name=code,proto3,enum=base.ErrorCode" json:"code,omitempty"`
+	Currencys     []*QKLNewCurrencyItem  `protobuf:"bytes,2,rep,name=currencys,proto3" json:"currencys,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -371,6 +372,13 @@ func (x *QKLSaveMultiplayerRecordsResp) GetCode() ErrorCode {
 		return x.Code
 	}
 	return ErrorCode_OK
+}
+
+func (x *QKLSaveMultiplayerRecordsResp) GetCurrencys() []*QKLNewCurrencyItem {
+	if x != nil {
+		return x.Currencys
+	}
+	return nil
 }
 
 type QKLDoMultiplayerCashoutReq struct {
@@ -2098,9 +2106,10 @@ const file_lottery_proto_rawDesc = "" +
 	" \x01(\rR\aagentId\x12\x18\n" +
 	"\aaccount\x18\v \x01(\tR\aaccount\"L\n" +
 	"\x1cQKLSaveMultiplayerRecordsReq\x12,\n" +
-	"\arecords\x18\x01 \x03(\v2\x12.lottery.QKLRecordR\arecords\"E\n" +
+	"\arecords\x18\x01 \x03(\v2\x12.lottery.QKLRecordR\arecords\"\x80\x01\n" +
 	"\x1dQKLSaveMultiplayerRecordsResp\x12$\n" +
-	"\x04code\x18\x01 \x01(\x0e2\x10.base.error_codeR\x04code\"\xd2\x01\n" +
+	"\x04code\x18\x01 \x01(\x0e2\x10.base.error_codeR\x04code\x129\n" +
+	"\tcurrencys\x18\x02 \x03(\v2\x1b.lottery.QKLNewCurrencyItemR\tcurrencys\"\xd2\x01\n" +
 	"\x1aQKLDoMultiplayerCashoutReq\x12\x16\n" +
 	"\x06userId\x18\x01 \x01(\rR\x06userId\x12\x16\n" +
 	"\x06gameId\x18\x02 \x01(\rR\x06gameId\x12\x10\n" +
@@ -2314,48 +2323,49 @@ var file_lottery_proto_depIdxs = []int32{
 	1,  // 2: lottery.QKLSettleMultiplayerResp.currencys:type_name -> lottery.QKLNewCurrencyItem
 	3,  // 3: lottery.QKLSaveMultiplayerRecordsReq.records:type_name -> lottery.QKLRecord
 	28, // 4: lottery.QKLSaveMultiplayerRecordsResp.code:type_name -> base.error_code
-	28, // 5: lottery.QKLDoMultiplayerCashoutResp.code:type_name -> base.error_code
-	28, // 6: lottery.QKLCancelBetMultiplayerGameResp.code:type_name -> base.error_code
-	28, // 7: lottery.QKLDoBetMultiplayerGameResp.code:type_name -> base.error_code
-	28, // 8: lottery.QKLDoBetResp.code:type_name -> base.error_code
-	28, // 9: lottery.QKLDoBetStopResp.code:type_name -> base.error_code
-	28, // 10: lottery.QKLDoBetSettleWithCheckResp.code:type_name -> base.error_code
-	28, // 11: lottery.QKLDoBetSettleResp.code:type_name -> base.error_code
-	28, // 12: lottery.QKLDoBetMoreResp.code:type_name -> base.error_code
-	28, // 13: lottery.QKLDoBetContinueResp.code:type_name -> base.error_code
-	28, // 14: lottery.QKLDoBetInitResp.code:type_name -> base.error_code
-	28, // 15: lottery.SlotsLotteryResp.code:type_name -> base.error_code
-	26, // 16: lottery.LotteryService.SlotsLottery:input_type -> lottery.SlotsLotteryReq
-	24, // 17: lottery.LotteryService.QKLDoBetInit:input_type -> lottery.QKLDoBetInitReq
-	20, // 18: lottery.LotteryService.QKLDoBetMore:input_type -> lottery.QKLDoBetMoreReq
-	22, // 19: lottery.LotteryService.QKLDoBetContinue:input_type -> lottery.QKLDoBetContinueReq
-	18, // 20: lottery.LotteryService.QKLDoBetSettle:input_type -> lottery.QKLDoBetSettleReq
-	16, // 21: lottery.LotteryService.QKLDoBetSettleWithCheck:input_type -> lottery.QKLDoBetSettleWithCheckReq
-	14, // 22: lottery.LotteryService.QKLDoBetStop:input_type -> lottery.QKLDoBetStopReq
-	12, // 23: lottery.LotteryService.QKLDoBet:input_type -> lottery.QKLDoBetReq
-	10, // 24: lottery.LotteryService.QKLDoBetMultiplayerGame:input_type -> lottery.QKLDoBetMultiplayerGameReq
-	8,  // 25: lottery.LotteryService.QKLCancelBetMultiplayerGame:input_type -> lottery.QKLCancelBetMultiplayerGameReq
-	6,  // 26: lottery.LotteryService.QKLDoMultiplayerCashout:input_type -> lottery.QKLDoMultiplayerCashoutReq
-	4,  // 27: lottery.LotteryService.QKLSaveMultiplayerRecords:input_type -> lottery.QKLSaveMultiplayerRecordsReq
-	0,  // 28: lottery.LotteryService.QKLSettleMultiplayer:input_type -> lottery.QKLSettleMultiplayerReq
-	27, // 29: lottery.LotteryService.SlotsLottery:output_type -> lottery.SlotsLotteryResp
-	25, // 30: lottery.LotteryService.QKLDoBetInit:output_type -> lottery.QKLDoBetInitResp
-	21, // 31: lottery.LotteryService.QKLDoBetMore:output_type -> lottery.QKLDoBetMoreResp
-	23, // 32: lottery.LotteryService.QKLDoBetContinue:output_type -> lottery.QKLDoBetContinueResp
-	19, // 33: lottery.LotteryService.QKLDoBetSettle:output_type -> lottery.QKLDoBetSettleResp
-	17, // 34: lottery.LotteryService.QKLDoBetSettleWithCheck:output_type -> lottery.QKLDoBetSettleWithCheckResp
-	15, // 35: lottery.LotteryService.QKLDoBetStop:output_type -> lottery.QKLDoBetStopResp
-	13, // 36: lottery.LotteryService.QKLDoBet:output_type -> lottery.QKLDoBetResp
-	11, // 37: lottery.LotteryService.QKLDoBetMultiplayerGame:output_type -> lottery.QKLDoBetMultiplayerGameResp
-	9,  // 38: lottery.LotteryService.QKLCancelBetMultiplayerGame:output_type -> lottery.QKLCancelBetMultiplayerGameResp
-	7,  // 39: lottery.LotteryService.QKLDoMultiplayerCashout:output_type -> lottery.QKLDoMultiplayerCashoutResp
-	5,  // 40: lottery.LotteryService.QKLSaveMultiplayerRecords:output_type -> lottery.QKLSaveMultiplayerRecordsResp
-	2,  // 41: lottery.LotteryService.QKLSettleMultiplayer:output_type -> lottery.QKLSettleMultiplayerResp
-	29, // [29:42] is the sub-list for method output_type
-	16, // [16:29] is the sub-list for method input_type
-	16, // [16:16] is the sub-list for extension type_name
-	16, // [16:16] is the sub-list for extension extendee
-	0,  // [0:16] is the sub-list for field type_name
+	1,  // 5: lottery.QKLSaveMultiplayerRecordsResp.currencys:type_name -> lottery.QKLNewCurrencyItem
+	28, // 6: lottery.QKLDoMultiplayerCashoutResp.code:type_name -> base.error_code
+	28, // 7: lottery.QKLCancelBetMultiplayerGameResp.code:type_name -> base.error_code
+	28, // 8: lottery.QKLDoBetMultiplayerGameResp.code:type_name -> base.error_code
+	28, // 9: lottery.QKLDoBetResp.code:type_name -> base.error_code
+	28, // 10: lottery.QKLDoBetStopResp.code:type_name -> base.error_code
+	28, // 11: lottery.QKLDoBetSettleWithCheckResp.code:type_name -> base.error_code
+	28, // 12: lottery.QKLDoBetSettleResp.code:type_name -> base.error_code
+	28, // 13: lottery.QKLDoBetMoreResp.code:type_name -> base.error_code
+	28, // 14: lottery.QKLDoBetContinueResp.code:type_name -> base.error_code
+	28, // 15: lottery.QKLDoBetInitResp.code:type_name -> base.error_code
+	28, // 16: lottery.SlotsLotteryResp.code:type_name -> base.error_code
+	26, // 17: lottery.LotteryService.SlotsLottery:input_type -> lottery.SlotsLotteryReq
+	24, // 18: lottery.LotteryService.QKLDoBetInit:input_type -> lottery.QKLDoBetInitReq
+	20, // 19: lottery.LotteryService.QKLDoBetMore:input_type -> lottery.QKLDoBetMoreReq
+	22, // 20: lottery.LotteryService.QKLDoBetContinue:input_type -> lottery.QKLDoBetContinueReq
+	18, // 21: lottery.LotteryService.QKLDoBetSettle:input_type -> lottery.QKLDoBetSettleReq
+	16, // 22: lottery.LotteryService.QKLDoBetSettleWithCheck:input_type -> lottery.QKLDoBetSettleWithCheckReq
+	14, // 23: lottery.LotteryService.QKLDoBetStop:input_type -> lottery.QKLDoBetStopReq
+	12, // 24: lottery.LotteryService.QKLDoBet:input_type -> lottery.QKLDoBetReq
+	10, // 25: lottery.LotteryService.QKLDoBetMultiplayerGame:input_type -> lottery.QKLDoBetMultiplayerGameReq
+	8,  // 26: lottery.LotteryService.QKLCancelBetMultiplayerGame:input_type -> lottery.QKLCancelBetMultiplayerGameReq
+	6,  // 27: lottery.LotteryService.QKLDoMultiplayerCashout:input_type -> lottery.QKLDoMultiplayerCashoutReq
+	4,  // 28: lottery.LotteryService.QKLSaveMultiplayerRecords:input_type -> lottery.QKLSaveMultiplayerRecordsReq
+	0,  // 29: lottery.LotteryService.QKLSettleMultiplayer:input_type -> lottery.QKLSettleMultiplayerReq
+	27, // 30: lottery.LotteryService.SlotsLottery:output_type -> lottery.SlotsLotteryResp
+	25, // 31: lottery.LotteryService.QKLDoBetInit:output_type -> lottery.QKLDoBetInitResp
+	21, // 32: lottery.LotteryService.QKLDoBetMore:output_type -> lottery.QKLDoBetMoreResp
+	23, // 33: lottery.LotteryService.QKLDoBetContinue:output_type -> lottery.QKLDoBetContinueResp
+	19, // 34: lottery.LotteryService.QKLDoBetSettle:output_type -> lottery.QKLDoBetSettleResp
+	17, // 35: lottery.LotteryService.QKLDoBetSettleWithCheck:output_type -> lottery.QKLDoBetSettleWithCheckResp
+	15, // 36: lottery.LotteryService.QKLDoBetStop:output_type -> lottery.QKLDoBetStopResp
+	13, // 37: lottery.LotteryService.QKLDoBet:output_type -> lottery.QKLDoBetResp
+	11, // 38: lottery.LotteryService.QKLDoBetMultiplayerGame:output_type -> lottery.QKLDoBetMultiplayerGameResp
+	9,  // 39: lottery.LotteryService.QKLCancelBetMultiplayerGame:output_type -> lottery.QKLCancelBetMultiplayerGameResp
+	7,  // 40: lottery.LotteryService.QKLDoMultiplayerCashout:output_type -> lottery.QKLDoMultiplayerCashoutResp
+	5,  // 41: lottery.LotteryService.QKLSaveMultiplayerRecords:output_type -> lottery.QKLSaveMultiplayerRecordsResp
+	2,  // 42: lottery.LotteryService.QKLSettleMultiplayer:output_type -> lottery.QKLSettleMultiplayerResp
+	30, // [30:43] is the sub-list for method output_type
+	17, // [17:30] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_lottery_proto_init() }

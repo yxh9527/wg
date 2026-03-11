@@ -263,6 +263,61 @@ func (rd *RedisDao) GetPlayerCurrency(playerId uint32) (newCurrency int64, err e
 	return newCurrency, nil
 }
 
+// 批量获取玩家金币信息，只有再玩家登录后才能使用该接口 且 返回金币是未换算的值
+func (rd *RedisDao) BatchGetPlayerCurrencys(ids []uint32) (map[uint32]int64, error) {
+	currencys := make(map[uint32]int64)
+	pipe := rd.cli.Pipeline()
+	for _, id := range ids {
+		pID := fmt.Sprintf("player_%d", id)
+		pipe.HGet(context.Background(), pID, "currency")
+	}
+	result, e := pipe.Exec(context.Background())
+	if e != nil {
+		return nil, e
+	}
+	for _, id := range ids {
+		sc := result[0].(*redis.StringCmd)
+		nc, err := sc.Result()
+		if err != nil {
+			continue
+		}
+		newCurrency, _ := strconv.ParseInt(nc, 10, 64)
+		currencys[id] = newCurrency
+	}
+	return currencys, nil
+}
+
+// 批量修改玩家金币信息，只有再玩家登录后才能使用该接口 且 返回金币是未换算的值
+func (rd *RedisDao) BatchUpdatePlayerCurrencys(deltas map[uint32]int64) (map[uint32]int64, error) {
+	currencys := make(map[uint32]int64)
+	pipe := rd.cli.Pipeline()
+	for id, delta := range deltas {
+		pID := fmt.Sprintf("player_%d", id)
+		pipe.HIncrBy(context.Background(), pID, "currency", delta)
+	}
+	result, e := pipe.Exec(context.Background())
+	if e != nil {
+		return nil, e
+	}
+	for id := range deltas {
+		sc := result[0].(*redis.IntCmd)
+		nc, err := sc.Result()
+		if err != nil {
+			continue
+		}
+		currencys[id] = nc
+	}
+
+	//触发数据落地
+	pipe = rd.cli.Pipeline()
+	for id := range deltas {
+		pipe.SAdd(context.Background(), "dirty_list_imp", id)
+	}
+	pipe.Exec(context.Background())
+
+	return currencys, nil
+}
+
 func (rd *RedisDao) GetUserStatData(id uint32) (decimal.Decimal, decimal.Decimal, decimal.Decimal, string, int32) {
 	itemKey := fmt.Sprintf("%d", id)
 	piple := rd.cli.Pipeline()
