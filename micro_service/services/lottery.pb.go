@@ -1882,7 +1882,7 @@ type SlotsLotteryReq struct {
 	PlayerId      uint32                 `protobuf:"varint,1,opt,name=playerId,proto3" json:"playerId,omitempty"`
 	CurrencyType  string                 `protobuf:"bytes,5,opt,name=currencyType,proto3" json:"currencyType,omitempty"`
 	AgentId       int64                  `protobuf:"varint,6,opt,name=agentId,proto3" json:"agentId,omitempty"`
-	Symbol        string                 `protobuf:"bytes,7,opt,name=symbol,proto3" json:"symbol,omitempty"`
+	GameId        uint32                 `protobuf:"varint,7,opt,name=gameId,proto3" json:"gameId,omitempty"`
 	ProfitLoss    string                 `protobuf:"bytes,8,opt,name=profitLoss,proto3" json:"profitLoss,omitempty"`        //开奖
 	Bet           string                 `protobuf:"bytes,9,opt,name=bet,proto3" json:"bet,omitempty"`                      //下注
 	State         string                 `protobuf:"bytes,10,opt,name=state,proto3" json:"state,omitempty"`                 //状态
@@ -1946,11 +1946,11 @@ func (x *SlotsLotteryReq) GetAgentId() int64 {
 	return 0
 }
 
-func (x *SlotsLotteryReq) GetSymbol() string {
+func (x *SlotsLotteryReq) GetGameId() uint32 {
 	if x != nil {
-		return x.Symbol
+		return x.GameId
 	}
-	return ""
+	return 0
 }
 
 func (x *SlotsLotteryReq) GetProfitLoss() string {
@@ -2241,7 +2241,7 @@ const file_lottery_proto_rawDesc = "" +
 	"\bplayerId\x18\x01 \x01(\rR\bplayerId\x12\"\n" +
 	"\fcurrencyType\x18\x05 \x01(\tR\fcurrencyType\x12\x18\n" +
 	"\aagentId\x18\x06 \x01(\x03R\aagentId\x12\x16\n" +
-	"\x06symbol\x18\a \x01(\tR\x06symbol\x12\x1e\n" +
+	"\x06gameId\x18\a \x01(\rR\x06gameId\x12\x1e\n" +
 	"\n" +
 	"profitLoss\x18\b \x01(\tR\n" +
 	"profitLoss\x12\x10\n" +

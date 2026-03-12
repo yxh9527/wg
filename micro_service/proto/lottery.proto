@@ -318,7 +318,7 @@ message SlotsLotteryReq {
     uint32 playerId = 1;
     string currencyType = 5;
 	int64  agentId = 6;
-    string symbol = 7;
+    uint32 gameId = 7;
     string profitLoss = 8;      //开奖
     string bet = 9;             //下注
     string state = 10;          //状态
