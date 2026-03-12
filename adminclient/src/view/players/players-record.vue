@@ -159,14 +159,14 @@ export default {
       gameId: { value: "", option: [] },
       columns: [
         { title: "流水号", key: "flowingWaterOn", width: 300 },
-        { title: "局号", key: "roundId", width: 150 },
+        { title: "局号", key: "roundId", width: 300 },
         {
           title: "时间",
           key: "createTime",
           align: "center",
           width: 180,
           render(h, params) {
-            return <span>{getDate(params.row.createTime*1000)}</span>;
+            return <span>{getDate(params.row.createTime * 1000)}</span>;
           },
         },
         {

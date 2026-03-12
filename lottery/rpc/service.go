@@ -113,8 +113,10 @@ func ConvertUserEntityToHumanPlayer(p *player.Player) *services.HumanPlayer {
 func (d *LotteryService) SaveBill(agentId, playerId uint32, delta decimal.Decimal, currencyScore float64, symbol, desc, currencyType string, roundID string) {
 	now := time.Now()
 	billNo := fmt.Sprintf("L%04d%02d%02d%02d%02d%02d%07d", now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second(), now.Nanosecond()%10000000)
+	eGame := dao.GamesManagerIns().Get(symbol)
 	bill := &entity.CacheBillsReq{
 		UserId:         playerId,
+		GameId:         uint32(eGame.Number),
 		AgentId:        uint32(agentId),
 		Bet:            delta.InexactFloat64(),
 		CurrentScore:   currencyScore,
@@ -499,7 +501,7 @@ func ConvertRecord(agentId, userId uint32, recordId, currencyType, symbol, accou
 		BaseBet:        totalBet,
 		Win:            award.Truncate(4).InexactFloat64(),
 		ExWin:          award.Mul(rate).Truncate(4).InexactFloat64(),
-		PlayedDate:     time.Now().Unix(),
+		PlayedDate:     time.Now().UnixMilli(),
 		RoundID:        recordId,
 		Symbol:         symbol,
 		RowVersion:     time.Now().UnixNano(),

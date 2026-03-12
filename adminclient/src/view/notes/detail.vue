@@ -99,12 +99,7 @@
           >搜索</Button
         >
 
-        <Button
-          @click="
-            exportSearch();
-          "
-          style="margin-left: 5px"
-          type="primary"
+        <Button @click="exportSearch()" style="margin-left: 5px" type="primary"
           >导出</Button
         >
       </div>
@@ -149,11 +144,16 @@ import Tables from "_c/tables";
 import { setting } from "@/config";
 import { getDate } from "@/libs/tools";
 import Detial from "../players/players-game-detial.vue";
-import JSZip from 'jszip';
-import FileSaver from 'file-saver';
-import { exportExcel  } from "@/libs/excel";
+import JSZip from "jszip";
+import FileSaver from "file-saver";
+import { exportExcel } from "@/libs/excel";
 import * as dayjs from "dayjs";
-import { getSettlement,getExportSettlements,getExportSettlementCount, getGameServers } from "@/api/data";
+import {
+  getSettlement,
+  getExportSettlements,
+  getExportSettlementCount,
+  getGameServers,
+} from "@/api/data";
 export default {
   name: "detailManage",
   components: {
@@ -167,7 +167,7 @@ export default {
       startDate: null,
       endDate: null,
       gameUrls: [],
-      replays:[],
+      replays: [],
       viewSettlementDetail: false,
       viewGameDetailUrl: "",
       startDateRestrict: {
@@ -214,7 +214,7 @@ export default {
         {
           title: "游戏名称",
           key: "gameName",
-          minWidth:250,
+          minWidth: 250,
           render(h, params) {
             return h("span", {}, params.row.gameName);
           },
@@ -228,7 +228,7 @@ export default {
           },
         },
         { title: "用户ID", key: "userId", width: 80 },
-        { title: "账号", key: "account" ,minWidth:80,},
+        { title: "账号", key: "account", minWidth: 80 },
         { title: "昵称", key: "nickName", width: 150 },
         {
           title: "试玩",
@@ -236,7 +236,11 @@ export default {
           width: 80,
           align: "center",
           render(h, params) {
-            return params.row.isTourist>0?(<span style="color:red;">是</span>):(<span style="color:green;">否</span>);
+            return params.row.isTourist > 0 ? (
+              <span style="color:red;">是</span>
+            ) : (
+              <span style="color:green;">否</span>
+            );
           },
         },
         { title: "Symbol", key: "symbol", width: 150 },
@@ -246,9 +250,7 @@ export default {
           width: 120,
           render: (h, params) => {
             return params.row.complete ? (
-              <span style="color:green">
-                完成
-              </span>
+              <span style="color:green">完成</span>
             ) : (
               <span style="color:red">未完成</span>
             );
@@ -324,7 +326,7 @@ export default {
           key: "playedDate",
           width: 180,
           render(h, params) {
-            return <span>{getDate(params.row.playedDate*1000)}</span>;
+            return <span>{getDate(params.row.playedDate)}</span>;
           },
         },
       ],
@@ -354,10 +356,10 @@ export default {
         page: 1,
         pageSize: 10,
         gameId: 0,
-        hash:null,
-        complete:true,
-        account:null,
-        nickName:null,
+        hash: null,
+        complete: true,
+        account: null,
+        nickName: null,
       },
     };
   },
@@ -441,41 +443,43 @@ export default {
       delete params.current;
       getExportSettlementCount(params).then(({ data }) => {
         let result = data.data;
-        if (result>=10000) {
-          this.spinShow = false;  
+        if (result >= 10000) {
+          this.spinShow = false;
           this.$Message.error("导出数据量大于1w条，请修改查询条件再导出！");
-        }else{
+        } else {
           getExportSettlements(params).then(({ data }) => {
             let result = [];
-            data.data.data.forEach((item)=>{
-              item.playedDate = dayjs(item.playedDate).format("YYYY-MM-DD HH:mm:ss")
+            data.data.data.forEach((item) => {
+              item.playedDate = dayjs(item.playedDate).format(
+                "YYYY-MM-DD HH:mm:ss"
+              );
               result.push(item);
-            })
+            });
             const columns = [
-              { title: '玩家id', key: 'userId', width: 100 },
-              { title: '账号', key: 'account', width: 100 },
-              { title: 'Symbol', key: 'symbol', width: 100 },
-              { title: '游戏名称', key: 'gameName', width: 100 },
-              { title: '昵称', key: 'nickName', width: 100 },
-              { title: '局号', key: 'roundID', width: 100 },
-              { title: '游戏时间', key: 'playedDate', width: 100 },
-              { title: '代理id', key: 'agentId', width: 80 },
-              { title: '余额', key: 'balance', width: 80 },
-              { title: '下注', key: 'bet', width: 80 },
-              { title: '返奖', key: 'win', width: 80 },
-              { title: '是否完成', key: 'complete', width: 80 },
-              { title: '税收', key: 'revenue', width: 80 },
-              { title: '货币', key: 'currency', width: 80 },
-            ]
+              { title: "玩家id", key: "userId", width: 100 },
+              { title: "账号", key: "account", width: 100 },
+              { title: "Symbol", key: "symbol", width: 100 },
+              { title: "游戏名称", key: "gameName", width: 100 },
+              { title: "昵称", key: "nickName", width: 100 },
+              { title: "局号", key: "roundID", width: 100 },
+              { title: "游戏时间", key: "playedDate", width: 100 },
+              { title: "代理id", key: "agentId", width: 80 },
+              { title: "余额", key: "balance", width: 80 },
+              { title: "下注", key: "bet", width: 80 },
+              { title: "返奖", key: "win", width: 80 },
+              { title: "是否完成", key: "complete", width: 80 },
+              { title: "税收", key: "revenue", width: 80 },
+              { title: "货币", key: "currency", width: 80 },
+            ];
             const zip = new JSZip();
-            let ec = exportExcel(columns,result,0);
+            let ec = exportExcel(columns, result, 0);
             zip.file(`注单.xlsx`, ec, { binary: true });
             // 生成zip文件并下载
-            zip.generateAsync({ type: 'blob' }).then(content => {
+            zip.generateAsync({ type: "blob" }).then((content) => {
               FileSaver.saveAs(content, `注单${new Date().getTime()}.zip`);
             });
-            this.spinShow = false;  
-          })
+            this.spinShow = false;
+          });
         }
       });
     },
