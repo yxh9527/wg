@@ -1019,10 +1019,14 @@ func (d *LotteryService) QKLSaveMultiplayerRecords(_ context.Context, req *servi
 		agent := dao.AgentManagerIns().Get(int64(item.AgentId))
 		game := dao.GamesManagerIns().GetById(int64(item.GameId))
 		if game.Number > 0 && agent != nil {
+			nc := decimal.Zero
 			bet, _ := decimal.NewFromString(item.Bet)
 			win, _ := decimal.NewFromString(item.Win)
-			tmp := newCurrencys[item.UserId]
-			nc, _ := decimal.NewFromString(tmp.Currency)
+			for _, v := range newCurrencys {
+				if v.UserId == item.UserId {
+					nc, _ = decimal.NewFromString(v.Currency)
+				}
+			}
 			nc = nc.Div(decimal.NewFromInt(100))
 			//增加结算注单
 			record := ConvertRecord(
