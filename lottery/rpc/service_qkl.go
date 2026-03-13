@@ -402,7 +402,7 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 	d.SaveRecord(record)
 	if exWin.GreaterThan(decimal.Zero) {
 		//下注流水
-		d.SaveBill(uint32(req.AgentId), req.UserId, exWin, nc.Truncate(2).InexactFloat64(), eGame.ConfName, "结算", req.CurrencyType, req.RoundID)
+		d.SaveBill(uint32(req.AgentId), req.UserId, win, nc.Truncate(2).InexactFloat64(), eGame.ConfName, "结算", req.CurrencyType, req.RoundID)
 	}
 	//打点水池记录
 	d.pcr.Record(int64(req.AgentId), eGame.ConfName, dao.CacheIns().GetPool(int64(req.AgentId), eGame.ConfName))
@@ -528,7 +528,7 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 			d.SaveRecord(record)
 			if w2.Mul(exchange).GreaterThan(decimal.Zero) {
 				//下注流水
-				d.SaveBill(uint32(req.AgentId), req.UserId, w2.Mul(exchange), nc.Truncate(2).InexactFloat64(), eGame.ConfName, "结算", req.CurrencyType, req.RoundID)
+				d.SaveBill(uint32(req.AgentId), req.UserId, w2, nc.Truncate(2).InexactFloat64(), eGame.ConfName, "结算", req.CurrencyType, req.RoundID)
 			}
 			//打点水池记录
 			d.pcr.Record(int64(req.AgentId), eGame.ConfName, dao.CacheIns().GetPool(int64(req.AgentId), eGame.ConfName))
@@ -572,7 +572,7 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 		d.SaveRecord(record)
 		if w2.Mul(exchange).GreaterThan(decimal.Zero) {
 			//下注流水
-			d.SaveBill(uint32(req.AgentId), req.UserId, w2.Mul(exchange), nc.Truncate(2).InexactFloat64(), eGame.ConfName, "回退", req.CurrencyType, req.RoundID)
+			d.SaveBill(uint32(req.AgentId), req.UserId, w2, nc.Truncate(2).InexactFloat64(), eGame.ConfName, "回退", req.CurrencyType, req.RoundID)
 		}
 		//打点水池记录
 		d.pcr.Record(int64(req.AgentId), eGame.ConfName, dao.CacheIns().GetPool(int64(req.AgentId), eGame.ConfName))
@@ -653,7 +653,7 @@ func (d *LotteryService) QKLDoBetStop(_ context.Context, req *services.QKLDoBetS
 	resp.Currency = nc.String()
 	if initBet.Mul(exchange).GreaterThan(decimal.Zero) {
 		//下注流水
-		d.SaveBill(uint32(req.AgentId), req.UserId, initBet.Mul(exchange), nc.Truncate(2).InexactFloat64(), eGame.ConfName, "回退", req.CurrencyType, req.RoundID)
+		d.SaveBill(uint32(req.AgentId), req.UserId, initBet, nc.Truncate(2).InexactFloat64(), eGame.ConfName, "回退", req.CurrencyType, req.RoundID)
 	}
 	//打点水池记录
 	d.pcr.Record(int64(req.AgentId), eGame.ConfName, dao.CacheIns().GetPool(int64(req.AgentId), eGame.ConfName))
@@ -777,7 +777,11 @@ func (d *LotteryService) QKLDoBet(_ context.Context, req *services.QKLDoBetReq) 
 
 	if bet.GreaterThan(decimal.Zero) {
 		//下注流水
-		d.SaveBill(uint32(req.AgentId), req.UserId, bet.Mul(exchange), nc.Truncate(2).InexactFloat64(), eGame.ConfName, "结算", req.CurrencyType, req.RoundID)
+		d.SaveBill(uint32(req.AgentId), req.UserId, bet.Neg(), nc.Truncate(2).InexactFloat64(), eGame.ConfName, "下注", req.CurrencyType, req.RoundID)
+	}
+
+	if win.GreaterThan(decimal.Zero) {
+		d.SaveBill(uint32(req.AgentId), req.UserId, win, nc.Truncate(2).InexactFloat64(), eGame.ConfName, "结算", req.CurrencyType, req.RoundID)
 	}
 	//打点水池记录
 	d.pcr.Record(int64(req.AgentId), eGame.ConfName, dao.CacheIns().GetPool(int64(req.AgentId), eGame.ConfName))
@@ -1004,7 +1008,7 @@ func (d *LotteryService) QKLDoMultiplayerCashout(_ context.Context, req *service
 	nc := decimal.NewFromInt(tmp).Div(decimal.NewFromInt(100))
 	if win.GreaterThan(decimal.Zero) {
 		//下注流水
-		d.SaveBill(uint32(req.AgentId), req.UserId, win.Mul(exchange), nc.Truncate(2).InexactFloat64(), eGame.ConfName, "结算", req.CurrencyType, req.RoundID)
+		d.SaveBill(uint32(req.AgentId), req.UserId, win, nc.Truncate(2).InexactFloat64(), eGame.ConfName, "结算", req.CurrencyType, req.RoundID)
 	}
 	//打点水池记录
 	d.pcr.Record(int64(req.AgentId), eGame.ConfName, dao.CacheIns().GetPool(int64(req.AgentId), eGame.ConfName))
@@ -1137,7 +1141,7 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 		agent := dao.AgentManagerIns().Get(int64(item.AgentId))
 		game := dao.GamesManagerIns().GetById(int64(item.GameId))
 		win, _ := decimal.NewFromString(item.Win)
-		bet, _ := decimal.NewFromString(item.Bet)
+		// bet, _ := decimal.NewFromString(item.Bet)
 		exchange, ok := config.CfgIns.GetExchange(item.CurrencyType)
 		if !ok {
 			resp.Code = services.ErrorCode_SYSTEM_ERROR
@@ -1154,9 +1158,9 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 			nc, _ := decimal.NewFromString(tmp.Currency)
 			nc = nc.Div(decimal.NewFromInt(100))
 			dao.CacheIns().ChangePool(int64(item.AgentId), int32(item.UserId), game.ConfName, item.CurrencyType, decimal.Zero, win.Mul(exchange))
-			if bet.GreaterThan(decimal.Zero) {
+			if win.GreaterThan(decimal.Zero) {
 				//下注流水
-				d.SaveBill(uint32(item.AgentId), item.UserId, bet.Mul(exchange), nc.Truncate(2).InexactFloat64(), game.ConfName, "结算", item.CurrencyType, item.RoundID)
+				d.SaveBill(uint32(item.AgentId), item.UserId, win, nc.Truncate(2).InexactFloat64(), game.ConfName, "结算", item.CurrencyType, item.RoundID)
 			}
 			newCurrencys = append(newCurrencys, &services.QKLNewCurrencyItem{
 				UserId:   item.UserId,
