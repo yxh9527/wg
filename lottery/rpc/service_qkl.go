@@ -722,37 +722,65 @@ func (d *LotteryService) QKLDoBet(_ context.Context, req *services.QKLDoBetReq) 
 			resp.Currency = nc.Truncate(2).String()
 		}
 	}
-	if win.GreaterThan(decimal.Zero) {
-		//判断是否可以开奖
-		_, ok := dao.CacheIns().Lottery(int64(req.AgentId), int32(req.UserId), pc, eGame.ConfName, req.CurrencyType, decimal.Zero, win.Mul(exchange), req.RoundID)
-		if !ok {
-			//不够赔 不可以开
-			resp.Code = services.ErrorCode_NO_ENOUGH_POOL_MONEY
-			return resp, nil
-		}
-		tmp, err := d.updatePlayerCurrency(req.UserId, win.Mul(exchange).Mul(decimal.NewFromInt(100)).IntPart())
+	//判断是否可以开奖
+	_, ok = dao.CacheIns().Lottery(int64(req.AgentId), int32(req.UserId), pc, eGame.ConfName, req.CurrencyType, decimal.Zero, win.Mul(exchange), req.RoundID)
+	if !ok {
+		//不够赔 不可以开
+		resp.Code = services.ErrorCode_NO_ENOUGH_POOL_MONEY
+		return resp, nil
+	}
+	tmp, err := d.updatePlayerCurrency(req.UserId, win.Mul(exchange).Mul(decimal.NewFromInt(100)).IntPart())
+	if err != nil {
+		zap.L().Error("QKLDoBet:更新玩家积分失败",
+			zap.Any("agentId", req.AgentId),
+			zap.Any("symbol", eGame.ConfName),
+			zap.Any("roundId", req.RoundID),
+			zap.Any("playerId", req.UserId),
+			zap.Any("win", win),
+			zap.Any("currenType", req.CurrencyType))
+		resp.Code = services.ErrorCode_SYSTEM_ERROR
+		return resp, nil
+	}
+	//新余额
+	nc := decimal.NewFromInt(tmp).Div(decimal.NewFromInt(100))
+	resp.Currency = nc.String()
+
+	dao.CacheIns().ChangePool(int64(req.AgentId), int32(req.UserId), eGame.ConfName, req.CurrencyType, bet.Mul(exchange), win.Mul(exchange))
+
+	if len(req.Result) > 0 {
+		ur := &entity.UserRecordInfo{}
+		err = jsoniter.UnmarshalFromString(req.Result, ur)
 		if err != nil {
-			zap.L().Error("QKLDoBet:更新玩家积分失败",
-				zap.Any("agentId", req.AgentId),
+			zap.L().Error("QKLDoBet:获取注单信息失败",
+				zap.Any("userId", req.UserId),
 				zap.Any("symbol", eGame.ConfName),
-				zap.Any("roundId", req.RoundID),
-				zap.Any("playerId", req.UserId),
-				zap.Any("win", win),
-				zap.Any("currenType", req.CurrencyType))
+				zap.Any("agentId", req.AgentId),
+				zap.Any("state", req.Result))
 			resp.Code = services.ErrorCode_SYSTEM_ERROR
 			return resp, nil
 		}
-		//新余额
-		nc := decimal.NewFromInt(tmp).Div(decimal.NewFromInt(100))
-		resp.Currency = nc.String()
-		dao.CacheIns().ChangePool(int64(req.AgentId), int32(req.UserId), eGame.ConfName, req.CurrencyType, bet.Mul(exchange), win.Mul(exchange))
-		if bet.GreaterThan(decimal.Zero) {
-			//下注流水
-			d.SaveBill(uint32(req.AgentId), req.UserId, bet.Mul(exchange), nc.Truncate(2).InexactFloat64(), eGame.ConfName, "结算", req.CurrencyType, req.RoundID)
-		}
-		//打点水池记录
-		d.pcr.Record(int64(req.AgentId), eGame.ConfName, dao.CacheIns().GetPool(int64(req.AgentId), eGame.ConfName))
+		record := ConvertRecord(
+			uint32(req.AgentId),
+			req.UserId,
+			req.RoundID,
+			req.CurrencyType,
+			eGame.ConfName,
+			account,
+			req.Result,
+			nc,
+			uint32(eAgent.WebId),
+			true,
+			ur.BetRecord.TotalBetGold,
+			ur.Common.DispatchRewardGold)
+		d.SaveRecord(record)
 	}
+
+	if bet.GreaterThan(decimal.Zero) {
+		//下注流水
+		d.SaveBill(uint32(req.AgentId), req.UserId, bet.Mul(exchange), nc.Truncate(2).InexactFloat64(), eGame.ConfName, "结算", req.CurrencyType, req.RoundID)
+	}
+	//打点水池记录
+	d.pcr.Record(int64(req.AgentId), eGame.ConfName, dao.CacheIns().GetPool(int64(req.AgentId), eGame.ConfName))
 	return resp, nil
 }
 
