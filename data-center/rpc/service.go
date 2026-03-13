@@ -93,6 +93,7 @@ func (d *DataCenterService) GetPlayer(ctx context.Context, req *services.GetPlay
 		zap.L().Warn("向redis写入玩家信息缓存失败，下一次获取该玩家信息时还将从数据库中读取", zap.Uint32("player_id", p.Id))
 	}
 	resp.HumanPlayer = p
+	zap.L().Debug("get player", zap.Any("resp", resp))
 	return resp, nil
 }
 
