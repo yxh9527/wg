@@ -25,7 +25,7 @@ func (esDao *ESDao) BulkRecordsSave(data []*entity.CacheRecordsReq) error {
 	bulkService := esDao.es.Bulk()
 	records := make([]elastic.BulkableRequest, 0)
 	for _, req := range data {
-		hashStr := fmt.Sprintf("%d|%d|%d", req.AgentId, req.UserId, req.RoundID)
+		hashStr := fmt.Sprintf("%d|%d|%s", req.AgentId, req.UserId, req.RoundID)
 		req.Hash = fmt.Sprintf("%x", md5.Sum([]byte(hashStr)))
 		records = append(records, elastic.NewBulkIndexRequest().Index("pp_gp_settlement").Id(req.Hash).Doc(req))
 	}
