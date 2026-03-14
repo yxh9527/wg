@@ -222,7 +222,7 @@ export default {
         {
           title: "局号",
           key: "roundID",
-          width: 180,
+          width: 250,
           render(h, params) {
             return <div>{params.row.roundID}</div>;
           },
