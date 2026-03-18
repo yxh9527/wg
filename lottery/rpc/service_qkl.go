@@ -2,11 +2,13 @@ package rpc
 
 import (
 	"app/config"
+	"app/entity"
 	"context"
 	"fmt"
 	"lottery/dao"
 	"micro_service/services"
 
+	jsoniter "github.com/json-iterator/go"
 	"github.com/shopspring/decimal"
 	"go.uber.org/zap"
 )
@@ -290,8 +292,25 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 			zap.Any("gameId", req.GameId))
 		return resp, nil
 	}
+	//获取注单信息
+	ur := &entity.UserRecordInfo{}
+	err = jsoniter.UnmarshalFromString(req.Result, ur)
+	if err != nil {
+		zap.L().Error("QKLDoBetSettle:获取注单信息失败",
+			zap.Any("userId", req.UserId),
+			zap.Any("symbol", eGame.ConfName),
+			zap.Any("agentId", req.AgentId),
+			zap.Any("state", req.Result))
+		resp.Code = services.ErrorCode_SYSTEM_ERROR
+		return resp, nil
+	}
+	w1 := decimal.NewFromFloat(ur.Common.DispatchRewardGold).Truncate(2)
 	w2, _ := decimal.NewFromString(req.Win)
-	bet, _ := decimal.NewFromString(req.TotalBet)
+	if !w1.Equal(w2.Truncate(2)) {
+		zap.L().Error("QKLDoBetSettle:中奖值不一致", zap.Any("result中的中奖值", ur.Common.DispatchRewardGold), zap.Any("接口中的中奖值", req.Win))
+		resp.Code = services.ErrorCode_SYSTEM_ERROR
+		return resp, nil
+	}
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
 	if eAgent == nil {
 		resp.Code = services.ErrorCode_GAME_FROZEN
@@ -378,8 +397,8 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 		nc,
 		uint32(eAgent.WebId),
 		true,
-		bet.InexactFloat64(),
-		w2.InexactFloat64())
+		ur.BetRecord.TotalBetGold,
+		ur.Common.DispatchRewardGold)
 	d.SaveRecord(record)
 	if exWin.GreaterThan(decimal.Zero) {
 		//下注流水
@@ -407,8 +426,26 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 			zap.Any("gameId", req.GameId))
 		return resp, nil
 	}
+	//获取注单信息
+	ur := &entity.UserRecordInfo{}
+	err = jsoniter.UnmarshalFromString(req.Result, ur)
+	if err != nil {
+		zap.L().Error("QKLDoBetSettleWithCheck:获取注单信息失败",
+			zap.Any("userId", req.UserId),
+			zap.Any("symbol", eGame.ConfName),
+			zap.Any("agentId", req.AgentId),
+			zap.Any("state", req.Result))
+		resp.Code = services.ErrorCode_SYSTEM_ERROR
+		return resp, nil
+	}
 	initBet, _ := decimal.NewFromString(req.InitBet)
+	w1 := decimal.NewFromFloat(ur.Common.DispatchRewardGold).Truncate(2)
 	w2, _ := decimal.NewFromString(req.Win)
+	if !w1.Equal(w2.Truncate(2)) {
+		zap.L().Error("QKLDoBetSettleWithCheck:中奖值不一致", zap.Any("result中的中奖值", ur.Common.DispatchRewardGold), zap.Any("接口中的中奖值", req.Win))
+		resp.Code = services.ErrorCode_SYSTEM_ERROR
+		return resp, nil
+	}
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
 	if eAgent == nil {
 		resp.Code = services.ErrorCode_GAME_FROZEN
@@ -486,8 +523,8 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 				nc,
 				uint32(eAgent.WebId),
 				true,
-				initBet.InexactFloat64(),
-				w2.InexactFloat64())
+				ur.BetRecord.TotalBetGold,
+				ur.Common.DispatchRewardGold)
 			d.SaveRecord(record)
 			if w2.Mul(exchange).GreaterThan(decimal.Zero) {
 				//下注流水
@@ -530,8 +567,8 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 			nc,
 			uint32(eAgent.WebId),
 			true,
-			initBet.InexactFloat64(),
-			w2.InexactFloat64())
+			ur.BetRecord.TotalBetGold,
+			ur.Common.DispatchRewardGold)
 		d.SaveRecord(record)
 		if w2.Mul(exchange).GreaterThan(decimal.Zero) {
 			//下注流水
@@ -711,6 +748,17 @@ func (d *LotteryService) QKLDoBet(_ context.Context, req *services.QKLDoBetReq) 
 	dao.CacheIns().ChangePool(int64(req.AgentId), int32(req.UserId), eGame.ConfName, req.CurrencyType, bet.Mul(exchange), win.Mul(exchange))
 
 	if len(req.Result) > 0 {
+		ur := &entity.UserRecordInfo{}
+		err = jsoniter.UnmarshalFromString(req.Result, ur)
+		if err != nil {
+			zap.L().Error("QKLDoBet:获取注单信息失败",
+				zap.Any("userId", req.UserId),
+				zap.Any("symbol", eGame.ConfName),
+				zap.Any("agentId", req.AgentId),
+				zap.Any("state", req.Result))
+			resp.Code = services.ErrorCode_SYSTEM_ERROR
+			return resp, nil
+		}
 		record := ConvertRecord(
 			uint32(req.AgentId),
 			req.UserId,
@@ -722,8 +770,8 @@ func (d *LotteryService) QKLDoBet(_ context.Context, req *services.QKLDoBetReq) 
 			nc,
 			uint32(eAgent.WebId),
 			true,
-			bet.InexactFloat64(),
-			win.InexactFloat64())
+			ur.BetRecord.TotalBetGold,
+			ur.Common.DispatchRewardGold)
 		d.SaveRecord(record)
 	}
 
