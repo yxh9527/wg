@@ -1021,6 +1021,7 @@ func (d *LotteryService) QKLSaveMultiplayerRecords(_ context.Context, req *servi
 			zap.L().Error("panic", zap.Any("err", err))
 		}
 	}()
+	zap.L().Debug("QKLSaveMultiplayerRecords:批量保存注单数据结算", zap.Any("req", req))
 	ids, tmp := make([]uint32, 0, 64), make(map[uint32]int64)
 	for _, item := range req.Records {
 		ids = append(ids, item.UserId)
@@ -1059,6 +1060,7 @@ func (d *LotteryService) QKLSaveMultiplayerRecords(_ context.Context, req *servi
 					nc, _ = decimal.NewFromString(v.Currency)
 				}
 			}
+			account := dao.CacheIns().GetPlayerAccount(int64(item.AgentId), int64(item.UserId))
 			nc = nc.Div(decimal.NewFromInt(100))
 			//增加结算注单
 			record := ConvertRecord(
@@ -1067,7 +1069,7 @@ func (d *LotteryService) QKLSaveMultiplayerRecords(_ context.Context, req *servi
 				item.RoundID,
 				item.CurrencyType,
 				game.ConfName,
-				item.Account,
+				account,
 				item.Log,
 				nc,
 				uint32(agent.WebId),
@@ -1087,6 +1089,7 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 			zap.L().Error("panic", zap.Any("err", err))
 		}
 	}()
+	zap.L().Debug("QKLSettleMultiplayer:批量结算", zap.Any("req", req))
 	newCurrencys := make([]*services.QKLNewCurrencyItem, 0)
 	deltas := make(map[uint32]int64)
 	//批量更新积分
@@ -1141,6 +1144,7 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 		agent := dao.AgentManagerIns().Get(int64(item.AgentId))
 		game := dao.GamesManagerIns().GetById(int64(item.GameId))
 		win, _ := decimal.NewFromString(item.Win)
+		account := dao.CacheIns().GetPlayerAccount(int64(item.AgentId), int64(item.UserId))
 		// bet, _ := decimal.NewFromString(item.Bet)
 		exchange, ok := config.CfgIns.GetExchange(item.CurrencyType)
 		if !ok {
@@ -1176,7 +1180,7 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 					item.RoundID,
 					item.CurrencyType,
 					game.ConfName,
-					item.Account,
+					account,
 					item.Log,
 					nc,
 					uint32(agent.WebId),
