@@ -1090,7 +1090,7 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 		}
 	}()
 	zap.L().Debug("QKLSettleMultiplayer:批量结算", zap.Any("req", req))
-	newCurrencys := make([]*services.QKLNewCurrencyItem, 0)
+	newCurrencys := make(map[uint32]*services.QKLNewCurrencyItem)
 	deltas := make(map[uint32]int64)
 	//批量更新积分
 	for _, item := range req.Records {
@@ -1123,7 +1123,7 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 				return resp, nil
 			}
 			for k, v := range tmp {
-				newCurrencys = append(newCurrencys, &services.QKLNewCurrencyItem{UserId: k, Currency: decimal.NewFromInt(v).Div(decimal.NewFromInt(100)).Truncate(2).String()})
+				newCurrencys[k] = &services.QKLNewCurrencyItem{UserId: k, Currency: decimal.NewFromInt(v).Div(decimal.NewFromInt(100)).Truncate(2).String()}
 			}
 			deltas = make(map[uint32]int64)
 		}
@@ -1136,7 +1136,7 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 			return resp, nil
 		}
 		for k, v := range tmp {
-			newCurrencys = append(newCurrencys, &services.QKLNewCurrencyItem{UserId: k, Currency: decimal.NewFromInt(v).Div(decimal.NewFromInt(100)).Truncate(2).String()})
+			newCurrencys[k] = &services.QKLNewCurrencyItem{UserId: k, Currency: decimal.NewFromInt(v).Div(decimal.NewFromInt(100)).Truncate(2).String()}
 		}
 	}
 	//批量保存注单信息
@@ -1166,10 +1166,7 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 				//下注流水
 				d.SaveBill(uint32(item.AgentId), item.UserId, win, nc.Truncate(2).InexactFloat64(), game.ConfName, "结算", item.CurrencyType, item.RoundID)
 			}
-			newCurrencys = append(newCurrencys, &services.QKLNewCurrencyItem{
-				UserId:   item.UserId,
-				Currency: nc.Truncate(2).String(),
-			})
+			newCurrencys[item.UserId] = &services.QKLNewCurrencyItem{UserId: item.UserId, Currency: nc.Truncate(2).String()}
 			if game.Number > 0 && agent != nil {
 				bet, _ := decimal.NewFromString(item.Bet)
 				win, _ := decimal.NewFromString(item.Win)
@@ -1191,5 +1188,9 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 			}
 		}
 	}
-	return &services.QKLSettleMultiplayerResp{Code: services.ErrorCode_OK, Currencys: newCurrencys}, nil
+	resArr := make([]*services.QKLNewCurrencyItem, 64)
+	for _, v := range newCurrencys {
+		resArr = append(resArr, v)
+	}
+	return &services.QKLSettleMultiplayerResp{Code: services.ErrorCode_OK, Currencys: resArr}, nil
 }
