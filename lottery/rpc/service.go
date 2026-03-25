@@ -528,7 +528,8 @@ func ConvertRecord(agentId, userId uint32, recordId, currencyType, symbol, accou
 	if chips.LessThan(award) {
 		chips = award
 	}
-	r := chips.Mul(p.Pool[1].Revenue)
+	// r := chips.Mul(p.Pool[1].Revenue)
+	r := bet.Mul(p.Pool[1].Revenue)
 	record := &entity.CacheRecordsReq{
 		WebId:          webId,
 		UserId:         userId,
