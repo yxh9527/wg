@@ -128,7 +128,6 @@ service LotteryService {
 message PoolAmountResultReq {
     uint32 agentId = 1;
     uint32 gameId  = 2;
-    uint32 userId  = 3;
     string currencyType = 4;
 }
 

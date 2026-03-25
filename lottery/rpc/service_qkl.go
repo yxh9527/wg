@@ -119,7 +119,6 @@ func (d *LotteryService) PoolAmountResult(_ context.Context, req *services.PoolA
 		resp.Code = services.ErrorCode_AGENT_FROZEN
 		zap.L().Debug("PoolAmountResult:代理被冻结",
 			zap.Any("agentId", req.AgentId),
-			zap.Any("playerId", req.UserId),
 			zap.Any("gameId", req.GameId))
 		return resp, nil
 	}
@@ -128,7 +127,6 @@ func (d *LotteryService) PoolAmountResult(_ context.Context, req *services.PoolA
 		resp.Code = services.ErrorCode_GAME_FROZEN
 		zap.L().Debug("PoolAmountResult:游戏被冻结",
 			zap.Any("agentId", req.AgentId),
-			zap.Any("playerId", req.UserId),
 			zap.Any("gameId", req.GameId))
 		return resp, nil
 	}
@@ -143,7 +141,6 @@ func (d *LotteryService) PoolAmountResult(_ context.Context, req *services.PoolA
 		zap.L().Error("PoolAmountResult:获取汇率配置失败",
 			zap.Any("currencyType", req.CurrencyType),
 			zap.Any("agentId", req.AgentId),
-			zap.Any("playerId", req.UserId),
 			zap.Any("gameId", req.GameId))
 		return resp, nil
 	}

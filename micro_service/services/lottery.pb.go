@@ -25,7 +25,6 @@ type PoolAmountResultReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	AgentId       uint32                 `protobuf:"varint,1,opt,name=agentId,proto3" json:"agentId,omitempty"`
 	GameId        uint32                 `protobuf:"varint,2,opt,name=gameId,proto3" json:"gameId,omitempty"`
-	UserId        uint32                 `protobuf:"varint,3,opt,name=userId,proto3" json:"userId,omitempty"`
 	CurrencyType  string                 `protobuf:"bytes,4,opt,name=currencyType,proto3" json:"currencyType,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -71,13 +70,6 @@ func (x *PoolAmountResultReq) GetAgentId() uint32 {
 func (x *PoolAmountResultReq) GetGameId() uint32 {
 	if x != nil {
 		return x.GameId
-	}
-	return 0
-}
-
-func (x *PoolAmountResultReq) GetUserId() uint32 {
-	if x != nil {
-		return x.UserId
 	}
 	return 0
 }
@@ -2204,11 +2196,10 @@ var File_lottery_proto protoreflect.FileDescriptor
 const file_lottery_proto_rawDesc = "" +
 	"\n" +
 	"\rlottery.proto\x12\alottery\x1a\n" +
-	"base.proto\"\x83\x01\n" +
+	"base.proto\"k\n" +
 	"\x13PoolAmountResultReq\x12\x18\n" +
 	"\aagentId\x18\x01 \x01(\rR\aagentId\x12\x16\n" +
-	"\x06gameId\x18\x02 \x01(\rR\x06gameId\x12\x16\n" +
-	"\x06userId\x18\x03 \x01(\rR\x06userId\x12\"\n" +
+	"\x06gameId\x18\x02 \x01(\rR\x06gameId\x12\"\n" +
 	"\fcurrencyType\x18\x04 \x01(\tR\fcurrencyType\"X\n" +
 	"\x14PoolAmountResultResp\x12$\n" +
 	"\x04code\x18\x01 \x01(\x0e2\x10.base.error_codeR\x04code\x12\x1a\n" +
