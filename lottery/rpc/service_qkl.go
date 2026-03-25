@@ -838,12 +838,13 @@ func (d *LotteryService) QKLDoBetMultiplayerGame(_ context.Context, req *service
 		}
 	}()
 	resp = &services.QKLDoBetMultiplayerGameResp{Code: services.ErrorCode_OK}
+	roundId := fmt.Sprintf("%s-%d", req.RoundID, req.UserId)
 	eGame := dao.GamesManagerIns().GetById(int64(req.GameId))
 	if eGame == nil || eGame.State == 2 {
 		resp.Code = services.ErrorCode_GAME_FROZEN
 		zap.L().Error("QKLDoBetMultiplayerGame:游戏被冻结",
 			zap.Any("agentId", req.AgentId),
-			zap.Any("roundId", req.RoundID),
+			zap.Any("roundId", roundId),
 			zap.Any("playerId", req.UserId),
 			zap.Any("gameId", req.GameId))
 		return resp, nil
@@ -856,7 +857,7 @@ func (d *LotteryService) QKLDoBetMultiplayerGame(_ context.Context, req *service
 		resp.Code = services.ErrorCode_GAME_FROZEN
 		zap.L().Error("QKLDoBetMultiplayerGame:获取代理信息失败",
 			zap.Any("agentId", req.AgentId),
-			zap.Any("roundId", req.RoundID),
+			zap.Any("roundId", roundId),
 			zap.Any("playerId", req.UserId),
 			zap.Any("gameId", req.GameId))
 		return resp, nil
@@ -866,14 +867,14 @@ func (d *LotteryService) QKLDoBetMultiplayerGame(_ context.Context, req *service
 		resp.Code = services.ErrorCode_GAME_FROZEN
 		zap.L().Error("QKLDoBetMultiplayerGame:获取账号信息失败",
 			zap.Any("agentId", req.AgentId),
-			zap.Any("roundId", req.RoundID),
+			zap.Any("roundId", roundId),
 			zap.Any("playerId", req.UserId),
 			zap.Any("gameId", req.GameId))
 		return resp, nil
 	}
 	pc := config.CfgIns.GetPoolCfg(int64(req.AgentId), eGame.ConfName)
 	if pc == nil {
-		zap.L().Error("QKLDoBetMultiplayerGame:获取Pool配置文件失败", zap.Any("roundId", req.RoundID), zap.Any("pc", pc))
+		zap.L().Error("QKLDoBetMultiplayerGame:获取Pool配置文件失败", zap.Any("roundId", roundId), zap.Any("pc", pc))
 		return resp, nil
 	}
 	exchange, ok := config.CfgIns.GetExchange(req.CurrencyType)
@@ -881,20 +882,20 @@ func (d *LotteryService) QKLDoBetMultiplayerGame(_ context.Context, req *service
 		resp.Code = services.ErrorCode_SYSTEM_ERROR
 		zap.L().Error("QKLDoBetMultiplayerGame:获取汇率配置失败",
 			zap.Any("currencyType", req.CurrencyType),
-			zap.Any("roundId", req.RoundID),
+			zap.Any("roundId", roundId),
 			zap.Any("agentId", req.AgentId),
 			zap.Any("playerId", req.UserId),
 			zap.Any("gameId", req.GameId))
 		return resp, nil
 	}
 	if initBet.Abs().GreaterThan(decimal.Zero) {
-		if nc, ok := d.qklBet(req.AgentId, req.UserId, exchange, eGame.ConfName, req.RoundID, req.InitBet, req.CurrencyType); ok {
+		if nc, ok := d.qklBet(req.AgentId, req.UserId, exchange, eGame.ConfName, roundId, req.InitBet, req.CurrencyType); ok {
 			dao.CacheIns().ChangePool(int64(req.AgentId), int32(req.UserId), eGame.ConfName, req.CurrencyType, initBet.Mul(exchange), decimal.Zero)
 			resp.Currency = nc.Truncate(2).String()
 		} else {
 			zap.L().Error("QKLDoBetMultiplayerGame:获取汇率配置失败",
 				zap.Any("currencyType", req.CurrencyType),
-				zap.Any("roundId", req.RoundID),
+				zap.Any("roundId", roundId),
 				zap.Any("agentId", req.AgentId),
 				zap.Any("playerId", req.UserId),
 				zap.Any("gameId", req.GameId))
@@ -910,12 +911,13 @@ func (d *LotteryService) QKLCancelBetMultiplayerGame(_ context.Context, req *ser
 		}
 	}()
 	resp = &services.QKLCancelBetMultiplayerGameResp{Code: services.ErrorCode_OK}
+	roundId := fmt.Sprintf("%s-%d", req.RoundID, req.UserId)
 	eGame := dao.GamesManagerIns().GetById(int64(req.GameId))
 	if eGame == nil || eGame.State == 2 {
 		resp.Code = services.ErrorCode_GAME_FROZEN
 		zap.L().Error("QKLCancelBetMultiplayerGame:游戏被冻结",
 			zap.Any("agentId", req.AgentId),
-			zap.Any("roundId", req.RoundID),
+			zap.Any("roundId", roundId),
 			zap.Any("playerId", req.UserId),
 			zap.Any("gameId", req.GameId))
 		return resp, nil
@@ -928,7 +930,7 @@ func (d *LotteryService) QKLCancelBetMultiplayerGame(_ context.Context, req *ser
 		resp.Code = services.ErrorCode_GAME_FROZEN
 		zap.L().Error("QKLCancelBetMultiplayerGame:获取代理信息失败",
 			zap.Any("agentId", req.AgentId),
-			zap.Any("roundId", req.RoundID),
+			zap.Any("roundId", roundId),
 			zap.Any("playerId", req.UserId),
 			zap.Any("gameId", req.GameId))
 		return resp, nil
@@ -938,14 +940,14 @@ func (d *LotteryService) QKLCancelBetMultiplayerGame(_ context.Context, req *ser
 		resp.Code = services.ErrorCode_GAME_FROZEN
 		zap.L().Error("QKLCancelBetMultiplayerGame:获取账号信息失败",
 			zap.Any("agentId", req.AgentId),
-			zap.Any("roundId", req.RoundID),
+			zap.Any("roundId", roundId),
 			zap.Any("playerId", req.UserId),
 			zap.Any("gameId", req.GameId))
 		return resp, nil
 	}
 	pc := config.CfgIns.GetPoolCfg(int64(req.AgentId), eGame.ConfName)
 	if pc == nil {
-		zap.L().Error("QKLCancelBetMultiplayerGame:获取Pool配置文件失败", zap.Any("roundId", req.RoundID), zap.Any("pc", pc))
+		zap.L().Error("QKLCancelBetMultiplayerGame:获取Pool配置文件失败", zap.Any("roundId", roundId), zap.Any("pc", pc))
 		return resp, nil
 	}
 	exchange, ok := config.CfgIns.GetExchange(req.CurrencyType)
@@ -953,14 +955,14 @@ func (d *LotteryService) QKLCancelBetMultiplayerGame(_ context.Context, req *ser
 		resp.Code = services.ErrorCode_SYSTEM_ERROR
 		zap.L().Error("QKLCancelBetMultiplayerGame:获取汇率配置失败",
 			zap.Any("currencyType", req.CurrencyType),
-			zap.Any("roundId", req.RoundID),
+			zap.Any("roundId", roundId),
 			zap.Any("agentId", req.AgentId),
 			zap.Any("playerId", req.UserId),
 			zap.Any("gameId", req.GameId))
 		return resp, nil
 	}
 
-	if nc, ok := d.qklReturn(req.AgentId, req.UserId, exchange, eGame.ConfName, req.RoundID, req.Bet, req.CurrencyType); ok {
+	if nc, ok := d.qklReturn(req.AgentId, req.UserId, exchange, eGame.ConfName, roundId, req.Bet, req.CurrencyType); ok {
 		dao.CacheIns().ChangePool(int64(req.AgentId), int32(req.UserId), eGame.ConfName, req.CurrencyType, bet.Mul(exchange).Abs().Neg(), decimal.Zero)
 		resp.Currency = nc.Truncate(2).String()
 	}
@@ -973,13 +975,14 @@ func (d *LotteryService) QKLDoMultiplayerCashout(_ context.Context, req *service
 			zap.L().Error("panic", zap.Any("err", err))
 		}
 	}()
+	roundId := fmt.Sprintf("%s-%d", req.RoundID, req.UserId)
 	resp = &services.QKLDoMultiplayerCashoutResp{Code: services.ErrorCode_OK}
 	eGame := dao.GamesManagerIns().GetById(int64(req.GameId))
 	if eGame == nil || eGame.State == 2 {
 		resp.Code = services.ErrorCode_GAME_FROZEN
 		zap.L().Error("QKLDoMultiplayerCashout:游戏被冻结",
 			zap.Any("agentId", req.AgentId),
-			zap.Any("roundId", req.RoundID),
+			zap.Any("roundId", roundId),
 			zap.Any("playerId", req.UserId),
 			zap.Any("gameId", req.GameId))
 		return resp, nil
@@ -992,7 +995,7 @@ func (d *LotteryService) QKLDoMultiplayerCashout(_ context.Context, req *service
 		resp.Code = services.ErrorCode_GAME_FROZEN
 		zap.L().Error("QKLDoMultiplayerCashout:获取代理信息失败",
 			zap.Any("agentId", req.AgentId),
-			zap.Any("roundId", req.RoundID),
+			zap.Any("roundId", roundId),
 			zap.Any("playerId", req.UserId),
 			zap.Any("gameId", req.GameId))
 		return resp, nil
@@ -1002,14 +1005,14 @@ func (d *LotteryService) QKLDoMultiplayerCashout(_ context.Context, req *service
 		resp.Code = services.ErrorCode_GAME_FROZEN
 		zap.L().Error("QKLDoMultiplayerCashout:获取账号信息失败",
 			zap.Any("agentId", req.AgentId),
-			zap.Any("roundId", req.RoundID),
+			zap.Any("roundId", roundId),
 			zap.Any("playerId", req.UserId),
 			zap.Any("gameId", req.GameId))
 		return resp, nil
 	}
 	pc := config.CfgIns.GetPoolCfg(int64(req.AgentId), eGame.ConfName)
 	if pc == nil {
-		zap.L().Error("QKLDoMultiplayerCashout:获取Pool配置文件失败", zap.Any("roundId", req.RoundID), zap.Any("pc", pc))
+		zap.L().Error("QKLDoMultiplayerCashout:获取Pool配置文件失败", zap.Any("roundId", roundId), zap.Any("pc", pc))
 		return resp, nil
 	}
 	exchange, ok := config.CfgIns.GetExchange(req.CurrencyType)
@@ -1017,14 +1020,14 @@ func (d *LotteryService) QKLDoMultiplayerCashout(_ context.Context, req *service
 		resp.Code = services.ErrorCode_SYSTEM_ERROR
 		zap.L().Error("QKLDoMultiplayerCashout:获取汇率配置失败",
 			zap.Any("currencyType", req.CurrencyType),
-			zap.Any("roundId", req.RoundID),
+			zap.Any("roundId", roundId),
 			zap.Any("agentId", req.AgentId),
 			zap.Any("playerId", req.UserId),
 			zap.Any("gameId", req.GameId))
 		return resp, nil
 	}
 	//判断是否可以开奖
-	_, ok = dao.CacheIns().Lottery(int64(req.AgentId), int32(req.UserId), pc, eGame.ConfName, req.CurrencyType, decimal.Zero, win.Mul(exchange), req.RoundID)
+	_, ok = dao.CacheIns().Lottery(int64(req.AgentId), int32(req.UserId), pc, eGame.ConfName, req.CurrencyType, decimal.Zero, win.Mul(exchange), roundId)
 	if !ok {
 		//不够赔 不可以开
 		resp.Code = services.ErrorCode_NO_ENOUGH_POOL_MONEY
@@ -1035,7 +1038,7 @@ func (d *LotteryService) QKLDoMultiplayerCashout(_ context.Context, req *service
 		zap.L().Error("QKLDoMultiplayerCashout:更新玩家积分失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("symbol", eGame.ConfName),
-			zap.Any("roundId", req.RoundID),
+			zap.Any("roundId", roundId),
 			zap.Any("playerId", req.UserId),
 			zap.Any("Win", req.Win),
 			zap.Any("currenType", req.CurrencyType))
@@ -1051,7 +1054,7 @@ func (d *LotteryService) QKLDoMultiplayerCashout(_ context.Context, req *service
 	nc := decimal.NewFromInt(tmp).Div(decimal.NewFromInt(100))
 	if win.GreaterThan(decimal.Zero) {
 		//下注流水
-		d.SaveBill(uint32(req.AgentId), req.UserId, win, nc.Truncate(2).InexactFloat64(), eGame.ConfName, "结算", req.CurrencyType, req.RoundID)
+		d.SaveBill(uint32(req.AgentId), req.UserId, win, nc.Truncate(2).InexactFloat64(), eGame.ConfName, "结算", req.CurrencyType, roundId)
 	}
 	//打点水池记录
 	d.pcr.Record(int64(req.AgentId), eGame.ConfName, dao.CacheIns().GetPool(int64(req.AgentId), eGame.ConfName))
@@ -1109,7 +1112,7 @@ func (d *LotteryService) QKLSaveMultiplayerRecords(_ context.Context, req *servi
 			record := ConvertRecord(
 				uint32(item.AgentId),
 				item.UserId,
-				item.RoundID,
+				fmt.Sprintf("%s#%d", item.RoundID, item.UserId),
 				item.CurrencyType,
 				game.ConfName,
 				account,
@@ -1139,12 +1142,13 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 	for _, item := range req.Records {
 		game := dao.GamesManagerIns().GetById(int64(item.GameId))
 		win, _ := decimal.NewFromString(item.Win)
+		roundId := fmt.Sprintf("%s-%d", item.RoundID, item.UserId)
 		exchange, ok := config.CfgIns.GetExchange(item.CurrencyType)
 		if !ok {
 			resp.Code = services.ErrorCode_SYSTEM_ERROR
 			zap.L().Error("QKLSettleMultiplayer:获取汇率配置失败",
 				zap.Any("currencyType", item.CurrencyType),
-				zap.Any("roundId", item.RoundID),
+				zap.Any("roundId", roundId),
 				zap.Any("agentId", item.AgentId),
 				zap.Any("playerId", item.UserId),
 				zap.Any("gameId", item.GameId))
@@ -1158,7 +1162,7 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 				zap.L().Error("QKLSettleMultiplayer:更新玩家积分失败",
 					zap.Any("agentId", item.AgentId),
 					zap.Any("symbol", game.ConfName),
-					zap.Any("roundId", item.RoundID),
+					zap.Any("roundId", roundId),
 					zap.Any("playerId", item.UserId),
 					zap.Any("win", win),
 					zap.Any("currenType", item.CurrencyType))
@@ -1188,13 +1192,14 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 		game := dao.GamesManagerIns().GetById(int64(item.GameId))
 		win, _ := decimal.NewFromString(item.Win)
 		account := dao.CacheIns().GetPlayerAccount(int64(item.AgentId), int64(item.UserId))
+		roundId := fmt.Sprintf("%s-%d", item.RoundID, item.UserId)
 		// bet, _ := decimal.NewFromString(item.Bet)
 		exchange, ok := config.CfgIns.GetExchange(item.CurrencyType)
 		if !ok {
 			resp.Code = services.ErrorCode_SYSTEM_ERROR
 			zap.L().Error("QKLSettleMultiplayer:获取汇率配置失败",
 				zap.Any("currencyType", item.CurrencyType),
-				zap.Any("roundId", item.RoundID),
+				zap.Any("roundId", roundId),
 				zap.Any("agentId", item.AgentId),
 				zap.Any("playerId", item.UserId),
 				zap.Any("gameId", item.GameId))
@@ -1206,7 +1211,7 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 			dao.CacheIns().ChangePool(int64(item.AgentId), int32(item.UserId), game.ConfName, item.CurrencyType, decimal.Zero, win.Mul(exchange))
 			if win.GreaterThan(decimal.Zero) {
 				//下注流水
-				d.SaveBill(uint32(item.AgentId), item.UserId, win, nc.Truncate(2).InexactFloat64(), game.ConfName, "结算", item.CurrencyType, item.RoundID)
+				d.SaveBill(uint32(item.AgentId), item.UserId, win, nc.Truncate(2).InexactFloat64(), game.ConfName, "结算", item.CurrencyType, roundId)
 			}
 			newCurrencys[item.UserId] = &services.QKLNewCurrencyItem{UserId: item.UserId, Currency: nc.Truncate(2).String()}
 			if game.Number > 0 && agent != nil {
@@ -1216,7 +1221,7 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 				record := ConvertRecord(
 					uint32(item.AgentId),
 					item.UserId,
-					item.RoundID,
+					roundId,
 					item.CurrencyType,
 					game.ConfName,
 					account,
