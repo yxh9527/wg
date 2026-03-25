@@ -8,6 +8,10 @@ import "base.proto";
 
 
 service LotteryService {
+
+    //获取水池数据
+    rpc PoolAmountResult(PoolAmountResultReq) returns (PoolAmountResultResp);
+
     //slots
 
     //Lottery
@@ -119,6 +123,18 @@ service LotteryService {
    * 4. 生成环境还需要记录结算结果到数据库，开发环境不处理
    */
     rpc QKLSettleMultiplayer(QKLSettleMultiplayerReq) returns (QKLSettleMultiplayerResp);
+}
+
+message PoolAmountResultReq {
+    uint32 agentId = 1;
+    uint32 gameId  = 2;
+    uint32 userId  = 3;
+    string currencyType = 4;
+}
+
+message PoolAmountResultResp {
+    base.error_code code = 1;
+    string currency = 2;
 }
 
 message QKLSettleMultiplayerReq {

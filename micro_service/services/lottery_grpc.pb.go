@@ -19,6 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	LotteryService_PoolAmountResult_FullMethodName            = "/lottery.LotteryService/PoolAmountResult"
 	LotteryService_SlotsLottery_FullMethodName                = "/lottery.LotteryService/SlotsLottery"
 	LotteryService_QKLDoBetInit_FullMethodName                = "/lottery.LotteryService/QKLDoBetInit"
 	LotteryService_QKLDoBetMore_FullMethodName                = "/lottery.LotteryService/QKLDoBetMore"
@@ -38,6 +39,8 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LotteryServiceClient interface {
+	// 获取水池数据
+	PoolAmountResult(ctx context.Context, in *PoolAmountResultReq, opts ...grpc.CallOption) (*PoolAmountResultResp, error)
 	// Lottery
 	SlotsLottery(ctx context.Context, in *SlotsLotteryReq, opts ...grpc.CallOption) (*SlotsLotteryResp, error)
 	// *
@@ -132,6 +135,16 @@ type lotteryServiceClient struct {
 
 func NewLotteryServiceClient(cc grpc.ClientConnInterface) LotteryServiceClient {
 	return &lotteryServiceClient{cc}
+}
+
+func (c *lotteryServiceClient) PoolAmountResult(ctx context.Context, in *PoolAmountResultReq, opts ...grpc.CallOption) (*PoolAmountResultResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PoolAmountResultResp)
+	err := c.cc.Invoke(ctx, LotteryService_PoolAmountResult_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *lotteryServiceClient) SlotsLottery(ctx context.Context, in *SlotsLotteryReq, opts ...grpc.CallOption) (*SlotsLotteryResp, error) {
@@ -268,6 +281,8 @@ func (c *lotteryServiceClient) QKLSettleMultiplayer(ctx context.Context, in *QKL
 // All implementations must embed UnimplementedLotteryServiceServer
 // for forward compatibility.
 type LotteryServiceServer interface {
+	// 获取水池数据
+	PoolAmountResult(context.Context, *PoolAmountResultReq) (*PoolAmountResultResp, error)
 	// Lottery
 	SlotsLottery(context.Context, *SlotsLotteryReq) (*SlotsLotteryResp, error)
 	// *
@@ -364,6 +379,9 @@ type LotteryServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedLotteryServiceServer struct{}
 
+func (UnimplementedLotteryServiceServer) PoolAmountResult(context.Context, *PoolAmountResultReq) (*PoolAmountResultResp, error) {
+	return nil, status.Error(codes.Unimplemented, "method PoolAmountResult not implemented")
+}
 func (UnimplementedLotteryServiceServer) SlotsLottery(context.Context, *SlotsLotteryReq) (*SlotsLotteryResp, error) {
 	return nil, status.Error(codes.Unimplemented, "method SlotsLottery not implemented")
 }
@@ -422,6 +440,24 @@ func RegisterLotteryServiceServer(s grpc.ServiceRegistrar, srv LotteryServiceSer
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&LotteryService_ServiceDesc, srv)
+}
+
+func _LotteryService_PoolAmountResult_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PoolAmountResultReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LotteryServiceServer).PoolAmountResult(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LotteryService_PoolAmountResult_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LotteryServiceServer).PoolAmountResult(ctx, req.(*PoolAmountResultReq))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _LotteryService_SlotsLottery_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -665,6 +701,10 @@ var LotteryService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "lottery.LotteryService",
 	HandlerType: (*LotteryServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "PoolAmountResult",
+			Handler:    _LotteryService_PoolAmountResult_Handler,
+		},
 		{
 			MethodName: "SlotsLottery",
 			Handler:    _LotteryService_SlotsLottery_Handler,

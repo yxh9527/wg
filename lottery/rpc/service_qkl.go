@@ -107,6 +107,52 @@ func (d *LotteryService) qklReturn(agentId, userId uint32, exchange decimal.Deci
 	return nc, true
 }
 
+func (d *LotteryService) PoolAmountResult(_ context.Context, req *services.PoolAmountResultReq) (resp *services.PoolAmountResultResp, err error) {
+	defer func() {
+		if err := recover(); err != nil {
+			zap.L().Error("panic", zap.Any("err", err))
+		}
+	}()
+	resp = &services.PoolAmountResultResp{Code: services.ErrorCode_OK}
+	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
+	if eAgent == nil || eAgent.IsFrozen == 1 {
+		resp.Code = services.ErrorCode_AGENT_FROZEN
+		zap.L().Debug("PoolAmountResult:代理被冻结",
+			zap.Any("agentId", req.AgentId),
+			zap.Any("playerId", req.UserId),
+			zap.Any("gameId", req.GameId))
+		return resp, nil
+	}
+	eGame := dao.GamesManagerIns().GetById(int64(req.GameId))
+	if eGame == nil || eGame.State == 2 {
+		resp.Code = services.ErrorCode_GAME_FROZEN
+		zap.L().Debug("PoolAmountResult:游戏被冻结",
+			zap.Any("agentId", req.AgentId),
+			zap.Any("playerId", req.UserId),
+			zap.Any("gameId", req.GameId))
+		return resp, nil
+	}
+	pc := config.CfgIns.GetPoolCfg(int64(req.AgentId), eGame.ConfName)
+	if pc == nil {
+		zap.L().Error("PoolAmountResult:获取Pool配置文件失败", zap.Any("pc", pc))
+		return resp, nil
+	}
+	exchange, ok := config.CfgIns.GetExchange(req.CurrencyType)
+	if !ok {
+		resp.Code = services.ErrorCode_SYSTEM_ERROR
+		zap.L().Error("PoolAmountResult:获取汇率配置失败",
+			zap.Any("currencyType", req.CurrencyType),
+			zap.Any("agentId", req.AgentId),
+			zap.Any("playerId", req.UserId),
+			zap.Any("gameId", req.GameId))
+		return resp, nil
+	}
+	p := dao.CacheIns().GetPool(int64(req.AgentId), eGame.ConfName)
+	//换算成对应币种的积分   cny->[currencyType]
+	resp.Currency = p.Div(exchange).Truncate(2).String()
+	return resp, nil
+}
+
 func (d *LotteryService) QKLDoBetInit(_ context.Context, req *services.QKLDoBetInitReq) (resp *services.QKLDoBetInitResp, err error) {
 	defer func() {
 		if err := recover(); err != nil {
