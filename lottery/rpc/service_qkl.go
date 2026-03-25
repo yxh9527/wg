@@ -1160,7 +1160,6 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 		if tmp := newCurrencys[item.UserId]; tmp != nil {
 			//新余额
 			nc, _ := decimal.NewFromString(tmp.Currency)
-			nc = nc.Div(decimal.NewFromInt(100))
 			dao.CacheIns().ChangePool(int64(item.AgentId), int32(item.UserId), game.ConfName, item.CurrencyType, decimal.Zero, win.Mul(exchange))
 			if win.GreaterThan(decimal.Zero) {
 				//下注流水
