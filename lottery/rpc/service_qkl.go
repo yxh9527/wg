@@ -260,7 +260,7 @@ func (d *LotteryService) QKLDoBetContinue(_ context.Context, req *services.QKLDo
 			zap.L().Error("panic", zap.Any("err", err))
 		}
 	}()
-	resp = &services.QKLDoBetContinueResp{Code: services.ErrorCode_OK}
+	resp = &services.QKLDoBetContinueResp{Code: services.ErrorCode_OK, CanAfford: false}
 	deltaWin, _ := decimal.NewFromString(req.DeltaWin)
 	resp.Code = services.ErrorCode_OK
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
@@ -299,6 +299,7 @@ func (d *LotteryService) QKLDoBetContinue(_ context.Context, req *services.QKLDo
 			zap.Any("gameId", req.GameId))
 		return resp, nil
 	}
+	dao.CacheIns().ChangePool(int64(req.AgentId), int32(req.UserId), eGame.ConfName, req.CurrencyType, decimal.Zero, deltaWin.Mul(exchange))
 	//判断是否可以开奖
 	if deltaWin.GreaterThan(decimal.Zero) {
 		if req.GuaranteedWin {
@@ -314,6 +315,8 @@ func (d *LotteryService) QKLDoBetContinue(_ context.Context, req *services.QKLDo
 				resp.CanAfford = true
 			}
 		}
+	} else {
+		resp.CanAfford = true
 	}
 	return resp, nil
 }
@@ -324,6 +327,7 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 			zap.L().Error("panic", zap.Any("err", err))
 		}
 	}()
+	zap.L().Debug("QKLDoBetSettle", zap.Any("req", req))
 	resp = &services.QKLDoBetSettleResp{Code: services.ErrorCode_OK}
 	eGame := dao.GamesManagerIns().GetById(int64(req.GameId))
 	if eGame == nil || eGame.State == 2 {
@@ -343,7 +347,7 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 			zap.Any("userId", req.UserId),
 			zap.Any("symbol", eGame.ConfName),
 			zap.Any("agentId", req.AgentId),
-			zap.Any("state", req.Result))
+			zap.Any("state", req.Result), zap.Any("err", err))
 		resp.Code = services.ErrorCode_SYSTEM_ERROR
 		return resp, nil
 	}
