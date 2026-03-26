@@ -413,15 +413,27 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 		dao.CacheIns().ChangePool(int64(req.AgentId), int32(req.UserId), eGame.ConfName, req.CurrencyType, decimal.Zero, exWin)
 		zap.L().Debug("QKLDoBetSettle:扣除Pool", zap.Any("agentId", req.AgentId), zap.Any("userId", req.UserId), zap.Any("symbol", eGame.ConfName), zap.Any("currencyType", req.CurrencyType), zap.Any("delta", exWin))
 	} else {
+		tmp, err := d.updatePlayerCurrency(req.UserId, 0)
+		if err != nil {
+			zap.L().Error("QKLDoBetSettle:更新玩家积分失败",
+				zap.Any("agentId", req.AgentId),
+				zap.Any("symbol", eGame.ConfName),
+				zap.Any("roundId", req.RoundID),
+				zap.Any("playerId", req.UserId),
+				zap.Any("Win", req.Win),
+				zap.Any("TotalBet", req.TotalBet),
+				zap.Any("currenType", req.CurrencyType))
+			resp.Code = services.ErrorCode_SYSTEM_ERROR
+			return resp, nil
+		}
+		newCurrency = tmp
+		resp.Currency = fmt.Sprintf("%d", tmp)
 		//返还pool值
 		dao.CacheIns().ChangePool(int64(req.AgentId), int32(req.UserId), eGame.ConfName, req.CurrencyType, decimal.Zero, exWin.Neg())
+		win = decimal.Zero
 		zap.L().Debug("QKLDoBetSettle:返还Pool", zap.Any("agentId", req.AgentId), zap.Any("userId", req.UserId), zap.Any("symbol", eGame.ConfName), zap.Any("currencyType", req.CurrencyType), zap.Any("delta", exWin))
 	}
 	//如果玩家输了 这个值 是表示返还给pool的值 不应该记录在注单里面
-	if win.LessThan(decimal.Zero) {
-		win = decimal.Zero
-	}
-	//新余额
 	nc := decimal.NewFromInt(newCurrency).Div(decimal.NewFromInt(100))
 	//增加结算注单
 	record := ConvertRecord(
@@ -438,7 +450,7 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 		ur.BetRecord.TotalBetGold,
 		win.InexactFloat64())
 	d.SaveRecord(record)
-	if exWin.GreaterThan(decimal.Zero) {
+	if req.Hit {
 		//下注流水
 		d.SaveBill(uint32(req.AgentId), req.UserId, win, nc.Truncate(2).InexactFloat64(), eGame.ConfName, "结算", req.CurrencyType, req.RoundID)
 	}
