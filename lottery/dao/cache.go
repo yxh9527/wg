@@ -311,6 +311,7 @@ func (gcm *GameCacheMgr) ChangePool(agentId int64, userId int32, symbol, currenc
 	user := agent.GetUser(uint32(userId))
 	if user.IsTourist <= 0 {
 		game := agent.GetGame(symbol)
+		zap.L().Debug("Pool变化前", zap.Any("agentId", agentId), zap.Any("symbol", symbol), zap.Any("userId", userId), zap.Any("currencyType", currencyType), zap.Any("bet", bet), zap.Any("award", award), zap.Any("pool", (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)))
 		//所有情况都需要扣除水池值 记录赔付
 		game.TotalProfLoss = game.TotalProfLoss.Add(award)
 		//增加水池
@@ -322,6 +323,7 @@ func (gcm *GameCacheMgr) ChangePool(agentId int64, userId int32, symbol, currenc
 		//记录玩家局数
 		user.Count = user.Count.Add(decimal.NewFromInt(1))
 		user.UpdateTime = time.Now().Unix()
+		zap.L().Debug("Pool变化后", zap.Any("agentId", agentId), zap.Any("symbol", symbol), zap.Any("userId", userId), zap.Any("currencyType", currencyType), zap.Any("bet", bet), zap.Any("award", award), zap.Any("pool", (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)))
 	}
 	return true
 }
