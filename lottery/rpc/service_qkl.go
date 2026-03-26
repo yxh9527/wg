@@ -347,13 +347,6 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 		resp.Code = services.ErrorCode_SYSTEM_ERROR
 		return resp, nil
 	}
-	w1 := decimal.NewFromFloat(ur.Common.DispatchRewardGold).Truncate(2)
-	w2, _ := decimal.NewFromString(req.Win)
-	if !w1.Equal(w2.Truncate(2)) {
-		zap.L().Error("QKLDoBetSettle:中奖值不一致", zap.Any("result中的中奖值", ur.Common.DispatchRewardGold), zap.Any("接口中的中奖值", req.Win))
-		resp.Code = services.ErrorCode_SYSTEM_ERROR
-		return resp, nil
-	}
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
 	if eAgent == nil {
 		resp.Code = services.ErrorCode_GAME_FROZEN
@@ -395,13 +388,6 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 	newCurrency := int64(0)
 	//命中 玩家赢了 直接增加玩家余额
 	if req.Hit {
-		//判断是否可以开奖
-		_, ok := dao.CacheIns().Lottery(int64(req.AgentId), int32(req.UserId), pc, eGame.ConfName, req.CurrencyType, decimal.Zero, exWin, req.RoundID)
-		if !ok {
-			//不够赔 不可以开
-			resp.Code = services.ErrorCode_NO_ENOUGH_POOL_MONEY
-			return resp, nil
-		}
 		tmp, err := d.updatePlayerCurrency(req.UserId, (exWin).Mul(decimal.NewFromInt(100)).IntPart())
 		if err != nil {
 			zap.L().Error("QKLDoBetSettle:更新玩家积分失败",
@@ -425,11 +411,9 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 		dao.CacheIns().ChangePool(int64(req.AgentId), int32(req.UserId), eGame.ConfName, req.CurrencyType, decimal.Zero, exWin.Neg())
 		zap.L().Debug("QKLDoBetSettle:返还Pool", zap.Any("agentId", req.AgentId), zap.Any("userId", req.UserId), zap.Any("symbol", eGame.ConfName), zap.Any("currencyType", req.CurrencyType), zap.Any("delta", exWin))
 	}
-	var rw float64 = 0.0
-	if ur.Common.DispatchRewardGold > 0 {
-		rw = ur.Common.DispatchRewardGold
-	} else {
-		rw = 0
+	//如果玩家输了 这个值 是表示返还给pool的值 不应该记录在注单里面
+	if win.LessThan(decimal.Zero) {
+		win = decimal.Zero
 	}
 	//新余额
 	nc := decimal.NewFromInt(newCurrency).Div(decimal.NewFromInt(100))
@@ -446,11 +430,11 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 		uint32(eAgent.WebId),
 		true,
 		ur.BetRecord.TotalBetGold,
-		rw)
+		win.InexactFloat64())
 	d.SaveRecord(record)
 	if exWin.GreaterThan(decimal.Zero) {
 		//下注流水
-		d.SaveBill(uint32(req.AgentId), req.UserId, decimal.NewFromFloat(rw), nc.Truncate(2).InexactFloat64(), eGame.ConfName, "结算", req.CurrencyType, req.RoundID)
+		d.SaveBill(uint32(req.AgentId), req.UserId, win, nc.Truncate(2).InexactFloat64(), eGame.ConfName, "结算", req.CurrencyType, req.RoundID)
 	}
 	//打点水池记录
 	d.pcr.Record(int64(req.AgentId), eGame.ConfName, dao.CacheIns().GetPool(int64(req.AgentId), eGame.ConfName))
@@ -487,13 +471,7 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 		return resp, nil
 	}
 	initBet, _ := decimal.NewFromString(req.InitBet)
-	w1 := decimal.NewFromFloat(ur.Common.DispatchRewardGold).Truncate(2)
 	w2, _ := decimal.NewFromString(req.Win)
-	if !w1.Equal(w2.Truncate(2)) {
-		zap.L().Error("QKLDoBetSettleWithCheck:中奖值不一致", zap.Any("result中的中奖值", ur.Common.DispatchRewardGold), zap.Any("接口中的中奖值", req.Win))
-		resp.Code = services.ErrorCode_SYSTEM_ERROR
-		return resp, nil
-	}
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
 	if eAgent == nil {
 		resp.Code = services.ErrorCode_GAME_FROZEN
@@ -824,7 +802,7 @@ func (d *LotteryService) QKLDoBet(_ context.Context, req *services.QKLDoBetReq) 
 			uint32(eAgent.WebId),
 			true,
 			ur.BetRecord.TotalBetGold,
-			ur.Common.DispatchRewardGold)
+			win.InexactFloat64())
 		d.SaveRecord(record)
 	}
 
