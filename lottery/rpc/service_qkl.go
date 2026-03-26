@@ -375,7 +375,7 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 	}
 	pc := config.CfgIns.GetPoolCfg(int64(req.AgentId), eGame.ConfName)
 	if pc == nil {
-		zap.L().Error("QKLDoBetSettle:获取Pool配置文件失败", zap.Any("roundId", req.RoundID), zap.Any("pc", pc))
+		zap.L().Error("QKLDoBetSettle:获取Pool配置文件失败", zap.Any("roundId", req.RoundID), zap.Any("pc", pc), zap.Any("err", err))
 		return resp, nil
 	}
 	exchange, ok := config.CfgIns.GetExchange(req.CurrencyType)
@@ -403,7 +403,7 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 				zap.Any("playerId", req.UserId),
 				zap.Any("Win", req.Win),
 				zap.Any("TotalBet", req.TotalBet),
-				zap.Any("currenType", req.CurrencyType))
+				zap.Any("currenType", req.CurrencyType), zap.Any("err", err))
 			resp.Code = services.ErrorCode_SYSTEM_ERROR
 			return resp, nil
 		}
@@ -411,7 +411,6 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 		resp.Currency = fmt.Sprintf("%d", tmp)
 		//扣除pool值
 		dao.CacheIns().ChangePool(int64(req.AgentId), int32(req.UserId), eGame.ConfName, req.CurrencyType, decimal.Zero, exWin)
-		zap.L().Debug("QKLDoBetSettle:扣除Pool", zap.Any("agentId", req.AgentId), zap.Any("userId", req.UserId), zap.Any("symbol", eGame.ConfName), zap.Any("currencyType", req.CurrencyType), zap.Any("delta", exWin))
 	} else {
 		tmp, err := d.updatePlayerCurrency(req.UserId, 0)
 		if err != nil {
@@ -422,16 +421,17 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 				zap.Any("playerId", req.UserId),
 				zap.Any("Win", req.Win),
 				zap.Any("TotalBet", req.TotalBet),
-				zap.Any("currenType", req.CurrencyType))
+				zap.Any("currenType", req.CurrencyType),
+				zap.Any("err", err))
 			resp.Code = services.ErrorCode_SYSTEM_ERROR
 			return resp, nil
 		}
 		newCurrency = tmp
 		resp.Currency = fmt.Sprintf("%d", tmp)
+		zap.L().Debug("QKLDoBetSettle:返还Pool", zap.Any("agentId", req.AgentId), zap.Any("userId", req.UserId), zap.Any("symbol", eGame.ConfName), zap.Any("currencyType", req.CurrencyType), zap.Any("delta", exWin))
 		//返还pool值
 		dao.CacheIns().ChangePool(int64(req.AgentId), int32(req.UserId), eGame.ConfName, req.CurrencyType, decimal.Zero, exWin.Neg())
 		win = decimal.Zero
-		zap.L().Debug("QKLDoBetSettle:返还Pool", zap.Any("agentId", req.AgentId), zap.Any("userId", req.UserId), zap.Any("symbol", eGame.ConfName), zap.Any("currencyType", req.CurrencyType), zap.Any("delta", exWin))
 	}
 	//如果玩家输了 这个值 是表示返还给pool的值 不应该记录在注单里面
 	nc := decimal.NewFromInt(newCurrency).Div(decimal.NewFromInt(100))
