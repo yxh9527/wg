@@ -310,8 +310,7 @@ func (d *LotteryService) QKLDoBetContinue(_ context.Context, req *services.QKLDo
 			resp.CanAfford = true
 		} else {
 			//判断是否可以开奖
-			_, ok := dao.CacheIns().Lottery(int64(req.AgentId), int32(req.UserId), pc, eGame.ConfName, req.CurrencyType, decimal.Zero, deltaWin.Mul(exchange), req.RoundID)
-			if ok {
+			if deltaWin.LessThanOrEqual(dao.CacheIns().GetPool(int64(req.AgentId), eGame.ConfName)) {
 				//可以开  预扣
 				dao.CacheIns().ChangePool(int64(req.AgentId), int32(req.UserId), eGame.ConfName, req.CurrencyType, decimal.Zero, deltaWin.Mul(exchange))
 				resp.CanAfford = true
@@ -530,8 +529,7 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 	if req.Hit == "win" {
 		if w2.GreaterThan(decimal.Zero) {
 			//判断是否可以开奖
-			_, ok := dao.CacheIns().Lottery(int64(req.AgentId), int32(req.UserId), pc, eGame.ConfName, req.CurrencyType, decimal.Zero, w2.Mul(exchange), req.RoundID)
-			if !ok {
+			if w2.Mul(exchange).GreaterThan(dao.CacheIns().GetPool(int64(req.AgentId), eGame.ConfName)) {
 				//不够赔 不可以开
 				resp.Code = services.ErrorCode_NO_ENOUGH_POOL_MONEY
 				return resp, nil
@@ -774,8 +772,7 @@ func (d *LotteryService) QKLDoBet(_ context.Context, req *services.QKLDoBetReq) 
 		}
 	}
 	//判断是否可以开奖
-	_, ok = dao.CacheIns().Lottery(int64(req.AgentId), int32(req.UserId), pc, eGame.ConfName, req.CurrencyType, decimal.Zero, win.Mul(exchange), req.RoundID)
-	if !ok {
+	if win.Mul(exchange).GreaterThan(dao.CacheIns().GetPool(int64(req.AgentId), eGame.ConfName)) {
 		//不够赔 不可以开
 		resp.Code = services.ErrorCode_NO_ENOUGH_POOL_MONEY
 		return resp, nil
@@ -1037,8 +1034,7 @@ func (d *LotteryService) QKLDoMultiplayerCashout(_ context.Context, req *service
 		return resp, nil
 	}
 	//判断是否可以开奖
-	_, ok = dao.CacheIns().Lottery(int64(req.AgentId), int32(req.UserId), pc, eGame.ConfName, req.CurrencyType, decimal.Zero, win.Mul(exchange), roundId)
-	if !ok {
+	if win.Mul(exchange).GreaterThan(dao.CacheIns().GetPool(int64(req.AgentId), eGame.ConfName)) {
 		//不够赔 不可以开
 		resp.Code = services.ErrorCode_NO_ENOUGH_POOL_MONEY
 		return resp, nil
