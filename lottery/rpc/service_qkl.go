@@ -302,7 +302,6 @@ func (d *LotteryService) QKLDoBetContinue(_ context.Context, req *services.QKLDo
 			zap.Any("gameId", req.GameId))
 		return resp, nil
 	}
-	dao.CacheIns().ChangePool(int64(req.AgentId), int32(req.UserId), eGame.ConfName, req.CurrencyType, decimal.Zero, deltaWin.Mul(exchange))
 	//判断是否可以开奖
 	if deltaWin.GreaterThan(decimal.Zero) {
 		if req.GuaranteedWin {
