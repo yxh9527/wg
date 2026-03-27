@@ -3,62 +3,106 @@
     <Card>
       <div>
         <span>游戏客户端地址:</span>
-        <span style="margin-left:20px;">{{gameUrl}}</span>
+        <span style="margin-left: 20px">{{ gameUrl }}</span>
       </div>
       <div>
         <span>游戏回放地址:</span>
-        <span style="margin-left:20px;">{{replay}}</span>
+        <span style="margin-left: 20px">{{ replay }}</span>
       </div>
       <div>
-        <span style="margin-left:20px;"><Button type="primary" @click="openUpdateGameUrl">修改</Button></span>
-        <div style="color:red;margin-top:10px;"><b>注意:</b>修改游戏客户端地址，修改后要等10s左右才能生效</div>
+        <span style="margin-left: 20px"
+          ><Button type="primary" @click="openUpdateGameUrl">修改</Button></span
+        >
+        <div style="color: red; margin-top: 10px">
+          <b>注意:</b>修改游戏客户端地址，修改后要等10s左右才能生效
+        </div>
       </div>
       <Modal v-model="showEditGameUrl" title="修改游戏客户端地址">
         <div slot="footer" align="center">
-            <Button class="btn" size="default" type="primary" @click="gameUrlSaveHandler">确定</Button>
+          <Button
+            class="btn"
+            size="default"
+            type="primary"
+            @click="gameUrlSaveHandler"
+            >确定</Button
+          >
         </div>
         <Form>
           <FormItem label="游戏客户端地址" prop="">
-            <Input type="text" v-model="gameUrl" placeholder="https://127.0.0.1:1234"> </Input>
+            <Input
+              type="text"
+              v-model="gameUrl"
+              placeholder="https://127.0.0.1:1234"
+            >
+            </Input>
           </FormItem>
           <FormItem label="游戏回放地址" prop="">
-            <Input type="text" v-model="replay" placeholder="https://127.0.0.1:1234"> </Input>
+            <Input
+              type="text"
+              v-model="replay"
+              placeholder="https://127.0.0.1:1234"
+            >
+            </Input>
           </FormItem>
         </Form>
       </Modal>
     </Card>
-    <Card style="margin-top:10px;" v-if="false">
+    <Card style="margin-top: 10px">
       <div style="margin: 10px">
         <Button type="primary" @click="openAddModal">添加配置</Button>
       </div>
-      <Modal v-model="showConfigModal" :title="configModalType ? '编辑代理配置':'添加代理配置'">
+      <Modal
+        v-model="showConfigModal"
+        :title="configModalType ? '编辑代理配置' : '添加代理配置'"
+      >
         <div slot="footer" align="center">
-            <Button class="btn" size="default" type="default" @click="handleConfigModal(true)">取消</Button>
-            <Button class="btn" size="default" type="primary" @click="handleConfigModal(false)">确定</Button>
+          <Button
+            class="btn"
+            size="default"
+            type="default"
+            @click="handleConfigModal(true)"
+            >取消</Button
+          >
+          <Button
+            class="btn"
+            size="default"
+            type="primary"
+            @click="handleConfigModal(false)"
+            >确定</Button
+          >
         </div>
         <Form>
           <FormItem label="配置名称" prop="">
-            <Input type="text" v-model="modalData.name" placeholder="默认配置"> </Input>
+            <Input type="text" v-model="modalData.name" placeholder="默认配置">
+            </Input>
           </FormItem>
-          <FormItem label="Client Api 地址" prop="">
-            <Input type="text" v-model="modalData.client_api_urls" placeholder="https://127.0.0.1:1080/client"> </Input>
-          </FormItem>
+          <!-- <FormItem label="Client Api 地址" prop="">
+            <Input
+              type="text"
+              v-model="modalData.client_api_urls"
+              placeholder="https://127.0.0.1:1080/client"
+            >
+            </Input>
+          </FormItem> -->
           <FormItem label="大厅地址" prop="">
-            <Input type="text" v-model="modalData.hall_urls" placeholder="https://127.0.0.1:1080/hall"> </Input>
+            <Input
+              type="text"
+              v-model="modalData.hall_urls"
+              placeholder="https://127.0.0.1:1080/hall"
+            >
+            </Input>
           </FormItem>
           <FormItem label="最大分数" prop="">
-            <Input type="number" v-model="modalData.max_score" placeholder="0"> </Input>
+            <Input type="number" v-model="modalData.max_score" placeholder="0">
+            </Input>
           </FormItem>
           <FormItem label="最小分数" prop="">
-            <Input type="number" v-model="modalData.min_score" placeholder="0"> </Input>
+            <Input type="number" v-model="modalData.min_score" placeholder="0">
+            </Input>
           </FormItem>
         </Form>
       </Modal>
-      <tables
-        ref="tables"
-        v-model="domainList"
-        :columns="configColumns"
-      />
+      <tables ref="tables" v-model="domainList" :columns="configColumns" />
       <div style="margin-top: 20px; text-align: center">
         <Page
           :total="total"
@@ -85,8 +129,8 @@ export default {
   data() {
     var _this = this;
     return {
-      gameUrl:"",
-      replay:"",
+      gameUrl: "",
+      replay: "",
       showEditGameUrl: false,
       //添加弹出框
       showConfigModal: false,
@@ -95,9 +139,9 @@ export default {
       modalData: {
         name: "",
         client_api_urls: "",
-        hall_urls:"",
+        hall_urls: "",
         max_score: 0,
-        min_score:0
+        min_score: 0,
       },
       //当前页
       ListPage: 1,
@@ -108,7 +152,7 @@ export default {
       configColumns: [
         { title: "序号", type: "index", align: "center" },
         { title: "名称", key: "name", align: "center" },
-        { title: "Client Api 地址", key: "client_api_urls", align: "center" },
+        // { title: "Client Api 地址", key: "client_api_urls", align: "center" },
         { title: "大厅地址", key: "hall_urls", align: "center" },
         { title: "最大分数", key: "max_score", align: "center" },
         { title: "最小分数", key: "min_score", align: "center" },
@@ -151,7 +195,7 @@ export default {
                     },
                     on: {
                       click: () => {
-                        this.deleteConfig(params.row.id)
+                        this.deleteConfig(params.row.id);
                       },
                     },
                   },
@@ -184,29 +228,29 @@ export default {
       }
     },
 
-        //获取客户端游戏地址
+    //获取客户端游戏地址
     async loadGameUrl() {
       let params = {
         token: getToken(),
-      }
+      };
       return await axios.request({
-        url: 'v2/game/getGameUrl',
-        method: 'post',
+        url: "v2/game/getGameUrl",
+        method: "post",
         params,
-      })
+      });
     },
 
-    async updateGameUrl(d,r){
+    async updateGameUrl(d, r) {
       let data = {
         token: getToken(),
-        gameUrl:d,
-        replay:r,
-      }
+        gameUrl: d,
+        replay: r,
+      };
       return await axios.request({
-        url: 'v2/game/updateGameUrl',
-        method: 'post',
-        params:data,
-      })
+        url: "v2/game/updateGameUrl",
+        method: "post",
+        params: data,
+      });
     },
 
     //打开添加弹出框
@@ -227,8 +271,8 @@ export default {
       let data = await this.loadGameUrl();
       console.log(data);
       if (data && data.data && data.data.code == 200) {
-        this.gameUrl = data.data.data.game_url.join(',');
-        this.replay = data.data.data.replays.join(',');
+        this.gameUrl = data.data.data.game_url.join(",");
+        this.replay = data.data.data.replays.join(",");
       }
     },
 
@@ -238,36 +282,35 @@ export default {
     },
 
     async gameUrlSaveHandler() {
-      let data = await this.updateGameUrl(this.gameUrl,this.replay);
+      let data = await this.updateGameUrl(this.gameUrl, this.replay);
     },
 
     //添加代理配置
     async handleConfigModal(isCancel) {
-      if(isCancel) {
+      if (isCancel) {
         this.showConfigModal = false;
         return;
       }
       if (
         this.modalData.name == "" ||
-        this.modalData.client_api_urls == ""||
+        // this.modalData.client_api_urls == "" ||
         this.modalData.hall_urls == ""
       ) {
         this.$Message.error("不能为空");
         return;
       }
 
-      if(this.modalData.max_score == 0 || this.modalData.min_score == 0) {
-
+      if (this.modalData.max_score == 0 || this.modalData.min_score == 0) {
       }
 
-      await this.configModalType && this.updateConfig() || this.AddConfig()
+      ((await this.configModalType) && this.updateConfig()) || this.AddConfig();
       this.modalData = {
         name: "",
         client_api_urls: "",
-        hall_urls:"",
+        hall_urls: "",
         max_score: 0,
-        min_score:0
-      }
+        min_score: 0,
+      };
     },
 
     //add
@@ -296,7 +339,7 @@ export default {
       let data = await axios.request({
         url: "v2/game/apiConfigUpdate",
         method: "post",
-        params
+        params,
       });
       if (data && data.data && data.data.code == 200) {
         this.getDomainConfig();

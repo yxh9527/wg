@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	. "open-api/common"
+	"open-api/dao"
 	. "open-api/dao"
 	"strconv"
 	"strings"
@@ -39,15 +40,22 @@ func Update3rdParams(userId int64, currencyType string) {
 	txPlayer.Commit()
 }
 
-func GatewayList() []string {
-	cm := config.CfgIns.GetGatewayCfg()
+func GatewayList(totalEffectBet float64) []string {
+	cm, urls := config.CfgIns.GetGatewayCfg(), make([]string, 0, 64)
 	if cm.UpdateTime < time.Now().Unix() {
-		cm.Urls = Redis().LoadAllGateways()
+		tmp := make([]*manager.ApiConfig, 0, 32)
+		dao.Mysql().Manager.Model(&manager.ApiConfig{}).Find(&tmp)
+		cm.Urls = tmp
 		cm.UpdateTime = time.Now().Unix() + 10
 		zap.L().Debug("获取最新的gateway配置", zap.Any("cm", cm))
 		config.CfgIns.SetGatewayCfg(&cm)
 	}
-	return cm.Urls
+	for _, v := range cm.Urls {
+		if float64(v.Min) <= totalEffectBet && float64(v.Max) > totalEffectBet {
+			urls = append(urls, strings.Split(v.HallUrls, ",")...)
+		}
+	}
+	return urls
 }
 
 // test
@@ -146,7 +154,7 @@ func GatewayList() []string {
 // 	arr := config.CfgIns.System.GameUrls
 // 	if len(arr) > 0 {
 // 		//https://vv85w4t.ezmkpkwldso.com:23438/clientv3/index.html?gameId=3031&lang=zh&sc=2066&currencyCode=CNY&other=https:%2F%2F146.103.80.204:5029;https:%2F%2F00okccnheh.buwqo.com:5030;https:%2F%2F146.103.88.77:5012;https:%2F%2Fsze8t.qzqgsewldxu.com:31530
-// 		requestUrl := fmt.Sprintf("%s/clientv3/index.html?agent=%d&userId=%d&account=%s&gameId=%d&lang=%s&token=%s&sc=2066&currencyCode=%s&sessionKey=%s&other=%s&symbol=%s", arr[rand.Intn(len(arr))], player.AgentId, player.Id, player.UserId, game.Number, lang, session.Mgckey, currencyType, sessionKey, url.QueryEscape(strings.Join(GatewayList(), ";")), symbol)
+// 		requestUrl := fmt.Sprintf("%s/clientv3/index.html?agent=%d&userId=%d&account=%s&gameId=%d&lang=%s&token=%s&sc=2066&currencyCode=%s&sessionKey=%s&other=%s&symbol=%s", arr[rand.Intn(len(arr))], player.AgentId, player.Id, player.UserId, game.Number, lang, session.Mgckey, currencyType, sessionKey, url.QueryEscape(strings.Join(GatewayList(player.TotalEffBet), ";")), symbol)
 // 		ctx.Redirect(http.StatusFound, requestUrl)
 // 	} else {
 // 		ctx.JSON(http.StatusOK, GetJsonObj(API_LOGIN.String(), &SimpleResp{Code: int(CODE_REQUEST_ERR)}))
@@ -236,7 +244,7 @@ func Login(ctx *gin.Context, params url.Values, agent *manager.Agent) {
 	arr := config.CfgIns.System.GameUrls
 	if len(arr) > 0 {
 		//https://vv85w4t.ezmkpkwldso.com:23438/clientv3/index.html?gameId=3031&lang=zh&sc=2066&currencyCode=CNY&other=https:%2F%2F146.103.80.204:5029;https:%2F%2F00okccnheh.buwqo.com:5030;https:%2F%2F146.103.88.77:5012;https:%2F%2Fsze8t.qzqgsewldxu.com:31530
-		requestUrl := fmt.Sprintf("%s/clientv3/index.html?agent=%d&userId=%d&account=%s&gameId=%d&lang=%s&token=%s&sc=2066&currencyCode=%s&sessionKey=%s&other=%s&symbol=%s", arr[rand.Intn(len(arr))], player.AgentId, player.Id, player.UserId, game.Number, lang, session.Mgckey, currencyType, sessionKey, url.QueryEscape(strings.Join(GatewayList(), ";")), symbol)
+		requestUrl := fmt.Sprintf("%s/clientv3/index.html?agent=%d&userId=%d&account=%s&gameId=%d&lang=%s&token=%s&sc=2066&currencyCode=%s&sessionKey=%s&other=%s&symbol=%s", arr[rand.Intn(len(arr))], player.AgentId, player.Id, player.UserId, game.Number, lang, session.Mgckey, currencyType, sessionKey, url.QueryEscape(strings.Join(GatewayList(player.TotalEffBet), ";")), symbol)
 		ctx.PureJSON(http.StatusOK, GetJsonObj(API_LOGIN.String(), &LoginResp{
 			Code: int(CODE_OK),
 			Url:  requestUrl,

@@ -1,6 +1,7 @@
 package config
 
 import (
+	"app/tables/manager"
 	"fmt"
 	"sync"
 
@@ -117,7 +118,7 @@ type CurrencyMgr struct {
 }
 
 type GatewaysMgr struct {
-	Urls       []string
+	Urls       []*manager.ApiConfig
 	UpdateTime int64
 }
 
