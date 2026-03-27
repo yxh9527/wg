@@ -302,7 +302,7 @@ func (gcm *GameCacheMgr) ReturnPool(agentId int64, userId uint32, symbol string,
 }
 
 // 下注
-func (gcm *GameCacheMgr) ChangePool(agentId int64, userId int32, symbol, currencyType string, bet, award decimal.Decimal) bool {
+func (gcm *GameCacheMgr) ChangePool(agentId int64, userId int32, symbol, currencyType, recordId string, bet, award decimal.Decimal) bool {
 	agent := gcm.GetAgent(agentId)
 	//细分代理锁
 	agent.lock.Lock()
@@ -324,7 +324,7 @@ func (gcm *GameCacheMgr) ChangePool(agentId int64, userId int32, symbol, currenc
 		user.Count = user.Count.Add(decimal.NewFromInt(1))
 		user.UpdateTime = time.Now().Unix()
 		after := (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)
-		zap.L().Debug("当前Pool", zap.Any("agentId", agentId), zap.Any("symbol", symbol), zap.Any("userId", userId), zap.Any("currencyType", currencyType), zap.Any("bet", bet), zap.Any("award", award), zap.Any("before", before), zap.Any("after", after))
+		zap.L().Debug("当前Pool", zap.Any("agentId", agentId), zap.Any("symbol", symbol), zap.Any("recordId", recordId), zap.Any("userId", userId), zap.Any("currencyType", currencyType), zap.Any("bet", bet), zap.Any("award", award), zap.Any("before", before), zap.Any("after", after))
 	}
 	return true
 }
