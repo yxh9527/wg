@@ -892,7 +892,6 @@ func (d *LotteryService) QKLDoBetMultiplayerGame(_ context.Context, req *service
 	}
 	if initBet.Abs().GreaterThan(decimal.Zero) {
 		if nc, ok := d.qklBet(req.AgentId, req.UserId, exchange, eGame.ConfName, roundId, req.InitBet, req.CurrencyType); ok {
-			dao.CacheIns().ChangePool(int64(req.AgentId), int32(req.UserId), eGame.ConfName, req.CurrencyType, req.RoundID, initBet.Mul(exchange), decimal.Zero)
 			resp.Currency = nc.Truncate(2).String()
 		} else {
 			zap.L().Error("QKLDoBetMultiplayerGame:获取汇率配置失败",
