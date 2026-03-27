@@ -1072,7 +1072,11 @@ func (d *LotteryService) QKLSaveMultiplayerRecords(_ context.Context, req *servi
 			zap.L().Error("panic", zap.Any("err", err))
 		}
 	}()
-	zap.L().Debug("QKLSaveMultiplayerRecords:批量保存注单数据结算", zap.Any("req", req))
+	if len(req.Records) <= 0 {
+		zap.L().Error("QKLSettleMultiplayer:批量结算", zap.Any("record count", len(req.Records)))
+		return &services.QKLSaveMultiplayerRecordsResp{Code: services.ErrorCode_OK, Currencys: nil}, nil
+	}
+	zap.L().Debug("QKLSaveMultiplayerRecords:批量保存注单数据结算", zap.Any("record count", len(req.Records)), zap.Any("recordId", req.Records[0].RoundID))
 	ids, tmp := make([]uint32, 0, 64), make(map[uint32]int64)
 	for _, item := range req.Records {
 		ids = append(ids, item.UserId)
@@ -1145,7 +1149,11 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 			zap.L().Error("panic", zap.Any("err", err))
 		}
 	}()
-	zap.L().Debug("QKLSettleMultiplayer:批量结算", zap.Any("req", req))
+	if len(req.Records) <= 0 {
+		zap.L().Error("QKLSettleMultiplayer:批量结算", zap.Any("record count", len(req.Records)))
+		return &services.QKLSettleMultiplayerResp{Code: services.ErrorCode_OK, Currencys: nil}, nil
+	}
+	zap.L().Debug("QKLSettleMultiplayer:批量结算", zap.Any("record count", len(req.Records)), zap.Any("recordId", req.Records[0].RoundID))
 	newCurrencys := make(map[uint32]*services.QKLNewCurrencyItem)
 	deltas := make(map[uint32]int64)
 	totalWin := decimal.Zero
