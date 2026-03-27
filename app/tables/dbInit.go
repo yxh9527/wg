@@ -89,7 +89,7 @@ func InitMysqlDb(m, p *gorm.DB) {
 			{Name: "coin", NameZH: "幸运硬币", Number: 5013, ConfName: "coin", GameClass: 1, GameType: 5, LimitTime: "10", IsFrozen: 0, State: 1, CreateTime: int(time.Now().Unix()), UpdateTime: int(time.Now().Unix()), Weight: 0, ShowType: 1, IsShow: 1},
 			{Name: "spiritParty", NameZH: "亡灵派对", Number: 5014, ConfName: "spiritParty", GameClass: 1, GameType: 5, LimitTime: "10", IsFrozen: 0, State: 1, CreateTime: int(time.Now().Unix()), UpdateTime: int(time.Now().Unix()), Weight: 0, ShowType: 1, IsShow: 1},
 			{Name: "bbjl", NameZH: "至尊百家乐", Number: 5015, ConfName: "bbjl", GameClass: 1, GameType: 5, LimitTime: "10", IsFrozen: 0, State: 1, CreateTime: int(time.Now().Unix()), UpdateTime: int(time.Now().Unix()), Weight: 0, ShowType: 1, IsShow: 1},
-			{Name: "roulette", NameZH: "轮盘", Number: 1035, ConfName: "roulette", GameClass: 1, GameType: 5, LimitTime: "10", IsFrozen: 0, State: 1, CreateTime: int(time.Now().Unix()), UpdateTime: int(time.Now().Unix()), Weight: 0, ShowType: 1, IsShow: 1},
+			{Name: "roulette", NameZH: "轮盘", Number: 5016, ConfName: "roulette", GameClass: 1, GameType: 5, LimitTime: "10", IsFrozen: 0, State: 1, CreateTime: int(time.Now().Unix()), UpdateTime: int(time.Now().Unix()), Weight: 0, ShowType: 1, IsShow: 1},
 			{Name: "bhjk", NameZH: "21点", Number: 5017, ConfName: "bhjk", GameClass: 1, GameType: 5, LimitTime: "10", IsFrozen: 0, State: 1, CreateTime: int(time.Now().Unix()), UpdateTime: int(time.Now().Unix()), Weight: 0, ShowType: 1, IsShow: 1},
 			{Name: "baviator", NameZH: "飞行员", Number: 5018, ConfName: "baviator", GameClass: 1, GameType: 5, LimitTime: "10", IsFrozen: 0, State: 1, CreateTime: int(time.Now().Unix()), UpdateTime: int(time.Now().Unix()), Weight: 0, ShowType: 1, IsShow: 1},
 		}
