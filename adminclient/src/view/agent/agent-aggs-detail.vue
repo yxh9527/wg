@@ -20,17 +20,13 @@
         </Select>
       </div>
     </Card>
-    <Card style="margin-top:10px">
-      <div style="height: 800px; overflow: scroll;">
-        <tables
-        ref="tables"
-        v-model="tableData"
-        :columns="columns"
-      />
-      <Spin fix v-if="spinShow">
-        <Icon type="ios-loading" size="48" class="demo-spin-icon-load"></Icon>
-        <div>数据加载中</div>
-      </Spin>
+    <Card style="margin-top: 10px">
+      <div style="height: 800px; overflow: scroll">
+        <tables ref="tables" v-model="tableData" :columns="columns" />
+        <Spin fix v-if="spinShow">
+          <Icon type="ios-loading" size="48" class="demo-spin-icon-load"></Icon>
+          <div>数据加载中</div>
+        </Spin>
       </div>
     </Card>
   </div>
@@ -38,7 +34,7 @@
 
 <script>
 import Tables from "_c/tables";
-import {getAgentGameDataAggs} from "@/api/data";
+import { getAgentGameDataAggs } from "@/api/data";
 export default {
   name: "agent-aggs-detail",
   components: {
@@ -47,9 +43,9 @@ export default {
   inject: ["viewAccess", "handleLogOut", "reFreshSiteAgentList"],
   data() {
     return {
-      tableData:[],
+      tableData: [],
       agentOption: [],
-      agentId:0,
+      agentId: 0,
       columns: [
         {
           title: "代理ID",
@@ -110,8 +106,7 @@ export default {
           render(h, params) {
             return (
               <span>
-                {(params.row.chipsTotal &&
-                  params.row.chipsTotal.toFixed(2)) ||
+                {(params.row.chipsTotal && params.row.chipsTotal.toFixed(2)) ||
                   0}
               </span>
             );
@@ -125,11 +120,11 @@ export default {
           render(h, params) {
             if (params.row.profitLossTotal) {
               let sum;
-              sum = Number(String(params.row.profitLossTotal).replace(/\,/g, ""));
+              sum = Number(
+                String(params.row.profitLossTotal).replace(/\,/g, "")
+              );
               sum = sum.toFixed(2);
-              return  (
-                <span>{String(sum)}</span>
-              )
+              return <span>{String(sum)}</span>;
             } else {
               return <span style="color:#000">0</span>;
             }
@@ -142,13 +137,21 @@ export default {
           minWidth: 100,
           render(h, params) {
             if (params.row.profitLossTotal) {
-              let sum,effect;
-              sum = Number(String(params.row.profitLossTotal).replace(/\,/g, ""));
-              effect = Number(String(params.row.effectiveBetsTotal).replace(/\,/g, ""));
-              return (effect-sum) >= 0 ? (
-                <span style="color:green">{String((effect-sum).toFixed(2))}</span>
+              let sum, effect;
+              sum = Number(
+                String(params.row.profitLossTotal).replace(/\,/g, "")
+              );
+              effect = Number(
+                String(params.row.effectiveBetsTotal).replace(/\,/g, "")
+              );
+              return effect - sum >= 0 ? (
+                <span style="color:green">
+                  {String((effect - sum).toFixed(2))}
+                </span>
               ) : (
-                <span style="color:red">{String((effect-sum).toFixed(2))}</span>
+                <span style="color:red">
+                  {String((effect - sum).toFixed(2))}
+                </span>
               );
             } else {
               return <span style="color:#000">0</span>;
@@ -176,17 +179,23 @@ export default {
           align: "right",
           minWidth: 80,
           render(h, params) {
-            let sum = Number(String(params.row.profitLossTotal).replace(/\,/g, ""));
-            let effect = Number(String(params.row.effectiveBetsTotal).replace(/\,/g, ""));
+            let sum = Number(
+              String(params.row.profitLossTotal).replace(/\,/g, "")
+            );
+            let effect = Number(
+              String(params.row.effectiveBetsTotal).replace(/\,/g, "")
+            );
             return (
               <span>
-                {isNaN(((effect-sum) / params.row.chipsTotal).toFixed(3))
+                {isNaN(
+                  ((effect - sum) / params.row.effectiveBetsTotal).toFixed(3)
+                )
                   ? 0
-                  : ((effect-sum) / params.row.chipsTotal).toFixed(3)}
+                  : ((effect - sum) / params.row.effectiveBetsTotal).toFixed(3)}
               </span>
             );
           },
-        }
+        },
       ],
       spinShow: false,
     };
@@ -198,11 +207,13 @@ export default {
         { startTime: this.$route.query.startTime },
         { endTime: this.$route.query.endTime },
       ];
-      getAgentGameDataAggs(Data).then((res) => {
-        this.tableData =res.data.data.data;
-      }).catch((err) => {
-        console.log(err);
-      });
+      getAgentGameDataAggs(Data)
+        .then((res) => {
+          this.tableData = res.data.data.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     refreshPage() {
       let Data = [
@@ -211,12 +222,14 @@ export default {
         { endTime: this.$route.query.endTime },
         { webId: this.$route.query.webId },
       ];
-      getAgentGameDataAggs(Data).then((res) => {
-        this.tableData =res.data.data.data;
-      }).catch((err) => {
-        console.log(err);
-      });
-    }
+      getAgentGameDataAggs(Data)
+        .then((res) => {
+          this.tableData = res.data.data.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
   mounted() {
     let siteOption = JSON.parse(sessionStorage.getItem("siteOption") || "[]"); // 获取当前session存储的站点列表数据
@@ -227,7 +240,7 @@ export default {
       item.label = item.name;
     });
     this.getAgentGameAggs();
-  }
+  },
 };
 </script>
 

@@ -8,14 +8,14 @@ export default {
    */
   baseUrl: {
     // 开发环境Api地址
-    dev: "/api/auth/",
+    // dev: "/api/auth/",
     // dev: 'http://127.0.0.1:8000/api/auth',
     // // 生产环境Api地址
-    pro: "/api/auth/",
+    // pro: "/api/auth/",
     // pro: 'http://127.0.0.1:8000/api/auth/'
 
-    // dev: "http://172.21.211.219:9529/api/auth",
-    // pro: "http://172.21.211.219:9529/api/auth/",
+    dev: "http://172.21.211.219:9529/api/auth",
+    pro: "http://172.21.211.219:9529/api/auth/",
   },
   /**
    *  默认打开的首页的路由name，默认为home页面

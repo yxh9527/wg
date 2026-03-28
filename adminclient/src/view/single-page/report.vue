@@ -1,114 +1,112 @@
 <template>
   <div>
     <Card>
-        <div v-for="item in req1" :key="item.key" class="label-style">
-          <div v-if="item.type == 'datetime'">
-            <label style="margin-right: 5px">{{ item.label }}</label>
-            <DatePicker
-              @on-open-change="clearTimeDatess"
-              v-model="item.value"
-              :options="startDateRestrict"
-              :placeholder="'请选择' + item.label"
-            ></DatePicker>
-          </div>
-          <div v-if="item.type == 'radio'" style="margin-left: 20px">
-            <RadioGroup
-              type="button"
-              border="true"
-              v-for="items in item.option"
-              :key="items.label"
-              @on-change="reresetDatePiker"
-              size="small"
-              v-model="item.value"
-            >
-              <Radio :label="items.label" class="radio-style">
-                {{ items.title }}
-              </Radio>
-            </RadioGroup>
-            <br />
-          </div>
+      <div v-for="item in req1" :key="item.key" class="label-style">
+        <div v-if="item.type == 'datetime'">
+          <label style="margin-right: 5px">{{ item.label }}</label>
+          <DatePicker
+            @on-open-change="clearTimeDatess"
+            v-model="item.value"
+            :options="startDateRestrict"
+            :placeholder="'请选择' + item.label"
+          ></DatePicker>
         </div>
-        <div class="select-style">
-            <label>站点选择</label>
-            <Select
-              v-model="webId"
-              @on-change="setSite"
-              style="width: 210px"
-              filterable
-              filter-by-label
-            >
-              <Option
-                v-for="item in siteOption"
-                :value="item.id"
-                :key="item.id"
-                :label="item.name"
-                >{{ item.name }}</Option
-              >
-            </Select>
-          </div>
-          <div class="select-style" style="margin-left: 10px">
-            <label>代理选择</label>
-            <Select
-              v-model="agentId"
-              style="width: 210px"
-              filterable
-              filter-by-label
-            >
-              <Option
-                v-for="item in agentOption"
-                :value="item.id"
-                :key="item.id"
-                :label="item.name"
-                >{{ item.name }}</Option
-              >
-            </Select>
-          </div>
-        <div v-for="item in req" :key="item.number" class="label-style">
-          <div class="select-style" style="margin-left: 0px 0px">
-            <label>{{ item.label }}</label>
-            <Select
-              v-model="item.value"
-              style="width: 400px"
-              filterable
-              filter-by-label
-            >
-              <Option
-                v-for="item in item.option"
-                :value="item.number"
-                :key="item.number"
-                :label="item.label"
-                >{{ item.label }}</Option
-              >
-            </Select>
-          </div>
-        </div>
-        <div class="select-style">
-          <Button
-            type="primary"
-            style="margin-right: 15px"
-            @click="
-              pageData.page = 1;
-              handleSearch();
-            "
-            >搜索</Button
+        <div v-if="item.type == 'radio'" style="margin-left: 20px">
+          <RadioGroup
+            type="button"
+            border="true"
+            v-for="items in item.option"
+            :key="items.label"
+            @on-change="reresetDatePiker"
+            size="small"
+            v-model="item.value"
           >
-          <Button @click="handleAllSearch">重置</Button>
+            <Radio :label="items.label" class="radio-style">
+              {{ items.title }}
+            </Radio>
+          </RadioGroup>
+          <br />
         </div>
+      </div>
+      <div class="select-style">
+        <label>站点选择</label>
+        <Select
+          v-model="webId"
+          @on-change="setSite"
+          style="width: 210px"
+          filterable
+          filter-by-label
+        >
+          <Option
+            v-for="item in siteOption"
+            :value="item.id"
+            :key="item.id"
+            :label="item.name"
+            >{{ item.name }}</Option
+          >
+        </Select>
+      </div>
+      <div class="select-style" style="margin-left: 10px">
+        <label>代理选择</label>
+        <Select
+          v-model="agentId"
+          style="width: 210px"
+          filterable
+          filter-by-label
+        >
+          <Option
+            v-for="item in agentOption"
+            :value="item.id"
+            :key="item.id"
+            :label="item.name"
+            >{{ item.name }}</Option
+          >
+        </Select>
+      </div>
+      <div v-for="item in req" :key="item.number" class="label-style">
+        <div class="select-style" style="margin-left: 0px 0px">
+          <label>{{ item.label }}</label>
+          <Select
+            v-model="item.value"
+            style="width: 400px"
+            filterable
+            filter-by-label
+          >
+            <Option
+              v-for="item in item.option"
+              :value="item.number"
+              :key="item.number"
+              :label="item.label"
+              >{{ item.label }}</Option
+            >
+          </Select>
+        </div>
+      </div>
+      <div class="select-style">
+        <Button
+          type="primary"
+          style="margin-right: 15px"
+          @click="
+            pageData.page = 1;
+            handleSearch();
+          "
+          >搜索</Button
+        >
+        <Button @click="handleAllSearch">重置</Button>
+      </div>
 
-        <div class="select-style">
-          <Button
-            type="primary"
-            style="margin-right: 15px"
-            @click="
-              exportAgentDataWithTime();
-            "
-            >导出代理数据(注单统计)</Button
-          >
-          <Spin fix v-if="loading">
-            <Icon type="ios-loading" class="demo-spin-icon-load" size=18></Icon>
-            <div>正在导出...</div>
-          </Spin>
-        </div>
+      <div class="select-style">
+        <Button
+          type="primary"
+          style="margin-right: 15px"
+          @click="exportAgentDataWithTime()"
+          >导出代理数据(注单统计)</Button
+        >
+        <Spin fix v-if="loading">
+          <Icon type="ios-loading" class="demo-spin-icon-load" size="18"></Icon>
+          <div>正在导出...</div>
+        </Spin>
+      </div>
     </Card>
 
     <Card style="margin: 10px 0">
@@ -147,7 +145,7 @@
         <li
           class="label-style"
           v-for="item in betList.filter(
-            (x) => x.label != '总下注' && x.label != '税收'&&x.label!='盈亏'
+            (x) => x.label != '总下注' && x.label != '税收' && x.label != '盈亏'
           )"
           :key="item.label"
         >
@@ -163,14 +161,12 @@
           <b
             >杀数：{{
               isNaN(
-                (
-                  Number(betList[3].value) / Number(betList[2].value)
-                ).toFixed(3)
+                (Number(betList[3].value) / Number(betList[1].value)).toFixed(3)
               )
                 ? 0
-                : (
-                  Number(betList[3].value) / Number(betList[2].value)
-                  ).toFixed(3)
+                : (Number(betList[3].value) / Number(betList[1].value)).toFixed(
+                    3
+                  )
             }}</b
           >
         </li>
@@ -204,15 +200,12 @@
 import Tables from "_c/tables";
 import { setting } from "@/config";
 import { getDate } from "@/libs/tools";
-import { exportExcel  } from "@/libs/excel";
-import JSZip from 'jszip';
-import FileSaver from 'file-saver';
+import { exportExcel } from "@/libs/excel";
+import JSZip from "jszip";
+import FileSaver from "file-saver";
 
 import * as dayjs from "dayjs";
-import {
-  getReportData,
-  exportAgentData,
-} from "@/api/data";
+import { getReportData, exportAgentData } from "@/api/data";
 import { log } from "util";
 export default {
   name: "gameManage",
@@ -223,7 +216,7 @@ export default {
   data() {
     let _this = this;
     return {
-      loading:false,
+      loading: false,
       model1: [],
       startDateRestrict: {
         disabledDate(date) {
@@ -245,11 +238,7 @@ export default {
           type: "datetime",
           value: "",
         },
-        { key: "endTime",
-          label: "结束日期", 
-          type: "datetime", 
-          value: "" 
-        },
+        { key: "endTime", label: "结束日期", type: "datetime", value: "" },
         {
           key: "timeType",
           type: "radio",
@@ -303,8 +292,7 @@ export default {
           render(h, params) {
             return (
               <span>
-                {(params.row.chipsTotal &&
-                  params.row.chipsTotal.toFixed(2)) ||
+                {(params.row.chipsTotal && params.row.chipsTotal.toFixed(2)) ||
                   0}
               </span>
             );
@@ -318,11 +306,11 @@ export default {
           render(h, params) {
             if (params.row.profitLossTotal) {
               let sum;
-              sum = Number(String(params.row.profitLossTotal).replace(/\,/g, ""));
+              sum = Number(
+                String(params.row.profitLossTotal).replace(/\,/g, "")
+              );
               sum = sum.toFixed(2);
-              return  (
-                <span>{String(sum)}</span>
-              )
+              return <span>{String(sum)}</span>;
             } else {
               return <span style="color:#000">0</span>;
             }
@@ -335,13 +323,21 @@ export default {
           minWidth: 100,
           render(h, params) {
             if (params.row.profitLossTotal) {
-              let sum,effect;
-              sum = Number(String(params.row.profitLossTotal).replace(/\,/g, ""));
-              effect = Number(String(params.row.effectiveBetsTotal).replace(/\,/g, ""));
-              return (effect-sum) >= 0 ? (
-                <span style="color:green">{String((effect-sum).toFixed(2))}</span>
+              let sum, effect;
+              sum = Number(
+                String(params.row.profitLossTotal).replace(/\,/g, "")
+              );
+              effect = Number(
+                String(params.row.effectiveBetsTotal).replace(/\,/g, "")
+              );
+              return effect - sum >= 0 ? (
+                <span style="color:green">
+                  {String((effect - sum).toFixed(2))}
+                </span>
               ) : (
-                <span style="color:red">{String((effect-sum).toFixed(2))}</span>
+                <span style="color:red">
+                  {String((effect - sum).toFixed(2))}
+                </span>
               );
             } else {
               return <span style="color:#000">0</span>;
@@ -369,13 +365,19 @@ export default {
           align: "right",
           minWidth: 80,
           render(h, params) {
-            let sum = Number(String(params.row.profitLossTotal).replace(/\,/g, ""));
-            let effect = Number(String(params.row.effectiveBetsTotal).replace(/\,/g, ""));
+            let sum = Number(
+              String(params.row.profitLossTotal).replace(/\,/g, "")
+            );
+            let effect = Number(
+              String(params.row.effectiveBetsTotal).replace(/\,/g, "")
+            );
             return (
               <span>
-                {isNaN(((effect-sum) / params.row.chipsTotal).toFixed(3))
+                {isNaN(
+                  ((effect - sum) / params.row.effectiveBetsTotal).toFixed(3)
+                )
                   ? 0
-                  : ((effect-sum) / params.row.chipsTotal).toFixed(3)}
+                  : ((effect - sum) / params.row.effectiveBetsTotal).toFixed(3)}
               </span>
             );
           },
@@ -386,7 +388,7 @@ export default {
           align: "center",
           width: 200,
           button: [
-          (h, params) => {
+            (h, params) => {
               return h(
                 "a",
                 {
@@ -394,15 +396,20 @@ export default {
                     click: () => {
                       let routeData = _this.$router.resolve({
                         path: "/agent-aggs-detail",
-                        query: { webId:_this.webId,agent: params.row.agentId, startTime: _this.searchData.startTime,endTime:_this.searchData.endTime},
+                        query: {
+                          webId: _this.webId,
+                          agent: params.row.agentId,
+                          startTime: _this.searchData.startTime,
+                          endTime: _this.searchData.endTime,
+                        },
                       });
                       window.open(routeData.href, "_blank");
-                    }
-                  }
+                    },
+                  },
                 },
                 "详情"
               );
-            }
+            },
           ],
         },
       ],
@@ -447,7 +454,7 @@ export default {
       }
     },
     handleSearch() {
-      let tmp =[];
+      let tmp = [];
       this.req1.map((item) => {
         if (item.value) {
           if (item.type == "datetime") {
@@ -474,18 +481,24 @@ export default {
       if (timeRange) {
         switch (timeRange.timeType) {
           case 4:
-          this.searchData.startTime = dayjs()
+            this.searchData.startTime = dayjs()
               .subtract(0, "days")
               .startOf("day")
               .unix();
-              this.searchData.endTime = dayjs().subtract(0, "days").endOf("day").unix();
+            this.searchData.endTime = dayjs()
+              .subtract(0, "days")
+              .endOf("day")
+              .unix();
             break;
           case 5:
             this.searchData.startTime = dayjs()
               .subtract(1, "days")
               .startOf("day")
               .unix();
-            this.searchData.endTime = dayjs().subtract(1, "days").endOf("day").unix();
+            this.searchData.endTime = dayjs()
+              .subtract(1, "days")
+              .endOf("day")
+              .unix();
             break;
         }
       } else {
@@ -528,8 +541,13 @@ export default {
               res.data.data.docCount.toFixed(2),
               res.data.data.effectiveBetsTotal.toFixed(2),
               res.data.data.chipsTotal.toFixed(2),
-              (Number(res.data.data.effectiveBetsTotal) - Number(res.data.data.profitLossTotal)).toFixed(2),
-              (res.data.data.revenueTotal && res.data.data.revenueTotal.toFixed(2)) || 0,
+              (
+                Number(res.data.data.effectiveBetsTotal) -
+                Number(res.data.data.profitLossTotal)
+              ).toFixed(2),
+              (res.data.data.revenueTotal &&
+                res.data.data.revenueTotal.toFixed(2)) ||
+                0,
             ];
           }
         })
@@ -538,8 +556,8 @@ export default {
         });
     },
     exportAgentDataWithTime() {
-      this.loading=true
-      let tmp =[];
+      this.loading = true;
+      let tmp = [];
       this.req1.map((item) => {
         if (item.value) {
           if (item.type == "datetime") {
@@ -565,18 +583,24 @@ export default {
       if (timeRange) {
         switch (timeRange.timeType) {
           case 4:
-          this.searchData.startTime = dayjs()
+            this.searchData.startTime = dayjs()
               .subtract(0, "days")
               .startOf("day")
               .unix();
-              this.searchData.endTime = dayjs().subtract(0, "days").endOf("day").unix();
+            this.searchData.endTime = dayjs()
+              .subtract(0, "days")
+              .endOf("day")
+              .unix();
             break;
           case 5:
             this.searchData.startTime = dayjs()
               .subtract(1, "days")
               .startOf("day")
               .unix();
-            this.searchData.endTime = dayjs().subtract(1, "days").endOf("day").unix();
+            this.searchData.endTime = dayjs()
+              .subtract(1, "days")
+              .endOf("day")
+              .unix();
             break;
         }
       } else {
@@ -599,37 +623,40 @@ export default {
       let _this = this;
       exportAgentData(Data).then((res) => {
         const columns = [
-          { title: 'Symbol', key: 'symbol', width: 100 },
-          { title: '游戏名称', key: 'gameName', width: 80 },
-          { title: '注单数量', key: 'doc_count', width: 80 },
-          { title: '玩家数量', key: 'userTotal', width: 80 },
-          { title: '有效投注', key: 'effectiveBetsTotal', width: 80 },
-          { title: '有效打码', key: 'chipsTotal', width: 80 },
-          { title: '总返奖', key: 'profitLossTotal', width: 80 },
-          { title: '总税收', key: 'revenueTotal', width: 80 },
-        ]
+          { title: "Symbol", key: "symbol", width: 100 },
+          { title: "游戏名称", key: "gameName", width: 80 },
+          { title: "注单数量", key: "doc_count", width: 80 },
+          { title: "玩家数量", key: "userTotal", width: 80 },
+          { title: "有效投注", key: "effectiveBetsTotal", width: 80 },
+          { title: "有效打码", key: "chipsTotal", width: 80 },
+          { title: "总返奖", key: "profitLossTotal", width: 80 },
+          { title: "总税收", key: "revenueTotal", width: 80 },
+        ];
         let data = {};
-        Object.keys(res.data.data).forEach(key=>{
+        Object.keys(res.data.data).forEach((key) => {
           let item = res.data.data[key];
           if (data[item.agentId]) {
-            data[item.agentId].push(item)
-          }else{
-            data[item.agentId]=[item];
+            data[item.agentId].push(item);
+          } else {
+            data[item.agentId] = [item];
           }
-        })
-        const zip = new JSZip();
-        Object.keys(data).forEach(key=>{
-          (function(tmp){
-            let ec = exportExcel(columns,data[tmp],tmp);
-            zip.file(`${tmp}.xlsx`, ec, { binary: true });
-          })(key)
-        })
-        // 生成zip文件并下载
-        zip.generateAsync({ type: 'blob' }).then(content => {
-          FileSaver.saveAs(content, `agent统计[${tmp[0].startTime}-${tmp[1].endTime}].zip`);
         });
-        _this.loading=false
-      })
+        const zip = new JSZip();
+        Object.keys(data).forEach((key) => {
+          (function (tmp) {
+            let ec = exportExcel(columns, data[tmp], tmp);
+            zip.file(`${tmp}.xlsx`, ec, { binary: true });
+          })(key);
+        });
+        // 生成zip文件并下载
+        zip.generateAsync({ type: "blob" }).then((content) => {
+          FileSaver.saveAs(
+            content,
+            `agent统计[${tmp[0].startTime}-${tmp[1].endTime}].zip`
+          );
+        });
+        _this.loading = false;
+      });
     },
     handleAllSearch() {
       //重置时间

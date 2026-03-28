@@ -250,6 +250,18 @@ func (gcm *GameCacheMgr) GetAgent(agentId int64) *AgentData {
 	return agent
 }
 
+func (gcm *GameCacheMgr) GetUser(agentId, userId int64) *User {
+	gcm.lock.RLock()
+	defer gcm.lock.RUnlock()
+
+	agent := gcm.agents[agentId]
+	if agent == nil {
+		return nil
+	}
+
+	return agent.userCache[uint32(userId)]
+}
+
 func (gcm *GameCacheMgr) poolType(pool decimal.Decimal, pv *config.Pool) (int, decimal.Decimal) {
 	if pool.LessThanOrEqual(decimal.Zero) {
 		return config.POOL_BREAK_DOWN, decimal.Zero
@@ -321,10 +333,10 @@ func (gcm *GameCacheMgr) ChangePool(agentId int64, userId int32, symbol, currenc
 		//记录玩家有效投注
 		user.TotalEffectBet = user.TotalEffectBet.Add(bet)
 		//记录玩家局数
-		user.Count = user.Count.Add(decimal.NewFromInt(1))
+		// user.Count = user.Count.Add(decimal.NewFromInt(1))
 		user.UpdateTime = time.Now().Unix()
 		after := (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)
-		zap.L().Debug("当前Pool", zap.Any("agentId", agentId), zap.Any("symbol", symbol), zap.Any("recordId", recordId), zap.Any("userId", userId), zap.Any("currencyType", currencyType), zap.Any("bet", bet), zap.Any("award", award), zap.Any("before", before), zap.Any("after", after))
+		zap.L().Debug("Pool", zap.Any("agentId", agentId), zap.Any("symbol", symbol), zap.Any("recordId", recordId), zap.Any("userId", userId), zap.Any("currencyType", currencyType), zap.Any("bet", bet), zap.Any("award", award), zap.Any("before", before), zap.Any("after", after))
 	}
 	return true
 }
@@ -339,6 +351,39 @@ func (gcm *GameCacheMgr) GetPool(agentId int64, symbol string) decimal.Decimal {
 
 	//水池计算方式  pool = 总亏损-总税收
 	return (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)
+}
+
+func (gcm *GameCacheMgr) CheckPoolWithChange(agentId int64, symbol, recordId, currencyType string, award, bet decimal.Decimal, userId uint32) bool {
+	agent := gcm.GetAgent(agentId)
+	//细分代理锁
+	agent.lock.Lock()
+	defer agent.lock.Unlock()
+
+	game := agent.GetGame(symbol)
+	//水池计算方式  pool = 总亏损-总税收
+	pool := (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)
+	if pool.LessThan(award) {
+		return false
+	}
+	user := agent.GetUser(uint32(userId))
+	if user.IsTourist <= 0 {
+		before := (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)
+		//所有情况都需要扣除水池值 记录赔付
+		game.TotalProfLoss = game.TotalProfLoss.Add(award)
+		//增加水池
+		game.TotalEffectBet = game.TotalEffectBet.Add(bet)
+		//触发更新
+		game.UpdateTime = time.Now().Unix()
+		//记录玩家有效投注
+		user.TotalEffectBet = user.TotalEffectBet.Add(bet)
+		//记录玩家局数
+		// user.Count = user.Count.Add(decimal.NewFromInt(1))
+		user.UpdateTime = time.Now().Unix()
+		after := (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)
+		zap.L().Debug("Pool", zap.Any("agentId", agentId), zap.Any("symbol", symbol), zap.Any("recordId", recordId), zap.Any("userId", userId), zap.Any("currencyType", currencyType), zap.Any("bet", bet), zap.Any("award", award), zap.Any("before", before), zap.Any("after", after))
+	}
+
+	return true
 }
 
 // 保存注单信息
