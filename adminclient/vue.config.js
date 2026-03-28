@@ -10,9 +10,9 @@ const resolve = (dir) => {
 // 项目部署配置
 let iplatform = "--leyou";
 const BASE_URL = process.env.NODE_ENV === "production" ? "/" : "/";
-let proxyUrl = "http://172.21.211.219:9529";
+// let proxyUrl = "http://172.21.211.219:9529";
 // let proxyUrl='http://127.0.0.1:8000';
-// let proxyUrl='';
+let proxyUrl = "";
 
 module.exports = {
   devServer: {

@@ -274,12 +274,12 @@ func (gcm *GameCacheMgr) Complete(agentId int64, userId uint32, symbol string, b
 	if user.IsTourist <= 0 {
 		chips := award
 		//不会有返奖的情况，直接用bet计算税收
-		// if award.LessThan(bet) {
-		// 	//bet作为有效打码
-		// 	chips = bet
-		// }
+		if award.LessThan(bet) {
+			//bet作为有效打码
+			chips = bet
+		}
 		game.TotalChips = game.TotalChips.Add(chips)
-		game.TotalRevenue = game.TotalRevenue.Add(chips.Mul(rate).Truncate(4))
+		game.TotalRevenue = game.TotalRevenue.Add(bet.Mul(rate).Truncate(4))
 		game.UpdateTime = time.Now().Unix()
 		user.TotalProfLoss = user.TotalProfLoss.Add(award)
 		user.UpdateTime = time.Now().Unix()
