@@ -31,7 +31,7 @@ func (d *LotteryService) qklBet(agentId, userId uint32, exchange decimal.Decimal
 	if bet.GreaterThan(decimal.Zero) {
 		//首先扣减用户金额
 		tmp, err := d.updatePlayerCurrency(userId, (bet.Neg()).Mul(decimal.NewFromInt(100)).IntPart())
-		if err != nil {
+		if err != services.ErrorCode_OK {
 			zap.L().Debug("qklBet:下注失败,更新玩家积分失败",
 				zap.Any("agentId", agentId),
 				zap.Any("symbol", symbol),
@@ -83,7 +83,7 @@ func (d *LotteryService) qklReturn(agentId, userId uint32, exchange decimal.Deci
 	if bet.GreaterThan(decimal.Zero) {
 		//首先扣减用户金额
 		tmp, err := d.updatePlayerCurrency(userId, bet.Mul(decimal.NewFromInt(100)).IntPart())
-		if err != nil {
+		if err != services.ErrorCode_OK {
 			zap.L().Debug("qklReturn:回退失败,更新玩家积分失败",
 				zap.Any("agentId", agentId),
 				zap.Any("symbol", symbol),
@@ -404,7 +404,7 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 	//命中 玩家赢了 直接增加玩家余额
 	if req.Hit {
 		tmp, err := d.updatePlayerCurrency(req.UserId, (exWin).Mul(decimal.NewFromInt(100)).IntPart())
-		if err != nil {
+		if err != services.ErrorCode_OK {
 			zap.L().Error("QKLDoBetSettle:更新玩家积分失败",
 				zap.Any("agentId", req.AgentId),
 				zap.Any("symbol", eGame.ConfName),
@@ -422,7 +422,7 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 		dao.CacheIns().ChangePool(int64(req.AgentId), int32(req.UserId), eGame.ConfName, req.CurrencyType, req.RoundID, decimal.Zero, exWin)
 	} else {
 		tmp, err := d.updatePlayerCurrency(req.UserId, 0)
-		if err != nil {
+		if err != services.ErrorCode_OK {
 			zap.L().Error("QKLDoBetSettle:更新玩家积分失败",
 				zap.Any("agentId", req.AgentId),
 				zap.Any("symbol", eGame.ConfName),
@@ -558,7 +558,7 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 	if req.Hit == "win" {
 		if w2.GreaterThan(decimal.Zero) {
 			tmp, err := d.updatePlayerCurrency(req.UserId, w2.Mul(exchange).Mul(decimal.NewFromInt(100)).IntPart())
-			if err != nil {
+			if err != services.ErrorCode_OK {
 				zap.L().Error("QKLDoBetSettleWithCheck:更新玩家积分失败",
 					zap.Any("agentId", req.AgentId),
 					zap.Any("symbol", eGame.ConfName),
@@ -603,7 +603,7 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 	}
 	if req.Hit == "draw" {
 		tmp, err := d.updatePlayerCurrency(req.UserId, initBet.Mul(exchange).Mul(decimal.NewFromInt(100)).IntPart())
-		if err != nil {
+		if err != services.ErrorCode_OK {
 			zap.L().Error("QKLDoBetSettleWithCheck:更新玩家积分失败",
 				zap.Any("agentId", req.AgentId),
 				zap.Any("symbol", eGame.ConfName),
@@ -712,8 +712,8 @@ func (d *LotteryService) QKLDoBetStop(_ context.Context, req *services.QKLDoBetS
 			zap.Any("gameId", req.GameId))
 		return resp, nil
 	}
-	tmp, err := d.updatePlayerCurrency(req.UserId, initBet.Mul(exchange).Mul(decimal.NewFromInt(100)).IntPart())
-	if err != nil {
+	tmp, code := d.updatePlayerCurrency(req.UserId, initBet.Mul(exchange).Mul(decimal.NewFromInt(100)).IntPart())
+	if code != services.ErrorCode_OK {
 		zap.L().Error("QKLDoBetSettleWithCheck:更新玩家积分失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("symbol", eGame.ConfName),
@@ -815,8 +815,8 @@ func (d *LotteryService) QKLDoBet(_ context.Context, req *services.QKLDoBetReq) 
 		return resp, nil
 	}
 
-	tmp, err := d.updatePlayerCurrency(req.UserId, win.Mul(exchange).Mul(decimal.NewFromInt(100)).IntPart())
-	if err != nil {
+	tmp, code := d.updatePlayerCurrency(req.UserId, win.Mul(exchange).Mul(decimal.NewFromInt(100)).IntPart())
+	if code != services.ErrorCode_OK {
 		zap.L().Error("QKLDoBet:更新玩家积分失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("symbol", eGame.ConfName),
@@ -1085,8 +1085,8 @@ func (d *LotteryService) QKLDoMultiplayerCashout(_ context.Context, req *service
 		resp.Code = services.ErrorCode_NO_ENOUGH_POOL_MONEY
 		return resp, nil
 	}
-	tmp, err := d.updatePlayerCurrency(req.UserId, (win.Mul(exchange)).Mul(decimal.NewFromInt(100)).IntPart())
-	if err != nil {
+	tmp, code := d.updatePlayerCurrency(req.UserId, (win.Mul(exchange)).Mul(decimal.NewFromInt(100)).IntPart())
+	if code != services.ErrorCode_OK {
 		zap.L().Error("QKLDoMultiplayerCashout:更新玩家积分失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("symbol", eGame.ConfName),

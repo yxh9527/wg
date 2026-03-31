@@ -33,6 +33,7 @@ const (
 	ErrorCode_AUTH_PARSING_FAILED  ErrorCode = 6
 	ErrorCode_AUTH_TOKEN_INVALID   ErrorCode = 7
 	ErrorCode_NO_ENOUGH_POOL_MONEY ErrorCode = 8 //没有足够水池值
+	ErrorCode_NO_ENOUGH_MONEY      ErrorCode = 9 //金币不足
 )
 
 // Enum value maps for ErrorCode.
@@ -47,6 +48,7 @@ var (
 		6: "AUTH_PARSING_FAILED",
 		7: "AUTH_TOKEN_INVALID",
 		8: "NO_ENOUGH_POOL_MONEY",
+		9: "NO_ENOUGH_MONEY",
 	}
 	ErrorCode_value = map[string]int32{
 		"OK":                   0,
@@ -58,6 +60,7 @@ var (
 		"AUTH_PARSING_FAILED":  6,
 		"AUTH_TOKEN_INVALID":   7,
 		"NO_ENOUGH_POOL_MONEY": 8,
+		"NO_ENOUGH_MONEY":      9,
 	}
 )
 
@@ -93,7 +96,7 @@ var File_base_proto protoreflect.FileDescriptor
 const file_base_proto_rawDesc = "" +
 	"\n" +
 	"\n" +
-	"base.proto\x12\x04base*\xbe\x01\n" +
+	"base.proto\x12\x04base*\xd3\x01\n" +
 	"\n" +
 	"error_code\x12\x06\n" +
 	"\x02OK\x10\x00\x12\x0f\n" +
@@ -104,7 +107,8 @@ const file_base_proto_rawDesc = "" +
 	"\x10USER_LOGIN_ERROR\x10\x05\x12\x17\n" +
 	"\x13AUTH_PARSING_FAILED\x10\x06\x12\x16\n" +
 	"\x12AUTH_TOKEN_INVALID\x10\a\x12\x18\n" +
-	"\x14NO_ENOUGH_POOL_MONEY\x10\bB\x15Z\x13./services;servicesb\x06proto3"
+	"\x14NO_ENOUGH_POOL_MONEY\x10\b\x12\x13\n" +
+	"\x0fNO_ENOUGH_MONEY\x10\tB\x15Z\x13./services;servicesb\x06proto3"
 
 var (
 	file_base_proto_rawDescOnce sync.Once

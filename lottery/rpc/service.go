@@ -7,7 +7,6 @@ import (
 	"app/tables/player"
 	"context"
 	"crypto/md5"
-	"errors"
 	"fmt"
 	"lottery/dao"
 	"strconv"
@@ -324,7 +323,7 @@ func (d *LotteryService) BulkPoolLog(data []*view.PoolLogItem) error {
 	return nil
 }
 
-func (d *LotteryService) updatePlayerCurrency(id uint32, delta int64) (int64, error) {
+func (d *LotteryService) updatePlayerCurrency(id uint32, delta int64) (int64, services.ErrorCode) {
 	newCurrency, err := dao.RedisIns().UpdatePlayerCurrency(id, delta, 0, 0, 0)
 	if err != nil {
 		if err == redis.Nil {
@@ -332,28 +331,28 @@ func (d *LotteryService) updatePlayerCurrency(id uint32, delta int64) (int64, er
 			player, err := d.db.GetPlayer(id)
 			if err != nil {
 				zap.L().Error("从数据库加载玩家信息失败", zap.Any("id", id), zap.Error(err))
-				return 0, err
+				return 0, services.ErrorCode_SYSTEM_ERROR
 			}
 			if err := d.rds.SetPlayer(ConvertUserEntityToHumanPlayer(player)); err != nil {
 				zap.L().Error("向redis写入玩家信息缓存失败", zap.Any("id", id), zap.Error(err))
-				return 0, err
+				return 0, services.ErrorCode_SYSTEM_ERROR
 			}
 			newCurrency, err = dao.RedisIns().UpdatePlayerCurrency(id, delta, 0, 0, 0)
 			if err != nil {
 				zap.L().Error("更新玩家游戏币和经验失败", zap.Any("id", id), zap.Error(err))
-				return 0, err
+				return 0, services.ErrorCode_SYSTEM_ERROR
 			}
-			return newCurrency, nil
+			return newCurrency, services.ErrorCode_OK
 		} else {
 			zap.L().Error("更新玩家游戏币和经验失败", zap.Any("id", id), zap.Error(err))
 		}
-		return 0, err
+		return 0, services.ErrorCode_SYSTEM_ERROR
 	}
-	return newCurrency, nil
+	return newCurrency, services.ErrorCode_SYSTEM_ERROR
 }
 
 // 下注
-func (d *LotteryService) SlotsBet(webId uint32, exchange decimal.Decimal, ur *entity.UserRecordInfo, req *services.SlotsLotteryReq) (int64, bool) {
+func (d *LotteryService) SlotsBet(webId uint32, exchange decimal.Decimal, ur *entity.UserRecordInfo, req *services.SlotsLotteryReq) (int64, bool, services.ErrorCode) {
 	var newCurrency int64 = 0
 	award, _ := decimal.NewFromString(req.ProfitLoss)
 	bet, _ := decimal.NewFromString(req.Bet)
@@ -368,12 +367,12 @@ func (d *LotteryService) SlotsBet(webId uint32, exchange decimal.Decimal, ur *en
 	eGame := dao.GamesManagerIns().GetById(int64(req.GameId))
 	if eGame.Number != int(req.GameId) {
 		zap.L().Error("获取Pool配置文件失败", zap.Any("roundId", ur.Common.RecordId), zap.Any("req", req))
-		return 0, false
+		return 0, false, services.ErrorCode_SYSTEM_ERROR
 	}
 	pc := config.CfgIns.GetPoolCfg(req.AgentId, eGame.ConfName)
 	if pc == nil {
 		zap.L().Error("获取Pool配置文件失败", zap.Any("roundId", ur.Common.RecordId), zap.Any("pc", pc))
-		return 0, false
+		return 0, false, services.ErrorCode_SYSTEM_ERROR
 	}
 	b := false
 	zap.L().Debug("Bet:下注", zap.Any("agentId", req.AgentId),
@@ -391,14 +390,14 @@ func (d *LotteryService) SlotsBet(webId uint32, exchange decimal.Decimal, ur *en
 			//判断是否可以开奖
 			_, ok := dao.CacheIns().Lottery(int64(req.AgentId), int32(req.PlayerId), pc, eGame.ConfName, req.CurrencyType, exBet, exAward, ur.Common.RecordId)
 			if !ok {
-				return 0, false
+				return 0, false, services.ErrorCode_NO_ENOUGH_POOL_MONEY
 			}
 		}
 	}
 	if bet.GreaterThan(decimal.Zero) {
 		//首先扣减用户金额
 		tmp, err := d.updatePlayerCurrency(req.PlayerId, (bet.Neg()).Mul(decimal.NewFromInt(100)).IntPart())
-		if err != nil {
+		if err != services.ErrorCode_OK {
 			zap.L().Debug("Bet:下注失败,更新玩家积分失败",
 				zap.Any("agentId", req.AgentId),
 				zap.Any("symbol", eGame.ConfName),
@@ -408,7 +407,7 @@ func (d *LotteryService) SlotsBet(webId uint32, exchange decimal.Decimal, ur *en
 				zap.Any("bet", bet),
 				zap.Any("award", award),
 				zap.Any("currenType", req.CurrencyType))
-			return 0, false
+			return 0, false, err
 		}
 		newCurrency = tmp
 	}
@@ -431,7 +430,7 @@ func (d *LotteryService) SlotsBet(webId uint32, exchange decimal.Decimal, ur *en
 		zap.Any("symbol", eGame.ConfName),
 		zap.Any("roundId", ur.Common.RecordId),
 		zap.Any("playerId", req.PlayerId))
-	return newCurrency, true
+	return newCurrency, true, services.ErrorCode_OK
 }
 
 // 注单结束
@@ -458,11 +457,11 @@ func (d *LotteryService) Complete(webId uint32, exchange decimal.Decimal, ur *en
 		return 0, false
 	}
 	var newCurrency = int64(0)
-	var err = errors.New("nil")
+	var code = services.ErrorCode_OK
 	if award.GreaterThan(decimal.Zero) {
 		//增加用户余额
-		newCurrency, err = d.updatePlayerCurrency(req.PlayerId, award.Mul(decimal.NewFromInt(100)).IntPart())
-		if err != nil {
+		newCurrency, code = d.updatePlayerCurrency(req.PlayerId, award.Mul(decimal.NewFromInt(100)).IntPart())
+		if code != services.ErrorCode_OK {
 			zap.L().Debug("Award:返奖失败,更新玩家积分失败!",
 				zap.Any("agentId", req.AgentId),
 				zap.Any("symbol", eGame.ConfName),
@@ -626,11 +625,11 @@ func (d *LotteryService) SlotsLottery(_ context.Context, req *services.SlotsLott
 	}
 	//下注或购买
 	if bet.GreaterThan(decimal.Zero) {
-		newCurrency, ok := d.SlotsBet(uint32(eAgent.WebId), exchange, ur, req)
+		newCurrency, ok, code := d.SlotsBet(uint32(eAgent.WebId), exchange, ur, req)
 		if !ok {
 			//开奖失败  直接返回不走complete逻辑
 			resp.Result = false
-			resp.Code = services.ErrorCode_SYSTEM_ERROR
+			resp.Code = code
 			return resp, nil
 		} else {
 			resp.NewCurrency = decimal.NewFromFloat(float64(newCurrency) / 100).String()
