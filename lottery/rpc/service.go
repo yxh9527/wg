@@ -492,7 +492,7 @@ func (d *LotteryService) Complete(webId uint32, exchange decimal.Decimal, ur *en
 	d.SaveBill(uint32(req.AgentId), req.PlayerId, award, nc.Truncate(2).InexactFloat64(), eGame.ConfName, "返奖", req.CurrencyType, ur.Common.RecordId)
 
 	zap.L().Debug("Complete:游戏结束", zap.Any("agentId", req.AgentId), zap.Any("gameId", req.GameId), zap.Any("symbol", eGame.ConfName), zap.Any("roundId", ur.Common.RecordId), zap.Any("playerId", req.PlayerId), zap.Any("exAward", award), zap.Any("exBet", bet))
-	dao.CacheIns().Complete(int64(req.AgentId), req.PlayerId, eGame.ConfName, bet, award, pc.Pool[1].Revenue)
+	dao.CacheIns().Complete(int64(req.AgentId), req.PlayerId, eGame.ConfName, bet.Mul(exchange), award.Mul(exchange), pc.Pool[1].Revenue)
 
 	if ri := dao.CacheIns().GetRoundData(int64(req.AgentId), ur.Common.RecordId); ri != nil {
 		delta := ri.MaxPay.Round(2).Sub(award)

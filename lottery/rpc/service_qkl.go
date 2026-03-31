@@ -467,7 +467,12 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 			d.SaveBill(uint32(req.AgentId), req.UserId, win, nc.Truncate(2).InexactFloat64(), eGame.ConfName, "结算", req.CurrencyType, req.RoundID)
 		}
 		if req.Complete {
-			dao.CacheIns().Complete(int64(req.AgentId), req.UserId, eGame.ConfName, decimal.NewFromFloat(ur.BetRecord.TotalBetGold), win.Mul(exchange), exchange)
+			defRevenue := decimal.NewFromFloat(dao.DefaultRevenue)
+			pc := config.CfgIns.GetPoolCfg(int64(req.AgentId), eGame.ConfName)
+			if pc != nil {
+				defRevenue = pc.Pool[1].Revenue
+			}
+			dao.CacheIns().Complete(int64(req.AgentId), req.UserId, eGame.ConfName, decimal.NewFromFloat(ur.BetRecord.TotalBetGold).Mul(exchange), win.Mul(exchange), defRevenue)
 		}
 		//打点水池记录
 		d.pcr.Record(int64(req.AgentId), eGame.ConfName, dao.CacheIns().GetPool(int64(req.AgentId), eGame.ConfName))
@@ -641,7 +646,12 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 		}
 	}
 	if req.Complete {
-		dao.CacheIns().Complete(int64(req.AgentId), req.UserId, eGame.ConfName, initBet, w2.Mul(exchange), exchange)
+		defRevenue := decimal.NewFromFloat(dao.DefaultRevenue)
+		pc := config.CfgIns.GetPoolCfg(int64(req.AgentId), eGame.ConfName)
+		if pc != nil {
+			defRevenue = pc.Pool[1].Revenue
+		}
+		dao.CacheIns().Complete(int64(req.AgentId), req.UserId, eGame.ConfName, initBet.Mul(exchange), w2.Mul(exchange), defRevenue)
 	}
 	return resp, nil
 }
@@ -855,7 +865,12 @@ func (d *LotteryService) QKLDoBet(_ context.Context, req *services.QKLDoBetReq) 
 		}
 
 		if req.Complete {
-			dao.CacheIns().Complete(int64(req.AgentId), req.UserId, eGame.ConfName, bet, win.Mul(exchange), exchange)
+			defRevenue := decimal.NewFromFloat(dao.DefaultRevenue)
+			pc := config.CfgIns.GetPoolCfg(int64(req.AgentId), eGame.ConfName)
+			if pc != nil {
+				defRevenue = pc.Pool[1].Revenue
+			}
+			dao.CacheIns().Complete(int64(req.AgentId), req.UserId, eGame.ConfName, bet.Mul(exchange), win.Mul(exchange), defRevenue)
 		}
 
 		//打点水池记录
@@ -1109,7 +1124,7 @@ func (d *LotteryService) QKLSaveMultiplayerRecords(_ context.Context, req *servi
 		}
 	}()
 	if len(req.Records) <= 0 {
-		zap.L().Error("QKLSettleMultiplayer:批量结算", zap.Any("record count", len(req.Records)))
+		zap.L().Error("QKLSaveMultiplayerRecords:批量结算", zap.Any("record count", len(req.Records)))
 		return &services.QKLSaveMultiplayerRecordsResp{Code: services.ErrorCode_OK, Currencys: nil}, nil
 	}
 	zap.L().Debug("QKLSaveMultiplayerRecords:批量保存注单数据结算", zap.Any("record count", len(req.Records)), zap.Any("recordId", req.Records[0].RoundID))
@@ -1205,7 +1220,7 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 			continue
 		}
 		win, _ := decimal.NewFromString(item.Win)
-		if win.GreaterThan(decimal.Zero) {
+		if win.LessThanOrEqual(decimal.Zero) {
 			continue
 		}
 		bet, _ := decimal.NewFromString(item.Bet)
@@ -1223,6 +1238,7 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 		}
 		totalWin = totalWin.Add((win.Add(bet)).Mul(exchange))
 	}
+
 	// 百人类的 可以这么写 没有并发问题
 	game := dao.GamesManagerIns().GetById(int64(gameId))
 	pool := dao.CacheIns().GetPool(int64(agentId), game.ConfName)
@@ -1315,8 +1331,13 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 			}
 			//新余额
 			nc, _ := decimal.NewFromString(tmp.Currency)
+			defRevenue := decimal.NewFromFloat(dao.DefaultRevenue)
+			pc := config.CfgIns.GetPoolCfg(int64(item.AgentId), game.ConfName)
+			if pc != nil {
+				defRevenue = pc.Pool[1].Revenue
+			}
 			dao.CacheIns().ChangePool(int64(item.AgentId), int32(item.UserId), game.ConfName, item.CurrencyType, item.RoundID, decimal.Zero, win.Mul(exchange))
-			dao.CacheIns().Complete(int64(item.AgentId), item.UserId, game.ConfName, bet, win.Mul(exchange), exchange)
+			dao.CacheIns().Complete(int64(item.AgentId), item.UserId, game.ConfName, bet.Mul(exchange), win.Mul(exchange), defRevenue)
 			if win.GreaterThan(decimal.Zero) {
 				//下注流水
 				d.SaveBill(uint32(item.AgentId), item.UserId, win, nc.Truncate(2).InexactFloat64(), game.ConfName, "结算", item.CurrencyType, roundId)

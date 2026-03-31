@@ -15,8 +15,9 @@ import (
 )
 
 const (
-	SYSTEM_CTRL = 1 //系统控制
-	AUTO_CTRL   = 2 //自动控制
+	SYSTEM_CTRL    = 1 //系统控制
+	AUTO_CTRL      = 2 //自动控制
+	DefaultRevenue = 0.03
 )
 
 var gameCache *GameCacheMgr = nil
@@ -283,7 +284,7 @@ func (gcm *GameCacheMgr) Complete(agentId int64, userId uint32, symbol string, b
 
 	game := agent.GetGame(symbol)
 	user := agent.GetUser(uint32(userId))
-	if user.IsTourist <= 0 {
+	if user.IsTourist == 0 {
 		chips := award
 		//不会有返奖的情况，直接用bet计算税收
 		if award.LessThan(bet) {
@@ -321,7 +322,7 @@ func (gcm *GameCacheMgr) ChangePool(agentId int64, userId int32, symbol, currenc
 	defer agent.lock.Unlock()
 
 	user := agent.GetUser(uint32(userId))
-	if user.IsTourist <= 0 {
+	if user.IsTourist == 0 {
 		game := agent.GetGame(symbol)
 		before := (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)
 		//所有情况都需要扣除水池值 记录赔付
@@ -345,7 +346,7 @@ func (gcm *GameCacheMgr) ChangePool(agentId int64, userId int32, symbol, currenc
 func (gcm *GameCacheMgr) ChangePoolWithNoLock(agentId int64, userId int32, symbol, currencyType, recordId string, bet, award decimal.Decimal) bool {
 	agent := gcm.GetAgent(agentId)
 	user := agent.GetUser(uint32(userId))
-	if user.IsTourist <= 0 {
+	if user.IsTourist == 0 {
 		game := agent.GetGame(symbol)
 		before := (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)
 		//所有情况都需要扣除水池值 记录赔付
@@ -372,7 +373,7 @@ func (gcm *GameCacheMgr) GetPool(agentId int64, symbol string) decimal.Decimal {
 	defer agent.lock.RUnlock()
 
 	game := agent.GetGame(symbol)
-
+	// zap.L().Debug("GetPool", zap.Any("agentId", agentId), zap.Any("symbol", symbol))
 	//水池计算方式  pool = 总亏损-总税收
 	return (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)
 }
@@ -390,7 +391,7 @@ func (gcm *GameCacheMgr) CheckPoolWithChange(agentId int64, symbol, recordId, cu
 		return false
 	}
 	user := agent.GetUser(uint32(userId))
-	if user.IsTourist <= 0 {
+	if user.IsTourist == 0 {
 		before := (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)
 		//所有情况都需要扣除水池值 记录赔付
 		game.TotalProfLoss = game.TotalProfLoss.Add(award)
@@ -418,7 +419,7 @@ func (gcm *GameCacheMgr) SaveRoundData(agentId int64, roundId string, maxPay dec
 	defer agent.lock.RUnlock()
 
 	user := agent.GetUser(playerId)
-	if user != nil && user.IsTourist <= 0 {
+	if user != nil && user.IsTourist == 0 {
 		if ri := agent.RoundCache[roundId]; ri != nil {
 			zap.L().Error("重复缓存对局数据", zap.Any("data", ri))
 		} else {
