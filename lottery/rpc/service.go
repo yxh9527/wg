@@ -442,7 +442,7 @@ func (d *LotteryService) Complete(webId uint32, exchange decimal.Decimal, ur *en
 	}
 
 	bet := decimal.NewFromFloat(ur.BetRecord.TotalBetGold)
-	award := decimal.NewFromFloat(ur.Common.DispatchRewardGold)
+	award, _ := decimal.NewFromString(req.ProfitLoss)
 
 	//获取注单信息
 	zap.L().Debug("Complete:收到注单结束请求",
