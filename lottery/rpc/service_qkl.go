@@ -319,10 +319,9 @@ func (d *LotteryService) QKLDoBetContinue(_ context.Context, req *services.QKLDo
 			dao.CacheIns().ChangePool(int64(req.AgentId), int32(req.UserId), eGame.ConfName, req.CurrencyType, req.RoundID, decimal.Zero, deltaWin.Mul(exchange))
 			resp.CanAfford = true
 		} else {
-			revenue := deltaWin.Mul(exchange).Mul(pc.Pool[1].Revenue)
 			//判断是否可以开奖
 			//判断pool是否足够 足够立马扣除 不继续下注 只检查
-			if dao.CacheIns().CheckPoolWithChange(int64(req.AgentId), eGame.ConfName, req.RoundID, req.CurrencyType, deltaWin.Mul(exchange), decimal.Zero, revenue, req.UserId) {
+			if dao.CacheIns().CheckPoolWithChange(int64(req.AgentId), eGame.ConfName, req.RoundID, req.CurrencyType, deltaWin.Mul(exchange), decimal.Zero, decimal.Zero, req.UserId) {
 				//不够赔 不可以开
 				resp.CanAfford = true
 			}
@@ -551,9 +550,8 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 	}
 	if req.Hit == "win" {
 		if w2.GreaterThan(decimal.Zero) {
-			revenue := w2.Mul(exchange).Mul(pc.Pool[1].Revenue)
 			//判断是否可以开奖
-			if !dao.CacheIns().CheckPoolWithChange(int64(req.AgentId), eGame.ConfName, req.RoundID, req.CurrencyType, w2.Mul(exchange), decimal.Zero, revenue, req.UserId) {
+			if !dao.CacheIns().CheckPoolWithChange(int64(req.AgentId), eGame.ConfName, req.RoundID, req.CurrencyType, w2.Mul(exchange), decimal.Zero, decimal.Zero, req.UserId) {
 				//不够赔 不可以开
 				resp.Code = services.ErrorCode_NO_ENOUGH_POOL_MONEY
 				zap.L().Error("扣除Pool失败", zap.Any("req", req))
@@ -1087,9 +1085,8 @@ func (d *LotteryService) QKLDoMultiplayerCashout(_ context.Context, req *service
 			zap.Any("gameId", req.GameId))
 		return resp, nil
 	}
-	revenue := win.Mul(exchange).Mul(pc.Pool[1].Revenue)
 	//判断是否可以开奖
-	if !dao.CacheIns().CheckPoolWithChange(int64(req.AgentId), eGame.ConfName, req.RoundID, req.CurrencyType, win.Mul(exchange), decimal.Zero, revenue, req.UserId) {
+	if !dao.CacheIns().CheckPoolWithChange(int64(req.AgentId), eGame.ConfName, req.RoundID, req.CurrencyType, win.Mul(exchange), decimal.Zero, decimal.Zero, req.UserId) {
 		//不够赔 不可以开
 		resp.Code = services.ErrorCode_NO_ENOUGH_POOL_MONEY
 		return resp, nil
