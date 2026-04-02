@@ -807,7 +807,7 @@ func (d *LotteryService) QKLDoBet(_ context.Context, req *services.QKLDoBetReq) 
 	}
 	newCurrency := decimal.Zero
 	if win.GreaterThan(decimal.Zero) {
-		revenue := win.Mul(exchange).Mul(pc.Pool[1].Revenue)
+		revenue := bet.Mul(exchange).Mul(pc.Pool[1].Revenue)
 		//判断pool是否足够 足够立马扣除
 		if !dao.CacheIns().CheckPoolWithChange(int64(req.AgentId), eGame.ConfName, req.RoundID, req.CurrencyType, win.Mul(exchange), bet.Mul(exchange), revenue, req.UserId) {
 			//不够赔 不可以开
