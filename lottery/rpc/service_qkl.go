@@ -547,7 +547,6 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 			if !dao.CacheIns().CheckPoolWithChange(int64(req.AgentId), eGame.ConfName, req.RoundID, req.CurrencyType, w2.Mul(exchange), decimal.Zero, decimal.Zero, req.UserId) {
 				//不够赔 不可以开
 				resp.Code = services.ErrorCode_NO_ENOUGH_POOL_MONEY
-				zap.L().Error("扣除Pool失败", zap.Any("req", req))
 				return resp, nil
 			}
 			tmp, err := d.updatePlayerCurrency(req.UserId, w2.Mul(exchange).Mul(decimal.NewFromInt(100)).IntPart())
@@ -638,6 +637,32 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 			d.pcr.Record(int64(req.AgentId), eGame.ConfName, dao.CacheIns().GetPool(int64(req.AgentId), eGame.ConfName))
 		}
 	}
+
+	if req.Hit == "lose" {
+		//新余额
+		resp.CanAfford = true
+		user := dao.CacheIns().GetUser(int64(req.AgentId), int64(req.UserId))
+		if user != nil && user.IsTourist == 0 {
+			//增加结算注单
+			record := ConvertRecord(
+				uint32(req.AgentId),
+				req.UserId,
+				req.RoundID,
+				req.CurrencyType,
+				eGame.ConfName,
+				account,
+				req.Result,
+				decimal.Zero,
+				uint32(eAgent.WebId),
+				true,
+				ur.BetRecord.TotalBetGold,
+				0)
+			d.SaveRecord(record)
+			//打点水池记录
+			d.pcr.Record(int64(req.AgentId), eGame.ConfName, dao.CacheIns().GetPool(int64(req.AgentId), eGame.ConfName))
+		}
+	}
+
 	if req.Complete {
 		dao.CacheIns().Complete(int64(req.AgentId), req.UserId, eGame.ConfName, initBet.Mul(exchange), w2.Mul(exchange), decimal.Zero)
 	}
