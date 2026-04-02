@@ -292,7 +292,8 @@ func (gcm *GameCacheMgr) Complete(agentId int64, userId uint32, symbol string, b
 			chips = bet
 		}
 		game.TotalChips = game.TotalChips.Add(chips)
-		game.TotalRevenue = game.TotalRevenue.Add(bet.Mul(rate).Truncate(4))
+		//以有效下注计算水池后   可以直接放在下注的时候计算税收
+		// game.TotalRevenue = game.TotalRevenue.Add(bet.Mul(rate).Truncate(4))
 		game.UpdateTime = time.Now().Unix()
 		user.TotalProfLoss = user.TotalProfLoss.Add(award)
 		user.UpdateTime = time.Now().Unix()
@@ -315,7 +316,7 @@ func (gcm *GameCacheMgr) ReturnPool(agentId int64, userId uint32, symbol string,
 }
 
 // 下注
-func (gcm *GameCacheMgr) ChangePool(agentId int64, userId int32, symbol, currencyType, recordId string, bet, award decimal.Decimal) bool {
+func (gcm *GameCacheMgr) ChangePool(agentId int64, userId int32, symbol, currencyType, recordId string, bet, award, rate decimal.Decimal) bool {
 	agent := gcm.GetAgent(agentId)
 	//细分代理锁
 	agent.lock.Lock()
@@ -329,6 +330,8 @@ func (gcm *GameCacheMgr) ChangePool(agentId int64, userId int32, symbol, currenc
 		game.TotalProfLoss = game.TotalProfLoss.Add(award)
 		//增加水池
 		game.TotalEffectBet = game.TotalEffectBet.Add(bet)
+		//累计税收
+		game.TotalRevenue = game.TotalRevenue.Add(bet.Mul(rate).Truncate(4))
 		//触发更新
 		game.UpdateTime = time.Now().Unix()
 		//记录玩家有效投注
@@ -397,6 +400,8 @@ func (gcm *GameCacheMgr) CheckPoolWithChange(agentId int64, symbol, recordId, cu
 		game.TotalProfLoss = game.TotalProfLoss.Add(award)
 		//增加水池
 		game.TotalEffectBet = game.TotalEffectBet.Add(bet)
+		//
+		game.TotalRevenue = game.TotalRevenue.Add(revenue)
 		//触发更新
 		game.UpdateTime = time.Now().Unix()
 		//记录玩家有效投注

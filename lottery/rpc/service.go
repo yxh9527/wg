@@ -414,7 +414,7 @@ func (d *LotteryService) SlotsBet(webId uint32, exchange decimal.Decimal, ur *en
 	//
 	nc := decimal.NewFromInt(newCurrency).Div(decimal.NewFromInt(100))
 	if !b {
-		dao.CacheIns().ChangePool(int64(req.AgentId), int32(req.PlayerId), eGame.ConfName, req.CurrencyType, req.RoundID, exBet, exAward)
+		dao.CacheIns().ChangePool(int64(req.AgentId), int32(req.PlayerId), eGame.ConfName, req.CurrencyType, req.RoundID, exBet, exAward, pc.Pool[1].Revenue)
 	}
 	if exAwardMax.GreaterThan(decimal.Zero) {
 		dao.CacheIns().SaveRoundData(int64(req.AgentId), ur.Common.RecordId, exAwardMax, req.PlayerId)
