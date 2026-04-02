@@ -348,7 +348,7 @@ func (d *LotteryService) updatePlayerCurrency(id uint32, delta int64) (int64, se
 		}
 		return 0, services.ErrorCode_SYSTEM_ERROR
 	}
-	return newCurrency, services.ErrorCode_SYSTEM_ERROR
+	return newCurrency, services.ErrorCode_OK
 }
 
 // 下注
@@ -475,7 +475,7 @@ func (d *LotteryService) Complete(webId uint32, exchange decimal.Decimal, ur *en
 
 	nc := decimal.NewFromInt(newCurrency).Div(decimal.NewFromInt(100))
 	//保存注单信息
-	record := ConvertRecord(uint32(req.AgentId), req.PlayerId, ur.Common.RecordId, req.CurrencyType, eGame.ConfName, req.Account, req.State, nc, uint32(webId), req.Complete, ur.BetRecord.TotalBetGold, ur.Common.DispatchRewardGold)
+	record := ConvertRecord(uint32(req.AgentId), req.PlayerId, ur.Common.RecordId, req.CurrencyType, eGame.ConfName, req.Account, req.State, nc, uint32(webId), req.Complete, ur.BetRecord.TotalBetGold, award.InexactFloat64())
 	d.SaveRecord(record)
 
 	zap.L().Debug("Award:返奖", zap.Any("agentId", req.AgentId),

@@ -378,7 +378,7 @@ func (gcm *GameCacheMgr) GetPool(agentId int64, symbol string) decimal.Decimal {
 	return (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)
 }
 
-func (gcm *GameCacheMgr) CheckPoolWithChange(agentId int64, symbol, recordId, currencyType string, award, bet decimal.Decimal, userId uint32) bool {
+func (gcm *GameCacheMgr) CheckPoolWithChange(agentId int64, symbol, recordId, currencyType string, award, bet, revenue decimal.Decimal, userId uint32) bool {
 	agent := gcm.GetAgent(agentId)
 	//细分代理锁
 	agent.lock.Lock()
@@ -386,7 +386,7 @@ func (gcm *GameCacheMgr) CheckPoolWithChange(agentId int64, symbol, recordId, cu
 
 	game := agent.GetGame(symbol)
 	//水池计算方式  pool = 总亏损-总税收
-	pool := (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)
+	pool := (game.TotalEffectBet.Add(bet).Sub(game.TotalProfLoss.Add(award))).Sub(game.TotalRevenue.Add(revenue))
 	if pool.LessThan(award) {
 		return false
 	}
