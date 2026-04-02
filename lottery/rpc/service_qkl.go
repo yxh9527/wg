@@ -1201,7 +1201,6 @@ func (d *LotteryService) QKLSaveMultiplayerRecords(_ context.Context, req *servi
 			d.SaveRecord(record)
 		}
 	}
-
 	return &services.QKLSaveMultiplayerRecordsResp{Code: services.ErrorCode_OK, Currencys: newCurrencys}, nil
 }
 
@@ -1218,7 +1217,18 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 	zap.L().Debug("QKLSettleMultiplayer:批量结算", zap.Any("record count", len(req.Records)), zap.Any("recordId", req.Records[0].RoundID))
 	newCurrencys := make(map[uint32]*services.QKLNewCurrencyItem)
 	deltas := make(map[uint32]int64)
-	totalWin := decimal.Zero
+	totalWin, _ := decimal.NewFromString(req.TotalWin)
+	exchange, ok := config.CfgIns.GetExchange(req.Records[0].CurrencyType)
+	if !ok {
+		resp.Code = services.ErrorCode_SYSTEM_ERROR
+		zap.L().Error("QKLSettleMultiplayer:获取汇率配置失败",
+			zap.Any("currencyType", req.Records[0].CurrencyType),
+			zap.Any("agentId", req.Records[0].AgentId),
+			zap.Any("playerId", req.Records[0].UserId),
+			zap.Any("gameId", req.Records[0].GameId))
+		return &services.QKLSettleMultiplayerResp{Code: services.ErrorCode_PARAMS_INVALID, Currencys: nil}, nil
+	}
+	totalWin = totalWin.Mul(exchange)
 	agentId, gameId := 0, 0
 	//首先判断水池是否足够赔付
 	for _, item := range req.Records {
@@ -1230,20 +1240,8 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 		if win.LessThanOrEqual(decimal.Zero) {
 			continue
 		}
-		bet, _ := decimal.NewFromString(item.Bet)
 		agentId = int(item.AgentId)
 		gameId = int(item.GameId)
-		exchange, ok := config.CfgIns.GetExchange(item.CurrencyType)
-		if !ok {
-			resp.Code = services.ErrorCode_SYSTEM_ERROR
-			zap.L().Error("QKLSettleMultiplayer:获取汇率配置失败",
-				zap.Any("currencyType", item.CurrencyType),
-				zap.Any("agentId", item.AgentId),
-				zap.Any("playerId", item.UserId),
-				zap.Any("gameId", item.GameId))
-			continue
-		}
-		totalWin = totalWin.Add((win.Add(bet)).Mul(exchange))
 	}
 
 	// 百人类的 可以这么写 没有并发问题
