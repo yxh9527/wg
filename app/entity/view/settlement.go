@@ -22,4 +22,5 @@ type Settlement struct {
 	Complete        bool    `json:"complete"`
 	Symbol          string  `json:"symbol"`
 	IsTourist       int32   `json:"isTourist"`
+	Log             string  `json:"log"`
 }

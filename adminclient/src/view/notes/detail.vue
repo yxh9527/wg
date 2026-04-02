@@ -247,7 +247,7 @@ export default {
         {
           title: "状态",
           key: "complete",
-          width: 120,
+          width: 100,
           render: (h, params) => {
             return params.row.complete ? (
               <span style="color:green">完成</span>
@@ -278,24 +278,24 @@ export default {
             );
           },
         },
-        // {
-        //   title: "详情",
-        //   align: "center",
-        //   width: 80,
-        //   render: (h, params) => {
-        //     return h(
-        //       "a",
-        //       {
-        //         on: {
-        //           click: () => {
-        //             _this.imgClick(params.row);
-        //           },
-        //         },
-        //       },
-        //       "查看"
-        //     );
-        //   },
-        // },
+        {
+          title: "对局详情",
+          type: "expand",
+          align: "center",
+          width: 100,
+          render: (h, params) => {
+            if (params.row.log) {
+              return <div>{params.row.log}</div>;
+            } else {
+              return (
+                <div style="text-align:center">
+                  <Icon size="24" type="logo-freebsd-devil" />
+                  没有详情数据
+                </div>
+              );
+            }
+          },
+        },
         { title: "有效下注", key: "bet", width: 100 },
         {
           title: "返奖",
@@ -409,9 +409,6 @@ export default {
           this.pageData.page = result.page;
           this.pageData.current = result.total;
           this.tableData = (result && result.data) || [];
-          this.tableData.map((item) => {
-            item.detail = JSON.parse(item.detail || "{}");
-          });
         } else {
           this.$Message.error("接口报错");
         }

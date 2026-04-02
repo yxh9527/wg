@@ -69,7 +69,7 @@ func SettlementList(ctx *gin.Context) {
 	}
 	boolQuery := elastic.NewBoolQuery().Must(querys...)
 	resp, err := dao.Es().Search().Index("pp_gp_settlement").
-		FetchSourceContext(elastic.NewFetchSourceContext(true).Exclude("init", "log")).
+		FetchSourceContext(elastic.NewFetchSourceContext(true).Exclude("init")).
 		Query(boolQuery).
 		Pretty(true).
 		Size(pageSize).
