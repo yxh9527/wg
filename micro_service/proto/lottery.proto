@@ -138,6 +138,7 @@ message PoolAmountResultResp {
 
 message QKLSettleMultiplayerReq {
     repeated QKLRecord records = 1;
+    string   totalWin = 2;
 }
 
 message QKLNewCurrencyItem {

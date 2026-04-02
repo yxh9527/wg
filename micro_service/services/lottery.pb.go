@@ -136,6 +136,7 @@ func (x *PoolAmountResultResp) GetCurrency() string {
 type QKLSettleMultiplayerReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Records       []*QKLRecord           `protobuf:"bytes,1,rep,name=records,proto3" json:"records,omitempty"`
+	TotalWin      string                 `protobuf:"bytes,2,opt,name=totalWin,proto3" json:"totalWin,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -175,6 +176,13 @@ func (x *QKLSettleMultiplayerReq) GetRecords() []*QKLRecord {
 		return x.Records
 	}
 	return nil
+}
+
+func (x *QKLSettleMultiplayerReq) GetTotalWin() string {
+	if x != nil {
+		return x.TotalWin
+	}
+	return ""
 }
 
 type QKLNewCurrencyItem struct {
@@ -2203,9 +2211,10 @@ const file_lottery_proto_rawDesc = "" +
 	"\fcurrencyType\x18\x04 \x01(\tR\fcurrencyType\"X\n" +
 	"\x14PoolAmountResultResp\x12$\n" +
 	"\x04code\x18\x01 \x01(\x0e2\x10.base.error_codeR\x04code\x12\x1a\n" +
-	"\bcurrency\x18\x02 \x01(\tR\bcurrency\"G\n" +
+	"\bcurrency\x18\x02 \x01(\tR\bcurrency\"c\n" +
 	"\x17QKLSettleMultiplayerReq\x12,\n" +
-	"\arecords\x18\x01 \x03(\v2\x12.lottery.QKLRecordR\arecords\"H\n" +
+	"\arecords\x18\x01 \x03(\v2\x12.lottery.QKLRecordR\arecords\x12\x1a\n" +
+	"\btotalWin\x18\x02 \x01(\tR\btotalWin\"H\n" +
 	"\x12QKLNewCurrencyItem\x12\x16\n" +
 	"\x06userId\x18\x01 \x01(\rR\x06userId\x12\x1a\n" +
 	"\bcurrency\x18\x02 \x01(\tR\bcurrency\"{\n" +
