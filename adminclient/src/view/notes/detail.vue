@@ -148,6 +148,8 @@ import JSZip from "jszip";
 import FileSaver from "file-saver";
 import { exportExcel } from "@/libs/excel";
 import * as dayjs from "dayjs";
+// 在点击事件的方法中调用
+import Clipboard from "clipboard";
 import {
   getSettlement,
   getExportSettlements,
@@ -279,21 +281,22 @@ export default {
           },
         },
         {
-          title: "对局详情",
-          type: "expand",
+          title: "操作",
           align: "center",
-          width: 100,
+          width: 80,
           render: (h, params) => {
-            if (params.row.log) {
-              return <div>{params.row.log}</div>;
-            } else {
-              return (
-                <div style="text-align:center">
-                  <Icon size="24" type="logo-freebsd-devil" />
-                  没有详情数据
-                </div>
-              );
-            }
+            return h(
+              "a",
+              {
+                class: "copy-btn",
+                on: {
+                  click: () => {
+                    _this.handleCopy(params.row.log);
+                  },
+                },
+              },
+              "复制"
+            );
           },
         },
         { title: "有效下注", key: "bet", width: 100 },
@@ -364,6 +367,21 @@ export default {
     };
   },
   methods: {
+    // 在methods中
+    handleCopy(text) {
+      const clipboard = new Clipboard(".copy-btn", {
+        text: () => text, // 设置要复制的文本
+      });
+      clipboard.on("success", () => {
+        this.$Message.success("复制成功");
+        clipboard.destroy(); // 销毁实例
+      });
+      clipboard.on("error", () => {
+        this.$Message.error("复制失败");
+        clipboard.destroy();
+      });
+    },
+
     /**
      * 切换站点
      */
