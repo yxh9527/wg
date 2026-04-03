@@ -27,6 +27,7 @@ const (
 	DataCenterService_GetGameList_FullMethodName                 = "/datacenter.DataCenterService/GetGameList"
 	DataCenterService_UserLock_FullMethodName                    = "/datacenter.DataCenterService/UserLock"
 	DataCenterService_UserUnLock_FullMethodName                  = "/datacenter.DataCenterService/UserUnLock"
+	DataCenterService_GetSesson_FullMethodName                   = "/datacenter.DataCenterService/GetSesson"
 )
 
 // DataCenterServiceClient is the client API for DataCenterService service.
@@ -49,6 +50,8 @@ type DataCenterServiceClient interface {
 	UserLock(ctx context.Context, in *UserLockReq, opts ...grpc.CallOption) (*UserLockResp, error)
 	// 解锁
 	UserUnLock(ctx context.Context, in *UserUnLockReq, opts ...grpc.CallOption) (*UserUnLockResp, error)
+	// 获取session
+	GetSesson(ctx context.Context, in *GetSessionReq, opts ...grpc.CallOption) (*GetSessionResp, error)
 }
 
 type dataCenterServiceClient struct {
@@ -139,6 +142,16 @@ func (c *dataCenterServiceClient) UserUnLock(ctx context.Context, in *UserUnLock
 	return out, nil
 }
 
+func (c *dataCenterServiceClient) GetSesson(ctx context.Context, in *GetSessionReq, opts ...grpc.CallOption) (*GetSessionResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetSessionResp)
+	err := c.cc.Invoke(ctx, DataCenterService_GetSesson_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DataCenterServiceServer is the server API for DataCenterService service.
 // All implementations must embed UnimplementedDataCenterServiceServer
 // for forward compatibility.
@@ -159,6 +172,8 @@ type DataCenterServiceServer interface {
 	UserLock(context.Context, *UserLockReq) (*UserLockResp, error)
 	// 解锁
 	UserUnLock(context.Context, *UserUnLockReq) (*UserUnLockResp, error)
+	// 获取session
+	GetSesson(context.Context, *GetSessionReq) (*GetSessionResp, error)
 	mustEmbedUnimplementedDataCenterServiceServer()
 }
 
@@ -192,6 +207,9 @@ func (UnimplementedDataCenterServiceServer) UserLock(context.Context, *UserLockR
 }
 func (UnimplementedDataCenterServiceServer) UserUnLock(context.Context, *UserUnLockReq) (*UserUnLockResp, error) {
 	return nil, status.Error(codes.Unimplemented, "method UserUnLock not implemented")
+}
+func (UnimplementedDataCenterServiceServer) GetSesson(context.Context, *GetSessionReq) (*GetSessionResp, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetSesson not implemented")
 }
 func (UnimplementedDataCenterServiceServer) mustEmbedUnimplementedDataCenterServiceServer() {}
 func (UnimplementedDataCenterServiceServer) testEmbeddedByValue()                           {}
@@ -358,6 +376,24 @@ func _DataCenterService_UserUnLock_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DataCenterService_GetSesson_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSessionReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DataCenterServiceServer).GetSesson(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DataCenterService_GetSesson_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DataCenterServiceServer).GetSesson(ctx, req.(*GetSessionReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DataCenterService_ServiceDesc is the grpc.ServiceDesc for DataCenterService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -396,6 +432,10 @@ var DataCenterService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserUnLock",
 			Handler:    _DataCenterService_UserUnLock_Handler,
+		},
+		{
+			MethodName: "GetSesson",
+			Handler:    _DataCenterService_GetSesson_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

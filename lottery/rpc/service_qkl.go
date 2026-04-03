@@ -507,7 +507,7 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 	w2, _ := decimal.NewFromString(req.Win)
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
 	if eAgent == nil {
-		resp.Code = services.ErrorCode_GAME_FROZEN
+		resp.Code = services.ErrorCode_AGENT_FROZEN
 		zap.L().Error("QKLDoBetSettleWithCheck:获取代理信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
@@ -517,7 +517,7 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 	}
 	account := dao.CacheIns().GetPlayerAccount(int64(req.AgentId), int64(req.UserId))
 	if account == "" {
-		resp.Code = services.ErrorCode_GAME_FROZEN
+		resp.Code = services.ErrorCode_PARAMS_INVALID
 		zap.L().Error("QKLDoBetSettleWithCheck:获取账号信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
@@ -691,7 +691,7 @@ func (d *LotteryService) QKLDoBetStop(_ context.Context, req *services.QKLDoBetS
 
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
 	if eAgent == nil {
-		resp.Code = services.ErrorCode_GAME_FROZEN
+		resp.Code = services.ErrorCode_AGENT_FROZEN
 		zap.L().Error("QKLDoBetStop:获取代理信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
@@ -701,7 +701,7 @@ func (d *LotteryService) QKLDoBetStop(_ context.Context, req *services.QKLDoBetS
 	}
 	account := dao.CacheIns().GetPlayerAccount(int64(req.AgentId), int64(req.UserId))
 	if account == "" {
-		resp.Code = services.ErrorCode_GAME_FROZEN
+		resp.Code = services.ErrorCode_PARAMS_INVALID
 		zap.L().Error("QKLDoBetStop:获取账号信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
@@ -782,7 +782,7 @@ func (d *LotteryService) QKLDoBet(_ context.Context, req *services.QKLDoBetReq) 
 	}
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
 	if eAgent == nil {
-		resp.Code = services.ErrorCode_GAME_FROZEN
+		resp.Code = services.ErrorCode_AGENT_FROZEN
 		zap.L().Error("QKLDoBet:获取代理信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
@@ -792,7 +792,7 @@ func (d *LotteryService) QKLDoBet(_ context.Context, req *services.QKLDoBetReq) 
 	}
 	account := dao.CacheIns().GetPlayerAccount(int64(req.AgentId), int64(req.UserId))
 	if account == "" {
-		resp.Code = services.ErrorCode_GAME_FROZEN
+		resp.Code = services.ErrorCode_PARAMS_INVALID
 		zap.L().Error("QKLDoBet:获取账号信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
@@ -917,7 +917,7 @@ func (d *LotteryService) QKLDoBetMultiplayerGame(_ context.Context, req *service
 
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
 	if eAgent == nil {
-		resp.Code = services.ErrorCode_GAME_FROZEN
+		resp.Code = services.ErrorCode_AGENT_FROZEN
 		zap.L().Error("QKLDoBetMultiplayerGame:获取代理信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", roundId),
@@ -927,7 +927,7 @@ func (d *LotteryService) QKLDoBetMultiplayerGame(_ context.Context, req *service
 	}
 	account := dao.CacheIns().GetPlayerAccount(int64(req.AgentId), int64(req.UserId))
 	if account == "" {
-		resp.Code = services.ErrorCode_GAME_FROZEN
+		resp.Code = services.ErrorCode_PARAMS_INVALID
 		zap.L().Error("QKLDoBetMultiplayerGame:获取账号信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", roundId),
@@ -988,7 +988,7 @@ func (d *LotteryService) QKLCancelBetMultiplayerGame(_ context.Context, req *ser
 
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
 	if eAgent == nil {
-		resp.Code = services.ErrorCode_GAME_FROZEN
+		resp.Code = services.ErrorCode_AGENT_FROZEN
 		zap.L().Error("QKLCancelBetMultiplayerGame:获取代理信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", roundId),
@@ -998,7 +998,7 @@ func (d *LotteryService) QKLCancelBetMultiplayerGame(_ context.Context, req *ser
 	}
 	account := dao.CacheIns().GetPlayerAccount(int64(req.AgentId), int64(req.UserId))
 	if account == "" {
-		resp.Code = services.ErrorCode_GAME_FROZEN
+		resp.Code = services.ErrorCode_PARAMS_INVALID
 		zap.L().Error("QKLCancelBetMultiplayerGame:获取账号信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", roundId),
@@ -1056,7 +1056,7 @@ func (d *LotteryService) QKLDoMultiplayerCashout(_ context.Context, req *service
 
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
 	if eAgent == nil {
-		resp.Code = services.ErrorCode_GAME_FROZEN
+		resp.Code = services.ErrorCode_AGENT_FROZEN
 		zap.L().Error("QKLDoMultiplayerCashout:获取代理信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", roundId),
@@ -1066,7 +1066,7 @@ func (d *LotteryService) QKLDoMultiplayerCashout(_ context.Context, req *service
 	}
 	account := dao.CacheIns().GetPlayerAccount(int64(req.AgentId), int64(req.UserId))
 	if account == "" {
-		resp.Code = services.ErrorCode_GAME_FROZEN
+		resp.Code = services.ErrorCode_PARAMS_INVALID
 		zap.L().Error("QKLDoMultiplayerCashout:获取账号信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", roundId),
