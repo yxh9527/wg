@@ -43,7 +43,7 @@ func UpdateGameState(ctx *gin.Context) {
 		action = "start"
 	}
 
-	dao.RedisIns().Publish("server-message", fmt.Sprintf("{\"event\":%s,\"ids\":[%d]}", action, id))
+	dao.RedisIns().Publish("server-message", fmt.Sprintf("{\"event\":%s,\"msg:\":%s,\"ids\":[%d]}", action, "gameStatusChange", id))
 	ctx.JSON(http.StatusOK, &entity.Response{Code: http.StatusOK, Data: nil, Msg: "成功"})
 }
 
@@ -64,7 +64,7 @@ func StopAllGame(ctx *gin.Context) {
 		dao.RedisIns().Publish("message", str)
 		ids = append(ids, fmt.Sprintf("%d", game.Number))
 	}
-	dao.RedisIns().Publish("server-message", fmt.Sprintf("{\"event\":\"stop\",\"ids\":[%s]}", strings.Join(ids, ",")))
+	dao.RedisIns().Publish("server-message", fmt.Sprintf("{\"event\":\"stop\",\"msg:\":%s,\"ids\":[%s]}", "gameStatusChange", strings.Join(ids, ",")))
 	ctx.JSON(http.StatusOK, &entity.Response{Code: http.StatusOK, Data: nil, Msg: "成功"})
 }
 
@@ -85,6 +85,6 @@ func StartAllGame(ctx *gin.Context) {
 		dao.RedisIns().Publish("message", str)
 		ids = append(ids, fmt.Sprintf("%d", game.Number))
 	}
-	dao.RedisIns().Publish("server-message", fmt.Sprintf("{\"event\":\"start\",\"ids\":[%s]}", strings.Join(ids, ",")))
+	dao.RedisIns().Publish("server-message", fmt.Sprintf("{\"event\":\"start\",\"msg:\":%s,\"ids\":[%s]}", "gameStatusChange", strings.Join(ids, ",")))
 	ctx.JSON(http.StatusOK, &entity.Response{Code: http.StatusOK, Data: nil, Msg: "成功"})
 }

@@ -123,17 +123,17 @@ func (d *LotteryService) PoolAmountResult(_ context.Context, req *services.PoolA
 	}()
 	resp = &services.PoolAmountResultResp{Code: services.ErrorCode_OK}
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
-	if eAgent == nil || eAgent.IsFrozen == 1 {
-		resp.Code = services.ErrorCode_AGENT_FROZEN
-		zap.L().Debug("PoolAmountResult:代理被冻结",
+	if eAgent == nil {
+		resp.Code = services.ErrorCode_PARAMS_INVALID
+		zap.L().Debug("PoolAmountResult:获取代理信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("gameId", req.GameId))
 		return resp, nil
 	}
 	eGame := dao.GamesManagerIns().GetById(int64(req.GameId))
-	if eGame == nil || eGame.State == 2 {
-		resp.Code = services.ErrorCode_GAME_FROZEN
-		zap.L().Debug("PoolAmountResult:游戏被冻结",
+	if eGame == nil {
+		resp.Code = services.ErrorCode_PARAMS_INVALID
+		zap.L().Debug("PoolAmountResult:获取游戏信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("gameId", req.GameId))
 		return resp, nil
@@ -169,9 +169,9 @@ func (d *LotteryService) QKLDoBetInit(_ context.Context, req *services.QKLDoBetI
 	bet, _ := decimal.NewFromString(req.Bet)
 	resp.Code = services.ErrorCode_OK
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
-	if eAgent == nil || eAgent.IsFrozen == 1 {
-		resp.Code = services.ErrorCode_AGENT_FROZEN
-		zap.L().Debug("QKLDoBetInit:代理被冻结",
+	if eAgent == nil {
+		resp.Code = services.ErrorCode_PARAMS_INVALID
+		zap.L().Debug("QKLDoBetInit:获取代理信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
 			zap.Any("playerId", req.UserId),
@@ -179,9 +179,9 @@ func (d *LotteryService) QKLDoBetInit(_ context.Context, req *services.QKLDoBetI
 		return resp, nil
 	}
 	eGame := dao.GamesManagerIns().GetById(int64(req.GameId))
-	if eGame == nil || eGame.State == 2 {
-		resp.Code = services.ErrorCode_GAME_FROZEN
-		zap.L().Debug("QKLDoBetInit:游戏被冻结",
+	if eGame == nil {
+		resp.Code = services.ErrorCode_PARAMS_INVALID
+		zap.L().Debug("QKLDoBetInit:获取游戏信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
 			zap.Any("playerId", req.UserId),
@@ -222,9 +222,9 @@ func (d *LotteryService) QKLDoBetMore(_ context.Context, req *services.QKLDoBetM
 	bet, _ := decimal.NewFromString(req.Bet)
 	resp.Code = services.ErrorCode_OK
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
-	if eAgent == nil || eAgent.IsFrozen == 1 {
-		resp.Code = services.ErrorCode_AGENT_FROZEN
-		zap.L().Debug("QKLDoBetMore:代理被冻结",
+	if eAgent == nil {
+		resp.Code = services.ErrorCode_PARAMS_INVALID
+		zap.L().Debug("QKLDoBetMore:获取代理信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
 			zap.Any("playerId", req.UserId),
@@ -232,9 +232,9 @@ func (d *LotteryService) QKLDoBetMore(_ context.Context, req *services.QKLDoBetM
 		return resp, nil
 	}
 	eGame := dao.GamesManagerIns().GetById(int64(req.GameId))
-	if eGame == nil || eGame.State == 2 {
-		resp.Code = services.ErrorCode_GAME_FROZEN
-		zap.L().Debug("QKLDoBetMore:游戏被冻结",
+	if eGame == nil {
+		resp.Code = services.ErrorCode_PARAMS_INVALID
+		zap.L().Debug("QKLDoBetMore:获取游戏信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
 			zap.Any("playerId", req.UserId),
@@ -275,9 +275,9 @@ func (d *LotteryService) QKLDoBetContinue(_ context.Context, req *services.QKLDo
 	deltaWin, _ := decimal.NewFromString(req.DeltaWin)
 	resp.Code = services.ErrorCode_OK
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
-	if eAgent == nil || eAgent.IsFrozen == 1 {
-		resp.Code = services.ErrorCode_AGENT_FROZEN
-		zap.L().Debug("QKLDoBetContinue:代理被冻结",
+	if eAgent == nil {
+		resp.Code = services.ErrorCode_PARAMS_INVALID
+		zap.L().Debug("QKLDoBetContinue:获取代理信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
 			zap.Any("playerId", req.UserId),
@@ -285,9 +285,9 @@ func (d *LotteryService) QKLDoBetContinue(_ context.Context, req *services.QKLDo
 		return resp, nil
 	}
 	eGame := dao.GamesManagerIns().GetById(int64(req.GameId))
-	if eGame == nil || eGame.State == 2 {
-		resp.Code = services.ErrorCode_GAME_FROZEN
-		zap.L().Debug("QKLDoBetContinue:游戏被冻结",
+	if eGame == nil {
+		resp.Code = services.ErrorCode_PARAMS_INVALID
+		zap.L().Debug("QKLDoBetContinue:获取游戏信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
 			zap.Any("playerId", req.UserId),
@@ -339,9 +339,9 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 	zap.L().Debug("QKLDoBetSettle", zap.Any("req", req))
 	resp = &services.QKLDoBetSettleResp{Code: services.ErrorCode_OK}
 	eGame := dao.GamesManagerIns().GetById(int64(req.GameId))
-	if eGame == nil || eGame.State == 2 {
-		resp.Code = services.ErrorCode_GAME_FROZEN
-		zap.L().Error("QKLDoBetSettle:游戏被冻结",
+	if eGame == nil {
+		resp.Code = services.ErrorCode_PARAMS_INVALID
+		zap.L().Error("QKLDoBetSettle:获取游戏信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
 			zap.Any("playerId", req.UserId),
@@ -362,7 +362,7 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 	}
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
 	if eAgent == nil {
-		resp.Code = services.ErrorCode_GAME_FROZEN
+		resp.Code = services.ErrorCode_PARAMS_INVALID
 		zap.L().Error("QKLDoBetSettle:获取代理信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
@@ -482,9 +482,9 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 	zap.L().Debug("QKLDoBetSettleWithCheck", zap.Any("req", req))
 	resp = &services.QKLDoBetSettleWithCheckResp{Code: services.ErrorCode_OK}
 	eGame := dao.GamesManagerIns().GetById(int64(req.GameId))
-	if eGame == nil || eGame.State == 2 {
-		resp.Code = services.ErrorCode_GAME_FROZEN
-		zap.L().Error("QKLDoBetSettleWithCheck:游戏被冻结",
+	if eGame == nil {
+		resp.Code = services.ErrorCode_PARAMS_INVALID
+		zap.L().Error("QKLDoBetSettleWithCheck:获取游戏信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
 			zap.Any("playerId", req.UserId),
@@ -507,7 +507,7 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 	w2, _ := decimal.NewFromString(req.Win)
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
 	if eAgent == nil {
-		resp.Code = services.ErrorCode_AGENT_FROZEN
+		resp.Code = services.ErrorCode_PARAMS_INVALID
 		zap.L().Error("QKLDoBetSettleWithCheck:获取代理信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
@@ -678,9 +678,9 @@ func (d *LotteryService) QKLDoBetStop(_ context.Context, req *services.QKLDoBetS
 	zap.L().Debug("QKLDoBetStop", zap.Any("req", req))
 	resp = &services.QKLDoBetStopResp{Code: services.ErrorCode_OK}
 	eGame := dao.GamesManagerIns().GetById(int64(req.GameId))
-	if eGame == nil || eGame.State == 2 {
-		resp.Code = services.ErrorCode_GAME_FROZEN
-		zap.L().Error("QKLDoBetStop:游戏被冻结",
+	if eGame == nil {
+		resp.Code = services.ErrorCode_PARAMS_INVALID
+		zap.L().Error("QKLDoBetStop:获取游戏信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
 			zap.Any("playerId", req.UserId),
@@ -691,7 +691,7 @@ func (d *LotteryService) QKLDoBetStop(_ context.Context, req *services.QKLDoBetS
 
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
 	if eAgent == nil {
-		resp.Code = services.ErrorCode_AGENT_FROZEN
+		resp.Code = services.ErrorCode_PARAMS_INVALID
 		zap.L().Error("QKLDoBetStop:获取代理信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
@@ -763,8 +763,8 @@ func (d *LotteryService) QKLDoBet(_ context.Context, req *services.QKLDoBetReq) 
 	zap.L().Debug("QKLDoBet", zap.Any("req", req))
 	resp = &services.QKLDoBetResp{Code: services.ErrorCode_OK}
 	eGame := dao.GamesManagerIns().GetById(int64(req.GameId))
-	if eGame == nil || eGame.State == 2 {
-		resp.Code = services.ErrorCode_GAME_FROZEN
+	if eGame == nil {
+		resp.Code = services.ErrorCode_PARAMS_INVALID
 		zap.L().Error("QKLDoBet:游戏被冻结",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
@@ -782,7 +782,7 @@ func (d *LotteryService) QKLDoBet(_ context.Context, req *services.QKLDoBetReq) 
 	}
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
 	if eAgent == nil {
-		resp.Code = services.ErrorCode_AGENT_FROZEN
+		resp.Code = services.ErrorCode_PARAMS_INVALID
 		zap.L().Error("QKLDoBet:获取代理信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
@@ -903,9 +903,9 @@ func (d *LotteryService) QKLDoBetMultiplayerGame(_ context.Context, req *service
 	resp = &services.QKLDoBetMultiplayerGameResp{Code: services.ErrorCode_OK}
 	roundId := fmt.Sprintf("%s#%d", req.RoundID, req.UserId)
 	eGame := dao.GamesManagerIns().GetById(int64(req.GameId))
-	if eGame == nil || eGame.State == 2 {
-		resp.Code = services.ErrorCode_GAME_FROZEN
-		zap.L().Error("QKLDoBetMultiplayerGame:游戏被冻结",
+	if eGame == nil {
+		resp.Code = services.ErrorCode_PARAMS_INVALID
+		zap.L().Error("QKLDoBetMultiplayerGame:获取游戏信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", roundId),
 			zap.Any("playerId", req.UserId),
@@ -917,7 +917,7 @@ func (d *LotteryService) QKLDoBetMultiplayerGame(_ context.Context, req *service
 
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
 	if eAgent == nil {
-		resp.Code = services.ErrorCode_AGENT_FROZEN
+		resp.Code = services.ErrorCode_PARAMS_INVALID
 		zap.L().Error("QKLDoBetMultiplayerGame:获取代理信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", roundId),
@@ -976,9 +976,9 @@ func (d *LotteryService) QKLCancelBetMultiplayerGame(_ context.Context, req *ser
 	resp = &services.QKLCancelBetMultiplayerGameResp{Code: services.ErrorCode_OK}
 	roundId := fmt.Sprintf("%s#%d", req.RoundID, req.UserId)
 	eGame := dao.GamesManagerIns().GetById(int64(req.GameId))
-	if eGame == nil || eGame.State == 2 {
-		resp.Code = services.ErrorCode_GAME_FROZEN
-		zap.L().Error("QKLCancelBetMultiplayerGame:游戏被冻结",
+	if eGame == nil {
+		resp.Code = services.ErrorCode_PARAMS_INVALID
+		zap.L().Error("QKLCancelBetMultiplayerGame:获取游戏信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", roundId),
 			zap.Any("playerId", req.UserId),
@@ -988,7 +988,7 @@ func (d *LotteryService) QKLCancelBetMultiplayerGame(_ context.Context, req *ser
 
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
 	if eAgent == nil {
-		resp.Code = services.ErrorCode_AGENT_FROZEN
+		resp.Code = services.ErrorCode_PARAMS_INVALID
 		zap.L().Error("QKLCancelBetMultiplayerGame:获取代理信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", roundId),
@@ -1039,9 +1039,9 @@ func (d *LotteryService) QKLDoMultiplayerCashout(_ context.Context, req *service
 	roundId := fmt.Sprintf("%s#%d", req.RoundID, req.UserId)
 	resp = &services.QKLDoMultiplayerCashoutResp{Code: services.ErrorCode_OK}
 	eGame := dao.GamesManagerIns().GetById(int64(req.GameId))
-	if eGame == nil || eGame.State == 2 {
-		resp.Code = services.ErrorCode_GAME_FROZEN
-		zap.L().Error("QKLDoMultiplayerCashout:游戏被冻结",
+	if eGame == nil {
+		resp.Code = services.ErrorCode_PARAMS_INVALID
+		zap.L().Error("QKLDoMultiplayerCashout:获取游戏信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", roundId),
 			zap.Any("playerId", req.UserId),
@@ -1056,7 +1056,7 @@ func (d *LotteryService) QKLDoMultiplayerCashout(_ context.Context, req *service
 
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
 	if eAgent == nil {
-		resp.Code = services.ErrorCode_AGENT_FROZEN
+		resp.Code = services.ErrorCode_PARAMS_INVALID
 		zap.L().Error("QKLDoMultiplayerCashout:获取代理信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", roundId),

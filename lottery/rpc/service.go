@@ -573,10 +573,10 @@ func (d *LotteryService) SlotsLottery(_ context.Context, req *services.SlotsLott
 	resp.Result = true
 	resp.Code = services.ErrorCode_OK
 	eAgent := dao.AgentManagerIns().Get(req.AgentId)
-	if eAgent == nil || eAgent.IsFrozen == 1 {
+	if eAgent == nil {
 		resp.Code = services.ErrorCode_AGENT_FROZEN
 		resp.Result = false
-		zap.L().Debug("代理被冻结",
+		zap.L().Debug("获取代理信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
 			zap.Any("playerId", req.PlayerId),
@@ -584,15 +584,14 @@ func (d *LotteryService) SlotsLottery(_ context.Context, req *services.SlotsLott
 		return resp, nil
 	}
 	eGame := dao.GamesManagerIns().GetById(int64(req.GameId))
-	if eGame == nil || eGame.State == 2 {
-		resp.Code = services.ErrorCode_GAME_FROZEN
+	if eGame == nil {
+		resp.Code = services.ErrorCode_PARAMS_INVALID
 		resp.Result = false
-		zap.L().Debug("游戏被冻结",
+		zap.L().Debug("获取游戏信息失败",
 			zap.Any("agentId", req.AgentId),
 			zap.Any("roundId", req.RoundID),
 			zap.Any("playerId", req.PlayerId),
-			zap.Any("gameId", req.GameId),
-			zap.Any("symbol", eGame.ConfName))
+			zap.Any("gameId", req.GameId))
 		return resp, nil
 	}
 	exchange, ok := config.CfgIns.GetExchange(req.CurrencyType)
