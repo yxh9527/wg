@@ -166,7 +166,7 @@ func (d *DataCenterService) GetGameList(ctx context.Context, req *services.GetGa
 	return resp, nil
 }
 
-func (d *DataCenterService) GetSession(_ context.Context, req *services.GetSessionReq) (resp *services.GetSessionResp, err error) {
+func (d *DataCenterService) GetSesson(ctx context.Context, req *services.GetSessionReq) (resp *services.GetSessionResp, err error) {
 	resp = &services.GetSessionResp{Code: services.ErrorCode_OK}
 	res, err := d.rds.Get(req.Key, req.TimeOut)
 	if err != nil && err != redis.Nil {
