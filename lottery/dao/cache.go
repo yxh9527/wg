@@ -346,7 +346,7 @@ func (gcm *GameCacheMgr) ChangePool(agentId int64, userId int32, symbol, currenc
 }
 
 // 下注
-func (gcm *GameCacheMgr) ChangePoolWithNoLock(agentId int64, userId int32, symbol, currencyType, recordId string, bet, award decimal.Decimal) bool {
+func (gcm *GameCacheMgr) ChangePoolWithNoLock(agentId int64, userId int32, symbol, currencyType, recordId string, bet, award, revence decimal.Decimal) bool {
 	agent := gcm.GetAgent(agentId)
 	user := agent.GetUser(uint32(userId))
 	if user.IsTourist == 0 {
@@ -356,6 +356,8 @@ func (gcm *GameCacheMgr) ChangePoolWithNoLock(agentId int64, userId int32, symbo
 		game.TotalProfLoss = game.TotalProfLoss.Add(award)
 		//增加水池
 		game.TotalEffectBet = game.TotalEffectBet.Add(bet)
+		//
+		game.TotalRevenue = game.TotalRevenue.Add(revence)
 		//触发更新
 		game.UpdateTime = time.Now().Unix()
 		//记录玩家有效投注
@@ -565,7 +567,7 @@ func (gcm *GameCacheMgr) Lottery(agentId int64, userId int32, pc *config.Pool, s
 	}
 	zap.L().Debug("Lottery:赔付成功", zap.Any("agentId", agentId), zap.Any("symbol", symbol), zap.Any("roundId", roundId), zap.Any("playerId", userId), zap.Any("可赔付", p), zap.Any("返奖值", award))
 
-	CacheIns().ChangePoolWithNoLock(int64(agentId), int32(userId), symbol, currencyType, roundId, bet, award)
+	CacheIns().ChangePoolWithNoLock(int64(agentId), int32(userId), symbol, currencyType, roundId, bet, award, revence)
 
 	return pool, true
 }
