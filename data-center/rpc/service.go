@@ -165,3 +165,15 @@ func (d *DataCenterService) GetGameList(ctx context.Context, req *services.GetGa
 	// zap.L().Debug("游戏列表", zap.Any("data", resp), zap.Any("count", len(resp.All)))
 	return resp, nil
 }
+
+func (d *DataCenterService) GetSession(_ context.Context, req *services.GetSessionReq) (resp *services.GetSessionResp, err error) {
+	resp = &services.GetSessionResp{Code: services.ErrorCode_OK}
+	res, err := d.rds.Get(req.Key, req.TimeOut)
+	if err != nil && err != redis.Nil {
+		zap.L().Debug("====>getSession", zap.Any("req", req))
+		resp.Code = services.ErrorCode_SYSTEM_ERROR
+		return resp, err
+	}
+	resp.Value = res
+	return resp, nil
+}

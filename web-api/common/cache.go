@@ -1,10 +1,6 @@
 package common
 
-//缓存中的玩家对象
-type Session struct {
-	Gaming   bool `json:"gaming"`
-	Matching bool `json:"matching"`
-}
+//缓存中的玩家对
 
 //链接访问策略
 type UrlPloy struct {

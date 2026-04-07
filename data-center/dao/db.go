@@ -134,6 +134,12 @@ func (dd *DBDao) ChangeGameState(symbol string, state, showType int32) {
 	}
 }
 
+func (dd *DBDao) GetGame(symbol string) *manager.Game {
+	dd.GM.lock.Lock()
+	defer dd.GM.lock.Unlock()
+	return dd.GM.games[symbol]
+}
+
 // 添加游戏配置
 func (dd *DBDao) AddGame(g *manager.Game) {
 	dd.GM.lock.Lock()
