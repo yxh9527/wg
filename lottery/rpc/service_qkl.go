@@ -582,7 +582,7 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 					uint32(eAgent.WebId),
 					true,
 					ur.BetRecord.TotalBetGold,
-					ur.Common.DispatchRewardGold)
+					w2.InexactFloat64())
 				d.SaveRecord(record)
 				if w2.Mul(exchange).GreaterThan(decimal.Zero) {
 					//下注流水
@@ -627,12 +627,9 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 				uint32(eAgent.WebId),
 				true,
 				ur.BetRecord.TotalBetGold,
-				ur.Common.DispatchRewardGold)
+				initBet.InexactFloat64())
 			d.SaveRecord(record)
-			if w2.Mul(exchange).GreaterThan(decimal.Zero) {
-				//下注流水
-				d.SaveBill(uint32(req.AgentId), req.UserId, w2, nc.Truncate(2).InexactFloat64(), eGame.ConfName, "回退", req.CurrencyType, req.RoundID)
-			}
+			d.SaveBill(uint32(req.AgentId), req.UserId, w2, nc.Truncate(2).InexactFloat64(), eGame.ConfName, "回退", req.CurrencyType, req.RoundID)
 			//打点水池记录
 			d.pcr.Record(int64(req.AgentId), eGame.ConfName, dao.CacheIns().GetPool(int64(req.AgentId), eGame.ConfName))
 		}
