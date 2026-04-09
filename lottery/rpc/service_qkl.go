@@ -814,6 +814,14 @@ func (d *LotteryService) QKLDoBet(_ context.Context, req *services.QKLDoBetReq) 
 		return resp, nil
 	}
 	newCurrency := decimal.Zero
+
+	if bet.GreaterThan(decimal.Zero) {
+		if nc, ok := d.qklBet(req.AgentId, req.UserId, exchange, eGame.ConfName, req.RoundID, req.Bet, req.CurrencyType); ok {
+			resp.Currency = nc.Truncate(2).String()
+			newCurrency = nc
+		}
+	}
+
 	if win.GreaterThan(decimal.Zero) {
 		revenue := bet.Mul(exchange).Mul(pc.Pool[1].Revenue)
 		//判断pool是否足够 足够立马扣除
@@ -822,7 +830,9 @@ func (d *LotteryService) QKLDoBet(_ context.Context, req *services.QKLDoBetReq) 
 			resp.Code = services.ErrorCode_NO_ENOUGH_POOL_MONEY
 			return resp, nil
 		}
-		tmp, code := d.updatePlayerCurrency(req.UserId, win.Mul(exchange).Mul(decimal.NewFromInt(100)).IntPart())
+		var tmp int64 = 0
+		var code services.ErrorCode = services.ErrorCode_OK
+		tmp, code = d.updatePlayerCurrency(req.UserId, win.Mul(exchange).Mul(decimal.NewFromInt(100)).IntPart())
 		if code != services.ErrorCode_OK {
 			zap.L().Error("QKLDoBet:更新玩家积分失败",
 				zap.Any("agentId", req.AgentId),
@@ -838,13 +848,6 @@ func (d *LotteryService) QKLDoBet(_ context.Context, req *services.QKLDoBetReq) 
 		nc := decimal.NewFromInt(tmp).Div(decimal.NewFromInt(100))
 		resp.Currency = nc.String()
 		newCurrency = nc
-	} else {
-		if bet.Abs().GreaterThan(decimal.Zero) {
-			if nc, ok := d.qklBet(req.AgentId, req.UserId, exchange, eGame.ConfName, req.RoundID, req.Bet, req.CurrencyType); ok {
-				resp.Currency = nc.Truncate(2).String()
-				newCurrency = nc
-			}
-		}
 	}
 
 	user := dao.CacheIns().GetUser(int64(req.AgentId), int64(req.UserId))
