@@ -401,6 +401,7 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 	newCurrency := int64(0)
 	//命中 玩家赢了 直接增加玩家余额
 	if req.Hit {
+		// 注意 这里不需要再扣除水池值了，doBetContinue 已经扣除了
 		tmp, err := d.updatePlayerCurrency(req.UserId, (exWin).Mul(decimal.NewFromInt(100)).IntPart())
 		if err != services.ErrorCode_OK {
 			zap.L().Error("QKLDoBetSettle:更新玩家积分失败",
@@ -416,8 +417,6 @@ func (d *LotteryService) QKLDoBetSettle(_ context.Context, req *services.QKLDoBe
 		}
 		newCurrency = tmp
 		resp.Currency = fmt.Sprintf("%d", tmp)
-		//扣除pool值
-		dao.CacheIns().ChangePool(int64(req.AgentId), int32(req.UserId), eGame.ConfName, req.CurrencyType, req.RoundID, decimal.Zero, exWin, pc.Pool[1].Revenue)
 	} else {
 		tmp, err := d.updatePlayerCurrency(req.UserId, 0)
 		if err != services.ErrorCode_OK {
