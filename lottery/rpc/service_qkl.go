@@ -824,7 +824,7 @@ func (d *LotteryService) QKLDoBet(_ context.Context, req *services.QKLDoBetReq) 
 		}
 		var tmp int64 = 0
 		var code services.ErrorCode = services.ErrorCode_OK
-		tmp, code = d.updatePlayerCurrency(req.UserId, bet.Mul(exchange).Mul(decimal.NewFromInt(100)).IntPart())
+		tmp, code = d.updatePlayerCurrency(req.UserId, bet.Neg().Mul(exchange).Mul(decimal.NewFromInt(100)).IntPart())
 		if code != services.ErrorCode_OK {
 			zap.L().Error("QKLDoBet:更新玩家积分失败",
 				zap.Any("agentId", req.AgentId),
