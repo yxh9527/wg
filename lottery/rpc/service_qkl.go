@@ -814,13 +814,6 @@ func (d *LotteryService) QKLDoBet(_ context.Context, req *services.QKLDoBetReq) 
 	}
 	newCurrency := decimal.Zero
 
-	if bet.GreaterThan(decimal.Zero) {
-		if nc, ok := d.qklBet(req.AgentId, req.UserId, exchange, eGame.ConfName, req.RoundID, req.Bet, req.CurrencyType); ok {
-			resp.Currency = nc.Truncate(2).String()
-			newCurrency = nc
-		}
-	}
-
 	if win.GreaterThan(decimal.Zero) {
 		revenue := bet.Mul(exchange).Mul(pc.Pool[1].Revenue)
 		//判断pool是否足够 足够立马扣除
@@ -831,6 +824,23 @@ func (d *LotteryService) QKLDoBet(_ context.Context, req *services.QKLDoBetReq) 
 		}
 		var tmp int64 = 0
 		var code services.ErrorCode = services.ErrorCode_OK
+		tmp, code = d.updatePlayerCurrency(req.UserId, bet.Mul(exchange).Mul(decimal.NewFromInt(100)).IntPart())
+		if code != services.ErrorCode_OK {
+			zap.L().Error("QKLDoBet:更新玩家积分失败",
+				zap.Any("agentId", req.AgentId),
+				zap.Any("symbol", eGame.ConfName),
+				zap.Any("roundId", req.RoundID),
+				zap.Any("playerId", req.UserId),
+				zap.Any("bet", bet),
+				zap.Any("currenType", req.CurrencyType))
+			resp.Code = services.ErrorCode_SYSTEM_ERROR
+			return resp, nil
+		}
+		if bet.GreaterThan(decimal.Zero) {
+			nc := decimal.NewFromInt(tmp).Div(decimal.NewFromInt(100))
+			d.SaveBill(uint32(req.AgentId), req.UserId, bet.Neg(), nc.Truncate(2).InexactFloat64(), eGame.ConfName, "下注", req.CurrencyType, req.RoundID)
+		}
+
 		tmp, code = d.updatePlayerCurrency(req.UserId, win.Mul(exchange).Mul(decimal.NewFromInt(100)).IntPart())
 		if code != services.ErrorCode_OK {
 			zap.L().Error("QKLDoBet:更新玩家积分失败",
@@ -843,10 +853,21 @@ func (d *LotteryService) QKLDoBet(_ context.Context, req *services.QKLDoBetReq) 
 			resp.Code = services.ErrorCode_SYSTEM_ERROR
 			return resp, nil
 		}
+
 		//新余额
 		nc := decimal.NewFromInt(tmp).Div(decimal.NewFromInt(100))
+		if win.GreaterThan(decimal.Zero) {
+			d.SaveBill(uint32(req.AgentId), req.UserId, win, nc.Truncate(2).InexactFloat64(), eGame.ConfName, "结算", req.CurrencyType, req.RoundID)
+		}
 		resp.Currency = nc.String()
 		newCurrency = nc
+	} else {
+		if bet.GreaterThan(decimal.Zero) {
+			if nc, ok := d.qklBet(req.AgentId, req.UserId, exchange, eGame.ConfName, req.RoundID, req.Bet, req.CurrencyType); ok {
+				resp.Currency = nc.Truncate(2).String()
+				newCurrency = nc
+			}
+		}
 	}
 
 	user := dao.CacheIns().GetUser(int64(req.AgentId), int64(req.UserId))
@@ -877,9 +898,6 @@ func (d *LotteryService) QKLDoBet(_ context.Context, req *services.QKLDoBetReq) 
 				ur.BetRecord.TotalBetGold,
 				win.InexactFloat64())
 			d.SaveRecord(record)
-		}
-		if win.GreaterThan(decimal.Zero) {
-			d.SaveBill(uint32(req.AgentId), req.UserId, win, newCurrency.Truncate(2).InexactFloat64(), eGame.ConfName, "结算", req.CurrencyType, req.RoundID)
 		}
 
 		if req.Complete {
