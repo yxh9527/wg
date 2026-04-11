@@ -1115,13 +1115,6 @@ func (d *LotteryService) QKLDoMultiplayerCashout(_ context.Context, req *service
 	}
 	tmp, code := d.updatePlayerCurrency(req.UserId, (win.Mul(exchange)).Mul(decimal.NewFromInt(100)).IntPart())
 	if code != services.ErrorCode_OK {
-		zap.L().Error("QKLDoMultiplayerCashout:更新玩家积分失败",
-			zap.Any("agentId", req.AgentId),
-			zap.Any("symbol", eGame.ConfName),
-			zap.Any("roundId", roundId),
-			zap.Any("playerId", req.UserId),
-			zap.Any("Win", req.Win),
-			zap.Any("currenType", req.CurrencyType))
 		resp.Code = services.ErrorCode_SYSTEM_ERROR
 		return resp, nil
 	}
@@ -1153,7 +1146,7 @@ func (d *LotteryService) QKLSaveMultiplayerRecords(_ context.Context, req *servi
 		zap.L().Error("QKLSaveMultiplayerRecords:批量结算", zap.Any("record count", len(req.Records)))
 		return &services.QKLSaveMultiplayerRecordsResp{Code: services.ErrorCode_OK, Currencys: nil}, nil
 	}
-	zap.L().Debug("QKLSaveMultiplayerRecords:批量保存注单数据结算", zap.Any("record count", len(req.Records)), zap.Any("recordId", req.Records[0].RoundID))
+	zap.L().Debug("QKLSaveMultiplayerRecords:批量保存注单数据结算", zap.Any("record count", len(req.Records)), zap.Any("recordId", req.Records[0].RoundID), zap.Any("req", req))
 	ids, tmp := make([]uint32, 0, 64), make(map[uint32]int64)
 	for _, item := range req.Records {
 		ids = append(ids, item.UserId)
@@ -1191,11 +1184,7 @@ func (d *LotteryService) QKLSaveMultiplayerRecords(_ context.Context, req *servi
 			nc := decimal.Zero
 			bet, _ := decimal.NewFromString(item.Bet)
 			win, _ := decimal.NewFromString(item.Win)
-			if win.LessThanOrEqual(decimal.Zero) {
-				win = decimal.Zero
-			} else {
-				win = win.Add(bet)
-			}
+			win = win.Add(bet)
 			for _, v := range newCurrencys {
 				if v.UserId == item.UserId {
 					nc, _ = decimal.NewFromString(v.Currency)
