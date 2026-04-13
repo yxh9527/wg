@@ -319,7 +319,7 @@ func (d *LotteryService) QKLDoBetContinue(_ context.Context, req *services.QKLDo
 		} else {
 			//判断是否可以开奖
 			//判断pool是否足够 足够立马扣除 不继续下注 只检查
-			if dao.CacheIns().CheckPoolWithChange(int64(req.AgentId), eGame.ConfName, req.RoundID, req.CurrencyType, deltaWin.Mul(exchange), decimal.Zero, decimal.Zero, req.UserId) {
+			if dao.CacheIns().CheckPoolWithOutBet(int64(req.AgentId), eGame.ConfName, req.RoundID, req.CurrencyType, deltaWin.Mul(exchange), decimal.Zero, decimal.Zero, req.UserId) {
 				//不够赔 不可以开
 				resp.CanAfford = true
 			}

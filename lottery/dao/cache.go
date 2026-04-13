@@ -391,6 +391,41 @@ func (gcm *GameCacheMgr) CheckPoolWithChange(agentId int64, symbol, recordId, cu
 
 	game := agent.GetGame(symbol)
 	//水池计算方式  pool = 总亏损-总税收
+	pool := (game.TotalEffectBet.Add(bet).Sub(game.TotalProfLoss.Add(award))).Sub(game.TotalRevenue.Add(revenue))
+	if pool.LessThan(award) {
+		return false
+	}
+	user := agent.GetUser(uint32(userId))
+	if user.IsTourist == 0 {
+		before := (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)
+		//所有情况都需要扣除水池值 记录赔付
+		game.TotalProfLoss = game.TotalProfLoss.Add(award)
+		//增加水池
+		game.TotalEffectBet = game.TotalEffectBet.Add(bet)
+		//
+		game.TotalRevenue = game.TotalRevenue.Add(revenue)
+		//触发更新
+		game.UpdateTime = time.Now().Unix()
+		//记录玩家有效投注
+		user.TotalEffectBet = user.TotalEffectBet.Add(bet)
+		//记录玩家局数
+		// user.Count = user.Count.Add(decimal.NewFromInt(1))
+		user.UpdateTime = time.Now().Unix()
+		after := (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)
+		zap.L().Debug("Pool", zap.Any("agentId", agentId), zap.Any("symbol", symbol), zap.Any("recordId", recordId), zap.Any("userId", userId), zap.Any("currencyType", currencyType), zap.Any("bet", bet), zap.Any("award", award), zap.Any("before", before), zap.Any("after", after))
+	}
+
+	return true
+}
+
+func (gcm *GameCacheMgr) CheckPoolWithOutBet(agentId int64, symbol, recordId, currencyType string, award, bet, revenue decimal.Decimal, userId uint32) bool {
+	agent := gcm.GetAgent(agentId)
+	//细分代理锁
+	agent.lock.Lock()
+	defer agent.lock.Unlock()
+
+	game := agent.GetGame(symbol)
+	//水池计算方式  pool = 总亏损-总税收
 	pool := (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)
 	if pool.LessThan(award) {
 		return false
