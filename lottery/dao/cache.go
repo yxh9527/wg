@@ -392,7 +392,7 @@ func (gcm *GameCacheMgr) CheckPoolWithChange(agentId int64, symbol, recordId, cu
 	game := agent.GetGame(symbol)
 	//水池计算方式  pool = 总亏损-总税收
 	pool := (game.TotalEffectBet.Add(bet).Sub(game.TotalProfLoss.Add(award))).Sub(game.TotalRevenue.Add(revenue))
-	if pool.LessThan(award) {
+	if pool.LessThanOrEqual(decimal.Zero) {
 		return false
 	}
 	user := agent.GetUser(uint32(userId))
