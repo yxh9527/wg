@@ -341,8 +341,10 @@ func SyncAllPool(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, &entity.Response{Code: http.StatusInternalServerError, Msg: "失败", Data: nil})
 		return
 	}
+	srcGame := &manager.Game{}
+	dao.Mysql().Manager.Model(manager.Game{}).Where("number=?", pool.GameId).Take(srcGame)
 	games := make([]*manager.Game, 0, 64)
-	dao.Mysql().Manager.Model(manager.Game{}).Find(&games)
+	dao.Mysql().Manager.Model(manager.Game{}).Where("gameType=?", srcGame.GameType).Find(&games)
 	n := 0
 	piple := dao.RedisIns().Client.Pipeline()
 	cs := make(map[string]string)
