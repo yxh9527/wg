@@ -490,6 +490,18 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 		return resp, nil
 	}
 	zap.L().Debug("QKLDoBetSettleWithCheck", zap.Any("symbol", eGame.ConfName), zap.Any("req", req))
+	//获取注单信息
+	ur := &entity.UserRecordInfo{}
+	err = jsoniter.UnmarshalFromString(req.Result, ur)
+	if err != nil {
+		zap.L().Error("QKLDoBetSettleWithCheck:获取注单信息失败",
+			zap.Any("userId", req.UserId),
+			zap.Any("symbol", eGame.ConfName),
+			zap.Any("agentId", req.AgentId),
+			zap.Any("state", req.Result))
+		resp.Code = services.ErrorCode_SYSTEM_ERROR
+		return resp, nil
+	}
 	initBet, _ := decimal.NewFromString(req.InitBet)
 	w2, _ := decimal.NewFromString(req.Win)
 	eAgent := dao.AgentManagerIns().Get(int64(req.AgentId))
@@ -568,7 +580,7 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 					nc,
 					uint32(eAgent.WebId),
 					true,
-					initBet.InexactFloat64(),
+					ur.BetRecord.TotalBetGold,
 					w2.InexactFloat64())
 				d.SaveRecord(record)
 				if w2.Mul(exchange).GreaterThan(decimal.Zero) {
@@ -613,7 +625,7 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 				nc,
 				uint32(eAgent.WebId),
 				true,
-				initBet.InexactFloat64(),
+				ur.BetRecord.TotalBetGold,
 				initBet.InexactFloat64())
 			d.SaveRecord(record)
 			d.SaveBill(uint32(req.AgentId), req.UserId, w2, nc.Truncate(2).InexactFloat64(), eGame.ConfName, "回退", req.CurrencyType, req.RoundID)
@@ -639,7 +651,7 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 				decimal.Zero,
 				uint32(eAgent.WebId),
 				true,
-				initBet.InexactFloat64(),
+				ur.BetRecord.TotalBetGold,
 				0)
 			d.SaveRecord(record)
 			//打点水池记录
