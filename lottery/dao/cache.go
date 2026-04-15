@@ -357,7 +357,7 @@ func (gcm *GameCacheMgr) ChangePoolWithNoLock(agentId int64, userId int32, symbo
 		//增加水池
 		game.TotalEffectBet = game.TotalEffectBet.Add(bet)
 		//
-		game.TotalRevenue = game.TotalRevenue.Add(revence)
+		game.TotalRevenue = game.TotalRevenue.Add(revence.Truncate(4))
 		//触发更新
 		game.UpdateTime = time.Now().Unix()
 		//记录玩家有效投注
@@ -403,7 +403,7 @@ func (gcm *GameCacheMgr) CheckPoolWithChange(agentId int64, symbol, recordId, cu
 		//增加水池
 		game.TotalEffectBet = game.TotalEffectBet.Add(bet)
 		//
-		game.TotalRevenue = game.TotalRevenue.Add(revenue)
+		game.TotalRevenue = game.TotalRevenue.Add(revenue.Truncate(4))
 		//触发更新
 		game.UpdateTime = time.Now().Unix()
 		//记录玩家有效投注
@@ -438,7 +438,7 @@ func (gcm *GameCacheMgr) CheckPoolWithOutBet(agentId int64, symbol, recordId, cu
 		//增加水池
 		game.TotalEffectBet = game.TotalEffectBet.Add(bet)
 		//
-		game.TotalRevenue = game.TotalRevenue.Add(revenue)
+		game.TotalRevenue = game.TotalRevenue.Add(revenue.Truncate(4))
 		//触发更新
 		game.UpdateTime = time.Now().Unix()
 		//记录玩家有效投注
@@ -532,7 +532,7 @@ func (gcm *GameCacheMgr) Lottery(agentId int64, userId int32, pc *config.Pool, s
 	user := agent.GetUser(uint32(userId))
 	game := agent.GetGame(symbol)
 
-	revence := bet.Mul(pc.Pool[1].Revenue)
+	revence := bet.Mul(pc.Pool[1].Revenue).Truncate(4)
 	pool := (bet.Add(game.TotalEffectBet).Sub(game.TotalProfLoss)).Sub(game.TotalRevenue.Add(revence)).Add(pc.Pool[1].Base)
 	//判断pool等级
 	t, r := gcm.poolType(pool, pc)
