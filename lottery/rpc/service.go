@@ -494,7 +494,7 @@ func (d *LotteryService) Complete(webId uint32, exchange decimal.Decimal, ur *en
 	dao.CacheIns().Complete(int64(req.AgentId), req.PlayerId, eGame.ConfName, bet.Mul(exchange), award.Mul(exchange), pc.Pool[1].Revenue)
 
 	if ri := dao.CacheIns().GetRoundData(int64(req.AgentId), ur.Common.RecordId); ri != nil {
-		delta := ri.MaxPay.Round(2).Sub(award.Mul(exchange))
+		delta := ri.MaxPay.Round(2).Sub(award.Mul(exchange).Truncate(2))
 		//需要返还水池
 		if delta.GreaterThanOrEqual(decimal.Zero) {
 			zap.L().Debug("Complete:返还水池多扣的积分",
