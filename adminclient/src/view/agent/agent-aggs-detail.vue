@@ -136,26 +136,18 @@ export default {
           align: "right",
           minWidth: 100,
           render(h, params) {
-            if (params.row.profitLossTotal) {
-              let sum, effect;
-              sum = Number(
-                String(params.row.profitLossTotal).replace(/\,/g, "")
-              );
-              effect = Number(
-                String(params.row.effectiveBetsTotal).replace(/\,/g, "")
-              );
-              return effect - sum >= 0 ? (
-                <span style="color:green">
-                  {String((effect - sum).toFixed(2))}
-                </span>
-              ) : (
-                <span style="color:red">
-                  {String((effect - sum).toFixed(2))}
-                </span>
-              );
-            } else {
-              return <span style="color:#000">0</span>;
-            }
+            let sum, effect;
+            sum = Number(String(params.row.profitLossTotal).replace(/\,/g, ""));
+            effect = Number(
+              String(params.row.effectiveBetsTotal).replace(/\,/g, "")
+            );
+            return effect - sum >= 0 ? (
+              <span style="color:green">
+                {String((effect - sum).toFixed(2))}
+              </span>
+            ) : (
+              <span style="color:red">{String((effect - sum).toFixed(2))}</span>
+            );
           },
         },
         {
