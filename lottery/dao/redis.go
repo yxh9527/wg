@@ -275,8 +275,8 @@ func (rd *RedisDao) BatchGetPlayerCurrencys(ids []uint32) (map[uint32]int64, err
 	if e != nil {
 		return nil, e
 	}
-	for _, id := range ids {
-		sc := result[0].(*redis.StringCmd)
+	for i, id := range ids {
+		sc := result[i].(*redis.StringCmd)
 		nc, err := sc.Result()
 		if err != nil {
 			continue
@@ -291,7 +291,9 @@ func (rd *RedisDao) BatchGetPlayerCurrencys(ids []uint32) (map[uint32]int64, err
 func (rd *RedisDao) BatchUpdatePlayerCurrencys(deltas map[uint32]int64) (map[uint32]int64, error) {
 	currencys := make(map[uint32]int64)
 	pipe := rd.cli.Pipeline()
+	ids := make([]uint32, 0, len(deltas))
 	for id, delta := range deltas {
+		ids = append(ids, id)
 		pID := fmt.Sprintf("player_%d", id)
 		pipe.HIncrBy(context.Background(), pID, "currency", delta)
 	}
@@ -299,8 +301,8 @@ func (rd *RedisDao) BatchUpdatePlayerCurrencys(deltas map[uint32]int64) (map[uin
 	if e != nil {
 		return nil, e
 	}
-	for id := range deltas {
-		sc := result[0].(*redis.IntCmd)
+	for i, id := range ids {
+		sc := result[i].(*redis.IntCmd)
 		nc, err := sc.Result()
 		if err != nil {
 			continue

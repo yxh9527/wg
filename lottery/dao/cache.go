@@ -234,8 +234,8 @@ type GameCacheMgr struct {
 }
 
 func (gcm *GameCacheMgr) GetAgent(agentId int64) *AgentData {
-	gcm.lock.RLock()
-	defer gcm.lock.RUnlock()
+	gcm.lock.Lock()
+	defer gcm.lock.Unlock()
 
 	agent := gcm.agents[agentId]
 	if agent == nil {
@@ -457,8 +457,8 @@ func (gcm *GameCacheMgr) CheckPoolWithOutBet(agentId int64, symbol, recordId, cu
 func (gcm *GameCacheMgr) SaveRoundData(agentId int64, roundId string, maxPay decimal.Decimal, playerId uint32) {
 	agent := gcm.GetAgent(agentId)
 	//细分代理锁
-	agent.lock.RLock()
-	defer agent.lock.RUnlock()
+	agent.lock.Lock()
+	defer agent.lock.Unlock()
 
 	user := agent.GetUser(playerId)
 	if user != nil && user.IsTourist == 0 {
@@ -501,6 +501,21 @@ func (gcm *GameCacheMgr) GetRoundData(agentId int64, roundId string) *RoundItem 
 		zap.L().Debug("无预扣信息", zap.Any("agentId", agentId), zap.Any("roundId", roundId))
 	}
 	return ri
+}
+
+func (gcm *GameCacheMgr) FinishRoundData(agentId int64, roundId string) *RoundItem {
+	agent := gcm.GetAgent(agentId)
+	agent.lock.Lock()
+	defer agent.lock.Unlock()
+
+	ri := agent.RoundCache[roundId]
+	if ri == nil {
+		zap.L().Debug("鏃犻鎵ｄ俊鎭?", zap.Any("agentId", agentId), zap.Any("roundId", roundId))
+		return nil
+	}
+	ri.Over = true
+	copy := *ri
+	return &copy
 }
 
 /*
