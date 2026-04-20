@@ -625,7 +625,6 @@ func (d *LotteryService) QKLDoBetSettleWithCheck(_ context.Context, req *service
 		}
 		//新余额
 		resp.CanAfford = true
-		resp.CanAfford = true
 		resp.Currency = nc.String()
 		user := dao.CacheIns().GetUser(int64(req.AgentId), int64(req.UserId))
 		if user != nil && user.IsTourist == 0 {
