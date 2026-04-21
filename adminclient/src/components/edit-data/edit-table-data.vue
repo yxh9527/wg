@@ -216,15 +216,15 @@
   </div>
 </template>
 <script>
-import { getSelectClassGames, getSelectAgent } from "@/api/data";
-import { getDate, forEach } from "@/libs/tools";
+import { getSelectAgent } from '@/api/data'
+import { getDate } from '@/libs/tools'
 export default {
-  name: "game-detial",
+  name: 'game-detial',
   props: {
     row: Object,
-    columns: Array,
+    columns: Array
   },
-  data() {
+  data () {
     return {
       listData: [],
       gameSelect: [],
@@ -232,64 +232,64 @@ export default {
       checkAll: [],
       gameIds: {
         value: [],
-        option: [],
+        option: []
       },
       gameVal: [],
       superior: [],
       webName: [],
-      isPermanent: null,
-    };
+      isPermanent: null
+    }
   },
   methods: {
     // 绑定分类多选/全选的菜单和值。
-    handleCheckAll(tid, num, iscancel) {
+    handleCheckAll (tid, num, iscancel) {
       if (this.indeterminate) {
-        this.checkAll[tid] = false;
+        this.checkAll[tid] = false
       } else {
-        this.checkAll[tid] = !this.checkAll[tid];
+        this.checkAll[tid] = !this.checkAll[tid]
       }
-      this.indeterminate = false;
+      this.indeterminate = false
       if (iscancel) {
         this.gameIds.value[tid].val = Object.assign(
           this.gameIds.option[tid].gameList.map((item) => {
-            return item.id;
+            return item.id
           })
-        );
-        this.boxChange(num);
+        )
+        this.boxChange(num)
       } else {
-        this.gameIds.value[tid].val = [];
-        this.boxChange(num);
+        this.gameIds.value[tid].val = []
+        this.boxChange(num)
       }
     },
 
     // 在游戏列表选项产生变化时，向上级页面返回值
-    boxChange(num) {
-      this.listData[num].value = JSON.stringify(this.gameIds.value);
+    boxChange (num) {
+      this.listData[num].value = JSON.stringify(this.gameIds.value)
 
-      const data = this.listData;
+      const data = this.listData
       if (this.isPermanent != null) {
         // data.push({ key: "isPermanent", value: this.isPermanent });
       }
-      this.$emit("sendEditData", data);
+      this.$emit('sendEditData', data)
     },
 
     // 在输入框失去焦点时，向上级页面返回值
-    change(event) {
-      let isValid = true;
+    change (event) {
+      let isValid = true
       this.listData.map((item) => {
-        if (item.showRedPoint && item.value === "") {
-          this.$emit("sendError", item.title + "不能为空");
-          isValid = false;
+        if (item.showRedPoint && item.value === '') {
+          this.$emit('sendError', item.title + '不能为空')
+          isValid = false
         }
-      });
+      })
 
       if (isValid) {
-        let data = this.listData;
-        this.$emit("sendEditData", data);
+        let data = this.listData
+        this.$emit('sendEditData', data)
       }
     },
-    changeTime(event) {
-      let data = this.listData;
+    changeTime (event) {
+      let data = this.listData
       if (this.isPermanent != null) {
         // data.push({
         //   key: "isPermanent",
@@ -301,104 +301,104 @@ export default {
         for (const key in data) {
           if (
             data.hasOwnProperty(key) &&
-            (data[key].key == "startTime" || data[key].key == "endTime")
+            (data[key].key == 'startTime' || data[key].key == 'endTime')
           ) {
-            data[key].value = "";
+            data[key].value = ''
           }
         }
       } else {
         for (const key in data) {
-          if (data[key].key == "startTime") {
-            data[key].value = getDate(new Date().setHours(0, 0, 0));
+          if (data[key].key == 'startTime') {
+            data[key].value = getDate(new Date().setHours(0, 0, 0))
           }
-          if (data[key].key == "endTime") {
+          if (data[key].key == 'endTime') {
             data[key].value = getDate(
               new Date(new Date().setMonth(new Date().getMonth() + 1)).setHours(
                 0,
                 0,
                 0
               )
-            );
+            )
           }
         }
       }
 
-      this.$emit("sendEditData", data);
+      this.$emit('sendEditData', data)
     },
-    changeStartTime(event) {
+    changeStartTime (event) {
       let data = this.listData.map((item) => {
-        if (item.key == "startTime") {
-          item.value = getDate(event);
-          return item;
+        if (item.key == 'startTime') {
+          item.value = getDate(event)
+          return item
         } else {
-          return item;
+          return item
         }
-      });
+      })
 
-      this.$emit("sendEditData", data);
+      this.$emit('sendEditData', data)
     },
-    changeEndTime(event) {
+    changeEndTime (event) {
       let data = this.listData.map((item) => {
-        if (item.key == "endTime") {
-          item.value = getDate(event);
-          return item;
+        if (item.key == 'endTime') {
+          item.value = getDate(event)
+          return item
         } else {
-          return item;
+          return item
         }
-      });
+      })
 
-      this.$emit("sendEditData", data);
-    },
+      this.$emit('sendEditData', data)
+    }
   },
-  mounted() {
-    let data2 = [];
+  mounted () {
+    let data2 = []
     // 分解定义数据列表
     this.listData = this.columns.map((item) => {
       return {
         key: item.key,
         title: item.title,
-        value: "",
+        value: '',
         showRedPoint: item.showRedPoint,
-        isdisabled: item.isdisabled,
-      };
-    });
+        isdisabled: item.isdisabled
+      }
+    })
     for (let keys in this.row) {
-      data2.push({ key: keys, value: this.row[keys] });
+      data2.push({ key: keys, value: this.row[keys] })
     }
     // 给定义的数据列表进行循环赋值
     for (let j = 0; j < data2.length; j++) {
       data2[j].value =
-        data2[j].key.indexOf("Time") != -1
-          ? getDate(data2[j].value > 15000 ? data2[j].value * 1000 : "")
-          : data2[j].value;
+        data2[j].key.indexOf('Time') != -1
+          ? getDate(data2[j].value > 15000 ? data2[j].value * 1000 : '')
+          : data2[j].value
 
       for (let i = 0; i < this.listData.length; i++) {
         if (data2[j].key == this.listData[i].key) {
-          this.listData[i].value = data2[j].value;
+          this.listData[i].value = data2[j].value
         }
 
-        if (this.listData[i].key == "gameList") {
-          this.listData[i].key = "gameIds";
+        if (this.listData[i].key == 'gameList') {
+          this.listData[i].key = 'gameIds'
           this.gameIds.value = this.row.gameList.map((item) => {
-            return { id: item.id, val: item.val };
-          });
+            return { id: item.id, val: item.val }
+          })
         }
 
-        if (this.listData[i].key == "superior") {
-          this.listData[i].key = "upperLevel";
+        if (this.listData[i].key == 'superior') {
+          this.listData[i].key = 'upperLevel'
         }
 
-        if (this.listData[i].key == "webName") {
-          this.listData[i].key = "webId";
+        if (this.listData[i].key == 'webName') {
+          this.listData[i].key = 'webId'
         }
 
-        if (this.listData[i].key == "state") {
-          this.listData[i].value = this.listData[i].value.toString();
+        if (this.listData[i].key == 'state') {
+          this.listData[i].value = this.listData[i].value.toString()
         }
       }
     }
     if (this.row.isPermanent != null) {
-      this.isPermanent = this.row.isPermanent ? 1 : 0;
+      this.isPermanent = this.row.isPermanent ? 1 : 0
     }
 
     // 获取游戏分级列表内容，并赋值
@@ -418,24 +418,24 @@ export default {
     //   this.checkAll.push(false);
     // });
     // 判断上级代理，并对选项进行赋值
-    if (Object.keys(this.row).indexOf("superior") != -1) {
+    if (Object.keys(this.row).indexOf('superior') != -1) {
       getSelectAgent().then((res) => {
-        this.superior = [];
+        this.superior = []
         res.data.data.forEach((item) => {
           if (item.id != this.row.id) {
-            this.superior.push(item);
+            this.superior.push(item)
           }
-        });
-      });
+        })
+      })
     }
     // 判断站点名称，并对选项进行赋值
-    if (sessionStorage.getItem("siteOption")) {
+    if (sessionStorage.getItem('siteOption')) {
       this.webName.push(
-        ...Object.assign(JSON.parse(sessionStorage.getItem("siteOption")))
-      );
+        ...Object.assign(JSON.parse(sessionStorage.getItem('siteOption')))
+      )
     }
-  },
-};
+  }
+}
 </script>
 
 <style>

@@ -42,7 +42,6 @@
                 :placeholder="'请输入' + item.lable"
               ></i-input>
 
-
               <Select
                 v-if="item.type == 'select'"
                 v-model="item.value"
@@ -125,108 +124,108 @@
 </template>
 
 <script>
-import Step from "_c/step";
-import { createGameMsgData, getLinkageList } from "@/api/data";
-import { getDate } from "@/libs/tools";
+import Step from '_c/step'
+import { createGameMsgData, getLinkageList } from '@/api/data'
+import { getDate } from '@/libs/tools'
 export default {
-  name: "game_add",
+  name: 'game_add',
   components: {
     Step
   },
-  data() {
+  data () {
     return {
       state: this.$route.meta.state,
       stepList: [
-        { title: "基本信息", content: "填写基本信息" },
-        { title: "创建成功", content: "游戏消息创建成功" }
+        { title: '基本信息', content: '填写基本信息' },
+        { title: '创建成功', content: '游戏消息创建成功' }
       ],
       itemCreate: [
         {
-          lable: "消息序号",
-          type: "text",
-          key: "number",
-          value: "",
+          lable: '消息序号',
+          type: 'text',
+          key: 'number',
+          value: '',
           required: true
         },
         {
-          lable: "消息标题",
-          type: "text",
-          key: "title",
-          value: "",
+          lable: '消息标题',
+          type: 'text',
+          key: 'title',
+          value: '',
           required: true
         },
         {
-          lable: "消息类型",
-          type: "select",
-          key: "msgType",
-          value: "",
+          lable: '消息类型',
+          type: 'select',
+          key: 'msgType',
+          value: '',
           option: [
-            { label: "活动消息", value: 1 },
-            { label: "维护公告", value: 2 }
+            { label: '活动消息', value: 1 },
+            { label: '维护公告', value: 2 }
           ],
           required: true
         },
         {
-          lable: "发布时间",
-          type: "datetime",
-          key: "startTime",
-          value: "",
+          lable: '发布时间',
+          type: 'datetime',
+          key: 'startTime',
+          value: '',
           required: true
         },
         {
-          lable: "停止时间",
-          type: "datetime",
-          key: "endTime",
-          value: "",
+          lable: '停止时间',
+          type: 'datetime',
+          key: 'endTime',
+          value: '',
           required: true
         },
         {
-          lable: "消息内容",
-          type: "textarea",
-          key: "info",
-          value: "",
+          lable: '消息内容',
+          type: 'textarea',
+          key: 'info',
+          value: '',
           required: true
         },
-        { lable: "备注", type: "text", key: "remarks", value: "" }
+        { lable: '备注', type: 'text', key: 'remarks', value: '' }
       ],
       linkageList: [],
       gameList: [],
-      webId: sessionStorage.getItem("siteVal"),
-      siteTag: "",
-      agentId: "",
-      agentTag: "",
+      webId: sessionStorage.getItem('siteVal'),
+      siteTag: '',
+      agentId: '',
+      agentTag: '',
       gameIds: -1,
       gameShow: false
-    };
+    }
   },
   methods: {
-    resForm() {
+    resForm () {
       this.itemCreate.forEach(item => {
-        item.value = "";
-      });
-      this.webId = "";
+        item.value = ''
+      })
+      this.webId = ''
     },
-    next() {
-      this.state += 1;
+    next () {
+      this.state += 1
     },
-    submit() {
-      const Data = [];
+    submit () {
+      const Data = []
       Data.push(
-        { webId: sessionStorage.getItem("siteVal") },
-        { agentId: sessionStorage.getItem("agentVal") },
+        { webId: sessionStorage.getItem('siteVal') },
+        { agentId: sessionStorage.getItem('agentVal') },
         { gameIds: this.gameIds ? this.gameIds : -1 }
-      );
+      )
       this.itemCreate.map(item => {
-        if (item.type == "datetime") {
+        if (item.type == 'datetime') {
           Data.push({
             [item.key]: getDate(item.value)
-          });
+          })
         } else {
           Data.push({
             [item.key]: item.value
-          });
+          })
         }
-      });
+      })
 
       /**
        * 验证时间范围合法
@@ -234,40 +233,40 @@ export default {
       if (Data.find(x => x.startTime || x.endTime)) {
         let startTime = new Date(
           Data.find(x => x.startTime).startTime
-        ).getTime();
-        let endTime = new Date(Data.find(x => x.endTime).endTime).getTime();
+        ).getTime()
+        let endTime = new Date(Data.find(x => x.endTime).endTime).getTime()
         if (endTime - startTime <= 0) {
-          this.$Message.error("开始时间不允许大于结束时间");
-          return;
+          this.$Message.error('开始时间不允许大于结束时间')
+          return
         }
       }
 
       createGameMsgData(Data).then(res => {
         if (res.data.code == 200) {
-          this.state += 1;
-          this.$Message.success("创建游戏消息成功");
-        } else this.$Message.error(res.data.msg);
-      });
+          this.state += 1
+          this.$Message.success('创建游戏消息成功')
+        } else this.$Message.error(res.data.msg)
+      })
     },
-    changeOption(item) {
-      this.siteTag = item.tag;
-      this.agentId = "";
-      this.gameId = "";
+    changeOption (item) {
+      this.siteTag = item.tag
+      this.agentId = ''
+      this.gameId = ''
     },
-    changeOption1(item) {
-      this.agentTag = item.tag;
-      this.gameId = "";
-      if (item.value > -1) this.gameShow = true;
-      else this.gameShow = false;
+    changeOption1 (item) {
+      this.agentTag = item.tag
+      this.gameId = ''
+      if (item.value > -1) this.gameShow = true
+      else this.gameShow = false
     }
   },
-  mounted() {
+  mounted () {
     getLinkageList().then(res => {
-      this.linkageList.push(...res.data.data);
-    });
-    this.gameList.push(...JSON.parse(sessionStorage.getItem("gameOption")));
+      this.linkageList.push(...res.data.data)
+    })
+    this.gameList.push(...JSON.parse(sessionStorage.getItem('gameOption')))
   }
-};
+}
 </script>
 
 <style></style>

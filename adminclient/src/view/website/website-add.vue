@@ -67,63 +67,62 @@
 </template>
 
 <script>
-import Step from "_c/step";
-import { createSiteData } from "@/api/data";
-import { getDate } from "@/libs/tools";
+import Step from '_c/step'
+import { createSiteData } from '@/api/data'
 export default {
-  name: "website_add",
+  name: 'website_add',
   components: {
-    Step,
+    Step
   },
-  inject: ["reFreshSiteAgentList"],
-  data() {
+  inject: ['reFreshSiteAgentList'],
+  data () {
     return {
       state: this.$route.meta.state,
       stepList: [
-        { title: "基本信息", content: "填写基本信息" },
-        { title: "创建成功", content: "站点创建成功" },
+        { title: '基本信息', content: '填写基本信息' },
+        { title: '创建成功', content: '站点创建成功' }
       ],
       itemCreate: [
-        { lable: "站点名称", key: "nickName", value: "", required: true },
-        { lable: "站点域名", key: "realmName", value: "", required: true },
-        { lable: "负责人", key: "contacts", value: "", required: true },
-        { lable: "负责人联系方式", key: "phone", value: "", required: true },
-        { lable: "站点邮箱", key: "email", value: "", required: true },
-        { lable: "备注信息", key: "remarks", value: "" },
-      ],
-    };
+        { lable: '站点名称', key: 'nickName', value: '', required: true },
+        { lable: '站点域名', key: 'realmName', value: '', required: true },
+        { lable: '负责人', key: 'contacts', value: '', required: true },
+        { lable: '负责人联系方式', key: 'phone', value: '', required: true },
+        { lable: '站点邮箱', key: 'email', value: '', required: true },
+        { lable: '备注信息', key: 'remarks', value: '' }
+      ]
+    }
   },
   methods: {
-    towebsite() {
-      //刷新站点和代理信息
-      this.reFreshSiteAgentList();
+    towebsite () {
+      // 刷新站点和代理信息
+      this.reFreshSiteAgentList()
 
       this.$router.push({
-        name: "website",
-      });
+        name: 'website'
+      })
     },
-    resForm() {
+    resForm () {
       this.itemCreate.forEach((item) => {
-        item.value = "";
-      });
+        item.value = ''
+      })
     },
-    next() {
-      this.state += 1;
+    next () {
+      this.state += 1
     },
-    submit() {
-      const Data = [];
+    submit () {
+      const Data = []
       this.itemCreate.map((item) => {
         Data.push({
-          [item.key]: item.value,
-        });
-      });
+          [item.key]: item.value
+        })
+      })
       createSiteData(Data).then((res) => {
         if (res.data.code === 200) {
-          this.state += 1;
+          this.state += 1
         }
-      });
-    },
+      })
+    }
   },
-  mounted() {},
-};
+  mounted () {}
+}
 </script>

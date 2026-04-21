@@ -27,110 +27,110 @@
 </template>
 
 <script>
-import Tables from "_c/tables";
-import { getTableData } from "@/api/data";
+import Tables from '_c/tables'
+import { getTableData } from '@/api/data'
 export default {
-  name: "gameManage",
+  name: 'gameManage',
   components: {
     Tables
   },
-  data() {
+  data () {
     return {
       labelList: [
-        { label: "游戏名称", value: "" },
+        { label: '游戏名称', value: '' },
         {
-          label: "游戏平台",
-          value: "",
+          label: '游戏平台',
+          value: '',
           option: [
-            { label: "全部", value: "" },
-            { label: "H5", value: "" },
-            { label: "APP", value: "" },
-            { label: "Android", value: "" },
-            { label: "IOS", value: "" }
+            { label: '全部', value: '' },
+            { label: 'H5', value: '' },
+            { label: 'APP', value: '' },
+            { label: 'Android', value: '' },
+            { label: 'IOS', value: '' }
           ]
         },
         {
-          label: "游戏类型",
-          value: "",
+          label: '游戏类型',
+          value: '',
           option: [
-            { label: "全部", value: "" },
-            { label: "下注型", value: "" },
-            { label: "对战型", value: "" }
+            { label: '全部', value: '' },
+            { label: '下注型', value: '' },
+            { label: '对战型', value: '' }
           ]
         },
         {
-          label: "游戏状态",
-          value: "",
+          label: '游戏状态',
+          value: '',
           option: [
-            { label: "全部", value: "" },
-            { label: "正常", value: "" },
-            { label: "冻结", value: "" },
-            { label: "未激活", value: "" }
+            { label: '全部', value: '' },
+            { label: '正常', value: '' },
+            { label: '冻结', value: '' },
+            { label: '未激活', value: '' }
           ]
         }
       ],
       columns: [
-        { title: "游戏名称", key: "game" },
-        { title: "房间名", key: "roomname" },
-        { title: "游戏平台", key: "plat" },
-        { title: "游戏分类", key: "mode" },
+        { title: '游戏名称', key: 'game' },
+        { title: '房间名', key: 'roomname' },
+        { title: '游戏平台', key: 'plat' },
+        { title: '游戏分类', key: 'mode' },
         {
-          title: "房间总盈亏",
-          key: "pay",
-          render(h, params) {
+          title: '房间总盈亏',
+          key: 'pay',
+          render (h, params) {
             return params.row.pay >= 0 ? (
               <span style="color:green">{params.row.pay * 11}</span>
             ) : (
               <span style="color:red">{params.row.pay * 3} </span>
-            );
+            )
           }
         },
         {
-          title: "今日房间盈亏",
-          key: "pay",
-          render(h, params) {
+          title: '今日房间盈亏',
+          key: 'pay',
+          render (h, params) {
             return params.row.pay >= 0 ? (
               <span style="color:green">{params.row.pay}</span>
             ) : (
               <span style="color:red">{params.row.pay} </span>
-            );
+            )
           }
         },
-        { title: "房间胜率", key: "ratio" },
+        { title: '房间胜率', key: 'ratio' },
         {
-          title: "操作",
-          key: "handle",
-          align: "center",
+          title: '操作',
+          key: 'handle',
+          align: 'center',
           button: [
             (h, params) => {
               return h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "info",
-                    size: "small"
+                    type: 'info',
+                    size: 'small'
                   }
                 },
-                "修改"
-              );
+                '修改'
+              )
             }
           ]
         }
       ],
       tableData: []
-    };
-  },
-  methods: {
-    handleDelete(params) {
-       
     }
   },
-  mounted() {
+  methods: {
+    handleDelete (params) {
+
+    }
+  },
+  mounted () {
     getTableData().then(res => {
-      this.tableData = res.data;
-    });
+      this.tableData = res.data
+    })
   }
-};
+}
 </script>
 
 <style>

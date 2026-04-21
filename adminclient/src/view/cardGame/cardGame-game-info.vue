@@ -37,86 +37,86 @@
 </template>
 
 <script>
-import Tables from "_c/tables";
-import Detial from "./cardGame-detial.vue";
-import { setting } from "@/config";
-import { getDate } from "@/libs/tools";
+import Tables from '_c/tables'
+import Detial from './cardGame-detial.vue'
+import { setting } from '@/config'
+import { getDate } from '@/libs/tools'
 import {
   getPlayerFwDetailData,
-  getSelectGames,
-} from "@/api/data";
+  getSelectGames
+} from '@/api/data'
 export default {
-  name: "cardGame-game-info",
+  name: 'cardGame-game-info',
   components: {
     Tables,
     Detial
   },
-  props: ["id"],
-  data() {
+  props: ['id'],
+  data () {
     return {
       columns1: [
         {
-          title: "站点",
-          key: "webName"
+          title: '站点',
+          key: 'webName'
         },
         {
-          title: "所属代理",
-          key: "agentName"
+          title: '所属代理',
+          key: 'agentName'
         },
         {
-          title: "游戏平台",
-          key: "agentName"
+          title: '游戏平台',
+          key: 'agentName'
         },
         {
-          title: "游戏分类",
-          key: "agentName"
+          title: '游戏分类',
+          key: 'agentName'
         },
         {
-          title: "游戏名称",
-          key: "agentName"
+          title: '游戏名称',
+          key: 'agentName'
         },
         {
-          title: "状态",
-          key: "state",
-          render(h, params) {
+          title: '状态',
+          key: 'state',
+          render (h, params) {
             return params.row.state == 1 ? (
               <span style="color:green">正常</span>
             ) : (
               <span style="color:red">冻结</span>
-            );
+            )
           }
         }
       ],
       userInfo: [],
-      gameId: { value: "", option: [] },
+      gameId: { value: '', option: [] },
       columns: [
         {
-          title: "游戏房间",
-          key: "difficultyName",
+          title: '游戏房间',
+          key: 'difficultyName',
           width: 150,
-          render(h, params) {
+          render (h, params) {
             return params.row.settType == 2 ? (
-              ""
+              ''
             ) : (
               <span>{params.row.difficultyName}</span>
-            );
+            )
           }
         },
-        { title: "局号", key: "officeNumber", width: 230 },
+        { title: '局号', key: 'officeNumber', width: 230 },
         {
-          title: "开局时间",
-          key: "beginTime",
-          render(h, params) {
-            return <span>{getDate(params.row.beginTime * 1000)}</span>;
+          title: '开局时间',
+          key: 'beginTime',
+          render (h, params) {
+            return <span>{getDate(params.row.beginTime * 1000)}</span>
           }
         },
-        { title: "玩家人数", key: "playNumber" },
-        { title: "群主ID", key: "id" },
-        { title: "输赢规则", key: "winloss" },
+        { title: '玩家人数', key: 'playNumber' },
+        { title: '群主ID', key: 'id' },
+        { title: '输赢规则', key: 'winloss' },
         {
-          title: "对局详情",
-          type: "expand",
-          align: "center",
+          title: '对局详情',
+          type: 'expand',
+          align: 'center',
           render: (h, params) => {
             if (params.row.detail) {
               return h(Detial, {
@@ -124,46 +124,45 @@ export default {
                   rowInfo: params.row.detail.details,
                   rowId: params.row.userId
                 }
-              });
+              })
             } else {
               return (
                 <div style="text-align:center">
                   <Icon size="24" type="logo-freebsd-devil" />
                   没有详情数据
                 </div>
-              );
+              )
             }
           }
         },
         {
-          title: "流水查询",
-          align: "center",
+          title: '流水查询',
+          align: 'center',
           render: (h, params) => {
             return h(
-              "Button",
+              'Button',
               {
                 props: {
-                  type: "info",
-                  size: "small",
+                  type: 'info',
+                  size: 'small',
                   to:
-                    "/players-record-" +
+                    '/players-record-' +
                     params.row.userId +
-                    "?on=" +
+                    '?on=' +
                     params.row.officeNumber
                 },
                 style: {
-                  marginRight: "5px"
+                  marginRight: '5px'
                 }
               },
-              "查询"
-            );
+              '查询'
+            )
           }
         }
       ],
-      startTime: "",
-      endTime: "",
-      totalProfitLoss: "",
-      gameId: { value: "", option: [] },
+      startTime: '',
+      endTime: '',
+      totalProfitLoss: '',
       tableData: [],
       pageData: {
         current: 0,
@@ -171,15 +170,15 @@ export default {
         pageSize: setting.pageSize,
         pageOpts: setting.pageOpts
       }
-    };
+    }
   },
   methods: {
-    exportExcel() {
+    exportExcel () {
       this.$refs.tables.exportCsv({
         filename: `table-${new Date().valueOf()}.csv`
-      });
+      })
     },
-    handleSearch() {
+    handleSearch () {
       let Data = [
         { page: this.pageData.page },
         { pageSize: this.pageData.pageSize },
@@ -191,33 +190,33 @@ export default {
           endTime: getDate(this.endTime)
         },
         { gameId: this.gameId.value }
-      ];
+      ]
       getPlayerFwDetailData(Data).then(res => {
-        this.tableData = [];
-        this.tableData.push(...res.data.data.data);
-        this.pageData.current = res.data.data.total;
-        this.totalProfitLoss = res.data.data.totalProfitLoss;
-      });
+        this.tableData = []
+        this.tableData.push(...res.data.data.data)
+        this.pageData.current = res.data.data.total
+        this.totalProfitLoss = res.data.data.totalProfitLoss
+      })
     },
-    changePage(index) {
-      this.pageData.page = index;
-      this.handleSearch();
+    changePage (index) {
+      this.pageData.page = index
+      this.handleSearch()
     },
-    changePageSize(index) {
-      this.pageData.pageSize = index;
-      this.handleSearch();
+    changePageSize (index) {
+      this.pageData.pageSize = index
+      this.handleSearch()
     },
-    searchAction() {
-      this.pageData.page = 1;
-      this.handleSearch();
+    searchAction () {
+      this.pageData.page = 1
+      this.handleSearch()
     }
   },
-  mounted() {
-    getSelectGames(sessionStorage.getItem("agentVal")).then(res => {
-      this.gameId.option.push(...Object.assign(res.data.data));
-    });
+  mounted () {
+    getSelectGames(sessionStorage.getItem('agentVal')).then(res => {
+      this.gameId.option.push(...Object.assign(res.data.data))
+    })
   }
-};
+}
 </script>
 
 <style>

@@ -71,97 +71,91 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
-import { removeMsgDel } from "@/api/user";
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 const listDic = {
-  unread: "messageUnreadList",
-  readed: "messageReadedList",
-  trash: "messageTrashList",
-};
+  unread: 'messageUnreadList',
+  readed: 'messageReadedList',
+  trash: 'messageTrashList'
+}
 export default {
-  name: "message_page",
-  data() {
+  name: 'message_page',
+  data () {
     return {
       listLoading: true,
       contentLoading: false,
-      currentMessageType: "unread",
-      messageContent: "",
-      showingMsgItem: {},
-    };
+      currentMessageType: 'unread',
+      messageContent: '',
+      showingMsgItem: {}
+    }
   },
   computed: {
     ...mapState({
       messageUnreadList: (state) => state.user.messageUnreadList,
       messageReadedList: (state) => state.user.messageReadedList,
       messageTrashList: (state) => state.user.messageTrashList,
-      messageList() {
-        return this[listDic[this.currentMessageType]];
+      messageList () {
+        return this[listDic[this.currentMessageType]]
       },
-      titleClass() {
+      titleClass () {
         return {
-          "not-unread-list": this.currentMessageType !== "unread",
-        };
-      },
+          'not-unread-list': this.currentMessageType !== 'unread'
+        }
+      }
     }),
     ...mapGetters([
-      "messageUnreadCount",
-      "messageReadedCount",
-      "messageTrashCount",
-    ]),
+      'messageUnreadCount',
+      'messageReadedCount',
+      'messageTrashCount'
+    ])
   },
   methods: {
     ...mapMutations([]),
     ...mapActions([
-      "getContentByMsgId",
-      "getMessageList",
-      "hasRead",
-      "removeReaded",
-      "removeTrash",
-      "restoreTrash",
+      'getContentByMsgId',
+      'getMessageList',
+      'hasRead',
+      'removeReaded',
+      'removeTrash',
+      'restoreTrash'
     ]),
-    stopLoading(name) {
-      this[name] = false;
+    stopLoading (name) {
+      this[name] = false
     },
-    handleSelect(name) {
-      this.currentMessageType = name;
+    handleSelect (name) {
+      this.currentMessageType = name
     },
-    handleView(msg_id) {
-      this.contentLoading = true;
+    handleView (msg_id) {
+      this.contentLoading = true
       this.getContentByMsgId({ msg_id })
         .then((info) => {
-          this.messageContent = info;
-          const item = this.messageList.find((item) => item.msg_id === msg_id);
-          if (item) this.showingMsgItem = item;
+          this.messageContent = info
+          const item = this.messageList.find((item) => item.msg_id === msg_id)
+          if (item) this.showingMsgItem = item
           // if (this.currentMessageType === "unread") this.hasRead({ msg_id });
-          this.stopLoading("contentLoading");
+          this.stopLoading('contentLoading')
         })
         .catch(() => {
           // this.stopLoading("contentLoading");
-        });
+        })
     },
-    removeMsg(item) {
-      item.loading = true;
-      const msg_id = item.msg_id;
-      if (this.currentMessageType === "readed") this.removeReaded({ msg_id });
-      else this.restoreTrash({ msg_id });
-    },
-    removeMsgDel(item) {
-      const msg_id = item.msg_id;
-      this.removeTrash({ msg_id });
-    },
+    removeMsg (item) {
+      item.loading = true
+      const msg_id = item.msg_id
+      if (this.currentMessageType === 'readed') this.removeReaded({ msg_id })
+      else this.restoreTrash({ msg_id })
+    }
   },
-  mounted() {
-    this.listLoading = true;
+  mounted () {
+    this.listLoading = true
     // 请求获取消息列表
     this.getMessageList()
       .then(() => {
-
-      this.stopLoading("listLoading");
-      this.handleView(this.messageList[0].msg_id)
+        this.stopLoading('listLoading')
+        this.handleView(this.messageList[0].msg_id)
       })
-      .catch(() => this.stopLoading("listLoading"));
-  },
-};
+      .catch(() => this.stopLoading('listLoading'))
+  }
+}
 </script>
 
 <style lang="less">

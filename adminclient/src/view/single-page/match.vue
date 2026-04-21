@@ -598,138 +598,131 @@
 </template>
 
 <script>
-// import the component
-import Treeselect from "@riophae/vue-treeselect";
 // import the styles
-import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import {
-  getLinkageList,
-  // getReward,
-  getControllData,
-  updateControllerData,
-} from "@/api/data";
-import Tables from "_c/tables";
-import axios from "@/libs/api.request";
-import { getToken } from "@/libs/util";
-import { setting } from "@/config";
-import * as dayjs from "dayjs";
-import qs from "qs";
-import * as echarts from "echarts";
+  getLinkageList
+} from '@/api/data'
+import Tables from '_c/tables'
+import axios from '@/libs/api.request'
+import { getToken } from '@/libs/util'
+import { setting } from '@/config'
+import * as dayjs from 'dayjs'
 
 export default {
-  provide() {
+  provide () {
     return {
-      getGameSettingList: this.getGameSettingList,
-    };
+      getGameSettingList: this.getGameSettingList
+    }
   },
   components: {
-    Tables,
+    Tables
   },
-  data() {
-    let _this = this;
+  data () {
+    let _this = this
     return {
-      matchTag: "",
+      matchTag: '',
       siteParams: {
-        val: "",
-        option: [],
+        val: '',
+        option: []
       }, // 控制玩家的站点
       agentParams: {
-        val: "",
+        val: '',
         option: [],
-        msg: "请先选择站点",
+        msg: '请先选择站点'
       },
       matchListLoading: false,
       matchState: {
-        val: "",
+        val: '',
         option: [
-          { id: 0, name: "未发布" },
-          { id: 1, name: "已发布" },
-          { id: 2, name: "比赛中" },
-          { id: 3, name: "已结束" },
+          { id: 0, name: '未发布' },
+          { id: 1, name: '已发布' },
+          { id: 2, name: '比赛中' },
+          { id: 3, name: '已结束' }
         ],
-        msg: "比赛状态",
+        msg: '比赛状态'
       },
       matchParams: {
-        val: "",
+        val: '',
         option: [],
-        msg: "输入比赛名称",
+        msg: '输入比赛名称'
       },
-      //赛事开始时间范围
+      // 赛事开始时间范围
       matchSearchTimes: {
-        startTime: "",
-        endTime: "",
+        startTime: '',
+        endTime: ''
       },
       addTicketMatchParams: {
-        val: "",
+        val: '',
         option: [],
-        msg: "输入比赛名称",
+        msg: '输入比赛名称'
       },
 
       matchTypeParams: {
-        val: "",
+        val: '',
         option: [],
-        msg: "输入比赛名称",
+        msg: '输入比赛名称'
       },
       gameTypeParams: {
         val: [],
         option: [],
-        msg: "输入比赛名称",
+        msg: '输入比赛名称'
       },
       isAllCheck: false,
       selectTypes: [],
       matchAwardParmas: {
-        val: "",
+        val: '',
         option: [],
-        msg: "请先选择赛事奖励",
+        msg: '请先选择赛事奖励'
       },
       matchSettleTypeParmas: {
-        val: "",
+        val: '',
         option: [
           {
-            id: 0, //普通模式
-            name: "普通模式",
+            id: 0, // 普通模式
+            name: '普通模式'
           },
           {
-            id: 1, //猎人模式
-            name: "猎人模式",
-          },
+            id: 1, // 猎人模式
+            name: '猎人模式'
+          }
         ],
-        msg: "请先选择结算类型",
+        msg: '请先选择结算类型'
       },
       games: {
-        value: "",
-        option: [],
+        value: '',
+        option: []
       },
       blindsParams: {
-        val: "",
+        val: '',
         option: [],
-        msg: "请先选择盲注表",
+        msg: '请先选择盲注表'
       },
-      matchStartTime: "",
+      matchStartTime: '',
       agentId: 0,
       pageData: {
         current: 0,
         page: setting.page,
         pageSize: setting.pageSize,
-        pageOpts: setting.pageOpts,
+        pageOpts: setting.pageOpts
       },
       matchListPageData: {
         current: 0,
         page: setting.page,
         pageSize: setting.pageSize,
-        pageOpts: setting.pageOpts,
+        pageOpts: setting.pageOpts
       },
       ticketListPageData: {
         current: 0,
         page: setting.page,
         pageSize: setting.pageSize,
-        pageOpts: setting.pageOpts,
+        pageOpts: setting.pageOpts
       },
       ticketDetailListPageData: {
         current: 0,
         page: setting.page,
         pageSize: setting.pageSize,
-        pageOpts: setting.pageOpts,
+        pageOpts: setting.pageOpts
       },
       editMatchType: false,
       editGameType: false,
@@ -747,1101 +740,1102 @@ export default {
       curMatchItem: null,
       createTicketItem: null,
       paramgame: null,
-      games: JSON.parse(sessionStorage.getItem("games") || "[]"),
       matchTypeColumns: [
         {
-          title: "ID",
-          key: "id",
-          align: "center",
+          title: 'ID',
+          key: 'id',
+          align: 'center'
         },
         {
-          title: "名称",
-          key: "name",
-          align: "center",
+          title: '名称',
+          key: 'name',
+          align: 'center'
         },
         {
-          title: "创建时间",
-          key: "create_time",
-          align: "center",
-          render(h, params) {
+          title: '创建时间',
+          key: 'create_time',
+          align: 'center',
+          render (h, params) {
             return (
               <span>
                 {dayjs(params.row.create_time * 1000).format(
-                  "YYYY-MM-DD HH:mm:ss"
+                  'YYYY-MM-DD HH:mm:ss'
                 )}
               </span>
-            );
-          },
+            )
+          }
         },
         {
-          title: "操作",
-          align: "center",
+          title: '操作',
+          align: 'center',
           width: 140,
-          render(h, params) {
-            return h("div", {}, [
+          render (h, params) {
+            return h('div', {}, [
               h(
-                "Button",
+                'Button',
                 {
                   style: {
-                    marginRight: "10px",
+                    marginRight: '10px'
                   },
                   props: {
-                    type: "info",
-                    size: "small",
+                    type: 'info',
+                    size: 'small'
                   },
                   on: {
-                    async click() {
-                      _this.curMatchTypeItem = params.row;
-                      _this.editMatchType = true;
-                    },
-                  },
+                    async click () {
+                      _this.curMatchTypeItem = params.row
+                      _this.editMatchType = true
+                    }
+                  }
                 },
-                "修改"
+                '修改'
               ),
               h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "info",
-                    size: "small",
+                    type: 'info',
+                    size: 'small'
                   },
                   on: {
-                    async click() {
+                    async click () {
                       let iparams = {
                         token: getToken(),
-                        id: params.row.id,
-                      };
-                      let data = await axios.request({
-                        url: "v2/del/matchTypeItem",
-                        method: "get",
-                        params: iparams,
-                      });
-                      if (data && data.data && data.data.code == 200) {
-                        _this.matchTypeList();
+                        id: params.row.id
                       }
-                    },
-                  },
+                      let data = await axios.request({
+                        url: 'v2/del/matchTypeItem',
+                        method: 'get',
+                        params: iparams
+                      })
+                      if (data && data.data && data.data.code == 200) {
+                        _this.matchTypeList()
+                      }
+                    }
+                  }
                 },
-                "删除"
-              ),
-            ]);
-          },
-        },
+                '删除'
+              )
+            ])
+          }
+        }
       ],
 
       matchAwardColumns: [
         {
-          title: "ID",
-          key: "id",
-          align: "center",
+          title: 'ID',
+          key: 'id',
+          align: 'center'
         },
         {
-          title: "名称",
-          key: "name",
-          align: "center",
+          title: '名称',
+          key: 'name',
+          align: 'center'
         },
         {
-          title: "创建时间",
-          key: "create_time",
-          align: "center",
-          render(h, params) {
+          title: '创建时间',
+          key: 'create_time',
+          align: 'center',
+          render (h, params) {
             return (
               <span>
                 {dayjs(params.row.create_time * 1000).format(
-                  "YYYY-MM-DD HH:mm:ss"
+                  'YYYY-MM-DD HH:mm:ss'
                 )}
               </span>
-            );
-          },
+            )
+          }
         },
         {
-          title: "配置详情",
-          key: "detail",
-          align: "center",
-          render(h, params) {
-            return <span>{_this.genAwardParam(params.row.detail)}</span>;
-          },
+          title: '配置详情',
+          key: 'detail',
+          align: 'center',
+          render (h, params) {
+            return <span>{_this.genAwardParam(params.row.detail)}</span>
+          }
         },
         {
-          title: "操作",
-          align: "center",
+          title: '操作',
+          align: 'center',
           width: 140,
-          render(h, params) {
-            return h("div", {}, [
+          render (h, params) {
+            return h('div', {}, [
               h(
-                "Button",
+                'Button',
                 {
                   style: {
-                    marginRight: "10px",
+                    marginRight: '10px'
                   },
                   props: {
-                    type: "info",
-                    size: "small",
+                    type: 'info',
+                    size: 'small'
                   },
                   on: {
-                    async click() {
-                      _this.curMatchAwardItem = params.row;
-                      _this.editMatchAward = true;
-                    },
-                  },
+                    async click () {
+                      _this.curMatchAwardItem = params.row
+                      _this.editMatchAward = true
+                    }
+                  }
                 },
-                "修改"
+                '修改'
               ),
               h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "info",
-                    size: "small",
+                    type: 'info',
+                    size: 'small'
                   },
                   on: {
-                    async click() {
+                    async click () {
                       let iparams = {
                         token: getToken(),
-                        id: params.row.id,
-                      };
-                      let data = await axios.request({
-                        url: "v2/matchAward/del",
-                        method: "get",
-                        params: iparams,
-                      });
-                      if (data && data.data && data.data.code == 200) {
-                        _this.getMatchAwardList();
+                        id: params.row.id
                       }
-                    },
-                  },
+                      let data = await axios.request({
+                        url: 'v2/matchAward/del',
+                        method: 'get',
+                        params: iparams
+                      })
+                      if (data && data.data && data.data.code == 200) {
+                        _this.getMatchAwardList()
+                      }
+                    }
+                  }
                 },
-                "删除"
-              ),
-            ]);
-          },
-        },
+                '删除'
+              )
+            ])
+          }
+        }
       ],
 
       blindsColumns: [
         {
-          title: "ID",
-          key: "id",
-          align: "center",
+          title: 'ID',
+          key: 'id',
+          align: 'center'
         },
         {
-          title: "名称",
-          key: "name",
-          align: "center",
+          title: '名称',
+          key: 'name',
+          align: 'center'
         },
         {
-          title: "创建时间",
-          key: "create_time",
-          align: "center",
-          render(h, params) {
+          title: '创建时间',
+          key: 'create_time',
+          align: 'center',
+          render (h, params) {
             return (
               <span>
                 {dayjs(params.row.create_time * 1000).format(
-                  "YYYY-MM-DD HH:mm:ss"
+                  'YYYY-MM-DD HH:mm:ss'
                 )}
               </span>
-            );
-          },
+            )
+          }
         },
         {
-          title: "操作",
-          align: "center",
+          title: '操作',
+          align: 'center',
           width: 200,
-          render(h, params) {
-            return h("div", {}, [
+          render (h, params) {
+            return h('div', {}, [
               h(
-                "Button",
+                'Button',
                 {
                   style: {
-                    marginRight: "10px",
+                    marginRight: '10px'
                   },
                   props: {
-                    type: "info",
-                    size: "small",
+                    type: 'info',
+                    size: 'small'
                   },
                   on: {
-                    async click() {
-                      _this.curBlindItem = params.row;
-                      _this.curBlindItem.opt = 2;
-                      _this.editBlind = true;
-                      let tmp = JSON.parse(params.row.data);
-                      _this.blindsDataDetail = tmp.items;
-                    },
-                  },
+                    async click () {
+                      _this.curBlindItem = params.row
+                      _this.curBlindItem.opt = 2
+                      _this.editBlind = true
+                      let tmp = JSON.parse(params.row.data)
+                      _this.blindsDataDetail = tmp.items
+                    }
+                  }
                 },
-                "修改"
+                '修改'
               ),
               h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "info",
-                    size: "small",
+                    type: 'info',
+                    size: 'small'
                   },
                   on: {
-                    async click() {
+                    async click () {
                       let iparams = {
                         token: getToken(),
-                        id: params.row.id,
-                      };
-                      let data = await axios.request({
-                        url: "v2/matchBlinds/del",
-                        method: "get",
-                        params: iparams,
-                      });
-                      if (data && data.data && data.data.code == 200) {
-                        _this.getBlindData();
+                        id: params.row.id
                       }
-                    },
-                  },
+                      let data = await axios.request({
+                        url: 'v2/matchBlinds/del',
+                        method: 'get',
+                        params: iparams
+                      })
+                      if (data && data.data && data.data.code == 200) {
+                        _this.getBlindData()
+                      }
+                    }
+                  }
                 },
-                "删除"
-              ),
-            ]);
-          },
-        },
+                '删除'
+              )
+            ])
+          }
+        }
       ],
 
       blindsDataColumns: [
         {
-          title: "小盲注",
-          key: "min",
-          align: "center",
-          render(h, params) {
-            return h("Input", {
+          title: '小盲注',
+          key: 'min',
+          align: 'center',
+          render (h, params) {
+            return h('Input', {
               props: {
-                type: "number",
-                value: params.row.min,
+                type: 'number',
+                value: params.row.min
               },
               on: {
                 input: (val) => {
-                  _this.blindsDataDetail[params.index].min = val;
-                },
-              },
-            });
-          },
+                  _this.blindsDataDetail[params.index].min = val
+                }
+              }
+            })
+          }
         },
         {
-          title: "大盲注",
-          key: "max",
-          align: "center",
-          render(h, params) {
-            return h("Input", {
+          title: '大盲注',
+          key: 'max',
+          align: 'center',
+          render (h, params) {
+            return h('Input', {
               props: {
-                type: "number",
-                value: params.row.max,
+                type: 'number',
+                value: params.row.max
               },
               on: {
                 input: (val) => {
-                  _this.blindsDataDetail[params.index].max = val;
-                },
-              },
-            });
-          },
+                  _this.blindsDataDetail[params.index].max = val
+                }
+              }
+            })
+          }
         },
         {
-          title: "延迟报名",
-          key: "delay",
-          align: "center",
-          render(h, params) {
-            return h("Input", {
+          title: '延迟报名',
+          key: 'delay',
+          align: 'center',
+          render (h, params) {
+            return h('Input', {
               props: {
-                type: "number",
-                value: params.row.delay,
+                type: 'number',
+                value: params.row.delay
               },
               on: {
                 input: (val) => {
-                  _this.blindsDataDetail[params.index].delay = parseInt(val);
-                },
-              },
-            });
-          },
+                  _this.blindsDataDetail[params.index].delay = parseInt(val)
+                }
+              }
+            })
+          }
         },
         {
-          title: "前注",
-          key: "bet",
-          align: "center",
-          render(h, params) {
-            return h("Input", {
+          title: '前注',
+          key: 'bet',
+          align: 'center',
+          render (h, params) {
+            return h('Input', {
               props: {
-                type: "number",
-                value: params.row.bet,
+                type: 'number',
+                value: params.row.bet
               },
               on: {
                 input: (val) => {
-                  _this.blindsDataDetail[params.index].bet = val;
-                },
-              },
-            });
-          },
+                  _this.blindsDataDetail[params.index].bet = val
+                }
+              }
+            })
+          }
         },
         {
-          title: "涨盲时间",
-          key: "interval",
-          align: "center",
-          render(h, params) {
-            return h("Input", {
+          title: '涨盲时间',
+          key: 'interval',
+          align: 'center',
+          render (h, params) {
+            return h('Input', {
               props: {
-                type: "number",
-                value: params.row.interval,
+                type: 'number',
+                value: params.row.interval
               },
               on: {
                 input: (val) => {
-                  _this.blindsDataDetail[params.index].interval = parseInt(val);
-                },
-              },
-            });
-          },
+                  _this.blindsDataDetail[params.index].interval = parseInt(val)
+                }
+              }
+            })
+          }
         },
         {
-          title: "操作",
-          align: "center",
+          title: '操作',
+          align: 'center',
           width: 80,
-          render(h, params) {
-            return h("div", {}, [
+          render (h, params) {
+            return h('div', {}, [
               h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    size: "small",
+                    size: 'small'
                   },
                   on: {
-                    async click() {
+                    async click () {
                       for (let i = 0; i < _this.blindsDataDetail.length; i++) {
                         if (
                           _this.blindsDataDetail[i].level == params.row.level
                         ) {
-                          _this.blindsDataDetail.splice(i, 1);
+                          _this.blindsDataDetail.splice(i, 1)
                         }
                       }
-                    },
-                  },
+                    }
+                  }
                 },
-                "删除"
-              ),
-            ]);
-          },
-        },
+                '删除'
+              )
+            ])
+          }
+        }
       ],
 
       ticketColumns: [
         {
-          title: "ID",
-          key: "id",
-          align: "center",
+          title: 'ID',
+          key: 'id',
+          align: 'center',
+          width: 180
+        },
+        {
+          title: '比赛',
+          key: 'match_name',
+          align: 'center'
+        },
+        {
+          title: '券名',
+          key: 'name',
+          align: 'center'
+        },
+        {
+          title: '数量',
+          key: 'create_time',
+          align: 'center',
+          width: 180
+        },
+        {
+          title: '剩余数量',
+          key: 'create_time',
+          align: 'center',
+          width: 180
+        },
+        {
+          title: '价值',
+          key: 'price',
+          align: 'center',
+          width: 180
+        },
+        {
+          title: '创建时间',
+          key: 'create_time',
+          align: 'center',
           width: 180,
-        },
-        {
-          title: "比赛",
-          key: "match_name",
-          align: "center",
-        },
-        {
-          title: "券名",
-          key: "name",
-          align: "center",
-        },
-        {
-          title: "数量",
-          key: "create_time",
-          align: "center",
-          width: 180,
-        },
-        {
-          title: "剩余数量",
-          key: "create_time",
-          align: "center",
-          width: 180,
-        },
-        {
-          title: "价值",
-          key: "price",
-          align: "center",
-          width: 180,
-        },
-        {
-          title: "创建时间",
-          key: "create_time",
-          align: "center",
-          width: 180,
-          render(h, params) {
+          render (h, params) {
             return (
               <span>
                 {dayjs(params.row.create_time * 1000).format(
-                  "YYYY-MM-DD HH:mm:ss"
+                  'YYYY-MM-DD HH:mm:ss'
                 )}
               </span>
-            );
-          },
+            )
+          }
         },
         {
-          title: "操作",
-          align: "center",
+          title: '操作',
+          align: 'center',
           width: 180,
-          render(h, params) {
-            return h("div", {}, [
+          render (h, params) {
+            return h('div', {}, [
               h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "info",
-                    size: "small",
+                    type: 'info',
+                    size: 'small'
                   },
                   on: {
-                    async click() {
-                      _this.showTicketDetail = true;
+                    async click () {
+                      _this.showTicketDetail = true
                       let iparams = {
                         token: getToken(),
                         id: params.row.id,
                         page: _this.ticketDetailListPageData.page,
-                        pageSize: _this.ticketDetailListPageData.pageSize,
-                      };
-                      let data = await axios.request({
-                        url: "v2/ticket/detail/list",
-                        method: "get",
-                        params: iparams,
-                      });
-                      if (data && data.data && data.data.code == 200) {
-                        _this.ticketDetaildata = data.data.data.list;
-                        _this.ticketDetailListPageData.current =
-                          data.data.data.total;
+                        pageSize: _this.ticketDetailListPageData.pageSize
                       }
-                    },
-                  },
+                      let data = await axios.request({
+                        url: 'v2/ticket/detail/list',
+                        method: 'get',
+                        params: iparams
+                      })
+                      if (data && data.data && data.data.code == 200) {
+                        _this.ticketDetaildata = data.data.data.list
+                        _this.ticketDetailListPageData.current =
+                          data.data.data.total
+                      }
+                    }
+                  }
                 },
-                "查看"
+                '查看'
               ),
               h(
-                "Button",
+                'Button',
                 {
                   style: {
-                    marginLeft: "5px",
+                    marginLeft: '5px'
                   },
                   props: {
-                    type: "info",
-                    size: "small",
+                    type: 'info',
+                    size: 'small'
                   },
                   on: {
-                    async click() {
+                    async click () {
                       let iparams = {
                         token: getToken(),
-                        id: params.row.id,
-                      };
-                      let data = await axios.request({
-                        url: "v2/ticket/del",
-                        method: "get",
-                        params: iparams,
-                      });
-                      if (data && data.data && data.data.code == 200) {
-                        _this.getMatchTikectList();
+                        id: params.row.id
                       }
-                    },
-                  },
+                      let data = await axios.request({
+                        url: 'v2/ticket/del',
+                        method: 'get',
+                        params: iparams
+                      })
+                      if (data && data.data && data.data.code == 200) {
+                        _this.getMatchTikectList()
+                      }
+                    }
+                  }
                 },
-                "删除"
-              ),
-            ]);
-          },
-        },
+                '删除'
+              )
+            ])
+          }
+        }
       ],
 
       ticketDetailColumns: [
         {
-          title: "ID",
-          key: "id",
-          align: "center",
+          title: 'ID',
+          key: 'id',
+          align: 'center'
         },
         {
-          title: "比赛",
-          key: "match_name",
-          align: "center",
-          width: 300,
+          title: '比赛',
+          key: 'match_name',
+          align: 'center',
+          width: 300
         },
         {
-          title: "券名",
-          key: "name",
-          align: "center",
-          width: 300,
+          title: '券名',
+          key: 'name',
+          align: 'center',
+          width: 300
         },
         {
-          title: "创建时间",
-          key: "create_time",
-          align: "center",
+          title: '创建时间',
+          key: 'create_time',
+          align: 'center',
           width: 180,
-          render(h, params) {
+          render (h, params) {
             return (
               <span>
                 {dayjs(params.row.create_time * 1000).format(
-                  "YYYY-MM-DD HH:mm:ss"
+                  'YYYY-MM-DD HH:mm:ss'
                 )}
               </span>
-            );
-          },
+            )
+          }
         },
         {
-          title: "所有人",
-          key: "owner",
-          align: "center",
+          title: '所有人',
+          key: 'owner',
+          align: 'center'
         },
         {
-          title: "是否使用",
-          key: "is_use",
-          align: "center",
+          title: '是否使用',
+          key: 'is_use',
+          align: 'center'
         },
         {
-          title: "使用时间",
-          key: "use_time",
-          align: "center",
-        },
+          title: '使用时间',
+          key: 'use_time',
+          align: 'center'
+        }
       ],
 
       gameTypeColumns: [
         {
-          title: "ID",
-          key: "id",
-          align: "center",
+          title: 'ID',
+          key: 'id',
+          align: 'center'
         },
         {
-          title: "名称",
-          key: "name",
-          align: "center",
+          title: '名称',
+          key: 'name',
+          align: 'center'
         },
         {
-          title: "创建时间",
-          key: "create_time",
-          align: "center",
-          render(h, params) {
+          title: '创建时间',
+          key: 'create_time',
+          align: 'center',
+          render (h, params) {
             return (
               <span>
                 {dayjs(params.row.create_time * 1000).format(
-                  "YYYY-MM-DD HH:mm:ss"
+                  'YYYY-MM-DD HH:mm:ss'
                 )}
               </span>
-            );
-          },
+            )
+          }
         },
         {
-          title: "操作",
-          align: "center",
+          title: '操作',
+          align: 'center',
           width: 140,
-          render(h, params) {
-            return h("div", {}, [
+          render (h, params) {
+            return h('div', {}, [
               h(
-                "Button",
+                'Button',
                 {
                   style: {
-                    marginRight: "10px",
+                    marginRight: '10px'
                   },
                   props: {
-                    type: "info",
-                    size: "small",
+                    type: 'info',
+                    size: 'small'
                   },
                   on: {
-                    async click() {
-                      _this.curGameTypeItem = params.row;
-                      _this.editGameType = true;
-                    },
-                  },
+                    async click () {
+                      _this.curGameTypeItem = params.row
+                      _this.editGameType = true
+                    }
+                  }
                 },
-                "修改"
+                '修改'
               ),
               h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "info",
-                    size: "small",
+                    type: 'info',
+                    size: 'small'
                   },
                   on: {
-                    async click() {
+                    async click () {
                       let iparams = {
                         token: getToken(),
-                        id: params.row.id,
-                      };
-                      let data = await axios.request({
-                        url: "v2/del/gameTypeItem",
-                        method: "get",
-                        params: iparams,
-                      });
-                      if (data && data.data && data.data.code == 200) {
-                        _this.gameTypeList();
+                        id: params.row.id
                       }
-                    },
-                  },
+                      let data = await axios.request({
+                        url: 'v2/del/gameTypeItem',
+                        method: 'get',
+                        params: iparams
+                      })
+                      if (data && data.data && data.data.code == 200) {
+                        _this.gameTypeList()
+                      }
+                    }
+                  }
                 },
-                "删除"
-              ),
-            ]);
-          },
-        },
+                '删除'
+              )
+            ])
+          }
+        }
       ],
       matchColumns: [
         {
-          title: "ID",
-          key: "id",
-          align: "center",
-          width: 60,
+          title: 'ID',
+          key: 'id',
+          align: 'center',
+          width: 60
         },
         {
-          title: "名称",
-          key: "name",
-          align: "center",
+          title: '名称',
+          key: 'name',
+          align: 'center',
           width: 200,
-          render(h, params) {
-            let tmp = params.row.name;
+          render (h, params) {
+            let tmp = params.row.name
             if (params.row.name.length > 12) {
-              tmp = params.row.name.slice(0, 12) + "...";
+              tmp = params.row.name.slice(0, 12) + '...'
             }
-            return h("div", [
+            return h('div', [
               h(
-                "Tooltip",
+                'Tooltip',
                 {
                   props: {
-                    placement: "top",
-                    transfer: true,
-                  },
+                    placement: 'top',
+                    transfer: true
+                  }
                 },
                 [
                   tmp,
                   h(
-                    "span",
+                    'span',
                     {
-                      slot: "content",
+                      slot: 'content',
                       style: {
-                        whiteSpace: "normal",
-                      },
+                        whiteSpace: 'normal'
+                      }
                     },
                     params.row.name
-                  ),
+                  )
                 ]
-              ),
-            ]);
-          },
+              )
+            ])
+          }
         },
         {
-          title: "开始时间",
-          key: "start_time",
-          align: "center",
+          title: '开始时间',
+          key: 'start_time',
+          align: 'center',
           width: 200,
-          render(h, params) {
+          render (h, params) {
             return (
               <span>
                 {dayjs(params.row.start_time * 1000).format(
-                  "YYYY-MM-DD HH:mm:ss"
+                  'YYYY-MM-DD HH:mm:ss'
                 )}
               </span>
-            );
-          },
+            )
+          }
         },
         {
-          title: "比赛状态",
-          key: "state",
-          align: "center",
+          title: '比赛状态',
+          key: 'state',
+          align: 'center',
           width: 140,
-          render(h, params) {
-            let str = "";
+          render (h, params) {
+            let str = ''
             switch (params.row.state) {
               case 0:
-                str = "代发布";
-                break;
+                str = '代发布'
+                break
               case 1:
-                str = "发布";
-                break;
+                str = '发布'
+                break
               case 2:
-                str = "比赛中";
+                str = '比赛中'
+                break
               case 3:
-                str = "结束";
+                str = '结束'
+                break
               default:
-                break;
+                break
             }
-            return <span>{str}</span>;
-          },
+            return <span>{str}</span>
+          }
         },
         {
-          title: "代理",
-          key: "agent_id",
-          align: "center",
+          title: '代理',
+          key: 'agent_id',
+          align: 'center',
           width: 100,
-          render(h, params) {
-            let agentName = "";
-            let tmp = "";
+          render (h, params) {
+            let agentName = ''
+            let tmp = ''
             _this.agentParams.option.map((item) => {
               if (item.id == params.row.agent_id) {
-                agentName = item.name;
+                agentName = item.name
               }
-            });
+            })
             if (agentName.length > 5) {
-              tmp = agentName.slice(0, 5) + "...";
+              tmp = agentName.slice(0, 5) + '...'
             } else {
-              tmp = agentName;
+              tmp = agentName
             }
-            return h("div", [
+            return h('div', [
               h(
-                "Tooltip",
+                'Tooltip',
                 {
                   props: {
-                    placement: "top",
-                    transfer: true,
-                  },
+                    placement: 'top',
+                    transfer: true
+                  }
                 },
                 [
                   tmp,
                   h(
-                    "span",
+                    'span',
                     {
-                      slot: "content",
+                      slot: 'content',
                       style: {
-                        whiteSpace: "normal",
-                      },
+                        whiteSpace: 'normal'
+                      }
                     },
                     agentName
-                  ),
+                  )
                 ]
-              ),
-            ]);
-          },
+              )
+            ])
+          }
         },
         {
-          title: "游戏类型",
-          key: "game_id",
-          align: "center",
+          title: '游戏类型',
+          key: 'game_id',
+          align: 'center',
           width: 140,
-          render(h, params) {
-            let games = JSON.parse(sessionStorage.getItem("games"));
-            let str = "";
+          render (h, params) {
+            let games = JSON.parse(sessionStorage.getItem('games'))
+            let str = ''
             games.forEach((m) => {
               if (m.number == params.row.game_id) {
-                str = m.name;
+                str = m.name
               }
-            });
-            return <span>{str}</span>;
-          },
+            })
+            return <span>{str}</span>
+          }
         },
         {
-          title: "盲注表",
-          key: "blinds_id",
-          align: "center",
+          title: '盲注表',
+          key: 'blinds_id',
+          align: 'center',
           width: 120,
-          render(h, params) {
-            let blindList = JSON.parse(sessionStorage.getItem("blindList"));
-            let str = "";
-            let tmp = "";
+          render (h, params) {
+            let blindList = JSON.parse(sessionStorage.getItem('blindList'))
+            let str = ''
+            let tmp = ''
             blindList.forEach((m) => {
               if (m.id == params.row.blinds_id) {
-                str = m.name;
+                str = m.name
               }
-            });
+            })
             if (str.length > 5) {
-              tmp = str.slice(0, 5) + "...";
+              tmp = str.slice(0, 5) + '...'
             } else {
-              tmp = str;
+              tmp = str
             }
-            return h("div", [
+            return h('div', [
               h(
-                "Tooltip",
+                'Tooltip',
                 {
                   props: {
-                    placement: "top",
-                    transfer: true,
-                  },
+                    placement: 'top',
+                    transfer: true
+                  }
                 },
                 [
                   tmp,
                   h(
-                    "span",
+                    'span',
                     {
-                      slot: "content",
+                      slot: 'content',
                       style: {
-                        whiteSpace: "normal",
-                      },
+                        whiteSpace: 'normal'
+                      }
                     },
                     str
-                  ),
+                  )
                 ]
-              ),
-            ]);
-          },
+              )
+            ])
+          }
         },
         {
-          title: "赛事类型",
-          key: "type",
-          align: "center",
+          title: '赛事类型',
+          key: 'type',
+          align: 'center',
           width: 120,
-          render(h, params) {
-            let arr = params.row.type.split(",");
-            let matchType = JSON.parse(sessionStorage.getItem("matchType"));
-            let str = [];
-            let tmp = "";
+          render (h, params) {
+            let arr = params.row.type.split(',')
+            let matchType = JSON.parse(sessionStorage.getItem('matchType'))
+            let str = []
+            let tmp = ''
             arr.forEach((item) => {
               matchType.forEach((m) => {
                 if (m.id == parseInt(item)) {
-                  str.push(m.name);
+                  str.push(m.name)
                 }
-              });
-            });
-            if (str.join(",").length > 5) {
-              tmp = str.join(",").slice(0, 5) + "...";
+              })
+            })
+            if (str.join(',').length > 5) {
+              tmp = str.join(',').slice(0, 5) + '...'
             } else {
-              tmp = str.join(",");
+              tmp = str.join(',')
             }
-            return h("div", [
+            return h('div', [
               h(
-                "Tooltip",
+                'Tooltip',
                 {
                   props: {
-                    placement: "top",
-                    transfer: true,
-                  },
+                    placement: 'top',
+                    transfer: true
+                  }
                 },
                 [
                   tmp,
                   h(
-                    "span",
+                    'span',
                     {
-                      slot: "content",
+                      slot: 'content',
                       style: {
-                        whiteSpace: "normal",
-                      },
+                        whiteSpace: 'normal'
+                      }
                     },
-                    str.join(",")
-                  ),
+                    str.join(',')
+                  )
                 ]
-              ),
-            ]);
-          },
+              )
+            ])
+          }
         },
         {
-          title: "奖励",
-          key: "award",
-          align: "center",
+          title: '奖励',
+          key: 'award',
+          align: 'center',
           width: 120,
-          render(h, params) {
-            let matchAward = JSON.parse(sessionStorage.getItem("matchAward"));
-            let str = "";
-            let tmp = "";
+          render (h, params) {
+            let matchAward = JSON.parse(sessionStorage.getItem('matchAward'))
+            let str = ''
+            let tmp = ''
             matchAward.forEach((m) => {
               if (m.id == params.row.award) {
-                str = m.name;
+                str = m.name
               }
-            });
+            })
             if (str.length > 5) {
-              tmp = str.slice(0, 5) + "...";
+              tmp = str.slice(0, 5) + '...'
             } else {
-              tmp = str;
+              tmp = str
             }
-            return h("div", [
+            return h('div', [
               h(
-                "Tooltip",
+                'Tooltip',
                 {
                   props: {
-                    placement: "top",
-                    transfer: true,
-                  },
+                    placement: 'top',
+                    transfer: true
+                  }
                 },
                 [
                   tmp,
                   h(
-                    "span",
+                    'span',
                     {
-                      slot: "content",
+                      slot: 'content',
                       style: {
-                        whiteSpace: "normal",
-                      },
+                        whiteSpace: 'normal'
+                      }
                     },
                     str
-                  ),
+                  )
                 ]
-              ),
-            ]);
-          },
+              )
+            ])
+          }
         },
         {
-          title: "级别",
-          key: "level",
-          align: "center",
-          width: 100,
+          title: '级别',
+          key: 'level',
+          align: 'center',
+          width: 100
         },
         {
-          title: "休息(s)",
-          key: "interval",
-          align: "center",
-          width: 100,
+          title: '休息(s)',
+          key: 'interval',
+          align: 'center',
+          width: 100
         },
         {
-          title: "报名人数",
-          key: "sign",
-          align: "center",
-          width: 120,
+          title: '报名人数',
+          key: 'sign',
+          align: 'center',
+          width: 120
         },
         {
-          title: "彩池",
-          key: "pot",
-          align: "center",
-          width: 100,
+          title: '彩池',
+          key: 'pot',
+          align: 'center',
+          width: 100
         },
         {
-          title: "初始积分",
-          key: "num",
-          align: "center",
-          width: 140,
+          title: '初始积分',
+          key: 'num',
+          align: 'center',
+          width: 140
         },
         {
-          title: "买入上限",
-          key: "max_buy",
-          align: "center",
-          width: 140,
+          title: '买入上限',
+          key: 'max_buy',
+          align: 'center',
+          width: 140
         },
         {
-          title: "报名费",
-          key: "fee",
-          align: "center",
-          width: 140,
+          title: '报名费',
+          key: 'fee',
+          align: 'center',
+          width: 140
         },
         {
-          title: "房费",
-          key: "room_fee",
-          align: "center",
-          width: 100,
+          title: '房费',
+          key: 'room_fee',
+          align: 'center',
+          width: 100
         },
         {
-          title: "积分",
-          key: "score",
-          align: "center",
-          width: 100,
+          title: '积分',
+          key: 'score',
+          align: 'center',
+          width: 100
         },
         {
-          title: "结算方式",
-          key: "settlement_type",
-          align: "center",
-          width: 140,
+          title: '结算方式',
+          key: 'settlement_type',
+          align: 'center',
+          width: 140
         },
         {
-          title: "延迟报名",
-          key: "delay",
-          align: "center",
-          width: 140,
+          title: '延迟报名',
+          key: 'delay',
+          align: 'center',
+          width: 140
         },
         {
-          title: "创建时间",
-          key: "create_time",
-          align: "center",
+          title: '创建时间',
+          key: 'create_time',
+          align: 'center',
           width: 200,
-          render(h, params) {
+          render (h, params) {
             return (
               <span>
                 {dayjs(params.row.create_time * 1000).format(
-                  "YYYY-MM-DD HH:mm:ss"
+                  'YYYY-MM-DD HH:mm:ss'
                 )}
               </span>
-            );
-          },
+            )
+          }
         },
         {
-          title: "操作",
-          align: "center",
+          title: '操作',
+          align: 'center',
           width: 260,
-          fixed: "right",
-          render(h, params) {
-            return h("div", {}, [
+          fixed: 'right',
+          render (h, params) {
+            return h('div', {}, [
               h(
-                "Button",
+                'Button',
                 {
                   style: {
-                    marginRight: "5px",
+                    marginRight: '5px'
                   },
                   props: {
-                    size: "small",
+                    size: 'small'
                   },
                   on: {
-                    async click() {
+                    async click () {
                       let iparams = {
                         token: getToken(),
-                        id: params.row.id,
-                      };
-                      let data = await axios.request({
-                        url: "v2/match/publish",
-                        method: "get",
-                        params: iparams,
-                      });
-                      if (data && data.data && data.data.code == 200) {
-                        _this.getMatchList(-1);
+                        id: params.row.id
                       }
-                    },
-                  },
-                },
-                params.row.state == 0 ? "发布" : "取消发布"
-              ),
-              h(
-                "Button",
-                {
-                  style: {
-                    marginRight: "5px",
-                  },
-                  props: {
-                    size: "small",
-                  },
-                  on: {
-                    async click() {
-                      let iparams = {
-                        token: getToken(),
-                        id: params.row.id,
-                      };
                       let data = await axios.request({
-                        url: "v2/match/close",
-                        method: "get",
-                        params: iparams,
-                      });
-                    },
-                  },
-                },
-                "关闭"
-              ),
-              h(
-                "Button",
-                {
-                  style: {
-                    marginRight: "5px",
-                  },
-                  props: {
-                    size: "small",
-                  },
-                  on: {
-                    async click() {
-                      _this.curMatchItem = params.row;
-                      _this.showEditMatchPage();
-                    },
-                  },
-                },
-                "修改"
-              ),
-              h(
-                "Button",
-                {
-                  props: {
-                    size: "small",
-                  },
-                  on: {
-                    async click() {
-                      let iparams = {
-                        token: getToken(),
-                        id: params.row.id,
-                      };
-                      let data = await axios.request({
-                        url: "v2/match/del",
-                        method: "get",
-                        params: iparams,
-                      });
+                        url: 'v2/match/publish',
+                        method: 'get',
+                        params: iparams
+                      })
                       if (data && data.data && data.data.code == 200) {
-                        _this.getMatchList(-1);
+                        _this.getMatchList(-1)
                       }
-                    },
-                  },
+                    }
+                  }
                 },
-                "删除"
+                params.row.state == 0 ? '发布' : '取消发布'
               ),
-            ]);
-          },
-        },
+              h(
+                'Button',
+                {
+                  style: {
+                    marginRight: '5px'
+                  },
+                  props: {
+                    size: 'small'
+                  },
+                  on: {
+                    async click () {
+                      let iparams = {
+                        token: getToken(),
+                        id: params.row.id
+                      }
+                      await axios.request({
+                        url: 'v2/match/close',
+                        method: 'get',
+                        params: iparams
+                      })
+                    }
+                  }
+                },
+                '关闭'
+              ),
+              h(
+                'Button',
+                {
+                  style: {
+                    marginRight: '5px'
+                  },
+                  props: {
+                    size: 'small'
+                  },
+                  on: {
+                    async click () {
+                      _this.curMatchItem = params.row
+                      _this.showEditMatchPage()
+                    }
+                  }
+                },
+                '修改'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    size: 'small'
+                  },
+                  on: {
+                    async click () {
+                      let iparams = {
+                        token: getToken(),
+                        id: params.row.id
+                      }
+                      let data = await axios.request({
+                        url: 'v2/match/del',
+                        method: 'get',
+                        params: iparams
+                      })
+                      if (data && data.data && data.data.code == 200) {
+                        _this.getMatchList(-1)
+                      }
+                    }
+                  }
+                },
+                '删除'
+              )
+            ])
+          }
+        }
       ],
 
       gameOptions: [],
@@ -1852,96 +1846,92 @@ export default {
       blindsDataDetail: [],
       ticketData: [],
       ticketDetaildata: [],
-      matchData: [],
-    };
+      matchData: []
+    }
   },
   methods: {
-    TimePickerOnChange(event) {
-      this.matchStartTime = event;
+    TimePickerOnChange (event) {
+      this.matchStartTime = event
     },
-    SelectQuestionType(data) {
-      this.selectTypes = data;
+    SelectQuestionType (data) {
+      this.selectTypes = data
     },
-    async matchListSearchMethod(query) {
-      if (query !== "") {
-        this.matchListLoading = true;
-        this.matchParams.option = await this.getMatchListByName(query);
+    async matchListSearchMethod (query) {
+      if (query !== '') {
+        this.matchListLoading = true
+        this.matchParams.option = await this.getMatchListByName(query)
       } else {
-        this.matchParams.option = [];
-        this.matchListLoading = false;
+        this.matchParams.option = []
+        this.matchListLoading = false
       }
     },
-    async addTicketMatchListSearchMethod(query) {
-      if (query !== "") {
-        this.matchListLoading = true;
-        this.addTicketMatchParams.option = await this.getMatchListByName(query);
-        this.matchListLoading = false;
+    async addTicketMatchListSearchMethod (query) {
+      if (query !== '') {
+        this.matchListLoading = true
+        this.addTicketMatchParams.option = await this.getMatchListByName(query)
+        this.matchListLoading = false
       } else {
-        this.addTicketMatchParams.option = [];
-        this.matchListLoading = false;
+        this.addTicketMatchParams.option = []
+        this.matchListLoading = false
       }
     },
 
-    ArrayContain(array, id) {
-      var result = false;
+    ArrayContain (array, id) {
+      var result = false
       for (var i = 0; i < array.length; i++) {
         if (array[i] == id) {
-          result = true;
-          break;
+          result = true
+          break
         }
       }
-      return result;
+      return result
     },
-    clearTimeDatess() {
-      //清除快捷日期
-      this.matchStartTime = "";
+    clearTimeDatess () {
+      // 清除快捷日期
+      this.matchStartTime = ''
     },
-    async getSessionAcc() {
+    async getSessionAcc () {
       let params = {
         token: getToken(),
-        acc: this.userAccount,
-      };
+        acc: this.userAccount
+      }
       let data = await axios.request({
-        url: "v2/game/getSession",
-        method: "post",
-        params,
-      });
+        url: 'v2/game/getSession',
+        method: 'post',
+        params
+      })
       if (data && data.data && data.data.code == 200) {
-        this.$Message.info(data.data.msg);
+        this.$Message.info(data.data.msg)
         if (data.data.data.length) {
-          this.accSessionRes = JSON.parse(data.data.data[0]);
+          this.accSessionRes = JSON.parse(data.data.data[0])
         }
       }
     },
-    async delSessionAcc() {
+    async delSessionAcc () {
       let func = async () => {
         let params = {
           token: getToken(),
-          acc: this.userAccount,
-        };
+          acc: this.userAccount
+        }
         let data = await axios.request({
-          url: "v2/game/delSession",
-          method: "post",
-          params,
-        });
+          url: 'v2/game/delSession',
+          method: 'post',
+          params
+        })
 
         if (data && data.data && data.data.code == 200) {
-          this.accSessionRes = null;
-          this.$Message.info(data.data.msg);
+          this.accSessionRes = null
+          this.$Message.info(data.data.msg)
         }
-      };
+      }
       this.$Modal.confirm({
-        title: "提示",
-        content: "请确认玩家不在线",
-        onOk: func,
-      });
+        title: '提示',
+        content: '请确认玩家不在线',
+        onOk: func
+      })
     },
 
-    async showTicketDetail() {
-      this.showTicketDetail = true;
-    },
-
-    async getMatchAwardList() {
+    async getMatchAwardList () {
       let params = {
         token: getToken(),
         page: this.pageData.page,
@@ -1949,236 +1939,236 @@ export default {
         agentId: this.agentParams.val
           ? this.agentParams.val
           : this.agentParams.val === 0
-          ? 0
-          : undefined,
-      };
+            ? 0
+            : undefined
+      }
       let data = await axios.request({
-        url: "v2/matchAward/list",
-        method: "get",
-        params,
-      });
+        url: 'v2/matchAward/list',
+        method: 'get',
+        params
+      })
       if (data && data.data && data.data.code == 200) {
-        this.matchAwardData = data.data.data;
-        sessionStorage.setItem("matchAward", JSON.stringify(data.data.data));
+        this.matchAwardData = data.data.data
+        sessionStorage.setItem('matchAward', JSON.stringify(data.data.data))
       }
     },
 
-    async createTicket() {
+    async createTicket () {
       let params = {
         token: getToken(),
         agentId: this.agentParams.val
           ? this.agentParams.val
           : this.agentParams.val === 0
-          ? 0
-          : undefined,
+            ? 0
+            : undefined,
         matchId: this.addTicketMatchParams.val
           ? this.addTicketMatchParams.val
           : this.addTicketMatchParams.val === 0
-          ? 0
-          : undefined,
+            ? 0
+            : undefined,
         name: this.createTicketItem.name,
         price: this.createTicketItem.price,
-        count: this.createTicketItem.count,
-      };
-      let data = await axios.request({
-        url: "v2/ticket/add",
-        method: "get",
-        params,
-      });
-      this.getMatchTikectList();
+        count: this.createTicketItem.count
+      }
+      await axios.request({
+        url: 'v2/ticket/add',
+        method: 'get',
+        params
+      })
+      this.getMatchTikectList()
     },
 
-    async getMatchTikectList() {
+    async getMatchTikectList () {
       let params = {
         token: getToken(),
         page: this.ticketListPageData.page,
         pageSize: this.ticketListPageData.pageSize,
-        matchId: this.matchParams.val,
-      };
+        matchId: this.matchParams.val
+      }
       let data = await axios.request({
-        url: "v2/ticket/list",
-        method: "get",
-        params,
-      });
+        url: 'v2/ticket/list',
+        method: 'get',
+        params
+      })
       if (data && data.data && data.data.code == 200) {
-        this.ticketListPageData.current = data.data.data.total;
-        this.ticketData = data.data.data.list;
+        this.ticketListPageData.current = data.data.data.total
+        this.ticketData = data.data.data.list
       }
     },
 
-    async updateMatchAwardItem() {
+    async updateMatchAwardItem () {
       let params = {
         token: getToken(),
         id: this.curMatchAwardItem.id,
         name: this.curMatchAwardItem.name,
-        detail: this.curMatchAwardItem.detail,
-      };
-      if (this.curMatchAwardItem.isAdd == undefined) {
-        let data = await axios.request({
-          url: "v2/matchAward/update",
-          method: "get",
-          params,
-        });
-      } else {
-        let data = await axios.request({
-          url: "v2/matchAward/add",
-          method: "get",
-          params,
-        });
+        detail: this.curMatchAwardItem.detail
       }
-      this.getMatchAwardList();
+      if (this.curMatchAwardItem.isAdd == undefined) {
+        await axios.request({
+          url: 'v2/matchAward/update',
+          method: 'get',
+          params
+        })
+      } else {
+        await axios.request({
+          url: 'v2/matchAward/add',
+          method: 'get',
+          params
+        })
+      }
+      this.getMatchAwardList()
     },
 
-    async updateTicket() {
+    async updateTicket () {
       let params = {
         token: getToken(),
         id: this.curMatchAwardItem.id,
         name: this.curMatchAwardItem.name,
-        detail: this.curMatchAwardItem.detail,
-      };
-      if (this.curMatchAwardItem.isAdd == undefined) {
-        let data = await axios.request({
-          url: "v2/matchAward/update",
-          method: "get",
-          params,
-        });
-      } else {
-        let data = await axios.request({
-          url: "v2/matchAward/add",
-          method: "get",
-          params,
-        });
+        detail: this.curMatchAwardItem.detail
       }
-      this.getMatchAwardList();
+      if (this.curMatchAwardItem.isAdd == undefined) {
+        await axios.request({
+          url: 'v2/matchAward/update',
+          method: 'get',
+          params
+        })
+      } else {
+        await axios.request({
+          url: 'v2/matchAward/add',
+          method: 'get',
+          params
+        })
+      }
+      this.getMatchAwardList()
     },
 
-    changePage(index) {
-      this.pageData.page = index;
-      this.getMatchAwardList();
+    changePage (index) {
+      this.pageData.page = index
+      this.getMatchAwardList()
     },
-    changePageSize(index) {
-      this.pageData.pageSize = index;
-      this.getMatchAwardList();
+    changePageSize (index) {
+      this.pageData.pageSize = index
+      this.getMatchAwardList()
     },
-    matchListChangePage(index) {
-      this.matchListPageData.page = index;
-      this.getMatchList(-1);
+    matchListChangePage (index) {
+      this.matchListPageData.page = index
+      this.getMatchList(-1)
     },
-    matchListChangePageSize(index) {
-      this.matchListPageData.pageSize = index;
-      this.getMatchList(-1);
+    matchListChangePageSize (index) {
+      this.matchListPageData.pageSize = index
+      this.getMatchList(-1)
     },
-    ticketListChangePage(index) {
-      this.ticketListPageData.page = index;
-      this.getMatchTikectList();
+    ticketListChangePage (index) {
+      this.ticketListPageData.page = index
+      this.getMatchTikectList()
     },
-    ticketListChangePageSize(index) {
-      this.ticketListPageData.pageSize = index;
-      this.getMatchTikectList();
+    ticketListChangePageSize (index) {
+      this.ticketListPageData.pageSize = index
+      this.getMatchTikectList()
     },
-    ticketDetailListChangePage(index) {
-      this.ticketDetailListPageData.page = index;
-      this.getMatchTikectList();
+    ticketDetailListChangePage (index) {
+      this.ticketDetailListPageData.page = index
+      this.getMatchTikectList()
     },
-    ticketDetailListChangePageSize(index) {
-      this.ticketDetailListPageData.pageSize = index;
-      this.getMatchTikectList();
+    ticketDetailListChangePageSize (index) {
+      this.ticketDetailListPageData.pageSize = index
+      this.getMatchTikectList()
     },
     //
-    setSiteSession(val) {
-      this.agentParams.val = "";
+    setSiteSession (val) {
+      this.agentParams.val = ''
       if (val > 0) {
-        this.agentParams.option = [];
+        this.agentParams.option = []
         for (const key in this.siteParams.option) {
           if (this.siteParams.option[key].id == val) {
             this.agentParams.option.push(
               ...this.siteParams.option[key].agentList
-            );
-            this.agentParams.msg = "选择代理";
+            )
+            this.agentParams.msg = '选择代理'
           }
         }
         this.agentParams.option.map((item) => {
-          item.label = item.name;
-        });
+          item.label = item.name
+        })
       }
     },
 
-    changeTab(tab) {
-      if (tab == "name4") {
-        window.isctl_temp = 1;
+    changeTab (tab) {
+      if (tab == 'name4') {
+        window.isctl_temp = 1
         this.$router.push({
-          name: "players",
-        });
-      } else if (tab == "name5") {
+          name: 'players'
+        })
+      } else if (tab == 'name5') {
         if (this.agentId != undefined) {
           this.getData({
-            agentId: this.agentId,
-          });
+            agentId: this.agentId
+          })
         } else {
-          this.getData();
+          this.getData()
         }
       }
     },
 
-    async matchTypeList() {
+    async matchTypeList () {
       let params = {
-        token: getToken(),
-      };
+        token: getToken()
+      }
       let data = await axios.request({
-        url: "v2/match/typeList",
-        method: "get",
-        params,
-      });
+        url: 'v2/match/typeList',
+        method: 'get',
+        params
+      })
 
       if (data && data.data && data.data.code == 200) {
-        this.matchTypeData = data.data.data;
-        sessionStorage.setItem("matchType", JSON.stringify(data.data.data));
+        this.matchTypeData = data.data.data
+        sessionStorage.setItem('matchType', JSON.stringify(data.data.data))
       }
     },
 
-    async gameTypeList() {
+    async gameTypeList () {
       let params = {
-        token: getToken(),
-      };
+        token: getToken()
+      }
       let data = await axios.request({
-        url: "v2/game/typeList",
-        method: "get",
-        params,
-      });
+        url: 'v2/game/typeList',
+        method: 'get',
+        params
+      })
       if (data && data.data && data.data.code == 200) {
-        sessionStorage.setItem("gameType", JSON.stringify(data.data.data));
-        this.gameTypeData = data.data.data;
+        sessionStorage.setItem('gameType', JSON.stringify(data.data.data))
+        this.gameTypeData = data.data.data
       }
     },
 
-    async updateMatchTypeItem() {
+    async updateMatchTypeItem () {
       let params = {
         token: getToken(),
         id: this.curMatchTypeItem.id,
-        name: this.curMatchTypeItem.name,
-      };
-      if (this.curMatchTypeItem.isAdd == undefined) {
-        let data = await axios.request({
-          url: "v2/update/matchType",
-          method: "get",
-          params,
-        });
-      } else {
-        let data = await axios.request({
-          url: "v2/add/matchType",
-          method: "get",
-          params,
-        });
+        name: this.curMatchTypeItem.name
       }
-      this.matchTypeList();
+      if (this.curMatchTypeItem.isAdd == undefined) {
+        await axios.request({
+          url: 'v2/update/matchType',
+          method: 'get',
+          params
+        })
+      } else {
+        await axios.request({
+          url: 'v2/add/matchType',
+          method: 'get',
+          params
+        })
+      }
+      this.matchTypeList()
     },
 
-    async updateMatchItem() {
+    async updateMatchItem () {
       let params = {
         token: getToken(),
         id: this.curMatchItem.id,
         name: this.curMatchItem.name,
-        type: this.selectTypes.join(","),
+        type: this.selectTypes.join(','),
         game_type: this.gameTypeParams.val,
         interval: this.curMatchItem.interval,
         award: this.matchAwardParmas.val,
@@ -2205,320 +2195,320 @@ export default {
         agent_id: this.agentParams.val
           ? this.agentParams.val
           : this.agentParams.val === 0
-          ? 0
-          : undefined,
-        level: this.curMatchItem.level,
-      };
-      if (this.curMatchItem.isAdd == undefined) {
-        let data = await axios.request({
-          url: "v2/match/update",
-          method: "post",
-          params,
-        });
-      } else {
-        let data = await axios.request({
-          url: "v2/match/add",
-          method: "post",
-          params,
-        });
+            ? 0
+            : undefined,
+        level: this.curMatchItem.level
       }
-      this.getMatchList(-1);
+      if (this.curMatchItem.isAdd == undefined) {
+        await axios.request({
+          url: 'v2/match/update',
+          method: 'post',
+          params
+        })
+      } else {
+        await axios.request({
+          url: 'v2/match/add',
+          method: 'post',
+          params
+        })
+      }
+      this.getMatchList(-1)
     },
 
-    async updateGameTypeItem() {
+    async updateGameTypeItem () {
       let params = {
         token: getToken(),
         id: this.curGameTypeItem.id,
-        name: this.curGameTypeItem.name,
-      };
+        name: this.curGameTypeItem.name
+      }
       if (this.curGameTypeItem.isAdd == undefined) {
-        let data = await axios.request({
-          url: "v2/update/gameType",
-          method: "get",
-          params,
-        });
+        await axios.request({
+          url: 'v2/update/gameType',
+          method: 'get',
+          params
+        })
       } else {
-        let data = await axios.request({
-          url: "v2/add/gameType",
-          method: "get",
-          params,
-        });
+        await axios.request({
+          url: 'v2/add/gameType',
+          method: 'get',
+          params
+        })
       }
-      this.gameTypeList();
+      this.gameTypeList()
     },
 
-    async getBlindData() {
+    async getBlindData () {
       let params = {
-        token: getToken(),
-      };
+        token: getToken()
+      }
       let data = await axios.request({
-        url: "v2/matchBlinds/list",
-        method: "get",
-        params,
-      });
+        url: 'v2/matchBlinds/list',
+        method: 'get',
+        params
+      })
       if (data && data.data && data.data.code == 200) {
-        this.blindData = data.data.data;
-        sessionStorage.setItem("blindList", JSON.stringify(data.data.data));
+        this.blindData = data.data.data
+        sessionStorage.setItem('blindList', JSON.stringify(data.data.data))
       }
     },
 
-    async addBlindsDetailItem() {
-      let max = 0;
+    async addBlindsDetailItem () {
+      let max = 0
       this.blindsDataDetail.forEach(function (i) {
         if (i) {
           if (i.level >= max) {
-            max = i.level;
+            max = i.level
           }
         }
-      });
+      })
       this.blindsDataDetail.push({
         level: ++max,
-        min: "0.0",
-        max: "0.0",
+        min: '0.0',
+        max: '0.0',
         delay: 0,
-        bet: "0.0",
-        interval: 0,
-      });
+        bet: '0.0',
+        interval: 0
+      })
     },
 
-    async updateBlindItem() {
-      let d = {};
-      d.items = this.blindsDataDetail;
+    async updateBlindItem () {
+      let d = {}
+      d.items = this.blindsDataDetail
       let params = {
         token: getToken(),
         id: this.curBlindItem.id,
         name: this.curBlindItem.name,
-        data: JSON.stringify(d),
-      };
-      if (this.curBlindItem.opt == 1) {
-        let data = await axios.request({
-          url: "v2/matchBlinds/add",
-          method: "get",
-          params,
-        });
-      } else {
-        let data = await axios.request({
-          url: "v2/matchBlinds/update",
-          method: "get",
-          params,
-        });
+        data: JSON.stringify(d)
       }
-      this.getBlindData();
-      this.editBlind = false;
+      if (this.curBlindItem.opt == 1) {
+        await axios.request({
+          url: 'v2/matchBlinds/add',
+          method: 'get',
+          params
+        })
+      } else {
+        await axios.request({
+          url: 'v2/matchBlinds/update',
+          method: 'get',
+          params
+        })
+      }
+      this.getBlindData()
+      this.editBlind = false
     },
 
-    async showAddMatchTypeItem() {
-      this.editMatchType = true;
-      this.curMatchTypeItem = {};
-      this.curMatchTypeItem.name = "";
-      this.curMatchTypeItem.isAdd = true;
+    async showAddMatchTypeItem () {
+      this.editMatchType = true
+      this.curMatchTypeItem = {}
+      this.curMatchTypeItem.name = ''
+      this.curMatchTypeItem.isAdd = true
     },
 
-    async showAddGameTypeItem() {
-      this.editGameType = true;
-      this.curGameTypeItem = {};
-      this.curGameTypeItem.name = "";
-      this.curGameTypeItem.isAdd = true;
+    async showAddGameTypeItem () {
+      this.editGameType = true
+      this.curGameTypeItem = {}
+      this.curGameTypeItem.name = ''
+      this.curGameTypeItem.isAdd = true
     },
 
-    async showMatchAwardPage() {
-      this.editMatchAward = true;
-      this.curMatchAwardItem = {};
-      this.curMatchAwardItem.name = "";
-      this.curMatchAwardItem.detail = "";
-      this.curMatchAwardItem.isAdd = true;
+    async showMatchAwardPage () {
+      this.editMatchAward = true
+      this.curMatchAwardItem = {}
+      this.curMatchAwardItem.name = ''
+      this.curMatchAwardItem.detail = ''
+      this.curMatchAwardItem.isAdd = true
     },
 
-    async showAddMatchPage() {
-      this.editMatch = true;
-      this.matchTag = "添加比赛";
-      this.curMatchItem = {};
-      this.curMatchItem.name = "";
-      this.curMatchItem.type = 0;
-      this.curMatchItem.level = 0;
-      this.curMatchItem.interval = 0;
-      this.curMatchItem.award = 0;
-      this.curMatchItem.max_buy = 0;
-      this.curMatchItem.game_id = 0;
-      this.curMatchItem.state = 0;
-      this.curMatchItem.fee = "0";
-      this.curMatchItem.room_fee = "0";
-      this.curMatchItem.blinds_id = 0;
-      this.curMatchItem.score = "0";
-      this.curMatchItem.desc = "";
-      this.curMatchItem.news = "";
-      this.curMatchItem.tag = "";
-      this.curMatchItem.settlement_type = "";
-      this.curMatchItem.delay = 0;
-      this.selectTypes = [];
-      this.curMatchItem.isAdd = true;
-      this.blindsParams.option = this.blindData;
-      this.matchTypeParams.option = this.matchTypeData;
-      this.matchAwardParmas.option = this.matchAwardData;
+    async showAddMatchPage () {
+      this.editMatch = true
+      this.matchTag = '添加比赛'
+      this.curMatchItem = {}
+      this.curMatchItem.name = ''
+      this.curMatchItem.type = 0
+      this.curMatchItem.level = 0
+      this.curMatchItem.interval = 0
+      this.curMatchItem.award = 0
+      this.curMatchItem.max_buy = 0
+      this.curMatchItem.game_id = 0
+      this.curMatchItem.state = 0
+      this.curMatchItem.fee = '0'
+      this.curMatchItem.room_fee = '0'
+      this.curMatchItem.blinds_id = 0
+      this.curMatchItem.score = '0'
+      this.curMatchItem.desc = ''
+      this.curMatchItem.news = ''
+      this.curMatchItem.tag = ''
+      this.curMatchItem.settlement_type = ''
+      this.curMatchItem.delay = 0
+      this.selectTypes = []
+      this.curMatchItem.isAdd = true
+      this.blindsParams.option = this.blindData
+      this.matchTypeParams.option = this.matchTypeData
+      this.matchAwardParmas.option = this.matchAwardData
     },
 
-    async showEditMatchPage() {
-      this.editMatch = true;
-      this.matchTag = "修改比赛";
-      this.gameTypeParams.option = this.gameTypeData;
-      this.blindsParams.option = this.blindData;
-      this.matchTypeParams.option = this.matchTypeData;
-      this.matchAwardParmas.option = this.matchAwardData;
-      this.blindsParams.val = this.curMatchItem.blinds_id;
-      this.matchAwardParmas.val = this.curMatchItem.award;
+    async showEditMatchPage () {
+      this.editMatch = true
+      this.matchTag = '修改比赛'
+      this.gameTypeParams.option = this.gameTypeData
+      this.blindsParams.option = this.blindData
+      this.matchTypeParams.option = this.matchTypeData
+      this.matchAwardParmas.option = this.matchAwardData
+      this.blindsParams.val = this.curMatchItem.blinds_id
+      this.matchAwardParmas.val = this.curMatchItem.award
       this.matchStartTime = dayjs(this.curMatchItem.start_time * 1000).format(
-        "YYYY-MM-DD HH:mm:ss"
-      );
-      this.games.value = this.curMatchItem.game_id;
-      this.matchSettleTypeParmas.val = this.curMatchItem.settlement_type;
-      this.selectTypes = [];
-      this.curMatchItem.type.split(",").forEach((item) => {
-        this.selectTypes.push(Number(item));
-      });
-      this.gameTypeParams.val = this.curMatchItem.game_type;
+        'YYYY-MM-DD HH:mm:ss'
+      )
+      this.games.value = this.curMatchItem.game_id
+      this.matchSettleTypeParmas.val = this.curMatchItem.settlement_type
+      this.selectTypes = []
+      this.curMatchItem.type.split(',').forEach((item) => {
+        this.selectTypes.push(Number(item))
+      })
+      this.gameTypeParams.val = this.curMatchItem.game_type
     },
 
-    async showCreateTicketPage() {
-      this.createTticket = true;
-      this.createTicketItem = {};
-      this.createTicketItem.name = "";
-      this.createTicketItem.count = 0;
-      this.createTicketItem.icon = "";
-      this.createTicketItem.price = 0;
+    async showCreateTicketPage () {
+      this.createTticket = true
+      this.createTicketItem = {}
+      this.createTicketItem.name = ''
+      this.createTicketItem.count = 0
+      this.createTicketItem.icon = ''
+      this.createTicketItem.price = 0
       // this.addTicketMatchParams.option = await this.getMatchList(-1)
     },
 
-    async showTicketDetailPage() {
-      this.showTicketDetail = true;
+    async showTicketDetailPage () {
+      this.showTicketDetail = true
     },
 
-    async showBlinditem() {
-      this.editBlind = true;
-      this.curBlindItem = {};
-      this.curBlindItem.name = "";
-      this.curBlindItem.data = "";
-      this.blindsDataDetail = [];
-      this.curBlindItem.opt = 1; //插入
+    async showBlinditem () {
+      this.editBlind = true
+      this.curBlindItem = {}
+      this.curBlindItem.name = ''
+      this.curBlindItem.data = ''
+      this.blindsDataDetail = []
+      this.curBlindItem.opt = 1 // 插入
     },
 
-    async showBlinditemPage() {
-      this.editBlind = true;
-      this.curBlindItem = {};
-      this.curBlindItem.name = "";
-      this.curBlindItem.data = [];
-      this.curBlindItem.opt = 2; //查看
+    async showBlinditemPage () {
+      this.editBlind = true
+      this.curBlindItem = {}
+      this.curBlindItem.name = ''
+      this.curBlindItem.data = []
+      this.curBlindItem.opt = 2 // 查看
     },
 
-    async getMatchList(state) {
+    async getMatchList (state) {
       let params = {
         token: getToken(),
         agentId: this.agentParams.val
           ? this.agentParams.val
           : this.agentParams.val === 0
-          ? 0
-          : undefined,
+            ? 0
+            : undefined,
         state: state == -1 ? -1 : this.matchState.val,
         page: this.matchListPageData.page,
-        pageSize: this.matchListPageData.pageSize,
-      };
+        pageSize: this.matchListPageData.pageSize
+      }
       if (
-        this.matchSearchTimes.startTime != "" &&
-        this.matchSearchTimes.endTime != ""
+        this.matchSearchTimes.startTime != '' &&
+        this.matchSearchTimes.endTime != ''
       ) {
-        params.startTime = dayjs(this.matchSearchTimes.startTime).unix();
-        params.endTime = dayjs(this.matchSearchTimes.endTime).unix();
+        params.startTime = dayjs(this.matchSearchTimes.startTime).unix()
+        params.endTime = dayjs(this.matchSearchTimes.endTime).unix()
       }
       let data = await axios.request({
-        url: "v2/match/list",
-        method: "get",
-        params,
-      });
+        url: 'v2/match/list',
+        method: 'get',
+        params
+      })
       if (data && data.data && data.data.code == 200) {
-        this.matchData = data.data.data.list;
-        this.matchListPageData.current = data.data.data.total;
-        return this.matchData;
+        this.matchData = data.data.data.list
+        this.matchListPageData.current = data.data.data.total
+        return this.matchData
       }
     },
 
-    async getMatchListByName(query) {
+    async getMatchListByName (query) {
       let params = {
         token: getToken(),
-        name: query,
-      };
+        name: query
+      }
       let data = await axios.request({
-        url: "v2/match/list",
-        method: "get",
-        params,
-      });
+        url: 'v2/match/list',
+        method: 'get',
+        params
+      })
       if (data && data.data && data.data.code == 200) {
         // this.matchParams.option = data.data.data.list;
         // this.matchListLoading=false;
-        return data.data.data.list;
+        return data.data.data.list
       }
     },
 
-    async loadGames() {
-      let newArray = JSON.parse(sessionStorage.getItem("games"));
-      this.games.option = [];
+    async loadGames () {
+      let newArray = JSON.parse(sessionStorage.getItem('games'))
+      this.games.option = []
       newArray.forEach((item) => {
-        this.games.option.push({ id: item.number, name: item.name });
-      });
-      console.log(this.games.option);
+        this.games.option.push({ id: item.number, name: item.name })
+      })
+      console.log(this.games.option)
     },
-    genAwardParam(params) {
-      let arr = [];
+    genAwardParam (params) {
+      let arr = []
       if (params.length > 0) {
-        params.split(",").map((item) => {
-          item = item + "%";
-          arr.push(item);
-        });
-        return arr.join(",");
+        params.split(',').map((item) => {
+          item = item + '%'
+          arr.push(item)
+        })
+        return arr.join(',')
       }
     },
-    getSite() {
+    getSite () {
       // 获取玩家控制的站点
       getLinkageList().then((res) => {
-        this.siteParams.option = [];
-        this.siteParams.option.push(...Object.assign(res.data.data));
+        this.siteParams.option = []
+        this.siteParams.option.push(...Object.assign(res.data.data))
         this.siteParams.option.map((item) => {
-          item.label = item.name;
-          item.value = item.id;
-        });
-        this.siteParams.val = this.siteParams.option[0].value;
-        this.setSiteSession(this.siteParams.val);
-      });
+          item.label = item.name
+          item.value = item.id
+        })
+        this.siteParams.val = this.siteParams.option[0].value
+        this.setSiteSession(this.siteParams.val)
+      })
     },
 
-    async allSet() {
-      let data = this.formatParams();
+    async allSet () {
+      this.formatParams()
     },
 
-    //房间
-    async selectRoom(e) {
-      this.agentSearch();
+    // 房间
+    async selectRoom (e) {
+      this.agentSearch()
     },
     // 提示
-    async successTip() {
-      this.$Message.info("修改成功");
+    async successTip () {
+      this.$Message.info('修改成功')
     },
-    async selectRewordByPageOne() {},
+    async selectRewordByPageOne () {}
   },
 
-  async mounted() {
-    this.getSite(); // 获取玩家控制的头部代理参数
-    await this.matchTypeList();
-    await this.gameTypeList();
-    await this.getMatchAwardList();
-    await this.getBlindData();
-    await this.getMatchTikectList();
-    await this.loadGames();
+  async mounted () {
+    this.getSite() // 获取玩家控制的头部代理参数
+    await this.matchTypeList()
+    await this.gameTypeList()
+    await this.getMatchAwardList()
+    await this.getBlindData()
+    await this.getMatchTikectList()
+    await this.loadGames()
     // await this.getMatchList(-1);
-    this.matchParams.option = this.matchData;
-    this.blindsParams.option = this.blindData;
-    this.gameTypeParams.option = this.gameTypeData;
-    window.test1 = this;
-  },
-};
+    this.matchParams.option = this.matchData
+    this.blindsParams.option = this.blindData
+    this.gameTypeParams.option = this.gameTypeData
+    window.test1 = this
+  }
+}
 </script>
 
 <style scoped lang="less">

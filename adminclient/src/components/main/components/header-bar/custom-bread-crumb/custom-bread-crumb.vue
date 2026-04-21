@@ -17,11 +17,11 @@
   </div>
 </template>
 <script>
-import { showTitle } from "@/libs/util";
-import CommonIcon from "_c/common-icon";
-import "./custom-bread-crumb.less";
+import { showTitle } from '@/libs/util'
+import CommonIcon from '_c/common-icon'
+import './custom-bread-crumb.less'
 export default {
-  name: "customBreadCrumb",
+  name: 'customBreadCrumb',
   components: {
     CommonIcon
   },
@@ -40,15 +40,15 @@ export default {
     }
   },
   methods: {
-    showTitle(item) {
-      return showTitle(item, this);
+    showTitle (item) {
+      return showTitle(item, this)
     },
-    isCustomIcon(iconName) {
-      return iconName.indexOf("_") === 0;
+    isCustomIcon (iconName) {
+      return iconName.indexOf('_') === 0
     },
-    getCustomIconName(iconName) {
-      return iconName.slice(1);
+    getCustomIconName (iconName) {
+      return iconName.slice(1)
     }
   }
-};
+}
 </script>

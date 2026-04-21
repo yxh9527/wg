@@ -27,43 +27,43 @@
 </template>
 
 <script>
-import Tables from "_c/tables";
-import { getTableData } from "@/api/data";
+import Tables from '_c/tables'
+import { getTableData } from '@/api/data'
 export default {
-  name: "gameManage",
+  name: 'gameManage',
   components: {
     Tables
   },
-  data() {
+  data () {
     return {
       labelList: [
-        { label: "日志类型", value: "" },
-        { label: "操作人", value: "" }
+        { label: '日志类型', value: '' },
+        { label: '操作人', value: '' }
       ],
       columns: [
-        { title: "序号", width: 80, type: "index" },
-        { title: "游戏名称", key: "game" },
-        { title: "来源", key: "game" },
-        { title: "操作", key: "state" },
-        { title: "IP地址", key: "id" },
-        { title: "url", key: "url" },
-        { title: "操作时间", key: "date" },
-        { title: "操作人", key: "name" }
+        { title: '序号', width: 80, type: 'index' },
+        { title: '游戏名称', key: 'game' },
+        { title: '来源', key: 'game' },
+        { title: '操作', key: 'state' },
+        { title: 'IP地址', key: 'id' },
+        { title: 'url', key: 'url' },
+        { title: '操作时间', key: 'date' },
+        { title: '操作人', key: 'name' }
       ],
       tableData: []
-    };
-  },
-  methods: {
-    handleDelete(params) {
-       
     }
   },
-  mounted() {
+  methods: {
+    handleDelete (params) {
+
+    }
+  },
+  mounted () {
     getTableData().then(res => {
-      this.tableData = res.data;
-    });
+      this.tableData = res.data
+    })
   }
-};
+}
 </script>
 
 <style>

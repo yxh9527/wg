@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: "ErrorStore",
+  name: 'ErrorStore',
   props: {
     count: {
       type: Number,
@@ -22,18 +22,18 @@ export default {
     }
   },
   computed: {
-    countComputed() {
-      return this.hasRead ? 0 : this.count;
+    countComputed () {
+      return this.hasRead ? 0 : this.count
     }
   },
   methods: {
-    openErrorLoggerPage() {
+    openErrorLoggerPage () {
       this.$router.push({
-        name: "error_logger_page"
-      });
+        name: 'error_logger_page'
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="less">

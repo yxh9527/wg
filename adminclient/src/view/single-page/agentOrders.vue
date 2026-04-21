@@ -10,70 +10,69 @@
 </template>
 
 <script>
-import axios from "@/libs/api.request";
-import { getToken } from "@/libs/util";
+import axios from '@/libs/api.request'
+import { getToken } from '@/libs/util'
 
 export default {
   components: {},
-  props: ["id", "st", "et"],
-  data() {
-    let _this = this;
+  props: ['id', 'st', 'et'],
+  data () {
     return {
       /**
        * 表格配置
        */
       agentColumns: [
         {
-          title: "日期",
-          key: "day",
-          align: "center",
+          title: '日期',
+          key: 'day',
+          align: 'center'
         },
         {
-          title: "代理",
-          align: "center",
-          key: "agent_name",
+          title: '代理',
+          align: 'center',
+          key: 'agent_name'
         },
         {
-          align: "center",
-          title: "期间有效投注",
-          key: "eTotal",
-          render(h, params) {
-            let jsx = <span>{params.row.eTotal.toFixed(2)}</span>;
-            return jsx;
-          },
+          align: 'center',
+          title: '期间有效投注',
+          key: 'eTotal',
+          render (h, params) {
+            let jsx = <span>{params.row.eTotal.toFixed(2)}</span>
+            return jsx
+          }
         },
         {
-          align: "center",
-          title: "期间注单",
-          key: "eNumber",
+          align: 'center',
+          title: '期间注单',
+          key: 'eNumber'
         },
         {
-          align: "center",
-          title: "盈亏",
-          key: "pTotal",
-          render(h, params) {
+          align: 'center',
+          title: '盈亏',
+          key: 'pTotal',
+          render (h, params) {
             let jsx = (
               <div style="color:red">{params.row.pTotal.toFixed(2)}</div>
-            );
+            )
             if (Number(params.row.pTotal) > 0) {
               jsx = (
                 <div style="color:green">{params.row.pTotal.toFixed(2)}</div>
-              );
+              )
             }
-            return jsx;
-          },
+            return jsx
+          }
         },
         {
-          align: "center",
-          title: "杀数",
-          key: "",
-          render(h, params) {
+          align: 'center',
+          title: '杀数',
+          key: '',
+          render (h, params) {
             let jsx = (
               <div>{(params.row.pTotal / params.row.eTotal).toFixed(3)}</div>
-            );
-            return jsx;
-          },
-        },
+            )
+            return jsx
+          }
+        }
       ],
 
       /**
@@ -82,49 +81,49 @@ export default {
       agentData: [],
       page: 1,
       total: 1,
-      pagesize: 1,
-    };
+      pagesize: 1
+    }
   },
   methods: {
     /**
      * 切换分页
      */
-    currentChanged(page) {
-      this.page = page;
-      this.fetchGameList();
+    currentChanged (page) {
+      this.page = page
+      this.fetchGameList()
     },
 
     /**
      * 查询游戏数据
      */
-    async fetchGameList() {
+    async fetchGameList () {
       let data = await axios.request({
-        url: "v2/stat/agent/detail",
-        method: "get",
+        url: 'v2/stat/agent/detail',
+        method: 'get',
         params: {
           token: getToken(),
           page: this.page,
           pageSize: 50,
           agentId: this.id,
           startTime: this.st,
-          endTime: this.et,
-        },
-      });
+          endTime: this.et
+        }
+      })
 
       if (data && data.data && data.data.code == 200) {
         data.data.data.data.map((x) => {
-          x.pTotal = -x.pTotal;
-        });
-        this.agentData = data.data.data.data;
-        this.total = data.data.data.total;
-        this.pagesize = data.data.data.page_size;
+          x.pTotal = -x.pTotal
+        })
+        this.agentData = data.data.data.data
+        this.total = data.data.data.total
+        this.pagesize = data.data.data.page_size
       }
-    },
+    }
   },
-  mounted() {
-    this.fetchGameList();
-  },
-};
+  mounted () {
+    this.fetchGameList()
+  }
+}
 </script>
 
 <style scoped lang="less">

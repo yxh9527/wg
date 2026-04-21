@@ -1,7 +1,7 @@
 import {
   login,
   logout,
-  getContentByMsgId,
+  getContentByMsgId
 } from '@/api/user'
 import {
   setToken,
@@ -24,44 +24,44 @@ export default {
     messageContentStore: {}
   },
   mutations: {
-    setAvatar(state, avatarPath) {
+    setAvatar (state, avatarPath) {
       state.avatarImgPath = avatarPath
     },
-    setUserId(state, id) {
+    setUserId (state, id) {
       state.userId = id
     },
-    setUserName(state, name) {
+    setUserName (state, name) {
       state.userName = name
     },
-    setAccess(state, access) {
+    setAccess (state, access) {
       state.access = access
     },
-    setToken(state, token) {
+    setToken (state, token) {
       state.token = token
       setToken(token)
     },
-    setHasGetInfo(state, status) {
+    setHasGetInfo (state, status) {
       state.hasGetInfo = status
     },
-    setMessageCount(state, count) {
+    setMessageCount (state, count) {
       state.unreadCount = count
     },
-    setMessageUnreadList(state, list) {
+    setMessageUnreadList (state, list) {
       state.messageUnreadList = list
     },
-    setMessageReadedList(state, list) {
+    setMessageReadedList (state, list) {
       state.messageReadedList = list
     },
-    setMessageTrashList(state, list) {
+    setMessageTrashList (state, list) {
       state.messageTrashList = list
     },
-    updateMessageContentStore(state, {
+    updateMessageContentStore (state, {
       msg_id,
       content
     }) {
       state.messageContentStore[msg_id] = content
     },
-    moveMsg(state, {
+    moveMsg (state, {
       from,
       to,
       msg_id
@@ -79,7 +79,7 @@ export default {
   },
   actions: {
     // 登录
-    handleLogin({
+    handleLogin ({
       commit
     }, {
       name,
@@ -107,24 +107,22 @@ export default {
               access: (() => {
                 switch (path.user.userType) {
                   case 1:
-                    return ['administrator', 'userCenter', 'operation'];
+                    return ['administrator', 'userCenter', 'operation']
                   case 2:
-                    return ['userCenter'];
+                    return ['userCenter']
                   case 3:
-                    return [];
+                    return []
                   case 4:
                     return ['userCenter', 'operation']
-
                 }
               })()
             }
-            Cookies.set("userInfo", data, {
+            Cookies.set('userInfo', data, {
               expires: 1
             })
             resolve(res)
-
           } else {
-            alert("登录失败：" + res.data.msg)
+            alert('登录失败：' + res.data.msg)
           }
           resolve()
         }).catch(err => {
@@ -133,7 +131,7 @@ export default {
       })
     },
     // 退出登录
-    handleLogOut({
+    handleLogOut ({
       state,
       commit
     }) {
@@ -161,13 +159,13 @@ export default {
       })
     },
     // 获取用户相关信息
-    getUserInfo({
+    getUserInfo ({
       state,
       commit
     }) {
       return new Promise((resolve, reject) => {
         try {
-          const data = JSON.parse(Cookies.get("userInfo"))
+          const data = JSON.parse(Cookies.get('userInfo'))
           commit('setAvatar', data.avatar)
           commit('setUserName', data.name)
           commit('setUserId', data.userid)
@@ -179,7 +177,7 @@ export default {
       })
     },
     // 根据当前点击的消息的id获取内容
-    getContentByMsgId({
+    getContentByMsgId ({
       state,
       commit
     }, {
@@ -200,6 +198,6 @@ export default {
           })
         }
       })
-    },
+    }
   }
 }

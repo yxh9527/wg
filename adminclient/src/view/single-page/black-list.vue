@@ -42,185 +42,184 @@
 </template>
 
 <script>
-import Tables from "_c/tables";
-import { getControlList, addControlIP, deletControlIP } from "@/api/data";
-import Edits from "_c/edit-data";
-import { setting } from "@/config";
-import { getDate } from "@/libs/tools";
+import Tables from '_c/tables'
+import { getControlList, addControlIP, deletControlIP } from '@/api/data'
+import Edits from '_c/edit-data'
+import { setting } from '@/config'
+import { getDate } from '@/libs/tools'
 export default {
-  name: "gameMessage",
+  name: 'gameMessage',
   components: {
     Tables,
     Edits
   },
-  inject: ["handleLogOut"],
-  data() {
+  inject: ['handleLogOut'],
+  data () {
     return {
       req: [
         {
-          label: "类型",
+          label: '类型',
           value: 1,
           option: [
-            { label: "普通白名单", value: 1 },
-            { label: "普通黑名单", value: 2 }
+            { label: '普通白名单', value: 1 },
+            { label: '普通黑名单', value: 2 }
           ]
         }
       ],
       columns: [
-         { title: "序号", type: "index", width: 80 },
+        { title: '序号', type: 'index', width: 80 },
         {
-          title: "类型",
-          key: "contType",
-          align: "center",
-          render(h, params) {
+          title: '类型',
+          key: 'contType',
+          align: 'center',
+          render (h, params) {
             return params.row.contType == 1 ? (
               <span style="color:green">白名单</span>
             ) : (
               <span style="color:orange">黑名单</span>
-            );
+            )
           }
         },
-        { title: "IP地址", key: "ip", align: "center" },
+        { title: 'IP地址', key: 'ip', align: 'center' },
         {
-          title: "创建时间",
-          key: "createTime",
-          align: "center",
-          render(h, params) {
+          title: '创建时间',
+          key: 'createTime',
+          align: 'center',
+          render (h, params) {
             return (
               <span>
                 {params.row.createTime
                   ? getDate(params.row.createTime * 1000)
-                  : "未知"}
+                  : '未知'}
               </span>
-            );
+            )
           }
         },
-        { title: "备注", key: "remarks", align: "center" },
+        { title: '备注', key: 'remarks', align: 'center' },
         {
-          title: "操作",
-          key: "handle",
-          align: "center",
+          title: '操作',
+          key: 'handle',
+          align: 'center',
           button: [
             (h, params) => {
               return [
                 h(
-                  "Poptip",
+                  'Poptip',
                   {
                     props: {
                       transfer: true,
                       confirm: true,
-                      placement: "left",
-                      title: "您确定要删除吗?"
+                      placement: 'left',
+                      title: '您确定要删除吗?'
                     },
-                    style: { textAlign: "left", zIndex: "99" },
+                    style: { textAlign: 'left', zIndex: '99' },
                     on: {
-                      "on-ok": () => {
+                      'on-ok': () => {
                         const Data = {
                           id: params.row.id,
-                          agentId: sessionStorage.getItem("agentVal")
-                        };
+                          agentId: sessionStorage.getItem('agentVal')
+                        }
                         deletControlIP(Data).then(res => {
                           if (res.data.code == 200) {
                             this.$nextTick(() => {
-                              this.$Message.success("成功删除IP");
-                              this.handleSearch(params.row.contType);
-                            });
+                              this.$Message.success('成功删除IP')
+                              this.handleSearch(params.row.contType)
+                            })
                           } else {
-                            alert("操作失败：" + res.data.msg);
+                            alert('操作失败：' + res.data.msg)
                           }
-                        });
+                        })
                       }
                     }
                   },
                   [
                     h(
-                      "Button",
+                      'Button',
                       {
                         props: {
-                          disabled: params.row.ip == "127.0.0.1" ? true : false,
-                          type: "error",
-                          size: "small"
+                          disabled: params.row.ip == '127.0.0.1',
+                          type: 'error',
+                          size: 'small'
                         }
                       },
-                      "删除"
+                      '删除'
                     )
                   ]
                 )
-              ];
+              ]
             }
           ]
         }
       ],
       tableData: [],
-      ipconfig: "",
-      remarks: "",
+      ipconfig: '',
+      remarks: '',
       pageData: {
         current: 0,
         page: setting.page,
         pageSize: setting.pageSize,
         pageOpts: setting.pageOpts
       }
-    };
+    }
   },
   methods: {
-    handleSearch(type = 1) {
+    handleSearch (type = 1) {
       let Data = [
         { page: this.pageData.page },
         { contType: type },
-        { agentId: sessionStorage.getItem("agentVal") }
-      ];
+        { agentId: sessionStorage.getItem('agentVal') }
+      ]
       getControlList(Data)
         .then(res => {
           if (res.data.code == 200) {
-            this.tableData = [];
-            this.tableData.push(...res.data.data.data);
-            this.pageData.current = res.data.data.total;
+            this.tableData = []
+            this.tableData.push(...res.data.data.data)
+            this.pageData.current = res.data.data.total
           } else {
             // 判断响应状态是否为Token失效，如果失效则执行退出函数并刷新页面。
             this.$nextTick(() => {
               if (setting.arrStatus.indexOf(res.data.code) != -1) {
                 this.$Message.error(
-                  res.data.code + " ：&nbsp;" + res.data.msg + "请重新登录"
-                );
-                this.handleLogOut();
+                  res.data.code + ' ：&nbsp;' + res.data.msg + '请重新登录'
+                )
+                this.handleLogOut()
               } else {
-                this.$Message.error(res.data.code + " ：&nbsp;" + res.data.msg);
+                this.$Message.error(res.data.code + ' ：&nbsp;' + res.data.msg)
               }
-            });
+            })
           }
         })
-   
     },
-    addBlackWhiteList(type) {
+    addBlackWhiteList (type) {
       this.$Modal.confirm({
-        title: type == 1 ? "添加普通白名单" : "添加普通黑名单",
-        okText: type == 1 ? "添加白名单" : "添加黑名单",
+        title: type == 1 ? '添加普通白名单' : '添加普通黑名单',
+        okText: type == 1 ? '添加白名单' : '添加黑名单',
         closable: true,
         render: h => {
           return [
             h(
-              "label",
+              'label',
               {
-                class: "ip-label-style"
+                class: 'ip-label-style'
               },
-              "IP地址"
+              'IP地址'
             ),
-            h("Input", {
+            h('Input', {
               props: {
-                type:'text',
-                maxlength:50,
-                number:true,
+                type: 'text',
+                maxlength: 50,
+                number: true,
                 value: this.ipconfig
               },
-              class: "ip-input-style",
+              class: 'ip-input-style',
               on: {
                 input: val => {
-                  this.ipconfig = val;
+                  this.ipconfig = val
                 }
               }
             }),
             h(
-              "label",
+              'label',
               {
                 style: `font-size: 20px;
     color: red;
@@ -229,61 +228,61 @@ export default {
     position: relative;
     display: inline-block;`
               },
-              "*"
+              '*'
             ),
-            h("div"),
+            h('div'),
             h(
-              "label",
+              'label',
               {
-                class: "ip-label-style"
+                class: 'ip-label-style'
               },
-              "备注"
+              '备注'
             ),
-            h("Input", {
+            h('Input', {
               props: {
                 value: this.remarks
               },
-              class: "ip-input-style",
+              class: 'ip-input-style',
               on: {
                 input: val => {
-                  this.remarks = val;
+                  this.remarks = val
                 }
               }
             })
-          ];
+          ]
         },
         onOk: () => {
           let Data = [
-            { agentId: sessionStorage.getItem("agentVal") },
+            { agentId: sessionStorage.getItem('agentVal') },
             { ip: this.ipconfig },
             { remarks: this.remarks },
             { contType: type }
-          ];
+          ]
           addControlIP(Data).then(res => {
             if (res.data.code == 200) {
-              this.$Message.success("成功创建IP");
+              this.$Message.success('成功创建IP')
               this.$nextTick(() => {
-                this.handleSearch(type);
-                this.req[0].value = type;
-              });
+                this.handleSearch(type)
+                this.req[0].value = type
+              })
             }
-          });
+          })
         }
-      });
+      })
     },
-    changePage(index) {
-      this.pageData.page = index;
-      this.handleSearch();
+    changePage (index) {
+      this.pageData.page = index
+      this.handleSearch()
     },
-    changePageSize(index) {
-      this.pageData.pageSize = index;
-      this.handleSearch();
+    changePageSize (index) {
+      this.pageData.pageSize = index
+      this.handleSearch()
     }
   },
-  mounted() {
-    this.handleSearch();
+  mounted () {
+    this.handleSearch()
   }
-};
+}
 </script>
 
 <style>

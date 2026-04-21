@@ -5,12 +5,12 @@
 </template>
 <script>
 export default {
-  name: "siderTrigger",
+  name: 'siderTrigger',
   props: {
     collapsed: Boolean,
     icon: {
       type: String,
-      default: "navicon-round"
+      default: 'navicon-round'
     },
     size: {
       type: Number,
@@ -18,11 +18,11 @@ export default {
     }
   },
   methods: {
-    handleChange() {
-      this.$emit("on-change", !this.collapsed);
+    handleChange () {
+      this.$emit('on-change', !this.collapsed)
     }
   }
-};
+}
 </script>
 <style lang="less">
 @import "./sider-trigger.less";

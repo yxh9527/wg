@@ -186,46 +186,46 @@
 </template>
 
 <script>
-import Tables from "_c/tables";
+import Tables from '_c/tables'
 import {
   getAccountData,
   addAccountData,
   getSelectAgent,
   editAccountData,
   editAccountState,
-  deleteAccountState,
-} from "@/api/data";
-import { setting } from "@/config";
+  deleteAccountState
+} from '@/api/data'
+import { setting } from '@/config'
 export default {
-  name: "gameMessage",
+  name: 'gameMessage',
   components: {
-    Tables,
+    Tables
   },
-  inject: ["handleLogOut"],
-  data() {
+  inject: ['handleLogOut'],
+  data () {
     return {
-      //对话框等待数据响应
+      // 对话框等待数据响应
       accountModalloading: true,
       showAccount: false,
       req: [
         {
-          label: "类型",
+          label: '类型',
           value: 0,
           option: [
-            { label: "全部账号", value: 0 },
-            { label: "总控账号", value: 1 },
-            { label: "信息账号", value: 2 },
-            { label: "代理账号", value: 3 },
-          ],
-        },
+            { label: '全部账号', value: 0 },
+            { label: '总控账号', value: 1 },
+            { label: '信息账号', value: 2 },
+            { label: '代理账号', value: 3 }
+          ]
+        }
       ],
       columns: [
         {
-          title: "类型",
+          title: '类型',
           width: 120,
-          align: "center",
-          key: "uType",
-          render(h, params) {
+          align: 'center',
+          key: 'uType',
+          render (h, params) {
             return params.row.uType == 1 ? (
               <span style="color:green">总控</span>
             ) : params.row.uType == 2 ? (
@@ -233,436 +233,435 @@ export default {
             ) : params.row.uType == 3 ? (
               <span style="color:orange">代理</span>
             ) : (
-              ""
-            );
-          },
+              ''
+            )
+          }
         },
-        { title: "持有人", key: "uName", width: 120, align: "center" },
-        { title: "账号", key: "account", width: 180, align: "center" },
+        { title: '持有人', key: 'uName', width: 120, align: 'center' },
+        { title: '账号', key: 'account', width: 180, align: 'center' },
         {
-          title: "IP地址限制",
-          key: "ipLimit",
-          align: "center",
-        },
-        {
-          title: "后台域名",
-          key: "realmName",
-          align: "center",
+          title: 'IP地址限制',
+          key: 'ipLimit',
+          align: 'center'
         },
         {
-          title: "最后登录时间",
-          key: "loginTime",
-          align: "center",
+          title: '后台域名',
+          key: 'realmName',
+          align: 'center'
+        },
+        {
+          title: '最后登录时间',
+          key: 'loginTime',
+          align: 'center',
           width: 180,
-          render(h, params) {
+          render (h, params) {
             if (params.row.loginTime) {
               return (
                 <span>
                   {new Date(
                     params.row.loginTime * 1000
-                  ).toLocaleString("chinese", { hour12: false })}
+                  ).toLocaleString('chinese', { hour12: false })}
                 </span>
-              );
+              )
             } else {
-              return <span>暂无记录</span>;
+              return <span>暂无记录</span>
             }
-          },
+          }
         },
         {
-          title: "操作",
-          key: "handle",
-          align: "center",
+          title: '操作',
+          key: 'handle',
+          align: 'center',
           width: 250,
           button: [
             (h, params) => {
               return h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "info",
-                    size: "small",
+                    type: 'info',
+                    size: 'small'
                   },
                   style: {
-                    marginRight: "5px",
+                    marginRight: '5px'
                   },
                   on: {
                     click: () => {
-                      this.accountData[3].value = "";
-                      this.showAccount = true;
-                      this.modalType.title = "编辑账号";
+                      this.accountData[3].value = ''
+                      this.showAccount = true
+                      this.modalType.title = '编辑账号'
 
-                      this.req[0].value = Number(params.row.uType);
-                      this.showAgentSel(params.row.uType);
-                      window.testutypt = Number(params.row.uType);
-                      this.modalType.type = 2;
-                      this.modalType.id = params.row.id;
+                      this.req[0].value = Number(params.row.uType)
+                      this.showAgentSel(params.row.uType)
+                      window.testutypt = Number(params.row.uType)
+                      this.modalType.type = 2
+                      this.modalType.id = params.row.id
 
                       this.$nextTick(() => {
-                        this.handleSearch();
-                      });
+                        this.handleSearch()
+                      })
 
                       for (const i in Object.keys(params.row)) {
                         this.accountData.forEach((item) => {
                           if (
                             item.key == Object.keys(params.row)[i] &&
-                            item.key != "password"
+                            item.key != 'password'
                           ) {
-                            item.value = Object.values(params.row)[i];
+                            item.value = Object.values(params.row)[i]
                           }
-                        });
+                        })
                       }
-                    },
-                  },
+                    }
+                  }
                 },
-                "编辑"
-              );
+                '编辑'
+              )
             },
             (h, params) => {
               return [
                 h(
-                  "Poptip",
+                  'Poptip',
                   {
                     props: {
                       transfer: true,
                       confirm: true,
-                      placement: "left",
+                      placement: 'left',
                       title:
-                        "您确定要" +
-                        (params.row.isForzen == 0 ? "冻结" : "启用") +
-                        "账号吗?",
+                        '您确定要' +
+                        (params.row.isForzen == 0 ? '冻结' : '启用') +
+                        '账号吗?'
                     },
-                    style: { textAlign: "left", zIndex: "99" },
+                    style: { textAlign: 'left', zIndex: '99' },
                     on: {
-                      "on-ok": () => {
+                      'on-ok': () => {
                         let data = {
                           id: params.row.id,
-                          isForzen: params.row.isForzen == 0 ? 1 : 0,
-                        };
+                          isForzen: params.row.isForzen == 0 ? 1 : 0
+                        }
 
                         editAccountState(data).then((res) => {
                           if (res.data.code == 200) {
                             this.$nextTick(() => {
-                              this.handleSearch();
-                              this.$Message.success(res.data.msg);
-                            });
+                              this.handleSearch()
+                              this.$Message.success(res.data.msg)
+                            })
                           } else if (res.data.code == 400) {
-                            this.$Message.error(res.data.msg);
+                            this.$Message.error(res.data.msg)
                           }
-                        });
-                      },
-                    },
+                        })
+                      }
+                    }
                   },
                   [
                     h(
-                      "Button",
+                      'Button',
                       {
                         props: {
-                          type: params.row.isForzen == 0 ? "error" : "success",
-                          size: "small",
-                        },
+                          type: params.row.isForzen == 0 ? 'error' : 'success',
+                          size: 'small'
+                        }
                       },
-                      params.row.isForzen == 0 ? "冻结" : "启用"
-                    ),
+                      params.row.isForzen == 0 ? '冻结' : '启用'
+                    )
                   ]
-                ),
-              ];
+                )
+              ]
             },
             (h, params) => {
               return [
                 h(
-                  "Poptip",
+                  'Poptip',
                   {
                     props: {
                       transfer: true,
                       confirm: true,
-                      placement: "left",
-                      title: "您确定要删除账号吗?",
+                      placement: 'left',
+                      title: '您确定要删除账号吗?'
                     },
                     style: {
-                      textAlign: "left",
-                      zIndex: "99",
-                      marginLeft: "5px",
+                      textAlign: 'left',
+                      zIndex: '99',
+                      marginLeft: '5px'
                     },
                     on: {
-                      "on-ok": () => {
+                      'on-ok': () => {
                         let data = {
-                          id: params.row.id,
-                        };
+                          id: params.row.id
+                        }
 
                         deleteAccountState(data).then((res) => {
                           if (res.data.code == 200) {
                             this.$nextTick(() => {
-                              this.handleSearch();
-                              this.$Message.success(res.data.msg);
-                            });
+                              this.handleSearch()
+                              this.$Message.success(res.data.msg)
+                            })
                           }
-                        });
-                      },
-                    },
+                        })
+                      }
+                    }
                   },
                   [
                     h(
-                      "Button",
+                      'Button',
                       {
                         props: {
-                          type: "error",
-                          size: "small",
-                        },
+                          type: 'error',
+                          size: 'small'
+                        }
                       },
-                      "删除"
-                    ),
+                      '删除'
+                    )
                   ]
-                ),
-              ];
-            },
-          ],
-        },
+                )
+              ]
+            }
+          ]
+        }
       ],
       tableData: [],
       accountData: [
         {
-          label: "账号类型",
-          key: "uType",
-          value: "",
-          icon: "md-checkmark-circle-outline",
+          label: '账号类型',
+          key: 'uType',
+          value: '',
+          icon: 'md-checkmark-circle-outline',
           option: [
-            { label: "总控账号", value: 1 },
-            { label: "信息账号", value: 2 },
-            { label: "代理账号", value: 3 },
-          ],
+            { label: '总控账号', value: 1 },
+            { label: '信息账号', value: 2 },
+            { label: '代理账号', value: 3 }
+          ]
         },
         {
-          label: "持有人",
-          key: "uName",
-          value: "",
-          icon: "ios-trophy-outline",
+          label: '持有人',
+          key: 'uName',
+          value: '',
+          icon: 'ios-trophy-outline'
         },
         {
-          label: "账号",
-          key: "account",
+          label: '账号',
+          key: 'account',
           // disabled: true,
-          value: "",
-          icon: "md-person",
+          value: '',
+          icon: 'md-person'
         },
         {
-          label: "密码",
-          key: "password",
-          value: "",
-          icon: "ios-medical-outline",
+          label: '密码',
+          key: 'password',
+          value: '',
+          icon: 'ios-medical-outline'
         },
         {
-          label: "IP地址限制",
-          key: "ipLimit",
-          value: "",
-          icon: "ios-link",
-          des: "输入IP地址多个IP用逗号隔开",
+          label: 'IP地址限制',
+          key: 'ipLimit',
+          value: '',
+          icon: 'ios-link',
+          des: '输入IP地址多个IP用逗号隔开'
         },
         {
-          label: "代理",
-          key: "agentId",
+          label: '代理',
+          key: 'agentId',
           disabled: true,
-          value: "",
+          value: '',
           option: [],
-          icon: "ios-navigate-outline",
+          icon: 'ios-navigate-outline'
         },
         {
-          label: "后台域名",
-          key: "realmName",
+          label: '后台域名',
+          key: 'realmName',
           disabled: true,
-          value: "",
-          icon: "ios-globe-outline",
-        },
+          value: '',
+          icon: 'ios-globe-outline'
+        }
       ],
       showAgent: false,
       agentList: [],
-      modalType: { title: "", type: "", id: "" },
+      modalType: { title: '', type: '', id: '' },
       ruleInline: {
         uType: [
           {
             required: true,
-            message: "选择账号类型",
-            trigger: "change",
-          },
+            message: '选择账号类型',
+            trigger: 'change'
+          }
         ],
         uName: [
           {
             required: true,
-            message: "请输入持有人",
-            trigger: "blur",
-          },
+            message: '请输入持有人',
+            trigger: 'blur'
+          }
         ],
         account: [
           {
             required: true,
-            message: "请输入账号",
-            trigger: "blur",
-          },
+            message: '请输入账号',
+            trigger: 'blur'
+          }
         ],
         password: [
           {
             required: true,
-            message: "请输入密码",
-            trigger: "blur",
-          },
-        ],
+            message: '请输入密码',
+            trigger: 'blur'
+          }
+        ]
       },
       pageData: {
         current: 0,
         page: setting.page,
         pageSize: setting.pageSize,
-        pageOpts: setting.pageOpts,
-      },
-    };
+        pageOpts: setting.pageOpts
+      }
+    }
   },
   methods: {
-    handleSearch(type = 0) {
-      type = this.req[0].value;
+    handleSearch (type = 0) {
+      type = this.req[0].value
       let Data = type
         ? { uType: type, page: this.pageData.page }
-        : { page: this.pageData.page };
+        : { page: this.pageData.page }
 
       getAccountData(Data).then((res) => {
         if (res.data.code == 200) {
-          this.tableData = [];
-          this.tableData.push(...res.data.data.data);
-          this.pageData.current = res.data.data.total;
+          this.tableData = []
+          this.tableData.push(...res.data.data.data)
+          this.pageData.current = res.data.data.total
         } else {
           // 判断响应状态是否为Token失效，如果失效则执行退出函数并刷新页面。
           this.$nextTick(() => {
             if (setting.arrStatus.indexOf(res.data.code) != -1) {
               this.$Message.error(
-                res.data.code + " ：&nbsp;" + res.data.msg + "请重新登录"
-              );
-              this.handleLogOut();
+                res.data.code + ' ：&nbsp;' + res.data.msg + '请重新登录'
+              )
+              this.handleLogOut()
             } else {
-              this.$Message.error(res.data.code + " ：&nbsp;" + res.data.msg);
+              this.$Message.error(res.data.code + ' ：&nbsp;' + res.data.msg)
             }
-          });
+          })
         }
-      });
+      })
     },
 
-    showAgentSel(num) {
+    showAgentSel (num) {
       this.accountData.forEach((item) => {
-        if (item.hasOwnProperty("disabled")) {
+        if (item.hasOwnProperty('disabled')) {
           if (num == 3) {
-            item.disabled = false;
-            if (item.key == "agentId") {
-              let arr = [];
+            item.disabled = false
+            if (item.key == 'agentId') {
               getSelectAgent().then((res) => {
-                let resolvedData = [];
+                let resolvedData = []
                 let resolveData = (data) => {
                   if (!resolvedData.find((x) => x.value == data.id)) {
                     resolvedData.push({
                       value: data.id,
-                      label: data.name || data.nickName,
-                    });
+                      label: data.name || data.nickName
+                    })
                   }
                   if (data.subList) {
-                    data.subList.map((d) => resolveData(d));
+                    data.subList.map((d) => resolveData(d))
                   }
-                };
-                res.data.data.map((d) => resolveData(d));
-                item.option = [];
-                item.option.push(...resolvedData);
-              });
+                }
+                res.data.data.map((d) => resolveData(d))
+                item.option = []
+                item.option.push(...resolvedData)
+              })
             }
           } else {
-            item.disabled = true;
+            item.disabled = true
           }
         }
-      });
+      })
     },
 
-    addAccount() {
-      this.accountModalloading = false;
+    addAccount () {
+      this.accountModalloading = false
       setTimeout(() => {
-        this.accountModalloading = true;
-      }, 500);
+        this.accountModalloading = true
+      }, 500)
 
-      let Data = {};
+      let Data = {}
       this.accountData.map((item) => {
         if (item.value != null || item.value === 0) {
-          Data[item.key] = item.value;
+          Data[item.key] = item.value
         }
-      });
+      })
 
-      let PW = Data.password;
+      let PW = Data.password
 
-      if (PW && PW.includes(" ")) {
-        this.$Message.error("密码不能由空格组成");
-        return;
+      if (PW && PW.includes(' ')) {
+        this.$Message.error('密码不能由空格组成')
+        return
       }
 
       if (this.modalType.type == 1) {
         addAccountData(Data).then((res) => {
           res.data.code == 200
-            ? this.$Message.success("成功创建账号")
-            : this.$Message.error(res.data.code + "：" + res.data.msg);
+            ? this.$Message.success('成功创建账号')
+            : this.$Message.error(res.data.code + '：' + res.data.msg)
           this.$nextTick(() => {
-            this.handleSearch();
-          });
+            this.handleSearch()
+          })
 
-          this.showAccount = false;
-        });
+          this.showAccount = false
+        })
       } else if (this.modalType.type == 2) {
-        Data.id = this.modalType.id;
+        Data.id = this.modalType.id
 
         editAccountData(Data).then((res) => {
           this.$nextTick(() => {
             res.data.code == 200
-              ? this.$Message.success("成功修改账号")
-              : this.$Message.error(res.data.msg);
-            this.handleSearch();
-            this.showAccount = false;
-          });
-        });
+              ? this.$Message.success('成功修改账号')
+              : this.$Message.error(res.data.msg)
+            this.handleSearch()
+            this.showAccount = false
+          })
+        })
       }
     },
 
-    showCreateAccount() {
-      this.showAccount = true;
+    showCreateAccount () {
+      this.showAccount = true
 
-      this.modalType.title = "添加账号";
-      this.modalType.type = 1;
+      this.modalType.title = '添加账号'
+      this.modalType.type = 1
       this.accountData.forEach((item) => {
-        item.value = "";
-      });
+        item.value = ''
+      })
 
       if (this.req[0].value) {
-        this.accountData[0].value = this.req[0].value;
+        this.accountData[0].value = this.req[0].value
       } else {
-        this.accountData[0].value = "";
+        this.accountData[0].value = ''
       }
     },
 
-    changePage(index) {
-      this.pageData.page = index;
-      this.handleSearch();
+    changePage (index) {
+      this.pageData.page = index
+      this.handleSearch()
     },
-    changePageSize(index) {
-      this.pageData.pageSize = index;
-      this.handleSearch();
+    changePageSize (index) {
+      this.pageData.pageSize = index
+      this.handleSearch()
     },
-    changeAccountType(isShow) {
+    changeAccountType (isShow) {
       if (isShow) {
-        this.accountData[0].value = 9;
+        this.accountData[0].value = 9
         setTimeout(() => {
-          this.accountData[0].value = this.req[0].value;
-          //触发change
-          this.showAgentSel(this.accountData[0].value);
+          this.accountData[0].value = this.req[0].value
+          // 触发change
+          this.showAgentSel(this.accountData[0].value)
           setTimeout(() => {
             if (this.modalType.type == 2) {
             }
-          }, 100);
-        }, 100);
+          }, 100)
+        }, 100)
       }
-    },
+    }
   },
-  mounted() {
-    this.handleSearch();
-  },
-};
+  mounted () {
+    this.handleSearch()
+  }
+}
 </script>
 
 <style>

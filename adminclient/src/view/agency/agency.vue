@@ -33,31 +33,31 @@
 </template>
 
 <script>
-import Tables from "_c/tables";
-import { getTableData } from "@/api/data";
+import Tables from '_c/tables'
+import { getTableData } from '@/api/data'
 export default {
-  name: "website",
+  name: 'website',
   components: {
     Tables
   },
-  data() {
+  data () {
     return {
       labelList: [
-        { label: "代理标识", value: "" },
-        { label: "代理昵称", value: "" },
-        { label: "代理邮箱", value: "" }
+        { label: '代理标识', value: '' },
+        { label: '代理昵称', value: '' },
+        { label: '代理邮箱', value: '' }
       ],
       columns: [
-        { title: "序号", type: "index", width: 80 },
-        { title: "站点标识", key: "id", sortable: true },
-        { title: "站点昵称", key: "sitename", sortable: true },
-        { title: "域名", key: "url" },
-        { title: "代理游戏", key: "game" },
-        { title: "生效时间", key: "date" },
+        { title: '序号', type: 'index', width: 80 },
+        { title: '站点标识', key: 'id', sortable: true },
+        { title: '站点昵称', key: 'sitename', sortable: true },
+        { title: '域名', key: 'url' },
+        { title: '代理游戏', key: 'game' },
+        { title: '生效时间', key: 'date' },
         {
-          title: "状态",
-          key: "state",
-          render(h, params) {
+          title: '状态',
+          key: 'state',
+          render (h, params) {
             return (
               {
                 正常: <span style="color:green">{params.row.state}</span>,
@@ -67,80 +67,80 @@ export default {
                   <span style="color:steelblue">{params.row.state}</span>
                 )
               }[params.row.state] || <span>{params.row.state}</span>
-            );
+            )
           }
         },
-        { title: "备注", key: "name" },
+        { title: '备注', key: 'name' },
         {
-          title: "操作",
-          key: "handle",
+          title: '操作',
+          key: 'handle',
           width: 250,
-          align: "center",
+          align: 'center',
           button: [
             (h, params) => {
               return h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "info",
-                    size: "small"
+                    type: 'info',
+                    size: 'small'
                   },
                   style: {
-                    marginRight: "5px"
+                    marginRight: '5px'
                   }
                 },
-                "编辑"
-              );
+                '编辑'
+              )
             },
             (h, params) => {
               return h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "warning",
-                    size: "small"
+                    type: 'warning',
+                    size: 'small'
                   },
                   style: {
-                    marginRight: "5px"
+                    marginRight: '5px'
                   }
                 },
-                "维护"
-              );
+                '维护'
+              )
             },
             (h, params) => {
               return h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "error",
-                    size: "small"
+                    type: 'error',
+                    size: 'small'
                   }
                 },
-                "冻结"
-              );
+                '冻结'
+              )
             }
           ]
         }
       ],
       tableData: []
-    };
-  },
-  methods: {
-    handleDelete(params) {
-       
-    },
-    exportExcel() {
-      this.$refs.tables.exportCsv({
-        filename: `table-${new Date().valueOf()}.csv`
-      });
     }
   },
-  mounted() {
+  methods: {
+    handleDelete (params) {
+
+    },
+    exportExcel () {
+      this.$refs.tables.exportCsv({
+        filename: `table-${new Date().valueOf()}.csv`
+      })
+    }
+  },
+  mounted () {
     getTableData().then(res => {
-      this.tableData = res.data;
-    });
+      this.tableData = res.data
+    })
   }
-};
+}
 </script>
 
 <style lang="less">

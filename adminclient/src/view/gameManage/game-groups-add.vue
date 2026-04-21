@@ -148,7 +148,6 @@
           </template>
         </div>
 
-
       </div>
     </Card>
   </div>
@@ -156,190 +155,190 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       currentStep: 2,
-      //基本信息表单
+      // 基本信息表单
       baseformItem: {
-        site: Number(sessionStorage.getItem("siteVal")),
-        agent: Number(sessionStorage.getItem("agentVal")),
+        site: Number(sessionStorage.getItem('siteVal')),
+        agent: Number(sessionStorage.getItem('agentVal')),
         game: 1,
-        groupName: "",
-        groupNotice: "",
+        groupName: '',
+        groupNotice: '',
         admittance: 0,
         playersLimit: 50,
         seatNumber: 1,
-        sharing: 0,
+        sharing: 0
       },
-      //游戏选项
+      // 游戏选项
       gameOptions: [
         {
           id: 1,
-          name: "扫雷红包",
+          name: '扫雷红包'
         },
         {
           id: 2,
-          name: "牛牛红包",
+          name: '牛牛红包'
         },
         {
           id: 3,
-          name: "抢庄牛牛",
+          name: '抢庄牛牛'
         },
         {
           id: 4,
-          name: "二八杠",
-        },
+          name: '二八杠'
+        }
       ],
-      //站点列表
+      // 站点列表
       siteOptions: [],
-      //基本信息表单数据验证
+      // 基本信息表单数据验证
       baseformRule: {
         site: [
           {
             required: true,
-            type: "number",
-            message: "请选择站点",
-            trigger: "blur",
-          },
+            type: 'number',
+            message: '请选择站点',
+            trigger: 'blur'
+          }
         ],
         agent: [
           {
             required: true,
-            type: "number",
-            message: "请选择代理",
-            trigger: "blur",
-          },
+            type: 'number',
+            message: '请选择代理',
+            trigger: 'blur'
+          }
         ],
         game: [
           {
             required: true,
-            type: "number",
-            message: "请选择游戏",
-            trigger: "blur",
-          },
+            type: 'number',
+            message: '请选择游戏',
+            trigger: 'blur'
+          }
         ],
         admittance: [
           {
             required: true,
-            type: "number",
-            message: "请输入准入金额",
-            trigger: "blur",
-          },
+            type: 'number',
+            message: '请输入准入金额',
+            trigger: 'blur'
+          }
         ],
         seatNumber: [
           {
             required: true,
-            type: "number",
-            message: "请输入位置号",
-            trigger: "blur",
-          },
+            type: 'number',
+            message: '请输入位置号',
+            trigger: 'blur'
+          }
         ],
         sharing: [
           {
             required: true,
-            type: "number",
-            message: "请输入抽水",
-            trigger: "blur",
-          },
+            type: 'number',
+            message: '请输入抽水',
+            trigger: 'blur'
+          }
         ],
         groupName: [
           {
             required: true,
             validator: (rule, value, callback) => {
-              if (value == "") {
-                callback(new Error("请输入群名称"));
+              if (value == '') {
+                callback(new Error('请输入群名称'))
               } else {
-                callback();
+                callback()
               }
             },
-            trigger: "blur",
-          },
-        ],
+            trigger: 'blur'
+          }
+        ]
       },
-      //人机设置表单
+      // 人机设置表单
       computerSetting: {
         sum: [10, 100],
         interval_0: 10,
         redPacket: [5, 10],
         interval_1: 10,
-        thunderNumber: Math.floor(Math.random() * 10),
+        thunderNumber: Math.floor(Math.random() * 10)
       },
-      //人机设置title
-      sumTitle: "总金额",
-      redPacketTitle: "红包个数",
-      //人机设置范围
+      // 人机设置title
+      sumTitle: '总金额',
+      redPacketTitle: '红包个数',
+      // 人机设置范围
       sumRange: [5, 800],
-      redPacketRange: [5, 50],
-    };
+      redPacketRange: [5, 50]
+    }
   },
   computed: {
     /**
      * 获取代理列表
      */
-    getAgentList() {
+    getAgentList () {
       if (this.siteOptions && this.siteOptions.length) {
         return this.siteOptions.find(
           (site) => site.id == this.baseformItem.site
-        ).agentList;
+        ).agentList
       } else {
-        return [];
+        return []
       }
-    },
+    }
   },
   methods: {
     /**
      * 切换站点
      */
-    siteChanged(value) {
-      //重置代理为当前站点第一个
+    siteChanged (value) {
+      // 重置代理为当前站点第一个
       let agentList = this.siteOptions.find(
         (site) => site.id == value
-      ).agentList;
+      ).agentList
       if (agentList.length > 0) {
-        this.baseformItem.agent = agentList[0].id;
+        this.baseformItem.agent = agentList[0].id
       } else {
-        this.baseformItem.agent = null;
+        this.baseformItem.agent = null
       }
     },
     /**
      * 重置基本信息表单
      */
-    resetBaseForm() {
+    resetBaseForm () {
       if (this.currentStep == 0) {
-        this.$refs["baseInfoForm"].resetFields();
+        this.$refs['baseInfoForm'].resetFields()
       } else {
-        this.$refs["computerForm"].resetFields();
+        this.$refs['computerForm'].resetFields()
       }
     },
     /**
      * 提交信息表单
      */
-    baseFormSubmit() {
+    baseFormSubmit () {
       if (this.currentStep == 0) {
-        this.$refs["baseInfoForm"].validate((valid) => {
+        this.$refs['baseInfoForm'].validate((valid) => {
           if (valid) {
-            this.currentStep = 1;
+            this.currentStep = 1
           } else {
-            this.$Message.error("请检查必填项!");
+            this.$Message.error('请检查必填项!')
           }
-        });
+        })
       } else {
-        this.currentStep = 2;
+        this.currentStep = 2
       }
-    },
+    }
   },
-  mounted() {
+  mounted () {
     /**
      * 初始化站点列表
      */
     let getSiteTimer = () => {
       if (window.windowData_getLinkageList) {
-        this.siteOptions = window.windowData_getLinkageList;
+        this.siteOptions = window.windowData_getLinkageList
       } else {
-        setTimeout(getSiteTimer, 100);
+        setTimeout(getSiteTimer, 100)
       }
-    };
-    getSiteTimer();
-  },
-};
+    }
+    getSiteTimer()
+  }
+}
 </script>

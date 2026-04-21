@@ -215,20 +215,20 @@
 </template>
 
 <script>
-import Step from "_c/step";
+import Step from '_c/step'
 import {
   createAgentData,
   getLinkageList,
-  getSelectAgent,
+  getSelectAgent
   // getSelectClassGames,
-} from "@/api/data";
+} from '@/api/data'
 export default {
-  name: "agency-add",
+  name: 'agency-add',
   components: {
-    Step,
+    Step
   },
-  inject: ["handleLogOut", "reFreshSiteAgentList"],
-  data() {
+  inject: ['handleLogOut', 'reFreshSiteAgentList'],
+  data () {
     return {
       originalHigherAgentData: null,
       state: this.$route.meta.state,
@@ -236,49 +236,49 @@ export default {
       checkAll: [],
       gameIds: {
         value: [],
-        option: [],
+        option: []
       },
       stepList: [
-        { title: "填写基本信息", content: "填写基本信息" },
-        { title: "配置代理商", content: "配置代理商" },
-        { title: "创建成功", content: "创建成功" },
+        { title: '填写基本信息', content: '填写基本信息' },
+        { title: '配置代理商', content: '配置代理商' },
+        { title: '创建成功', content: '创建成功' }
       ],
       itemCreate: [
         {
-          lable: "代理名",
-          type: "text",
-          key: "nickName",
-          value: "",
-          required: true,
+          lable: '代理名',
+          type: 'text',
+          key: 'nickName',
+          value: '',
+          required: true
         },
         {
-          lable: "持有人",
-          type: "text",
-          key: "uName",
-          value: "",
-          required: true,
+          lable: '持有人',
+          type: 'text',
+          key: 'uName',
+          value: '',
+          required: true
         },
         {
-          lable: "账号",
-          type: "text",
-          key: "account",
-          value: "",
-          required: true,
+          lable: '账号',
+          type: 'text',
+          key: 'account',
+          value: '',
+          required: true
         },
         {
-          lable: "密码",
-          type: "text",
-          key: "password",
-          value: "",
-          required: true,
+          lable: '密码',
+          type: 'text',
+          key: 'password',
+          value: '',
+          required: true
         },
         {
-          lable: "所属站点",
-          type: "select",
-          key: "webId",
-          value: "",
+          lable: '所属站点',
+          type: 'select',
+          key: 'webId',
+          value: '',
           option: [],
-          required: true,
+          required: true
         },
         // {
         //   lable: "上级代理",
@@ -289,25 +289,25 @@ export default {
         //   option: []
         // },
         {
-          lable: "负责人",
-          type: "text",
-          key: "contacts",
-          value: "1",
-          required: true,
+          lable: '负责人',
+          type: 'text',
+          key: 'contacts',
+          value: '1',
+          required: true
         },
         {
-          lable: "负责人联系方式",
-          type: "text",
-          key: "phone",
-          value: "1",
-          required: true,
+          lable: '负责人联系方式',
+          type: 'text',
+          key: 'phone',
+          value: '1',
+          required: true
         },
         // { lable: "代理邮箱", type: "text", key: "email", value: "",required: true },
-        { lable: "备注信息", type: "text", key: "remarks", value: "" },
+        { lable: '备注信息', type: 'text', key: 'remarks', value: '' }
       ],
       isPermanent: false,
-      startTime: "",
-      endTime: "",
+      startTime: '',
+      endTime: '',
 
       itemSeting: [
         // {
@@ -331,7 +331,7 @@ export default {
         //   value: 123,
         //   required: true,
         // },
-        { lable: "代理前端域名", type: "text", key: "realmName", value: "" },
+        { lable: '代理前端域名', type: 'text', key: 'realmName', value: '' }
         // {
         //   lable: "使用默认配置",
         //   type: "checkbox",
@@ -359,112 +359,111 @@ export default {
         //   value: "",
         //   // required: true
         // },
-      ],
-    };
+      ]
+    }
   },
   methods: {
-    toagent() {
-      //刷新站点和代理信息
-      this.reFreshSiteAgentList();
+    toagent () {
+      // 刷新站点和代理信息
+      this.reFreshSiteAgentList()
 
       this.$router.push({
-        name: "agent",
-      });
+        name: 'agent'
+      })
     },
-    higherAgentSelect(e) {
+    higherAgentSelect (e) {
       if (e.length) {
         this.itemCreate.map((item) => {
-          if (item.key == "upperLevel") {
-            item.value = e[0].id;
+          if (item.key == 'upperLevel') {
+            item.value = e[0].id
           }
-        });
+        })
       } else {
-        //选中空
+        // 选中空
         this.itemCreate.map((item) => {
-          if (item.key == "upperLevel") {
+          if (item.key == 'upperLevel') {
             item.data = JSON.parse(
               JSON.stringify(this.originalHigherAgentData)
-            );
-            item.value = "";
+            )
+            item.value = ''
           }
-        });
+        })
       }
     },
-    resForm() {
+    resForm () {
       this.itemCreate.forEach((item) => {
-        item.value = "";
-      });
-      this.isPermanent = false;
+        item.value = ''
+      })
+      this.isPermanent = false
     },
-    handleCheckAll(tid) {
-      return;
+    handleCheckAll (tid) {
       if (this.indeterminate) {
-        this.checkAll[tid] = false;
+        this.checkAll[tid] = false
       } else {
-        this.checkAll[tid] = !this.checkAll[tid];
+        this.checkAll[tid] = !this.checkAll[tid]
       }
-      this.indeterminate = false;
+      this.indeterminate = false
       if (this.checkAll[tid]) {
         this.gameIds.value[tid].val = Object.assign(
           this.gameIds.option[tid].gameList.map((item) => {
-            return item.id;
+            return item.id
           })
-        );
+        )
       } else {
-        this.gameIds.value[tid].val = [];
+        this.gameIds.value[tid].val = []
       }
     },
-    next() {
-      this.state += 1;
+    next () {
+      this.state += 1
     },
-    previous() {
-      this.state -= 1;
+    previous () {
+      this.state -= 1
     },
-    async submit() {
-      let Data = [];
+    async submit () {
+      let Data = []
       this.itemCreate.map((item) => {
         Data.push({
-          [item.key]: item.value,
-        });
-      });
+          [item.key]: item.value
+        })
+      })
       this.itemSeting.map((item) => {
         Data.push({
-          [item.key]: item.value,
-        });
-      });
+          [item.key]: item.value
+        })
+      })
       Data.push(
         {
-          isPermanent: 1,
+          isPermanent: 1
         },
         { gameIds: JSON.stringify([...Object.assign(this.gameIds.value)]) }
-      );
+      )
       createAgentData(Data).then((res) => {
-        if (res.data.msg == "操作成功") {
-          this.state += 1;
+        if (res.data.msg == '操作成功') {
+          this.state += 1
         } else {
-          this.$Message.error(res.data.msg);
+          this.$Message.error(res.data.msg)
         }
-      });
-    },
+      })
+    }
   },
-  mounted() {
+  mounted () {
     for (let i in this.itemCreate) {
-      if (this.itemCreate[i].key == "webId") {
+      if (this.itemCreate[i].key == 'webId') {
         getLinkageList().then((res) => {
           if (res.data.code == 200) {
             for (let i in res.data.data) {
               if (res.data.data[i].agentList.length > 0) {
                 for (let j in res.data.data[i].agentList) {
-                  res.data.data[i].agentList[j].gameIds = undefined;
-                  res.data.data[i].agentList[j].gameList = undefined;
+                  res.data.data[i].agentList[j].gameIds = undefined
+                  res.data.data[i].agentList[j].gameList = undefined
                 }
               }
             }
-            this.itemCreate[i].option.push(...res.data.data);
+            this.itemCreate[i].option.push(...res.data.data)
           }
-        });
-        if (sessionStorage.getItem("siteVal")) {
-          this.itemCreate[i].value = Number(sessionStorage.getItem("siteVal"));
+        })
+        if (sessionStorage.getItem('siteVal')) {
+          this.itemCreate[i].value = Number(sessionStorage.getItem('siteVal'))
         }
       }
     }
@@ -472,8 +471,8 @@ export default {
     // 判断上级代理，并对选项进行赋值
     getSelectAgent().then((res) => {
       this.itemCreate.forEach((item) => {
-        if (item.key == "upperLevel") {
-          //代理层级数据转换成树桩结构
+        if (item.key == 'upperLevel') {
+          // 代理层级数据转换成树桩结构
 
           let convert = (data) => {
             if (data.subList) {
@@ -481,30 +480,30 @@ export default {
                 expand: true,
                 id: data.id,
                 title: data.nickName || data.name,
-                children: data.subList.map((d) => convert(d)),
-              };
+                children: data.subList.map((d) => convert(d))
+              }
             } else {
               return {
                 // expand: true,
                 id: data.id,
-                title: data.nickName || data.name,
+                title: data.nickName || data.name
                 // children:[]
-              };
+              }
             }
-          };
+          }
 
-          item.data = res.data.data.map((d) => convert(d));
+          item.data = res.data.data.map((d) => convert(d))
           item.data.unshift({
-            title: "无",
+            title: '无',
             selected: true,
-            id: -1,
-          });
-          this.originalHigherAgentData = JSON.parse(JSON.stringify(item.data));
+            id: -1
+          })
+          this.originalHigherAgentData = JSON.parse(JSON.stringify(item.data))
         }
-      });
-    });
-  },
-};
+      })
+    })
+  }
+}
 </script>
 
 <style></style>

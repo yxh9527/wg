@@ -21,51 +21,51 @@
 </template>
 
 <script>
-import "./user.less";
-import { mapActions } from "vuex";
+import './user.less'
+import { mapActions } from 'vuex'
 export default {
-  name: "User",
+  name: 'User',
   props: {
     userAvatar: {
       type: String,
-      default: ""
+      default: ''
     },
     messageUnreadCount: {
       type: Number,
       default: 0
     }
   },
-  data() {
+  data () {
     return {
       messageUnread: 0
-    };
+    }
   },
   methods: {
-    ...mapActions(["handleLogOut"]),
-    logout() {
+    ...mapActions(['handleLogOut']),
+    logout () {
       this.handleLogOut().then(() => {
         this.$router.push({
-          name: "login"
-        });
-      });
+          name: 'login'
+        })
+      })
     },
-    message() {
+    message () {
       this.$router.push({
-        name: "message_page"
-      });
+        name: 'message_page'
+      })
     },
-    handleClick(name) {
+    handleClick (name) {
       switch (name) {
-        case "logout":
-          this.logout();
-          break;
-        case "message":
-          this.message();
-          break;
+        case 'logout':
+          this.logout()
+          break
+        case 'message':
+          this.message()
+          break
       }
     }
   },
-  mounted() {
+  mounted () {
   }
-};
+}
 </script>

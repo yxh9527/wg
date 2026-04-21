@@ -9,8 +9,8 @@
 <script>
 export default {
   props: {
-    row: Object,
+    row: Object
   },
-  mounted() {},
-};
+  mounted () {}
+}
 </script>

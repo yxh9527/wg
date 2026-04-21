@@ -9,14 +9,14 @@
 </template>
 <script>
 export default {
-  name: "game-detial",
+  name: 'game-detial',
   props: {
     rowInfo: Array,
     rowId: Number
   },
-  data() {
+  data () {
     return {
-      //玩家配置信息
+      // 玩家配置信息
       columns: [],
       detialData: [],
 
@@ -24,13 +24,13 @@ export default {
       bankerShow: false,
       columnsBank: [],
       bankerData: []
-    };
+    }
   },
   methods: {
-    pokerCards(item) {
+    pokerCards (item) {
       if (item.number > 10 || item.number == 1) {
         item.number =
-          { 1: "A", 11: "J", 12: "Q", 13: "K" }[item.number] || item.number;
+          { 1: 'A', 11: 'J', 12: 'Q', 13: 'K' }[item.number] || item.number
       }
       let cards = {
         1: (
@@ -68,195 +68,195 @@ export default {
         <span>
           {item.color}&emsp;{item.number}
         </span>
-      );
-      return cards;
+      )
+      return cards
     }
   },
 
-  mounted() {
-    const fwType = Object.keys(this.rowInfo[0].SettlementDetail)[0];
-    this.detialData = [];
-    this.banker = [];
-    this.columns = [];
-    if (fwType == "slhb") {
+  mounted () {
+    const fwType = Object.keys(this.rowInfo[0].SettlementDetail)[0]
+    this.detialData = []
+    this.banker = []
+    this.columns = []
+    if (fwType == 'slhb') {
       this.columns = [
         {
-          title: "玩家ID",
-          key: "player_id"
+          title: '玩家ID',
+          key: 'player_id'
         },
         {
-          title: "金额-雷号",
-          key: ""
+          title: '金额-雷号',
+          key: ''
         },
         {
-          title: "抢包金额",
-          key: ""
+          title: '抢包金额',
+          key: ''
         },
         {
-          title: "结果",
-          key: ""
+          title: '结果',
+          key: ''
         },
         {
-          title: "结算",
-          key: ""
+          title: '结算',
+          key: ''
         }
-      ];
-      this.rowInfo.map(item => {});
+      ]
+      this.rowInfo.map(item => {})
     }
 
-    if (fwType == "nnhb") {
+    if (fwType == 'nnhb') {
       this.columns = [
         {
-          title: "玩家ID",
-          key: "player_id"
+          title: '玩家ID',
+          key: 'player_id'
         },
         {
-          title: "金额-包数",
-          key: ""
+          title: '金额-包数',
+          key: ''
         },
         {
-          title: "抢包牌型",
-          align: "center",
-          key: "poker_cards",
+          title: '抢包牌型',
+          align: 'center',
+          key: 'poker_cards',
           width: 250,
           render: (h, parmas) => {
-            let conts = [];
+            let conts = []
             conts.push(
               parmas.row.poker_cards.map(item => {
-                return this.pokerCards(item.Card.Poker);
+                return this.pokerCards(item.Card.Poker)
               })
-            );
-            return <div>{conts}</div>;
+            )
+            return <div>{conts}</div>
           }
         },
         {
-          title: "牌型",
-          align: "center",
-          key: "poker_cards",
+          title: '牌型',
+          align: 'center',
+          key: 'poker_cards',
           width: 250,
           render: (h, parmas) => {
-            let conts = [];
+            let conts = []
             conts.push(
               parmas.row.poker_cards.map(item => {
-                return this.pokerCards(item.Card.Poker);
+                return this.pokerCards(item.Card.Poker)
               })
-            );
-            return <div>{conts}</div>;
+            )
+            return <div>{conts}</div>
           }
         },
         {
-          title: "结算",
-          key: ""
+          title: '结算',
+          key: ''
         }
-      ];
-      this.rowInfo.map(item => {});
+      ]
+      this.rowInfo.map(item => {})
     }
 
-    if (fwType == "qznn") {
+    if (fwType == 'qznn') {
       this.columns = [
         {
-          title: "玩家ID",
-          key: "player_id"
+          title: '玩家ID',
+          key: 'player_id'
         },
         {
-          title: "抢庄金额",
-          key: ""
+          title: '抢庄金额',
+          key: ''
         },
         {
-          title: "下注金额",
-          key: ""
+          title: '下注金额',
+          key: ''
         },
         {
-          title: "抢包牌型",
-          align: "center",
-          key: "poker_cards",
+          title: '抢包牌型',
+          align: 'center',
+          key: 'poker_cards',
           width: 250,
           render: (h, parmas) => {
-            let conts = [];
+            let conts = []
             conts.push(
               parmas.row.poker_cards.map(item => {
-                return this.pokerCards(item.Card.Poker);
+                return this.pokerCards(item.Card.Poker)
               })
-            );
-            return <div>{conts}</div>;
+            )
+            return <div>{conts}</div>
           }
         },
         {
-          title: "牌型",
-          align: "center",
-          key: "poker_cards",
+          title: '牌型',
+          align: 'center',
+          key: 'poker_cards',
           width: 250,
           render: (h, parmas) => {
-            let conts = [];
+            let conts = []
             conts.push(
               parmas.row.poker_cards.map(item => {
-                return this.pokerCards(item.Card.Poker);
+                return this.pokerCards(item.Card.Poker)
               })
-            );
-            return <div>{conts}</div>;
+            )
+            return <div>{conts}</div>
           }
         },
         {
-          title: "结算",
-          key: ""
+          title: '结算',
+          key: ''
         }
-      ];
-      this.rowInfo.map(item => {});
+      ]
+      this.rowInfo.map(item => {})
     }
 
-    if (fwType == "qznn") {
+    if (fwType == 'qznn') {
       this.columns = [
         {
-          title: "玩家ID",
-          key: "player_id"
+          title: '玩家ID',
+          key: 'player_id'
         },
         {
-          title: "抢庄金额",
-          key: ""
+          title: '抢庄金额',
+          key: ''
         },
         {
-          title: "下注金额",
-          key: ""
+          title: '下注金额',
+          key: ''
         },
         {
-          title: "抢包牌型",
-          align: "center",
-          key: "poker_cards",
+          title: '抢包牌型',
+          align: 'center',
+          key: 'poker_cards',
           width: 250,
           render: (h, parmas) => {
-            let conts = [];
+            let conts = []
             conts.push(
               parmas.row.poker_cards.map(item => {
-                return this.pokerCards(item.Card.Poker);
+                return this.pokerCards(item.Card.Poker)
               })
-            );
-            return <div>{conts}</div>;
+            )
+            return <div>{conts}</div>
           }
         },
         {
-          title: "牌型",
-          align: "center",
-          key: "poker_cards",
+          title: '牌型',
+          align: 'center',
+          key: 'poker_cards',
           width: 250,
           render: (h, parmas) => {
-            let conts = [];
+            let conts = []
             conts.push(
               parmas.row.poker_cards.map(item => {
-                return this.pokerCards(item.Card.Poker);
+                return this.pokerCards(item.Card.Poker)
               })
-            );
-            return <div>{conts}</div>;
+            )
+            return <div>{conts}</div>
           }
         },
         {
-          title: "结算",
-          key: ""
+          title: '结算',
+          key: ''
         }
-      ];
-      this.rowInfo.map(item => {});
+      ]
+      this.rowInfo.map(item => {})
     }
   }
-};
+}
 </script>
 
 <style>

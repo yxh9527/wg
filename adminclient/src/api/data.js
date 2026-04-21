@@ -4,12 +4,12 @@ import {
   getToken
 } from '@/libs/util'
 
-function parmaBasic() {
+function parmaBasic () {
   let parmaBasic = {}
-  if (sessionStorage.getItem("agentVal")) {
+  if (sessionStorage.getItem('agentVal')) {
     parmaBasic = {
-      webId: sessionStorage.getItem("siteVal"),
-      agentId: sessionStorage.getItem("agentVal")
+      webId: sessionStorage.getItem('siteVal'),
+      agentId: sessionStorage.getItem('agentVal')
     }
   } else if (window.windowData_getLinkageList) {
     parmaBasic = {
@@ -26,7 +26,7 @@ export const getHomeData = Data => {
     ...Object.assign(...Data)
   }
   return axios.request({
-    url: "v1/report-form/index",
+    url: 'v1/report-form/index',
     method: 'get',
     params: Data
   })
@@ -38,7 +38,7 @@ export const getHomeGameData = Data => {
     ...Object.assign(...Data)
   }
   return axios.request({
-    url: "v1/report-form/game",
+    url: 'v1/report-form/game',
     method: 'get',
     params: Data
   })
@@ -50,7 +50,7 @@ export const getHomeGameAvgData = Data => {
     ...Object.assign(...Data, parmaBasic())
   }
   return axios.request({
-    url: "v1/report-form/gameAvg",
+    url: 'v1/report-form/gameAvg',
     method: 'get',
     params: Data
   })
@@ -62,12 +62,11 @@ export const getReportData = Data => {
     ...Object.assign(...Data)
   }
   return axios.request({
-    url: "v2/report-form/listWithAgent",
+    url: 'v2/report-form/listWithAgent',
     method: 'get',
     params: Data
   })
 }
-
 
 export const exportAgentData = Data => {
   Data = {
@@ -75,33 +74,33 @@ export const exportAgentData = Data => {
     ...Object.assign(...Data)
   }
   return axios.request({
-    url: "v2/export/agent/data",
+    url: 'v2/export/agent/data',
     method: 'get',
     params: Data
   })
 }
 
-//获取代理游戏统计数据
+// 获取代理游戏统计数据
 export const getAgentGameDataAggs = Data => {
   Data = {
     token: getToken(),
     ...Object.assign(...Data)
   }
   return axios.request({
-    url: "v2/report-form/listAgentGameAggs",
+    url: 'v2/report-form/listAgentGameAggs',
     method: 'get',
     params: Data
   })
 }
 
-//拆分请求
+// 拆分请求
 export const getReportDatacount = Data => {
   Data = {
     token: getToken(),
     ...Object.assign(...Data, parmaBasic())
   }
   return axios.request({
-    url: "v1/report-form/count",
+    url: 'v1/report-form/count',
     method: 'get',
     params: Data
   })
@@ -113,7 +112,7 @@ export const getSiteData = Data => {
     ...Object.assign(...Data)
   }
   return axios.request({
-    url: "v1/web/list",
+    url: 'v1/web/list',
     method: 'get',
     params: Data
   })
@@ -125,9 +124,9 @@ export const createSiteData = Data => {
     ...Object.assign(...Data)
   }
   return axios.request({
-    url: "v1/web/add",
+    url: 'v1/web/add',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -137,9 +136,9 @@ export const editSiteData = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/web/edit",
+    url: 'v1/web/edit',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -149,7 +148,7 @@ export const getAgentData = Data => {
     ...Object.assign(...Data)
   }
   return axios.request({
-    url: "v1/agent/list",
+    url: 'v1/agent/list',
     method: 'get',
     params: Data
   })
@@ -165,8 +164,7 @@ export const createAgentData = Data => {
     account: Data.account,
     password: Data.password,
     uName: Data.uName
-  };
-
+  }
 
   Data.account_info = account_info
 
@@ -174,12 +172,10 @@ export const createAgentData = Data => {
   delete Data.account
   delete Data.uName
 
-
-
   return axios.request({
-    url: "v2/agent/add",
+    url: 'v2/agent/add',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -189,7 +185,7 @@ export const getAgentInfo = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/agent/getInfo",
+    url: 'v1/agent/getInfo',
     method: 'get',
     params: Data
   })
@@ -201,9 +197,9 @@ export const editAgentData = Data => {
     ...Data
   }
   return axios.request({
-    url: "/v1/agent/edit",
+    url: '/v1/agent/edit',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -213,9 +209,9 @@ export const addAgentPoint = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/agent/point/add",
+    url: 'v1/agent/point/add',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -225,7 +221,7 @@ export const agentPointLog = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/agent/point/log",
+    url: 'v1/agent/point/log',
     method: 'get',
     params: Data
   })
@@ -238,7 +234,7 @@ export const agentScoreLog = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/agent/user/score/log",
+    url: 'v1/agent/user/score/log',
     method: 'get',
     params: Data
   })
@@ -250,7 +246,7 @@ export const getUserRecord = Data => {
     ...Data
   }
   return axios.request({
-    url: "v2/govern/user-record",
+    url: 'v2/govern/user-record',
     method: 'get',
     params: Data
   })
@@ -263,7 +259,7 @@ export const agentHistoryLog = Data => {
     ...Data
   }
   return axios.request({
-    url: "v2/report-form/history",
+    url: 'v2/report-form/history',
     method: 'get',
     params: Data
   })
@@ -275,7 +271,7 @@ export const getPlayerData = Data => {
     ...Object.assign(...Data)
   }
   return axios.request({
-    url: "v2/user/list",
+    url: 'v2/user/list',
     method: 'get',
     params: Data
   })
@@ -287,7 +283,7 @@ export const editPlayerState = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/user/upState",
+    url: 'v1/user/upState',
     method: 'get',
     params: Data
   })
@@ -299,7 +295,7 @@ export const getPlayerFwData = Data => {
     ...Object.assign(...Data)
   }
   return axios.request({
-    url: "v2/fw/list",
+    url: 'v2/fw/list',
     method: 'get',
     params: Data
   })
@@ -310,20 +306,20 @@ export const getPlayerFwDetailData = Data => {
     token: getToken(),
     ...Object.assign(...Data)
   }
-  
-  if (Data.gameId === "") {
+
+  if (Data.gameId === '') {
     delete Data.gameId
   }
 
-  if (!!Data.startTime) {
+  if (Data.startTime) {
     Data.startTime = new Date(Data.startTime).getTime() / 1000
   }
 
-  if (!!Data.endTime) {
+  if (Data.endTime) {
     Data.endTime = new Date(Data.endTime).getTime() / 1000
   }
   return axios.request({
-    url: "v2/settlement/list",
+    url: 'v2/settlement/list',
     method: 'get',
     params: Data
   })
@@ -331,7 +327,7 @@ export const getPlayerFwDetailData = Data => {
 
 export const getPlayerInfoData = data => {
   return axios.request({
-    url: "v1/user/info",
+    url: 'v1/user/info',
     method: 'get',
     params: {
       token: getToken(),
@@ -342,10 +338,10 @@ export const getPlayerInfoData = data => {
 
 export const getGameData = Data => {
   Data = {
-    token: getToken(),
+    token: getToken()
   }
   return axios.request({
-    url: "v1/game/list",
+    url: 'v1/game/list',
     method: 'get',
     params: Data
   })
@@ -353,10 +349,10 @@ export const getGameData = Data => {
 
 export const getGameData2 = Data => {
   Data = {
-    token: getToken(),
+    token: getToken()
   }
   return axios.request({
-    url: "v2/game/list",
+    url: 'v2/game/list',
     method: 'get',
     params: Data
   })
@@ -380,9 +376,9 @@ export const createGameData = Data => {
     ...Object.assign(...Data)
   }
   return axios.request({
-    url: "v1/game/add",
+    url: 'v1/game/add',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -392,9 +388,9 @@ export const editGameData = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/game/edit",
+    url: 'v1/game/edit',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -404,9 +400,9 @@ export const configGameData = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/game/extraConfig",
+    url: 'v1/game/extraConfig',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -419,7 +415,7 @@ export const generateHallCache = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/game/hall/cache",
+    url: 'v1/game/hall/cache',
     method: 'get',
     params: Data
   })
@@ -431,9 +427,9 @@ export const editGameState = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/game/upState",
+    url: 'v1/game/upState',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -443,7 +439,7 @@ export const getGameHallList = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/game/hall/list",
+    url: 'v1/game/hall/list',
     method: 'get',
     params: Data
   })
@@ -452,7 +448,7 @@ export const getGameHallList = Data => {
 export const setGameHallUpSort = Data => {
   Data = {
     data: [],
-    agentId: sessionStorage.getItem("agentVal"),
+    agentId: sessionStorage.getItem('agentVal'),
     token: getToken(),
     ...Data
   }
@@ -465,7 +461,7 @@ export const setGameHallUpSort = Data => {
   }
   Data.data = JSON.stringify(Data.data)
   return axios.request({
-    url: "v1/game/hall/upSort",
+    url: 'v1/game/hall/upSort',
     method: 'post',
     data: qs.stringify(Data)
   })
@@ -477,9 +473,9 @@ export const changeGameHallUpState = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/game/hall/upState",
+    url: 'v1/game/hall/upState',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -489,9 +485,9 @@ export const setGameHallUpData = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/game/hall/upData",
+    url: 'v1/game/hall/upData',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -501,19 +497,19 @@ export const changeGameHallUpMaintain = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/game/hall/upMaintain",
+    url: 'v1/game/hall/upMaintain',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
 export const getGameHallTypeList = () => {
   return axios.request({
-    url: "v1/game/hall/getTypeList",
+    url: 'v1/game/hall/getTypeList',
     method: 'get',
     params: {
       token: getToken(),
-      agentId: sessionStorage.getItem("agentVal")
+      agentId: sessionStorage.getItem('agentVal')
     }
   })
 }
@@ -524,7 +520,7 @@ export const getGameMsgData = Data => {
     ...Object.assign(...Data, parmaBasic())
   }
   return axios.request({
-    url: "v1/game-msg/list",
+    url: 'v1/game-msg/list',
     method: 'get',
     params: Data
   })
@@ -536,9 +532,9 @@ export const createGameMsgData = Data => {
     ...Object.assign(...Data)
   }
   return axios.request({
-    url: "v1/game-msg/add",
+    url: 'v1/game-msg/add',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -548,9 +544,9 @@ export const editGameMsgData = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/game-msg/edit",
+    url: 'v1/game-msg/edit',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -560,12 +556,11 @@ export const deleteGameMsgData = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/game-msg/del",
+    url: 'v1/game-msg/del',
     method: 'get',
     params: Data
   })
 }
-
 
 export const getMsgData = Data => {
   Data = {
@@ -573,7 +568,7 @@ export const getMsgData = Data => {
     ...Object.assign(...Data, parmaBasic())
   }
   return axios.request({
-    url: "v1/msg/list",
+    url: 'v1/msg/list',
     method: 'get',
     params: Data
   })
@@ -585,9 +580,9 @@ export const createMsgData = Data => {
     ...Object.assign(...Data)
   }
   return axios.request({
-    url: "v1/msg/add",
+    url: 'v1/msg/add',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -597,9 +592,9 @@ export const editSiteMsgData = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/msg/edit",
+    url: 'v1/msg/edit',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -616,7 +611,7 @@ export const getControlUserData = Data => {
     ...Object.assign(...Data)
   }
   return axios.request({
-    url: "v1/control/user/getList",
+    url: 'v1/control/user/getList',
     method: 'get',
     params: Data
   })
@@ -628,9 +623,9 @@ export const addControlUserProb = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/control/user/add",
+    url: 'v1/control/user/add',
     method: 'POST',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -640,9 +635,9 @@ export const removeControlUserProb = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/control/user/upState",
+    url: 'v1/control/user/upState',
     method: 'POST',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -652,7 +647,7 @@ export const getHistoryControlUserData = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/control/history/getList",
+    url: 'v1/control/history/getList',
     method: 'get',
     params: Data
   })
@@ -671,9 +666,9 @@ export const addControlAgentPomp = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/agent/pomp",
+    url: 'v1/agent/pomp',
     method: 'POST',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -683,7 +678,7 @@ export const getControlAgentData = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/control/agent/getList",
+    url: 'v1/control/agent/getList',
     method: 'get',
     params: Data
   })
@@ -695,9 +690,9 @@ export const addControlAgentProb = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/control/agent/add",
+    url: 'v1/control/agent/add',
     method: 'POST',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -707,9 +702,9 @@ export const editControlAgentProb = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/control/agent/edit",
+    url: 'v1/control/agent/edit',
     method: 'POST',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -719,9 +714,9 @@ export const delControlAgentProb = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/control/agent/del",
+    url: 'v1/control/agent/del',
     method: 'POST',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -738,10 +733,8 @@ export const getControlGameData = Data => {
     ...Object.assign(...Data)
   }
 
-
-
   return axios.request({
-    url: "v1/control/game-list",
+    url: 'v1/control/game-list',
     method: 'get',
     params: Data
   })
@@ -752,11 +745,11 @@ export const setControlGameProb = Data => {
     token: getToken(),
     ...Data
   }
-  let Url = Data.gameId == undefined ? "v1/control/game-edit" : "v1/control/game-add"
+  let Url = Data.gameId == undefined ? 'v1/control/game-edit' : 'v1/control/game-add'
   return axios.request({
     url: Url,
     method: 'POST',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -767,9 +760,9 @@ export const addControlGame = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/control/game-add",
+    url: 'v1/control/game-add',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -779,7 +772,7 @@ export const getLogListData = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/log/list",
+    url: 'v1/log/list',
     method: 'get',
     params: Data
   })
@@ -791,7 +784,7 @@ export const getControlLogData = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/control/log",
+    url: 'v1/control/log',
     method: 'get',
     params: Data
   })
@@ -803,7 +796,7 @@ export const getFeedbackData = Data => {
     ...Object.assign(...Data)
   }
   return axios.request({
-    url: "v1/feedback/list",
+    url: 'v1/feedback/list',
     method: 'get',
     params: Data
   })
@@ -815,9 +808,9 @@ export const editFeedbackState = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/feedback/state/up",
+    url: 'v1/feedback/state/up',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -827,7 +820,7 @@ export const getControlList = Data => {
     ...Object.assign(...Data)
   }
   return axios.request({
-    url: "v1/ip/control/list",
+    url: 'v1/ip/control/list',
     method: 'get',
     params: Data
   })
@@ -839,9 +832,9 @@ export const addControlIP = Data => {
     ...Object.assign(...Data)
   }
   return axios.request({
-    url: "v1/ip/control/add",
+    url: 'v1/ip/control/add',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -851,7 +844,7 @@ export const deletControlIP = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/ip/control/del",
+    url: 'v1/ip/control/del',
     method: 'get',
     params: Data
   })
@@ -863,23 +856,22 @@ export const getAccountData = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/account/list",
+    url: 'v1/account/list',
     method: 'get',
     params: Data
   })
 }
 
 export const addAccountData = Data => {
-
   Data = {
     token: getToken(),
     ...Data
   }
 
   return axios.request({
-    url: "v1/account/add",
+    url: 'v1/account/add',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -889,9 +881,9 @@ export const editAccountData = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/account/edit",
+    url: 'v1/account/edit',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -901,9 +893,9 @@ export const editAccountState = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/account/upState",
+    url: 'v1/account/upState',
     method: 'post',
-    data: qs.stringify(Data),
+    data: qs.stringify(Data)
   })
 }
 
@@ -913,7 +905,7 @@ export const deleteAccountState = Data => {
     ...Data
   }
   return axios.request({
-    url: "v1/account/del",
+    url: 'v1/account/del',
     method: 'get',
     params: {
       token: getToken(),
@@ -1017,11 +1009,11 @@ export const getLinkageList = () => {
 // 获取收件人列表
 export const getMsgReceiveList = () => {
   return axios.request({
-    url: "v1/receive/list",
+    url: 'v1/receive/list',
     method: 'get',
     params: {
       token: getToken()
-    },
+    }
   })
 }
 
@@ -1042,7 +1034,6 @@ export const uploadImg = formData => {
     data: formData
   })
 }
-
 
 export const getReward = Data => {
   Data = {
@@ -1082,7 +1073,7 @@ export const updateControllerData = Data => {
   })
 }
 
-//查询注单详情
+// 查询注单详情
 export const getSettlement = Data => {
   Data = {
     token: getToken(),
@@ -1095,7 +1086,7 @@ export const getSettlement = Data => {
   })
 }
 
-//查询注单详情
+// 查询注单详情
 export const getQueryOrder = Data => {
   Data = {
     ...Data
@@ -1107,7 +1098,7 @@ export const getQueryOrder = Data => {
   })
 }
 
-//查询注单详情
+// 查询注单详情
 export const getExportSettlementCount = Data => {
   Data = {
     token: getToken(),
@@ -1120,7 +1111,7 @@ export const getExportSettlementCount = Data => {
   })
 }
 
-//清理玩家指定游戏状态
+// 清理玩家指定游戏状态
 export const clearPlayerGameState = Data => {
   Data = {
     token: getToken(),
@@ -1133,7 +1124,17 @@ export const clearPlayerGameState = Data => {
   })
 }
 
-//查询注单详情
+// 查询注单详情
+export const getGameCurrency = () => {
+  return axios.request({
+    url: 'v2/exchange',
+    method: 'get',
+    params: {
+      token: getToken()
+    }
+  })
+}
+
 export const getExportSettlements = Data => {
   Data = {
     token: getToken(),
@@ -1146,8 +1147,6 @@ export const getExportSettlements = Data => {
   })
 }
 
-
-
 export const getTableData = () => {
   return axios.request({
     url: 'get_table_data',
@@ -1155,7 +1154,7 @@ export const getTableData = () => {
   })
 }
 
-//暂停/开启所有游戏
-export const stopAllGame = () => { 
-  
+// 暂停/开启所有游戏
+export const stopAllGame = () => {
+
 }

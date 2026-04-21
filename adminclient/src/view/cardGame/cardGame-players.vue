@@ -79,221 +79,221 @@
 </template>
 
 <script>
-import Tables from "_c/tables";
-import { setting } from "@/config";
-import { getPlayerData, editPlayerState } from "@/api/data";
+import Tables from '_c/tables'
+import { setting } from '@/config'
+import { getPlayerData, editPlayerState } from '@/api/data'
 export default {
-  name: "players",
+  name: 'players',
   components: {
-    Tables,
+    Tables
   },
-  inject: ["viewAccess", "handleLogOut"],
-  data() {
+  inject: ['viewAccess', 'handleLogOut'],
+  data () {
     return {
       req: [
         {
-          label: "站点",
-          type: "select",
-          key: "webId",
-          value: "",
-          option: [],
+          label: '站点',
+          type: 'select',
+          key: 'webId',
+          value: '',
+          option: []
         },
         {
-          label: "代理",
-          key: "agentId",
-          type: "select",
-          value: "",
-          option: [],
+          label: '代理',
+          key: 'agentId',
+          type: 'select',
+          value: '',
+          option: []
         },
         {
-          label: "状态",
-          key: "gameType",
-          type: "select",
-          value: "",
-          option: [],
+          label: '状态',
+          key: 'gameType',
+          type: 'select',
+          value: '',
+          option: []
         },
-        { label: "玩家ID", key: "userId", type: "text", value: "" },
+        { label: '玩家ID', key: 'userId', type: 'text', value: '' }
       ],
       columns: [
-        { title: "", type: "selection", width: 60, align: "center" },
+        { title: '', type: 'selection', width: 60, align: 'center' },
         {
-          title: "玩家ID",
-          key: "userId",
+          title: '玩家ID',
+          key: 'userId',
           width: 85,
-          align: "center",
-          tooltip: true,
+          align: 'center',
+          tooltip: true
         },
         {
-          title: "玩家昵称",
-          key: "nickName",
+          title: '玩家昵称',
+          key: 'nickName',
           width: 140,
-          align: "center",
-          tooltip: true,
+          align: 'center',
+          tooltip: true
         },
         {
-          title: "站点",
-          key: "webName",
+          title: '站点',
+          key: 'webName',
           width: 120,
-          align: "center",
-          tooltip: true,
+          align: 'center',
+          tooltip: true
         },
         {
-          title: "所属代理",
-          key: "agentName",
+          title: '所属代理',
+          key: 'agentName',
           width: 120,
-          align: "center",
-          tooltip: true,
+          align: 'center',
+          tooltip: true
         },
         {
-          title: "最近登录时间",
-          key: "logTime",
+          title: '最近登录时间',
+          key: 'logTime',
           width: 180,
-          align: "center",
-          render(h, params) {
+          align: 'center',
+          render (h, params) {
             return (
               <span>
-                {new Date(params.row.logTime * 1000).toLocaleString("chinese", {
-                  hour12: false,
+                {new Date(params.row.logTime * 1000).toLocaleString('chinese', {
+                  hour12: false
                 })}
               </span>
-            );
-          },
+            )
+          }
         },
-        { title: "余额", key: "times", width: 120, align: "center" },
-        { title: "局数", key: "totalNumber", align: "center", width: 80 },
-        { title: "有效下注", key: "times", width: 120, align: "center" },
+        { title: '余额', key: 'times', width: 120, align: 'center' },
+        { title: '局数', key: 'totalNumber', align: 'center', width: 80 },
+        { title: '有效下注', key: 'times', width: 120, align: 'center' },
         {
-          title: "总盈亏",
-          key: "totalProfLoss",
+          title: '总盈亏',
+          key: 'totalProfLoss',
           width: 150,
-          align: "center",
+          align: 'center'
         },
-        { title: "控制次数", key: "times", width: 120, align: "center" },
+        { title: '控制次数', key: 'times', width: 120, align: 'center' },
         {
-          title: "状态",
-          key: "state",
+          title: '状态',
+          key: 'state',
           width: 80,
-          align: "center",
-          render(h, params) {
+          align: 'center',
+          render (h, params) {
             return params.row.state == 1 ? (
               <span style="color:green">正常</span>
             ) : (
               <span style="color:red">冻结</span>
-            );
-          },
+            )
+          }
         },
         {
-          title: "操作",
-          key: "handle",
-          align: "center",
+          title: '操作',
+          key: 'handle',
+          align: 'center',
           width: 180,
           button: [
             (h, params) => {
               return h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "info",
-                    size: "small",
+                    type: 'info',
+                    size: 'small',
                     // to: "/players-record-" + params.row.userId,
-                    target: "_blank",
+                    target: '_blank'
                   },
                   style: {
-                    marginRight: "5px",
+                    marginRight: '5px'
                   },
                   on: {
                     click: () => {
                       let routeData = this.$router.resolve({
-                        path: "/players-record-" + params.row.userI,
-                        query: { agent: params.row.agentId },
-                      });
-                      window.open(routeData.href, "_blank");
-                    },
-                  },
+                        path: '/players-record-' + params.row.userI,
+                        query: { agent: params.row.agentId }
+                      })
+                      window.open(routeData.href, '_blank')
+                    }
+                  }
                 },
-                "流水"
-              );
+                '流水'
+              )
             },
             (h, params) => {
               return h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "warning",
-                    size: "small",
+                    type: 'warning',
+                    size: 'small',
                     // to: "/players-game-" + params.row.userId,
-                    target: "_blank",
+                    target: '_blank'
                   },
                   style: {
-                    marginRight: "5px",
+                    marginRight: '5px'
                   },
                   on: {
                     click: () => {
-                      const params2 = { agent: params.row.agentId };
+                      const params2 = { agent: params.row.agentId }
                       let routeData = this.$router.resolve({
-                        path: "/players-game-" + params.row.userId,
-                        query: params2,
-                      });
-                      window.open(routeData.href, "_blank");
-                    },
-                  },
+                        path: '/players-game-' + params.row.userId,
+                        query: params2
+                      })
+                      window.open(routeData.href, '_blank')
+                    }
+                  }
                 },
-                "战绩"
-              );
+                '战绩'
+              )
             },
             (h, params) => {
               if (this.viewAccess) {
                 return [
                   h(
-                    "Poptip",
+                    'Poptip',
                     {
                       props: {
                         transfer: true,
                         confirm: true,
-                        placement: "left",
+                        placement: 'left',
                         title:
-                          "您确定要" +
-                          (params.row.state == 2 ? "解冻" : "冻结") +
-                          "此玩家吗?",
+                          '您确定要' +
+                          (params.row.state == 2 ? '解冻' : '冻结') +
+                          '此玩家吗?'
                       },
-                      style: { textAlign: "left", zIndex: "99" },
+                      style: { textAlign: 'left', zIndex: '99' },
                       on: {
-                        "on-ok": () => {
+                        'on-ok': () => {
                           let data = {
                             id: JSON.stringify([params.row.id]),
-                            state: params.row.state == 2 ? 1 : 2,
-                          };
+                            state: params.row.state == 2 ? 1 : 2
+                          }
                           editPlayerState(data).then((res) => {
                             if (res.data.code == 200) {
                               this.$nextTick(() => {
-                                this.handleSearch();
-                                this.$Message.success(res.data.msg);
-                              });
+                                this.handleSearch()
+                                this.$Message.success(res.data.msg)
+                              })
                             } else {
-                              this.$Message.error(res.data.msg);
+                              this.$Message.error(res.data.msg)
                             }
-                          });
-                        },
-                      },
+                          })
+                        }
+                      }
                     },
                     [
                       h(
-                        "Button",
+                        'Button',
                         {
                           props: {
-                            type: params.row.state == 1 ? "error" : "success",
-                            size: "small",
-                          },
+                            type: params.row.state == 1 ? 'error' : 'success',
+                            size: 'small'
+                          }
                         },
-                        params.row.state == 1 ? "冻结" : "解冻"
-                      ),
+                        params.row.state == 1 ? '冻结' : '解冻'
+                      )
                     ]
-                  ),
-                ];
+                  )
+                ]
               }
-            },
-          ],
-        },
+            }
+          ]
+        }
       ],
       tableData: [],
       userSelect: [],
@@ -301,141 +301,141 @@ export default {
         current: 0,
         page: setting.page,
         pageSize: setting.pageSize,
-        pageOpts: setting.pageOpts,
-      },
-    };
+        pageOpts: setting.pageOpts
+      }
+    }
   },
   methods: {
-    onSelect(sel) {
+    onSelect (sel) {
       this.userSelect = sel.map((item) => {
-        return item.id;
-      });
+        return item.id
+      })
     },
-    editBatchState(status) {
-      let Data = { id: JSON.stringify(this.userSelect), state: status };
+    editBatchState (status) {
+      let Data = { id: JSON.stringify(this.userSelect), state: status }
       editPlayerState(Data).then((res) => {
-        if (res.data.code == 200) this.$Message.success("批量修改状态成功");
+        if (res.data.code == 200) this.$Message.success('批量修改状态成功')
         this.$nextTick(() => {
-          this.handleSearch();
-        });
-      });
+          this.handleSearch()
+        })
+      })
     },
-    setLinkage(i, key) {
-      if (key == "webId") {
-        let [k, m] = [null, null];
+    setLinkage (i, key) {
+      if (key == 'webId') {
+        let [k, m] = [null, null]
         for (const j in this.req) {
-          this.req[j].key == "webId" ? (k = j) : "";
-          this.req[j].key == "agentId" ? (m = j) : "";
+          if (this.req[j].key == 'webId') k = j
+          if (this.req[j].key == 'agentId') m = j
         }
-        this.req[m].option = [];
+        this.req[m].option = []
         this.req[m].value =
-          sessionStorage.getItem("agentVal") != null
-            ? Number(sessionStorage.getItem("agentVal"))
-            : "";
+          sessionStorage.getItem('agentVal') != null
+            ? Number(sessionStorage.getItem('agentVal'))
+            : ''
         this.req[k].option.forEach((item) => {
           if (item.agentList.length > 0 && item.id == i) {
-            this.req[m].option.push(...item.agentList);
+            this.req[m].option.push(...item.agentList)
           }
-        });
+        })
       }
     },
-    handleSearch() {
+    handleSearch () {
       let Data = [
         { page: this.pageData.page },
-        { pageSize: this.pageData.pageSize },
-      ];
-      if (sessionStorage.getItem("siteVal")) {
-        Data = [{ webId: Number(sessionStorage.getItem("siteVal")) }, ...Data];
+        { pageSize: this.pageData.pageSize }
+      ]
+      if (sessionStorage.getItem('siteVal')) {
+        Data = [{ webId: Number(sessionStorage.getItem('siteVal')) }, ...Data]
       }
-      if (sessionStorage.getItem("agentVal")) {
+      if (sessionStorage.getItem('agentVal')) {
         Data = [
-          { agentId: Number(sessionStorage.getItem("agentVal")) },
-          ...Data,
-        ];
+          { agentId: Number(sessionStorage.getItem('agentVal')) },
+          ...Data
+        ]
       }
       this.req.map((item) => {
-        if (item.value !== "") {
+        if (item.value !== '') {
           Data.push({
-            [item.key]: item.value,
-          });
+            [item.key]: item.value
+          })
         }
-      });
+      })
       getPlayerData(Data).then((res) => {
         if (res.data.code == 200) {
-          this.tableData = [];
-          this.tableData.push(...res.data.data.data);
-          this.pageData.current = res.data.data.total;
+          this.tableData = []
+          this.tableData.push(...res.data.data.data)
+          this.pageData.current = res.data.data.total
         } else {
           // 判断响应状态是否为Token失效，如果失效则执行退出函数并刷新页面。
           this.$nextTick(() => {
             if (setting.arrStatus.indexOf(res.data.code) != -1) {
               this.$Message.error(
-                res.data.code + " ：&nbsp;" + res.data.msg + "请重新登录"
-              );
-              this.handleLogOut();
+                res.data.code + ' ：&nbsp;' + res.data.msg + '请重新登录'
+              )
+              this.handleLogOut()
             } else {
-              this.$Message.error(res.data.code + " ：&nbsp;" + res.data.msg);
+              this.$Message.error(res.data.code + ' ：&nbsp;' + res.data.msg)
             }
-          });
+          })
         }
-      });
+      })
     },
-    handleAllSearch() {
+    handleAllSearch () {
       for (const i in this.req) {
-        this.req[i].value = "";
+        this.req[i].value = ''
       }
       let Data = [
         { page: this.pageData.page },
-        { pageSize: this.pageData.pageSize },
-      ];
+        { pageSize: this.pageData.pageSize }
+      ]
       getPlayerData(Data).then((res) => {
         if (res.data.code == 200) {
-          this.tableData = [];
-          this.pageData.page = 1;
-          this.tableData.push(...res.data.data.data);
-          this.pageData.current = res.data.data.total;
+          this.tableData = []
+          this.pageData.page = 1
+          this.tableData.push(...res.data.data.data)
+          this.pageData.current = res.data.data.total
         } else {
-          this.$Message.error(res.data.code + " ：&nbsp;" + res.data.msg);
+          this.$Message.error(res.data.code + ' ：&nbsp;' + res.data.msg)
         }
-      });
+      })
     },
-    changePage(index) {
-      this.pageData.page = index;
-      this.handleSearch();
+    changePage (index) {
+      this.pageData.page = index
+      this.handleSearch()
     },
-    changePageSize(index) {
-      this.pageData.pageSize = index;
-      this.handleSearch();
+    changePageSize (index) {
+      this.pageData.pageSize = index
+      this.handleSearch()
     },
-    searchAction() {
-      this.pageData.page = 1;
-      this.handleSearch();
-    },
+    searchAction () {
+      this.pageData.page = 1
+      this.handleSearch()
+    }
   },
-  mounted() {
+  mounted () {
     this.req.map((item) => {
-      if (item.key == "webId") {
+      if (item.key == 'webId') {
         item.option.push(
-          ...Object.assign(JSON.parse(sessionStorage.getItem("siteOption")))
-        );
-        if (sessionStorage.getItem("siteVal")) {
-          item.value = Number(sessionStorage.getItem("siteVal"));
+          ...Object.assign(JSON.parse(sessionStorage.getItem('siteOption')))
+        )
+        if (sessionStorage.getItem('siteVal')) {
+          item.value = Number(sessionStorage.getItem('siteVal'))
           this.$nextTick(() => {
-            this.setLinkage(item.value, "webId");
-          });
+            this.setLinkage(item.value, 'webId')
+          })
         }
       }
-      if (item.key == "agentId" && sessionStorage.getItem("agentVal")) {
-        item.value = Number(sessionStorage.getItem("agentVal"));
+      if (item.key == 'agentId' && sessionStorage.getItem('agentVal')) {
+        item.value = Number(sessionStorage.getItem('agentVal'))
       }
-      if (item.key == "gameType") {
+      if (item.key == 'gameType') {
         item.option.push(
-          ...Object.assign(JSON.parse(sessionStorage.getItem("typeOption")))
-        );
+          ...Object.assign(JSON.parse(sessionStorage.getItem('typeOption')))
+        )
       }
-    });
-  },
-};
+    })
+  }
+}
 </script>
 
 <style lang="less">
@@ -452,4 +452,3 @@ export default {
   text-align: right;
 }
 </style>
-

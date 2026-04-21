@@ -86,219 +86,219 @@
 </template>
 
 <script>
-import Tables from "_c/tables";
-import Detial from "./players-game-detial.vue";
-import { getDate } from "@/libs/tools";
-import { setting } from "@/config";
+import Tables from '_c/tables'
+import Detial from './players-game-detial.vue'
+import { getDate } from '@/libs/tools'
+import { setting } from '@/config'
 import {
   getPlayerInfoData,
   getPlayerFwDetailData,
   getGameData2,
-} from "@/api/data";
-import { getGameServers } from "@/api/data";
+  getGameServers
+} from '@/api/data'
+
 export default {
-  name: "players-game",
+  name: 'players-game',
   components: {
     Tables,
-    Detial,
+    Detial
   },
-  props: ["id"],
-  data() {
+  props: ['id'],
+  data () {
     return {
       startDateRestrict: {
-        disabledDate(date) {
+        disabledDate (date) {
           if (date.getYear() != new Date().getYear()) {
-            return true;
+            return true
           }
           if (date.getMonth() - new Date().getMonth() < -1) {
-            return true;
+            return true
           }
           if (date.getMonth() - new Date().getMonth() > 0) {
-            return true;
+            return true
           }
-        },
+        }
       },
       columns1: [
         {
-          title: "玩家ID",
-          key: "id",
+          title: '玩家ID',
+          key: 'id'
         },
         {
-          title: "玩家昵称",
-          key: "nickName",
+          title: '玩家昵称',
+          key: 'nickName'
         },
         {
-          title: "站点",
-          key: "webName",
+          title: '站点',
+          key: 'webName'
         },
         {
-          title: "所属代理",
-          key: "agentName",
+          title: '所属代理',
+          key: 'agentName'
         },
         {
-          title: "最近登录时间",
-          key: "logTime",
+          title: '最近登录时间',
+          key: 'logTime',
           width: 180,
-          render(h, params) {
-            return <span>{getDate(params.row.logTime * 1000)}</span>;
-          },
+          render (h, params) {
+            return <span>{getDate(params.row.logTime * 1000)}</span>
+          }
         },
         {
-          title: "最近登录IP",
-          key: "logIp",
+          title: '最近登录IP',
+          key: 'logIp'
         },
         {
-          title: "局数",
-          key: "totalNumber",
+          title: '局数',
+          key: 'totalNumber'
         },
         {
-          title: "时长",
-          key: "times",
+          title: '时长',
+          key: 'times'
         },
         {
-          title: "有效下注",
-          key: "totalEffBet",
+          title: '有效下注',
+          key: 'totalEffBet'
         },
         {
-          title: "状态",
-          key: "state",
-          render(h, params) {
+          title: '状态',
+          key: 'state',
+          render (h, params) {
             return params.row.state <= 1 ? (
               <span style="color:green">正常</span>
             ) : (
               <span style="color:red">冻结</span>
-            );
-          },
-        },
+            )
+          }
+        }
       ],
       userInfo: [],
-      gameId: { value: "", option: [] },
       columns: [
         {
-          title: "游戏id",
-          key: "gameId",
-          width: 100,
+          title: '游戏id',
+          key: 'gameId',
+          width: 100
         },
         {
-          title: "游戏名称",
-          key: "gameName",
+          title: '游戏名称',
+          key: 'gameName'
         },
-        { title: "局号", key: "roundID", width: 200 },
+        { title: '局号', key: 'roundID', width: 200 },
         {
-          title: "对局时间",
+          title: '对局时间',
           width: 180,
-          key: "playedDate",
-          render(h, params) {
-            return <span>{getDate(params.row.playedDate)}</span>;
-          },
+          key: 'playedDate',
+          render (h, params) {
+            return <span>{getDate(params.row.playedDate)}</span>
+          }
         },
         {
-          title: "货币",
-          key: "currency",
-          width: 100,
+          title: '货币',
+          key: 'currency',
+          width: 100
         },
-        { title: "有效下注", key: "bet", width: 200 },
+        { title: '有效下注', key: 'bet', width: 200 },
         {
-          title: "局总盈亏",
-          key: "win",
+          title: '局总盈亏',
+          key: 'win',
           width: 200,
-          render(h, params) {
+          render (h, params) {
             return params.row.win > 0 ? (
               <span style="color:green">
                 {Number(params.row.win).toFixed(2)}
               </span>
             ) : (
               <span style="color:red">{Number(params.row.win).toFixed(2)}</span>
-            );
-          },
+            )
+          }
         },
         {
-          title: "对局详情",
-          align: "center",
+          title: '对局详情',
+          align: 'center',
           width: 100,
           render: (h, params) => {
             return h(
-              "a",
+              'a',
               {
                 on: {
                   click: () => {
-                    this.imgClick(params.row);
-                  },
-                },
+                    this.imgClick(params.row)
+                  }
+                }
               },
-              "查看"
-            );
-          },
+              '查看'
+            )
+          }
         },
         {
-          title: "流水查询",
-          align: "center",
+          title: '流水查询',
+          align: 'center',
           width: 100,
           render: (h, params) => {
             return h(
-              "a",
+              'a',
               {
                 on: {
                   click: () => {
                     let routeData = this.$router.resolve({
                       path:
-                        "/players-record-" +
+                        '/players-record-' +
                         params.row.userId +
-                        "?on=" +
+                        '?on=' +
                         params.row.roundID,
-                      query: { agent: params.row.agentId },
-                    });
-                    window.open(routeData.href, "_blank");
-                  },
-                },
+                      query: { agent: params.row.agentId }
+                    })
+                    window.open(routeData.href, '_blank')
+                  }
+                }
               },
-              "查询"
-            );
-          },
-        },
+              '查询'
+            )
+          }
+        }
       ],
-      startTime: "",
-      endTime: "",
-      officeNumber: "",
-      totalProfitLoss: "",
-      gameId: { value: "", option: [] },
+      startTime: '',
+      endTime: '',
+      officeNumber: '',
+      totalProfitLoss: '',
+      gameId: { value: '', option: [] },
       tableData: [],
       viewSettlementDetail: false,
-      viewGameDetailUrl: "",
+      viewGameDetailUrl: '',
       pageData: {
         current: 0,
         page: setting.page,
         pageSize: setting.pageSize,
-        pageOpts: setting.pageOpts,
+        pageOpts: setting.pageOpts
       },
-      spinShow: false,
-    };
+      spinShow: false
+    }
   },
   methods: {
-    imgClick(row) {
-      this.viewGameDetailUrl = this.replays[0] + "/share/" + row.hash;
-      this.viewSettlementDetail = true;
+    imgClick (row) {
+      this.viewGameDetailUrl = this.replays[0] + '/share/' + row.hash
+      this.viewSettlementDetail = true
     },
-    exportExcel() {
+    exportExcel () {
       this.$refs.tables.exportCsv({
-        filename: `table-${new Date().valueOf()}.csv`,
-      });
+        filename: `table-${new Date().valueOf()}.csv`
+      })
     },
-    handleSearch() {
+    handleSearch () {
       let Data = [
         { page: this.pageData.page },
         { pageSize: this.pageData.pageSize },
         { userId: this.id },
         { officeNumber: this.officeNumber },
         {
-          startTime: this.startTime ? getDate(this.startTime) : "",
+          startTime: this.startTime ? getDate(this.startTime) : ''
         },
         {
-          endTime: this.endTime ? getDate(this.endTime) : "",
+          endTime: this.endTime ? getDate(this.endTime) : ''
         },
         { gameId: this.gameId.value },
-        { agentId: this.$route.query.agent },
-      ];
+        { agentId: this.$route.query.agent }
+      ]
 
       /**
        * 验证时间范围合法
@@ -306,69 +306,69 @@ export default {
       if (Data.find((x) => x.startTime || x.endTime)) {
         let startTime = new Date(
           Data.find((x) => x.startTime).startTime
-        ).getTime();
-        let endTime = new Date(Data.find((x) => x.endTime).endTime).getTime();
+        ).getTime()
+        let endTime = new Date(Data.find((x) => x.endTime).endTime).getTime()
         if (endTime - startTime <= 0) {
-          this.$Message.error("开始时间不允许大于结束时间");
-          return;
+          this.$Message.error('开始时间不允许大于结束时间')
+          return
         }
       }
 
-      this.spinShow = true;
+      this.spinShow = true
 
       getPlayerFwDetailData(Data).then((res) => {
         res.data.data.data.map((d) => {
           if (d.detail && !d.detail.details) {
-            d.detail = JSON.parse(d.detail);
+            d.detail = JSON.parse(d.detail)
           }
-        });
-        this.tableData = [];
-        this.spinShow = false;
-        this.tableData.push(...res.data.data.data);
-        this.pageData.current = res.data.data.total;
-        this.totalProfitLoss = res.data.data.totalProfitLoss;
-      });
+        })
+        this.tableData = []
+        this.spinShow = false
+        this.tableData.push(...res.data.data.data)
+        this.pageData.current = res.data.data.total
+        this.totalProfitLoss = res.data.data.totalProfitLoss
+      })
     },
-    changePage(index) {
-      this.pageData.page = index;
-      this.handleSearch();
+    changePage (index) {
+      this.pageData.page = index
+      this.handleSearch()
     },
-    changePageSize(index) {
-      this.pageData.pageSize = index;
-      this.handleSearch();
+    changePageSize (index) {
+      this.pageData.pageSize = index
+      this.handleSearch()
     },
-    searchAction() {
-      this.pageData.page = 1;
-      this.handleSearch();
-    },
+    searchAction () {
+      this.pageData.page = 1
+      this.handleSearch()
+    }
   },
-  mounted() {
+  mounted () {
     getGameServers().then((data) => {
-      console.log("======>",data)
-      if (data.data.data) this.replays = data.data.data.data.replays;
-    });
+      console.log('======>', data)
+      if (data.data.data) this.replays = data.data.data.data.replays
+    })
     getGameData2().then((res) => {
-      this.gameId.option.push({ id: "", name: "全部", nameZH: "", number: 0 });
-      this.gameId.option.push(...Object.assign(res.data.data));
+      this.gameId.option.push({ id: '', name: '全部', nameZH: '', number: 0 })
+      this.gameId.option.push(...Object.assign(res.data.data))
       this.gameId.option.map((item) => {
-        if (item.nameZH == "" || item.nameZH === undefined) {
-          item.label = item.name;
+        if (item.nameZH == '' || item.nameZH === undefined) {
+          item.label = item.name
         } else {
-          item.label = item.name + " [" + item.nameZH + "]";
+          item.label = item.name + ' [' + item.nameZH + ']'
         }
-      });
-    });
+      })
+    })
     let data = {
       id: this.id,
-      agentId: this.$route.query.agent,
-    };
+      agentId: this.$route.query.agent
+    }
     getPlayerInfoData(data).then((res) => {
-      this.userInfo.push(res.data.data);
-    });
+      this.userInfo.push(res.data.data)
+    })
 
-    this.handleSearch();
-  },
-};
+    this.handleSearch()
+  }
+}
 </script>
 
 <style>

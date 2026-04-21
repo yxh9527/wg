@@ -20,156 +20,156 @@
 </template>
 
 <script>
-import Tables from "_c/tables";
-import { getTableData } from "@/api/data";
+import Tables from '_c/tables'
+import { getTableData } from '@/api/data'
 export default {
-  name: "website",
+  name: 'website',
   components: {
     Tables
   },
-  data() {
+  data () {
     return {
       columns1: [
         {
-          title: "站点",
-          key: "site"
+          title: '站点',
+          key: 'site'
         },
         {
-          title: "代理标识",
-          key: "id"
+          title: '代理标识',
+          key: 'id'
         },
         {
-          title: "代理昵称",
-          key: "nikename"
+          title: '代理昵称',
+          key: 'nikename'
         },
         {
-          title: "初始点数",
-          key: "money1"
+          title: '初始点数',
+          key: 'money1'
         },
         {
-          title: "剩余点数",
-          key: "money2"
+          title: '剩余点数',
+          key: 'money2'
         },
         {
-          title: "总消耗",
-          key: "money",
-          render(h, params) {
+          title: '总消耗',
+          key: 'money',
+          render (h, params) {
             return params.row.money > 0 ? (
               <span style="color:green">{params.row.money * 5}</span>
             ) : (
               <span style="color:red">{params.row.money * 2} </span>
-            );
+            )
           }
         },
         {
-          title: "当日消耗",
-          key: "money3",
-          render(h, params) {
+          title: '当日消耗',
+          key: 'money3',
+          render (h, params) {
             return params.row.money >= 0 ? (
               <span style="color:green">{params.row.money * 5}</span>
             ) : (
               <span style="color:red">{params.row.money * 2} </span>
-            );
+            )
           }
         },
         {
-          title: "剩余库存点数",
-          key: "money4"
+          title: '剩余库存点数',
+          key: 'money4'
         },
         {
-          title: "总玩家",
-          key: "num1"
+          title: '总玩家',
+          key: 'num1'
         },
         {
-          title: "当日下注玩家",
-          key: "num2"
+          title: '当日下注玩家',
+          key: 'num2'
         },
         {
-          title: "总有效下注",
-          key: "money5"
+          title: '总有效下注',
+          key: 'money5'
         },
         {
-          title: "总抽水分数",
-          key: "money6"
+          title: '总抽水分数',
+          key: 'money6'
         }
       ],
       data1: [
         {
-          site: "游戏网",
-          id: "LL",
-          nikename: "乐乐网",
-          money1: "1000000",
-          money2: "900000",
-          money: "100000",
-          money3: "1000",
-          money4: "90000",
-          num1: "1100",
-          num2: "100",
-          money5: "231100",
-          money6: "10100"
+          site: '游戏网',
+          id: 'LL',
+          nikename: '乐乐网',
+          money1: '1000000',
+          money2: '900000',
+          money: '100000',
+          money3: '1000',
+          money4: '90000',
+          num1: '1100',
+          num2: '100',
+          money5: '231100',
+          money6: '10100'
         }
       ],
       columns: [
-        { title: "序号", type: "index", width: 80 },
-        { title: "控制级别", key: "num", width: 150 },
-        { title: "被控类型", key: "mode", width: 200 },
-        { title: "触发条件", key: "ccontent", width: 500 },
-        { title: "控制方式", key: "ctitle" },
+        { title: '序号', type: 'index', width: 80 },
+        { title: '控制级别', key: 'num', width: 150 },
+        { title: '被控类型', key: 'mode', width: 200 },
+        { title: '触发条件', key: 'ccontent', width: 500 },
+        { title: '控制方式', key: 'ctitle' },
         {
-          title: "操作",
-          key: "handle",
-          align: "center",
+          title: '操作',
+          key: 'handle',
+          align: 'center',
           width: 300,
           button: [
             (h, params) => {
               return h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "info",
-                    size: "small"
+                    type: 'info',
+                    size: 'small'
                   },
                   style: {
-                    marginRight: "5px"
+                    marginRight: '5px'
                   }
                 },
-                "修改"
-              );
+                '修改'
+              )
             },
             (h, params) => {
               return h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "error",
-                    size: "small"
+                    type: 'error',
+                    size: 'small'
                   }
                 },
-                "删除"
-              );
+                '删除'
+              )
             }
           ]
         }
       ],
       tableData: []
-    };
-  },
-  methods: {
-    handleDelete(params) {
-       
-    },
-    exportExcel() {
-      this.$refs.tables.exportCsv({
-        filename: `table-${new Date().valueOf()}.csv`
-      });
     }
   },
-  mounted() {
+  methods: {
+    handleDelete (params) {
+
+    },
+    exportExcel () {
+      this.$refs.tables.exportCsv({
+        filename: `table-${new Date().valueOf()}.csv`
+      })
+    }
+  },
+  mounted () {
     getTableData().then(res => {
-      this.tableData = res.data;
-    });
+      this.tableData = res.data
+    })
   }
-};
+}
 </script>
 
 <style>

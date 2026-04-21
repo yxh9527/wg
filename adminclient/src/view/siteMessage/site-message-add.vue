@@ -17,7 +17,6 @@
                 :placeholder="'请输入' + item.lable"
               ></i-input>
 
-
               <Select v-if="item.type=='select'" v-model="item.value" style="width: 100%">
                 <Option
                   v-for="items in item.option"
@@ -95,80 +94,82 @@
 </template>
 
 <script>
-import Step from "_c/step";
-import { createMsgData, getMsgReceiveList } from "@/api/data";
+import Step from '_c/step'
+import { createMsgData, getMsgReceiveList } from '@/api/data'
 export default {
-  name: "game_add",
+  name: 'game_add',
   components: {
     Step
   },
-  data() {
+  data () {
     return {
       state: this.$route.meta.state,
       stepList: [
-        { title: "填写消息基本内容", content: "填写基本信息" },
-        { title: "创建成功", content: "创建成功" }
+        { title: '填写消息基本内容', content: '填写基本信息' },
+        { title: '创建成功', content: '创建成功' }
       ],
       itemCreate: [
-        { lable: "消息标题", type: "text", key: "title", value: "",required: true  },
+        { lable: '消息标题', type: 'text', key: 'title', value: '', required: true },
         {
-          lable: "消息类型",
-          type: "select",
-          key: "msgType",
+          lable: '消息类型',
+          type: 'select',
+          key: 'msgType',
           value: 1,
           option: [
-            { label: "管理消息", value: 1 }
+            { label: '管理消息', value: 1 }
             // { label: "游戏消息", value: 2 }
-          ],required: true
+          ],
+          required: true
         },
         {
-          lable: "收件人",
-          type: "list",
-          key: "receiveIds",
-          value: "",
-          option: [],required: true
+          lable: '收件人',
+          type: 'list',
+          key: 'receiveIds',
+          value: '',
+          option: [],
+          required: true
         },
-        { lable: "消息内容", type: "textarea", key: "info", value: "",required: true  },
-        { lable: "备注", type: "text", key: "remarks", value: "" }
+        { lable: '消息内容', type: 'textarea', key: 'info', value: '', required: true },
+        { lable: '备注', type: 'text', key: 'remarks', value: '' }
       ]
-    };
+    }
   },
   methods: {
-    resForm() {
+    resForm () {
       this.itemCreate.forEach(item => {
-        item.value = "";
-      });
+        item.value = ''
+      })
     },
-    next() {
-      this.state += 1;
+    next () {
+      this.state += 1
     },
-    change() {
-      this.state = 0;
+    change () {
+      this.state = 0
     },
-    submit() {
-      const Data = [];
+    submit () {
+      const Data = []
       this.itemCreate.map(item => {
         Data.push({
           [item.key]: item.value
-        });
-      });
+        })
+      })
       createMsgData(Data).then(res => {
         if (res.data.code == 200) {
-          this.state += 1;
+          this.state += 1
         }
-      });
+      })
     }
   },
-  mounted() {
+  mounted () {
     getMsgReceiveList().then(res => {
       this.itemCreate.forEach(item => {
-        if (item.key == "receiveIds") {
-          item.option.push(...res.data.data);
+        if (item.key == 'receiveIds') {
+          item.option.push(...res.data.data)
         }
-      });
-    });
+      })
+    })
   }
-};
+}
 </script>
 
 <style>

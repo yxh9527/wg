@@ -93,7 +93,7 @@ export default {
           render (h, params) {
             return params.row.state == 1 ? (
               <span style="color:green">已处理</span>
-              
+
             ) : (
               <span style="color:red">未处理</span>
             )

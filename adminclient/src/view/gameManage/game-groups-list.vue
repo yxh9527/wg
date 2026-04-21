@@ -31,24 +31,24 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       groupColumns: [
-        { title: "位置", key: "", align: "center" },
-        { title: "房间ID", key: "", align: "center" },
-        { title: "创建人", key: "", align: "center" },
-        { title: "群名称", key: "", align: "center" },
-        { title: "游戏类型", key: "", align: "center" },
-        { title: "准入金额", key: "", align: "center" },
-        { title: "公告", key: "", align: "center" },
-        { title: "玩家人数", key: "", align: "center" },
-        { title: "游戏状态", key: "", align: "center" },
-        { title: "操作", key: "", align: "center", slot: "actions", width: 290 }
+        { title: '位置', key: '', align: 'center' },
+        { title: '房间ID', key: '', align: 'center' },
+        { title: '创建人', key: '', align: 'center' },
+        { title: '群名称', key: '', align: 'center' },
+        { title: '游戏类型', key: '', align: 'center' },
+        { title: '准入金额', key: '', align: 'center' },
+        { title: '公告', key: '', align: 'center' },
+        { title: '玩家人数', key: '', align: 'center' },
+        { title: '游戏状态', key: '', align: 'center' },
+        { title: '操作', key: '', align: 'center', slot: 'actions', width: 290 }
       ],
       groupListData: [{}],
       currentPage: 1
-    };
+    }
   },
   methods: {}
-};
+}
 </script>

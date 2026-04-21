@@ -68,158 +68,158 @@
 </template>
 
 <script>
-import Tables from "_c/tables";
+import Tables from '_c/tables'
 import {
   getControlAgentData,
   addControlAgentPomp,
   editControlAgentProb,
   delControlAgentProb,
   getAgentInfo
-} from "@/api/data";
-import { setting } from "@/config";
+} from '@/api/data'
+import { setting } from '@/config'
 export default {
-  name: "website",
+  name: 'website',
   components: {
     Tables
   },
-  props: ["id"],
-  inject: ["handleLogOut"],
-  data() {
+  props: ['id'],
+  inject: ['handleLogOut'],
+  data () {
     return {
       columns1: [
         {
-          title: "站点",
-          key: "webId"
+          title: '站点',
+          key: 'webId'
         },
         {
-          title: "代理昵称",
-          key: "nickName"
+          title: '代理昵称',
+          key: 'nickName'
         },
         {
-          title: "剩余点数",
-          key: "point"
+          title: '剩余点数',
+          key: 'point'
         },
         {
-          title: "总盈亏",
-          key: "totalProfLoss"
+          title: '总盈亏',
+          key: 'totalProfLoss'
         },
         {
-          title: "当日盈亏",
-          key: "profitLoss"
+          title: '当日盈亏',
+          key: 'profitLoss'
         },
         {
-          title: "剩余库存点数",
-          key: "stock"
+          title: '剩余库存点数',
+          key: 'stock'
         },
         {
-          title: "总玩家",
-          key: "totalUserNumber"
+          title: '总玩家',
+          key: 'totalUserNumber'
         },
         {
-          title: "当日下注玩家",
-          key: "userNumber"
+          title: '当日下注玩家',
+          key: 'userNumber'
         },
         {
-          title: "总有效下注",
-          key: "totalEffBet"
+          title: '总有效下注',
+          key: 'totalEffBet'
         },
         {
-          title: "总抽水分数",
-          key: "totalPump"
+          title: '总抽水分数',
+          key: 'totalPump'
         }
       ],
       agentIonfo: [],
       columns: [
-        { title: "序号", key: "id", width: 80, align: "center" },
+        { title: '序号', key: 'id', width: 80, align: 'center' },
         {
-          title: "触发条件",
+          title: '触发条件',
           width: 450,
-          align: "center",
-          render(h, pramas) {
+          align: 'center',
+          render (h, pramas) {
             return (
               <span>
                 当代理&nbsp;
-                {pramas.row.triggerType == 1 ? <b>增加</b> : <b>消耗</b>}&nbsp;
+              {pramas.row.triggerType == 1 ? <b>增加</b> : <b>消耗</b>}&nbsp;
                 分数大于初始分数的&nbsp;<b>{pramas.row.triggerProb}%</b>&nbsp;
                 时
               </span>
-            );
+            )
           }
         },
-        { title: "胜率", key: "winProb", align: "center" },
-        { title: "操作时间", key: "createTime", align: "center" },
+        { title: '胜率', key: 'winProb', align: 'center' },
+        { title: '操作时间', key: 'createTime', align: 'center' },
         {
-          title: "操作",
-          key: "handle",
-          align: "center",
+          title: '操作',
+          key: 'handle',
+          align: 'center',
           width: 300,
           button: [
             (h, params) => {
               return h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "info",
-                    size: "small"
+                    type: 'info',
+                    size: 'small'
                   },
                   style: {
-                    marginRight: "5px"
+                    marginRight: '5px'
                   },
                   on: {
                     click: () => {
-                      this.modalEdit.state = true;
-                      this.modalEdit.type = true;
-                      this.modalEdit.id = params.row.id;
-                      this.modalEdit.triggerType = params.row.triggerType;
-                      this.modalEdit.triggerProb = params.row.triggerProb;
-                      this.modalEdit.winProb = params.row.winProb;
-                      this.modalEdit.updateTime = params.row.updateTime;
+                      this.modalEdit.state = true
+                      this.modalEdit.type = true
+                      this.modalEdit.id = params.row.id
+                      this.modalEdit.triggerType = params.row.triggerType
+                      this.modalEdit.triggerProb = params.row.triggerProb
+                      this.modalEdit.winProb = params.row.winProb
+                      this.modalEdit.updateTime = params.row.updateTime
                     }
                   }
                 },
-                "修改"
-              );
+                '修改'
+              )
             },
             (h, params) => {
               return h(
-                "Poptip",
+                'Poptip',
                 {
                   props: {
                     transfer: true,
                     confirm: true,
-                    placement: "left",
-                    title: "是否确认删除该控制？"
+                    placement: 'left',
+                    title: '是否确认删除该控制？'
                   },
                   on: {
-                    "on-ok": () => {
+                    'on-ok': () => {
                       let data = {
                         id: params.row.id,
                         agentId: this.id
-                      };
+                      }
                       delControlAgentProb(data).then(res => {
                         if (res.data.code == 200) {
                           this.$nextTick(() => {
-                            this.$Message.success("控制删除成功");
-                            this.handleSearch();
-                          });
+                            this.$Message.success('控制删除成功')
+                            this.handleSearch()
+                          })
                         }
-                      });
+                      })
                     }
                   }
                 },
                 [
                   h(
-                    "Button",
+                    'Button',
                     {
                       props: {
-                        type: "error",
-                        size: "small"
+                        type: 'error',
+                        size: 'small'
                       }
                     },
-                    "删除"
+                    '删除'
                   )
                 ]
-              );
+              )
             }
           ]
         }
@@ -238,50 +238,49 @@ export default {
         id: null,
         triggerType: 1,
         trigger: [
-          { id: 1, title: "增加分数大于初始分数的 X %" },
-          { id: 2, title: "消耗分数大于初始分数的 X %" }
+          { id: 1, title: '增加分数大于初始分数的 X %' },
+          { id: 2, title: '消耗分数大于初始分数的 X %' }
         ],
         triggerProb: null,
         winProb: null,
         probType: 1,
-        action: [{ id: 1, title: "玩家胜率变为 X %" }]
+        action: [{ id: 1, title: '玩家胜率变为 X %' }]
       }
-    };
+    }
   },
   methods: {
-    handleAgentInfo() {
+    handleAgentInfo () {
       getAgentInfo({ id: this.id })
         .then(res => {
           if (res.data.code == 200) {
-            this.agentIonfo = [];
-            this.agentIonfo[0] = res.data.data;
+            this.agentIonfo = []
+            this.agentIonfo[0] = res.data.data
           } else {
             // 判断响应状态是否为Token失效，如果失效则执行退出函数并刷新页面。
             this.$nextTick(() => {
               if (setting.arrStatus.indexOf(res.data.code) != -1) {
                 this.$Message.error(
-                  res.data.code + " ：&nbsp;" + res.data.msg + "请重新登录"
-                );
-                this.handleLogOut();
+                  res.data.code + ' ：&nbsp;' + res.data.msg + '请重新登录'
+                )
+                this.handleLogOut()
               } else {
-                this.$Message.error(res.data.code + " ：&nbsp;" + res.data.msg);
+                this.$Message.error(res.data.code + ' ：&nbsp;' + res.data.msg)
               }
-            });
+            })
           }
         })
-       
     },
-    handleSearch() {
-      let Data = { page: this.pageData.page, agentId: 0 };
+    handleSearch () {
+      let Data = { page: this.pageData.page, agentId: 0 }
       getControlAgentData(Data).then(res => {
         if (res.data.code == 200) {
-          this.tableData = [];
-          this.tableData.push(...res.data.data.data);
-          this.pageData.current = res.data.data.total;
+          this.tableData = []
+          this.tableData.push(...res.data.data.data)
+          this.pageData.current = res.data.data.total
         }
-      });
+      })
     },
-    handleControlAgent(type) {
+    handleControlAgent (type) {
       if (type) {
         let Data = {
           id: this.modalEdit.id,
@@ -291,55 +290,53 @@ export default {
           triggerProb: this.modalEdit.triggerProb
             ? this.modalEdit.triggerProb
             : 0
-        };
+        }
         editControlAgentProb(Data)
           .then(res => {
             if (res.data.code == 200) {
-              this.$Message.success("修改代理抽水成功");
-              this.handleSearch();
+              this.$Message.success('修改代理抽水成功')
+              this.handleSearch()
             }
           })
-        
       } else {
         let Data = {
           agentId: this.id,
           winProb: this.modalEdit.winProb ? this.modalEdit.winProb : 0,
           triggerType: this.modalEdit.triggerType,
           triggerProb: this.modalEdit.winProb ? this.modalEdit.winProb : 0
-        };
+        }
         addControlAgentPomp(Data)
           .then(res => {
             if (res.data.code == 200) {
-              this.$Message.success("新增代理抽水成功");
-              this.handleSearch();
+              this.$Message.success('新增代理抽水成功')
+              this.handleSearch()
             }
           })
-       
       }
     },
-    addControlAgent() {
-      this.modalEdit.type = false;
-      this.modalEdit.state = true;
-      this.modalEdit.triggerType = 1;
-      this.modalEdit.triggerProb = null;
-      this.modalEdit.winProb = null;
+    addControlAgent () {
+      this.modalEdit.type = false
+      this.modalEdit.state = true
+      this.modalEdit.triggerType = 1
+      this.modalEdit.triggerProb = null
+      this.modalEdit.winProb = null
       // this.modalEdit.xzWinProb = null;
-      this.modalEdit.probType = 1;
+      this.modalEdit.probType = 1
     },
-    changePage(index) {
-      this.pageData.page = index;
-      this.handleSearch();
+    changePage (index) {
+      this.pageData.page = index
+      this.handleSearch()
     },
-    changePageSize(index) {
-      this.pageData.pageSize = index;
-      this.handleSearch();
+    changePageSize (index) {
+      this.pageData.pageSize = index
+      this.handleSearch()
     }
   },
-  mounted() {
-    this.handleAgentInfo();
-    this.handleSearch();
+  mounted () {
+    this.handleAgentInfo()
+    this.handleSearch()
   }
-};
+}
 </script>
 
 <style lang="less">

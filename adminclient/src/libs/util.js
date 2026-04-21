@@ -8,7 +8,6 @@ import {
 } from '@/libs/tools'
 const {
   title,
-  cookieExpires,
   useI18n
 } = config
 
@@ -179,11 +178,13 @@ export const getNewTagList = (list, newRoute) => {
   } = newRoute
   let newList = [...list]
   if (newList.findIndex(item => item.name === name) >= 0) return newList
-  else newList.push({
-    name,
-    path,
-    meta
-  })
+  else {
+    newList.push({
+      name,
+      path,
+      meta
+    })
+  }
   return newList
 }
 

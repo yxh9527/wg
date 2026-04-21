@@ -105,29 +105,26 @@
   </Layout>
 </template>
 <script>
-import SideMenu from "./components/side-menu";
-import HeaderBar from "./components/header-bar";
-import TagsNav from "./components/tags-nav";
-import User from "./components/user";
-import ABackTop from "./components/a-back-top";
-import Fullscreen from "./components/fullscreen";
-import Language from "./components/language";
-import ErrorStore from "./components/error-store";
-import { mapMutations, mapActions, mapGetters } from "vuex";
-import { getNewTagList, routeEqual } from "@/libs/util";
-import routers from "@/router/routers";
-import minLogo from "@/assets/images/logo-min.jpg";
-import maxLogo from "@/assets/images/logo.jpg";
-import "./main.less";
+import SideMenu from './components/side-menu'
+import HeaderBar from './components/header-bar'
+import TagsNav from './components/tags-nav'
+import User from './components/user'
+import ABackTop from './components/a-back-top'
+import Fullscreen from './components/fullscreen'
+import Language from './components/language'
+import ErrorStore from './components/error-store'
+import { mapMutations, mapActions, mapGetters } from 'vuex'
+import { getNewTagList, routeEqual } from '@/libs/util'
+import routers from '@/router/routers'
+import minLogo from '@/assets/images/logo-min.jpg'
+import maxLogo from '@/assets/images/logo.jpg'
+import './main.less'
 import {
-  //getClassList,
-  getLinkageList,
-  // getTypeList,
-  getSelectGames,
-} from "@/api/data";
-import axios from "axios";
+  // getClassList,
+  getLinkageList
+} from '@/api/data'
 export default {
-  name: "Main",
+  name: 'Main',
   components: {
     SideMenu,
     HeaderBar,
@@ -136,153 +133,153 @@ export default {
     Fullscreen,
     ErrorStore,
     User,
-    ABackTop,
+    ABackTop
   },
-  provide() {
+  provide () {
     return {
       reFreshSiteAgentList: this.reFreshSiteAgentList,
       viewAccess: this.viewAccessSuper,
-      handleLogOut: this.handleLogOut,
-    };
+      handleLogOut: this.handleLogOut
+    }
   },
-  data() {
+  data () {
     return {
       refresh: true,
       collapsed: false,
       minLogo,
       maxLogo,
       isFullscreen: false,
-      site: { val: "", option: [] },
-      agent: { val: "", option: [], msg: "请先选择站点" },
-    };
+      site: { val: '', option: [] },
+      agent: { val: '', option: [], msg: '请先选择站点' }
+    }
   },
   computed: {
-    ...mapGetters(["errorCount"]),
-    tagNavList() {
-      return this.$store.state.app.tagNavList;
+    ...mapGetters(['errorCount']),
+    tagNavList () {
+      return this.$store.state.app.tagNavList
     },
-    tagRouter() {
-      return this.$store.state.app.tagRouter;
+    tagRouter () {
+      return this.$store.state.app.tagRouter
     },
-    userAvatar() {
-      return this.$store.state.user.avatarImgPath;
+    userAvatar () {
+      return this.$store.state.user.avatarImgPath
     },
-    cacheList() {
+    cacheList () {
       const list = [
-        "ParentView",
+        'ParentView',
         ...(this.tagNavList.length
           ? this.tagNavList
-              .filter((item) => !(item.meta && item.meta.notCache))
-              .map((item) => item.name)
-          : []),
-      ];
-      return list;
+            .filter((item) => !(item.meta && item.meta.notCache))
+            .map((item) => item.name)
+          : [])
+      ]
+      return list
     },
-    menuList() {
-      return this.$store.getters.menuList;
+    menuList () {
+      return this.$store.getters.menuList
     },
-    local() {
-      return this.$store.state.app.local;
+    local () {
+      return this.$store.state.app.local
     },
-    hasReadErrorPage() {
-      return this.$store.state.app.hasReadErrorPage;
+    hasReadErrorPage () {
+      return this.$store.state.app.hasReadErrorPage
     },
-    unreadCount() {
-      return this.$store.state.user.unreadCount;
+    unreadCount () {
+      return this.$store.state.user.unreadCount
     },
-    viewAccessSuper() {
-      return this.$store.state.user.access.indexOf("administrator") > -1;
-    },
+    viewAccessSuper () {
+      return this.$store.state.user.access.indexOf('administrator') > -1
+    }
   },
   methods: {
     ...mapMutations([
-      "setBreadCrumb",
-      "setTagNavList",
-      "addTag",
-      "setLocal",
-      "setHomeRoute",
-      "closeTag",
+      'setBreadCrumb',
+      'setTagNavList',
+      'addTag',
+      'setLocal',
+      'setHomeRoute',
+      'closeTag'
     ]),
-    ...mapActions(["handleLogin", "getUnreadMessageCount", "handleLogOut"]),
-    turnToPage(route) {
-      let { name, params, query } = {};
-      if (typeof route === "string") name = route;
+    ...mapActions(['handleLogin', 'getUnreadMessageCount', 'handleLogOut']),
+    turnToPage (route) {
+      let { name, params, query } = {}
+      if (typeof route === 'string') name = route
       else {
-        name = route.name;
-        params = route.params;
-        query = route.query;
+        name = route.name
+        params = route.params
+        query = route.query
       }
-      if (name.indexOf("isTurnByHref_") > -1) {
-        window.open(name.split("_")[1]);
-        return;
+      if (name.indexOf('isTurnByHref_') > -1) {
+        window.open(name.split('_')[1])
+        return
       }
       this.$router.push({
         name,
         params,
-        query,
-      });
+        query
+      })
     },
-    handleCollapsedChange(state) {
-      this.collapsed = state;
+    handleCollapsedChange (state) {
+      this.collapsed = state
     },
-    handleCloseTag(res, type, route) {
-      if (type !== "others") {
-        if (type === "all") {
-          this.turnToPage(this.$config.homeName);
+    handleCloseTag (res, type, route) {
+      if (type !== 'others') {
+        if (type === 'all') {
+          this.turnToPage(this.$config.homeName)
         } else {
           if (routeEqual(this.$route, route)) {
-            this.closeTag(route);
+            this.closeTag(route)
           }
         }
       }
-      this.setTagNavList(res);
+      this.setTagNavList(res)
     },
-    handleClick(item) {
-      this.turnToPage(item);
+    handleClick (item) {
+      this.turnToPage(item)
     },
 
-    setSiteSession(val) {
-      this.agent.val = "";
+    setSiteSession (val) {
+      this.agent.val = ''
       if (val > 0) {
-        sessionStorage.setItem("siteVal", val);
-        this.agent.option = [];
+        sessionStorage.setItem('siteVal', val)
+        this.agent.option = []
         for (const key in this.site.option) {
           if (this.site.option[key].id == val) {
-            this.agent.option.push(...this.site.option[key].agentList);
-            this.agent.msg = "选择代理";
+            this.agent.option.push(...this.site.option[key].agentList)
+            this.agent.msg = '选择代理'
           }
         }
       }
     },
 
-    setAgentSession(val) {
+    setAgentSession (val) {
       if (val != undefined) {
-        sessionStorage.setItem("agentVal", val);
+        sessionStorage.setItem('agentVal', val)
 
-        //刷新右边页面
-        this.refresh = false;
+        // 刷新右边页面
+        this.refresh = false
         setTimeout(() => {
-          this.refresh = true;
-        }, 1);
+          this.refresh = true
+        }, 1)
       }
     },
 
     /**
      * 刷新站点代理信息
      */
-    reFreshSiteAgentList() {
+    reFreshSiteAgentList () {
       getLinkageList().then((res) => {
-        window.windowData_getLinkageList = res.data.data;
+        window.windowData_getLinkageList = res.data.data
 
         if (
           !window.windowData_getLinkageList ||
           window.windowData_getLinkageList.length == 0
         ) {
-          return;
+          return
         }
-        this.site.option = [];
+        this.site.option = []
 
-        this.site.option.push(...Object.assign(res.data.data));
+        this.site.option.push(...Object.assign(res.data.data))
 
         for (let i in res.data.data) {
           if (
@@ -290,28 +287,28 @@ export default {
             res.data.data[i].agentList.length > 0
           ) {
             for (let j in res.data.data[i].agentList) {
-              res.data.data[i].agentList[j].gameIds = undefined;
-              res.data.data[i].agentList[j].gameList = undefined;
+              res.data.data[i].agentList[j].gameIds = undefined
+              res.data.data[i].agentList[j].gameList = undefined
             }
           }
         }
-        sessionStorage.setItem("siteOption", JSON.stringify(res.data.data));
+        sessionStorage.setItem('siteOption', JSON.stringify(res.data.data))
 
-        if (sessionStorage.getItem("siteVal")) {
-          this.site.val = Number(sessionStorage.getItem("siteVal"));
-          if (sessionStorage.getItem("agentVal")) {
+        if (sessionStorage.getItem('siteVal')) {
+          this.site.val = Number(sessionStorage.getItem('siteVal'))
+          if (sessionStorage.getItem('agentVal')) {
             this.$nextTick(() => {
-              this.agent.val = Number(sessionStorage.getItem("agentVal"));
-            });
+              this.agent.val = Number(sessionStorage.getItem('agentVal'))
+            })
           }
-          this.setSiteSession(this.site.val);
+          this.setSiteSession(this.site.val)
         } else {
-          this.agent.option = [];
-          this.site.val = res.data.data[0].id;
-          this.agent.option.push(...res.data.data[0].agentList);
-          this.agent.val = res.data.data[0].agentList[0].id;
-          sessionStorage.setItem("siteVal", res.data.data[0].id);
-          sessionStorage.setItem("agentVal", res.data.data[0].agentList[0].id);
+          this.agent.option = []
+          this.site.val = res.data.data[0].id
+          this.agent.option.push(...res.data.data[0].agentList)
+          this.agent.val = res.data.data[0].agentList[0].id
+          sessionStorage.setItem('siteVal', res.data.data[0].id)
+          sessionStorage.setItem('agentVal', res.data.data[0].agentList[0].id)
         }
 
         // getClassList(sessionStorage.getItem("agentVal")).then((res) => {
@@ -323,62 +320,62 @@ export default {
         // getSelectGames(sessionStorage.getItem("agentVal")).then((res) => {
         //   sessionStorage.setItem("gameOption", JSON.stringify(res.data.data));
         // });
-      });
-    },
+      })
+    }
   },
   watch: {
-    $route(newRoute) {
-      const { name, query, params, meta } = newRoute;
+    $route (newRoute) {
+      const { name, query, params, meta } = newRoute
       this.addTag({
         route: { name, query, params, meta },
-        type: "push",
-      });
-      this.setBreadCrumb(newRoute);
-      this.setTagNavList(getNewTagList(this.tagNavList, newRoute));
-      this.$refs.sideMenu.updateOpenName(newRoute.name);
-    },
+        type: 'push'
+      })
+      this.setBreadCrumb(newRoute)
+      this.setTagNavList(getNewTagList(this.tagNavList, newRoute))
+      this.$refs.sideMenu.updateOpenName(newRoute.name)
+    }
   },
-  mounted() {
+  mounted () {
     /**
      *
      * 动态修改marquee的宽度
      *
      */
 
-    window.test = this;
+    window.test = this
 
-    let marqueeReference = document.querySelector(".ivu-layout-header");
-    let that = this;
+    let marqueeReference = document.querySelector('.ivu-layout-header')
+    let that = this
     let reloadMarqueeWidth = (entries) => {
       if (that.$refs.marqueeMsg) {
         that.$refs.marqueeMsg.style = `width:${
-          document.querySelector(".ivu-layout-header").clientWidth -
-          document.querySelector(".custom-bread-crumb").clientWidth -
+          document.querySelector('.ivu-layout-header').clientWidth -
+          document.querySelector('.custom-bread-crumb').clientWidth -
           370
-        }px`;
+        }px`
       }
-    };
-    const resizeObserver = new ResizeObserver(reloadMarqueeWidth);
+    }
+    const resizeObserver = new ResizeObserver(reloadMarqueeWidth)
 
-    resizeObserver.observe(marqueeReference);
+    resizeObserver.observe(marqueeReference)
 
     if (!window.isaddEventreloadMarqueeWidth) {
-      window.isaddEventreloadMarqueeWidth = true;
-      window.addEventListener("resize", reloadMarqueeWidth);
+      window.isaddEventreloadMarqueeWidth = true
+      window.addEventListener('resize', reloadMarqueeWidth)
     }
 
     getLinkageList().then((res) => {
-      window.windowData_getLinkageList = res.data.data;
+      window.windowData_getLinkageList = res.data.data
 
       if (
         !window.windowData_getLinkageList ||
         window.windowData_getLinkageList.length == 0
       ) {
-        return;
+        return
       }
-      //站点赋值
-      this.site.option.push(...Object.assign(res.data.data));
-      sessionStorage.setItem("siteOption", JSON.stringify(res.data.data));
+      // 站点赋值
+      this.site.option.push(...Object.assign(res.data.data))
+      sessionStorage.setItem('siteOption', JSON.stringify(res.data.data))
 
       for (let i in res.data.data) {
         if (
@@ -386,31 +383,31 @@ export default {
           res.data.data[i].agentList.length > 0
         ) {
           for (let j in res.data.data[i].agentList) {
-            res.data.data[i].agentList[j].gameIds = undefined;
-            res.data.data[i].agentList[j].gameList = undefined;
+            res.data.data[i].agentList[j].gameIds = undefined
+            res.data.data[i].agentList[j].gameList = undefined
           }
         }
       }
 
       if (
-        sessionStorage.getItem("siteVal") &&
+        sessionStorage.getItem('siteVal') &&
         this.site.option.find(
-          (siteitem) => siteitem.id == Number(sessionStorage.getItem("siteVal"))
+          (siteitem) => siteitem.id == Number(sessionStorage.getItem('siteVal'))
         )
       ) {
-        this.site.val = Number(sessionStorage.getItem("siteVal"));
-        if (sessionStorage.getItem("agentVal")) {
+        this.site.val = Number(sessionStorage.getItem('siteVal'))
+        if (sessionStorage.getItem('agentVal')) {
           this.$nextTick(() => {
-            this.agent.val = Number(sessionStorage.getItem("agentVal"));
-          });
+            this.agent.val = Number(sessionStorage.getItem('agentVal'))
+          })
         }
-        this.setSiteSession(this.site.val);
+        this.setSiteSession(this.site.val)
       } else {
-        this.site.val = res.data.data[0].id;
-        this.agent.option.push(...res.data.data[0].agentList);
-        this.agent.val = res.data.data[0].agentList[0].id;
-        sessionStorage.setItem("siteVal", res.data.data[0].id);
-        sessionStorage.setItem("agentVal", res.data.data[0].agentList[0].id);
+        this.site.val = res.data.data[0].id
+        this.agent.option.push(...res.data.data[0].agentList)
+        this.agent.val = res.data.data[0].agentList[0].id
+        sessionStorage.setItem('siteVal', res.data.data[0].id)
+        sessionStorage.setItem('agentVal', res.data.data[0].agentList[0].id)
       }
       // getClassList(sessionStorage.getItem("agentVal")).then((res) => {
       //   sessionStorage.setItem("classOption", JSON.stringify(res.data.data));
@@ -425,23 +422,23 @@ export default {
       /**
        * @description 初始化设置面包屑导航和标签导航
        */
-      this.setTagNavList();
-      this.setHomeRoute(routers);
-      const { name, params, query, meta } = this.$route;
+      this.setTagNavList()
+      this.setHomeRoute(routers)
+      const { name, params, query, meta } = this.$route
       this.addTag({
-        route: { name, params, query, meta },
-      });
-      this.setBreadCrumb(this.$route);
+        route: { name, params, query, meta }
+      })
+      this.setBreadCrumb(this.$route)
 
       // 如果当前打开页面不在标签栏中，跳到homeName页
       if (!this.tagNavList.find((item) => item.name === this.$route.name)) {
         this.$router.push({
-          name: this.$config.homeName,
-        });
+          name: this.$config.homeName
+        })
       }
-    });
-  },
-};
+    })
+  }
+}
 </script>
 <style>
 .ivu-radio-group-button.ivu-radio-group-small .ivu-radio-wrapper {

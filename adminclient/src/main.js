@@ -14,7 +14,7 @@ import './index.less'
 import '@/assets/icons/iconfont.css'
 import TreeTable from 'tree-table-vue'
 import VOrgTree from 'v-org-tree'
-import 'view-design/dist/styles/iview.css';
+import 'view-design/dist/styles/iview.css'
 import 'v-org-tree/dist/v-org-tree.css'
 
 Vue.use(ViewUI)

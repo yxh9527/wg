@@ -22,19 +22,19 @@
   </div>
 </template>
 <script>
-import axios from "@/libs/api.request";
-import { getToken } from "@/libs/util";
+import axios from '@/libs/api.request'
+import { getToken } from '@/libs/util'
 export default {
-  name: "key_page",
-  data() {
-    return { key: "", config: "" };
+  name: 'key_page',
+  data () {
+    return { key: '', config: '' }
   },
   methods: {
-    submit() {
+    submit () {
       axios
         .request({
-          url: "v1/game/config",
-          method: "post",
+          url: 'v1/game/config',
+          method: 'post',
           data: {
             token: getToken(),
             path: this.key,
@@ -42,12 +42,12 @@ export default {
           }
         })
         .then(res => {
-          //  
+          //
           if (res.data.code == 200) {
-            this.$Message.success("修改配置成功");
+            this.$Message.success('修改配置成功')
           }
-        });
+        })
     }
   }
-};
+}
 </script>

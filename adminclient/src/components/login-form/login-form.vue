@@ -49,74 +49,74 @@
 </template>
 <script>
 // import { login } from "@/api/user";
-import ValidCode from "_c/valid-code";
+import ValidCode from '_c/valid-code'
 export default {
-  name: "LoginForm",
+  name: 'LoginForm',
   components: { ValidCode },
   props: {
     userNameRules: {
       type: Array,
       default: () => {
-        return [{ required: true, message: "账号不能为空", trigger: "blur" }];
-      },
+        return [{ required: true, message: '账号不能为空', trigger: 'blur' }]
+      }
     },
     passwordRules: {
       type: Array,
       default: () => {
-        return [{ required: true, message: "密码不能为空", trigger: "blur" }];
-      },
-    },
+        return [{ required: true, message: '密码不能为空', trigger: 'blur' }]
+      }
+    }
   },
-  data() {
+  data () {
     return {
       form: {
-        name: "",
-        password: "",
+        name: '',
+        password: ''
       },
-      validInput: "",
-      validVal: "",
-      modalShow: true,
-    };
+      validInput: '',
+      validVal: '',
+      modalShow: true
+    }
   },
   computed: {
-    rules() {
+    rules () {
       return {
         name: this.userNameRules,
-        password: this.passwordRules,
-      };
-    },
+        password: this.passwordRules
+      }
+    }
   },
   methods: {
-    validCode(data) {
-      this.validVal = data;
+    validCode (data) {
+      this.validVal = data
       // todo when release, please comment out
       // if (process.env.NODE_ENV != "production") {
       //   this.validInput = this.validVal;
       // }
     },
-    refreshCode() {
-      this.modalShow = false;
+    refreshCode () {
+      this.modalShow = false
       setTimeout(() => {
-        this.modalShow = true;
-      }, 500);
+        this.modalShow = true
+      }, 500)
     },
-    handleSubmit() {
+    handleSubmit () {
       if (this.validVal.toUpperCase() === this.validInput.toUpperCase()) {
         this.$refs.loginForm.validate((valid) => {
           if (valid) {
-            this.$emit("on-success-valid", {
+            this.$emit('on-success-valid', {
               name: this.form.name,
-              password: this.form.password,
-            });
+              password: this.form.password
+            })
           } else {
-            this.refreshCode();
+            this.refreshCode()
           }
-        });
+        })
       } else {
-        this.$Message.error("验证码错误");
-        this.refreshCode();
+        this.$Message.error('验证码错误')
+        this.refreshCode()
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>

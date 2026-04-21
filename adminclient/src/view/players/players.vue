@@ -197,50 +197,48 @@
 </template>
 
 <script>
-import Cookies from "js-cookie";
-import * as dayjs from "dayjs";
-import Tables from "_c/tables";
-import { setting } from "@/config";
-import { getPlayerData, editPlayerState, agentScoreLog,clearPlayerGameState,getGameCurrency } from "@/api/data";
-import { getToken } from "@/libs/util";
-import axios from "@/libs/api.request";
+import Cookies from 'js-cookie'
+import * as dayjs from 'dayjs'
+import Tables from '_c/tables'
+import { setting } from '@/config'
+import { getPlayerData, editPlayerState, agentScoreLog, clearPlayerGameState, getGameCurrency } from '@/api/data'
 export default {
-  name: "players",
+  name: 'players',
   components: {
-    Tables,
+    Tables
   },
-  inject: ["viewAccess", "handleLogOut"],
-  data() {
-    let _this = this;
+  inject: ['viewAccess', 'handleLogOut'],
+  data () {
+    let _this = this
     return {
       startDate: dayjs(
-        dayjs().startOf("month").format("YYYY-MM-DD 00:00:00")
+        dayjs().startOf('month').format('YYYY-MM-DD 00:00:00')
       ).toDate(),
       startDateRestrict: {
-        disabledDate(date) {
+        disabledDate (date) {
           if (date.getTime() > dayjs(_this.endDate).unix() * 1000) {
-            return true;
+            return true
           }
-          //两个月以前
+          // 两个月以前
           if (date.getTime() < Date.now() - 1000 * 60 * 60 * 24 * 30 * 2) {
-            return true;
+            return true
           }
-        },
+        }
       },
-      endDate: dayjs(dayjs().format("YYYY-MM-DD 23:59:59")).toDate(),
+      endDate: dayjs(dayjs().format('YYYY-MM-DD 23:59:59')).toDate(),
       endDateRestrict: {
-        disabledDate(date) {
+        disabledDate (date) {
           if (date.getTime() < dayjs(_this.startDate).unix() * 1000) {
-            return true;
+            return true
           }
           if (date.getTime() > Date.now()) {
-            return true;
+            return true
           }
-        },
+        }
       },
 
       remarks: undefined,
-      order: "-totalProfLoss",
+      order: '-totalProfLoss',
       userInfo: null,
       site: null,
       siteOption: [],
@@ -249,157 +247,157 @@ export default {
       modal1: false,
 
       req: [
-        { label: "三方ID:", key: "userId", type: "text", value: "" },
-        { label: "昵称：", key: "name", type: "text", value: "" },
-        { label: "ID:", key: "id", type: "text", value: "" },
+        { label: '三方ID:', key: 'userId', type: 'text', value: '' },
+        { label: '昵称：', key: 'name', type: 'text', value: '' },
+        { label: 'ID:', key: 'id', type: 'text', value: '' }
       ],
       columns: [
         {
-          title: "",
-          type: "selection",
+          title: '',
+          type: 'selection',
           width: 60,
-          align: "center",
-          fixed: "left",
+          align: 'center',
+          fixed: 'left'
         },
         {
-          title: "ID",
-          key: "id",
+          title: 'ID',
+          key: 'id',
           width: 85,
-          align: "center",
-          tooltip: true,
+          align: 'center',
+          tooltip: true
         },
         {
-          title: "昵称",
-          key: "nickName",
+          title: '昵称',
+          key: 'nickName',
           width: 140,
-          align: "center",
-          tooltip: true,
+          align: 'center',
+          tooltip: true
         },
         {
-          title: "账号",
-          key: "userId",
+          title: '账号',
+          key: 'userId',
           width: 140,
-          align: "center",
-          tooltip: true,
+          align: 'center',
+          tooltip: true
         },
         {
-          title: "试玩",
-          key: "isTourist",
+          title: '试玩',
+          key: 'isTourist',
           width: 80,
-          align: "center",
-          render(h, params) {
-            return params.row.isTourist>0?(<span style="color:red;">是</span>):(<span style="color:green;">否</span>);
-          },
+          align: 'center',
+          render (h, params) {
+            return params.row.isTourist>0 ? (<span style="color:red;">是</span>) : (<span style="color:green;">否</span>)
+          }
         },
         {
-          title: "代理",
-          key: "agentId",
-          align: "center",
+          title: '代理',
+          key: 'agentId',
+          align: 'center',
           width: 100,
-          render(h, params) {
-            let name = "";
+          render (h, params) {
+            let name = ''
             _this.siteOption.map((x) => {
               x.agentList.map((y) => {
                 if (y.id == params.row.agentId) {
-                  name = y.name;
+                  name = y.name
                 }
-              });
-            });
+              })
+            })
 
-            return <span>{name}</span>;
-          },
+            return <span>{name}</span>
+          }
         },
 
         {
-          title: "最近登录时间",
-          key: "logTime",
+          title: '最近登录时间',
+          key: 'logTime',
           width: 170,
           sortable: true,
-          sortType: "desc",
-          align: "center",
-          render(h, params) {
+          sortType: 'desc',
+          align: 'center',
+          render (h, params) {
             return (
               <span>
-                {new Date(params.row.logTime * 1000).toLocaleString("chinese", {
-                  hour12: false,
+                {new Date(params.row.logTime * 1000).toLocaleString('chinese', {
+                  hour12: false
                 })}
               </span>
-            );
-          },
+            )
+          }
         },
-        { title: "局数", key: "totalNumber", align: "center", width: 70 },
+        { title: '局数', key: 'totalNumber', align: 'center', width: 70 },
         {
-          title: "有效下注",
-          key: "totalEffBet",
+          title: '有效下注',
+          key: 'totalEffBet',
           width: 110,
-          align: "center",
-          render(h, params) {
+          align: 'center',
+          render (h, params) {
             return (
               <span>
                 {(params.row.totalEffBet &&
                   params.row.totalEffBet.toFixed(2)) ||
                   0}
               </span>
-            );
-          },
+            )
+          }
         },
         {
-          title: "总盈利",
-          key: "totalProfLoss",
+          title: '总盈利',
+          key: 'totalProfLoss',
           width: 120,
-          align: "center",
-          sortable: "custom",
-          render(h, params) {
+          align: 'center',
+          sortable: 'custom',
+          render (h, params) {
             return (
               <span>
                 {(params.row.totalProfLoss &&
                   (params.row.totalProfLoss).toFixed(2)) ||
                   0}
               </span>
-            );
-          },
+            )
+          }
         },
         {
-          title: "区间局数",
-          key: "month_docCount",
+          title: '区间局数',
+          key: 'month_docCount',
           width: 130,
-          render(h, params) {
-            return <span>{params.row.month_docCount || 0}</span>;
-          },
+          render (h, params) {
+            return <span>{params.row.month_docCount || 0}</span>
+          }
         },
         {
-          title: "区间有效投注",
-          key: "month_effectiveBets",
+          title: '区间有效投注',
+          key: 'month_effectiveBets',
           width: 140,
-          render(h, params) {
+          render (h, params) {
             return (
               <span>
                 {(params.row.month_effectiveBets &&
                   params.row.month_effectiveBets.toFixed(2)) ||
                   0}
               </span>
-            );
-          },
+            )
+          }
         },
         {
-          title: "区间盈利",
-          key: "month_profitLoss",
+          title: '区间盈利',
+          key: 'month_profitLoss',
           width: 140,
-          render(h, params) {
+          render (h, params) {
             return (
               <span>
                 {(params.row.month_profitLoss &&
                   (params.row.month_profitLoss).toFixed(2)) ||
                   0}
               </span>
-            );
-          },
+            )
+          }
         },
         {
-          title: "区间杀数",
-          key: "month_profitLoss",
+          title: '区间杀数',
+          key: 'month_profitLoss',
           width: 140,
-          render(h, params) {
+          render (h, params) {
             if (
               params.row.month_profitLoss &&
               params.row.month_profitLoss != 0 &&
@@ -412,294 +410,294 @@ export default {
                     (params.row.month_profitLoss - params.row.month_effectiveBets) / params.row.month_effectiveBets
                   ).toFixed(3)}
                 </span>
-              );
+              )
             } else {
-              return <span>0</span>;
+              return <span>0</span>
             }
-          },
+          }
         },
         {
-          title: "周期投注",
-          key: "cycle_effectiveBets",
+          title: '周期投注',
+          key: 'cycle_effectiveBets',
           width: 140,
-          render(h, params) {
+          render (h, params) {
             return (
               <span>
                 {(params.row.cycle_effectiveBets &&
                   params.row.cycle_effectiveBets.toFixed(2)) ||
                   0}
               </span>
-            );
-          },
+            )
+          }
         },
         {
-          title: "周期盈利",
-          key: "cycle_profitLoss",
+          title: '周期盈利',
+          key: 'cycle_profitLoss',
           width: 140,
-          render(h, params) {
+          render (h, params) {
             return (
               <span>
                 {(params.row.cycle_profitLoss &&
-                  (params.row.cycle_profitLoss+params.row.cycle_effectiveBets).toFixed(2)) ||
+                  (params.row.cycle_profitLoss + params.row.cycle_effectiveBets).toFixed(2)) ||
                   0}
               </span>
-            );
-          },
+            )
+          }
         },
         {
-          title: "状态",
-          key: "state",
-          align: "center",
+          title: '状态',
+          key: 'state',
+          align: 'center',
           width: 80,
-          render(h, params) {
+          render (h, params) {
             return params.row.state <= 1 ? (
               <span style="color:green">正常</span>
             ) : (
               <span style="color:red">冻结</span>
-            );
-          },
+            )
+          }
         },
         {
-          title: "操作",
-          key: "handle",
-          align: "center",
+          title: '操作',
+          key: 'handle',
+          align: 'center',
           width: 250,
-          fixed: "right",
+          fixed: 'right',
           button: [
             (h, params) => {
               return h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "info",
-                    size: "small",
-                    target: "_blank",
+                    type: 'info',
+                    size: 'small',
+                    target: '_blank'
                   },
                   style: {
-                    marginRight: "5px",
+                    marginRight: '5px'
                   },
                   on: {
                     click: () => {
                       let routeData = this.$router.resolve({
-                        path: "/players-record-" + params.row.id,
-                        query: { agent: params.row.agentId },
-                      });
-                      window.open(routeData.href, "_blank");
-                    },
-                  },
+                        path: '/players-record-' + params.row.id,
+                        query: { agent: params.row.agentId }
+                      })
+                      window.open(routeData.href, '_blank')
+                    }
+                  }
                 },
-                "流水"
-              );
+                '流水'
+              )
             },
             (h, params) => {
               return h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "info",
-                    size: "small",
+                    type: 'info',
+                    size: 'small'
                   },
                   style: {
-                    marginRight: "5px",
+                    marginRight: '5px'
                   },
                   on: {
                     click: () => {
                       this.$Modal.info({
-                        title: "上下分记录",
+                        title: '上下分记录',
                         closable: true,
-                        align: "center",
+                        align: 'center',
                         width: 1200,
                         render: (h) => {
                           return [
-                            h("Table", {
+                            h('Table', {
                               props: {
                                 columns: [
                                   {
-                                    title: "流水号",
-                                    key: "logOn",
-                                    align: "center",
-                                    width:200,
+                                    title: '流水号',
+                                    key: 'logOn',
+                                    align: 'center',
+                                    width: 200
                                   },
                                   {
-                                    title: "时间",
-                                    key: "createtime",
-                                    align: "center",
-                                    width:200,
-                                    render(h, params) {
+                                    title: '时间',
+                                    key: 'createtime',
+                                    align: 'center',
+                                    width: 200,
+                                    render (h, params) {
                                       return (
                                         <span>
                                           {dayjs(
                                             params.row.createtime * 1000
-                                          ).format("YYYY-MM-DD HH:mm:ss")}
+                                          ).format('YYYY-MM-DD HH:mm:ss')}
                                         </span>
-                                      );
-                                    },
+                                      )
+                                    }
                                   },
                                   {
-                                    title: "玩家ID",
-                                    key: "userId",
-                                    align: "center",
+                                    title: '玩家ID',
+                                    key: 'userId',
+                                    align: 'center'
                                   },
                                   {
-                                    title: "三方平台ID",
-                                    key: "openId",
-                                    align: "center",
+                                    title: '三方平台ID',
+                                    key: 'openId',
+                                    align: 'center'
                                   },
                                   {
-                                    title: "帐变前金额",
-                                    key: "score",
-                                    align: "center",
+                                    title: '帐变前金额',
+                                    key: 'score',
+                                    align: 'center'
                                   },
                                   {
-                                    title: "上下分",
-                                    key: "logType",
-                                    align: "center",
-                                    render(h, params) {
+                                    title: '上下分',
+                                    key: 'logType',
+                                    align: 'center',
+                                    render (h, params) {
                                       return (
                                         <span>
                                           {params.row.logType == 1
-                                            ? "上分"
-                                            : "下分"}
+                                            ? '上分'
+                                            : '下分'}
                                         </span>
-                                      );
-                                    },
+                                      )
+                                    }
                                   },
                                   {
-                                    title: "帐变后金额",
-                                    key: "userScore",
-                                    align: "center",
-                                  },
+                                    title: '帐变后金额',
+                                    key: 'userScore',
+                                    align: 'center'
+                                  }
                                 ],
-                                data: this.dataScore,
-                              },
+                                data: this.dataScore
+                              }
                             }),
-                            h("Page", {
+                            h('Page', {
                               style: {
-                                marginTop: "10px",
+                                marginTop: '10px'
                               },
                               props: {
                                 total: this.newtotal,
-                                pageSize: this.newpagesize,
+                                pageSize: this.newpagesize
                               },
                               on: {
-                                "on-change": (page) => {
-                                  this.newpage = page;
+                                'on-change': (page) => {
+                                  this.newpage = page
                                   let Data = {
                                     id: params.row.id,
                                     page: this.newpage,
-                                    agentId: params.row.agentId,
-                                  };
+                                    agentId: params.row.agentId
+                                  }
                                   agentScoreLog(Data).then((res) => {
-                                    this.dataScore = [];
-                                    this.dataScore.push(...res.data.data.data);
-                                    this.newtotal = res.data.data.total;
-                                    this.newpagesize = res.data.data.page_size;
-                                  });
-                                },
-                              },
-                            }),
-                          ];
-                        },
-                      });
+                                    this.dataScore = []
+                                    this.dataScore.push(...res.data.data.data)
+                                    this.newtotal = res.data.data.total
+                                    this.newpagesize = res.data.data.page_size
+                                  })
+                                }
+                              }
+                            })
+                          ]
+                        }
+                      })
                       let Data = {
                         id: params.row.id,
                         page: this.newpage,
-                        agentId: params.row.agentId,
-                      };
+                        agentId: params.row.agentId
+                      }
                       agentScoreLog(Data).then((res) => {
-                        this.dataScore = [];
-                        this.dataScore.push(...res.data.data.data);
-                        this.newtotal = res.data.data.total;
-                        this.newpagesize = res.data.data.page_size;
-                      });
-                    },
-                  },
+                        this.dataScore = []
+                        this.dataScore.push(...res.data.data.data)
+                        this.newtotal = res.data.data.total
+                        this.newpagesize = res.data.data.page_size
+                      })
+                    }
+                  }
                 },
-                "上下分"
-              );
+                '上下分'
+              )
             },
             (h, params) => {
               return h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "warning",
-                    size: "small",
+                    type: 'warning',
+                    size: 'small',
                     // to: "/players-game-" + params.row.id,
-                    target: "_blank",
+                    target: '_blank'
                   },
                   style: {
-                    marginRight: "5px",
+                    marginRight: '5px'
                   },
                   on: {
                     click: () => {
-                      const params2 = { agent: params.row.agentId };
+                      const params2 = { agent: params.row.agentId }
                       let routeData = this.$router.resolve({
-                        path: "/players-game-" + params.row.id,
-                        query: params2,
-                      });
-                      window.open(routeData.href, "_blank");
-                    },
-                  },
+                        path: '/players-game-' + params.row.id,
+                        query: params2
+                      })
+                      window.open(routeData.href, '_blank')
+                    }
+                  }
                 },
-                "战绩"
-              );
+                '战绩'
+              )
             },
             (h, params) => {
               if (this.viewAccess) {
                 return [
                   h(
-                    "Poptip",
+                    'Poptip',
                     {
                       props: {
                         transfer: true,
                         confirm: true,
-                        placement: "left",
+                        placement: 'left',
                         title:
-                          "您确定要" +
-                          (params.row.state == 2 ? "解冻" : "冻结") +
-                          "此玩家吗?",
+                          '您确定要' +
+                          (params.row.state == 2 ? '解冻' : '冻结') +
+                          '此玩家吗?'
                       },
-                      style: { textAlign: "left", zIndex: "99" },
+                      style: { textAlign: 'left', zIndex: '99' },
                       on: {
-                        "on-ok": () => {
+                        'on-ok': () => {
                           let data = {
-                            agentId: sessionStorage.getItem("agentVal"),
+                            agentId: sessionStorage.getItem('agentVal'),
                             id: JSON.stringify([params.row.id]),
-                            state: params.row.state == 2 ? 1 : 2,
-                          };
+                            state: params.row.state == 2 ? 1 : 2
+                          }
                           editPlayerState(data).then((res) => {
                             if (res.data.code == 200) {
                               this.$nextTick(() => {
-                                this.userSelect = [];
-                                this.handleSearch();
-                                this.$Message.success(res.data.msg);
-                              });
+                                this.userSelect = []
+                                this.handleSearch()
+                                this.$Message.success(res.data.msg)
+                              })
                             } else {
-                              this.$Message.error(res.data.msg);
+                              this.$Message.error(res.data.msg)
                             }
-                          });
-                        },
-                      },
+                          })
+                        }
+                      }
                     },
                     [
                       h(
-                        "Button",
+                        'Button',
                         {
                           props: {
-                            type: params.row.state <= 1 ? "error" : "success",
-                            size: "small",
-                          },
+                            type: params.row.state <= 1 ? 'error' : 'success',
+                            size: 'small'
+                          }
                         },
-                        params.row.state <= 1 ? "冻结" : "解冻"
-                      ),
+                        params.row.state <= 1 ? '冻结' : '解冻'
+                      )
                     ]
-                  ),
-                ];
+                  )
+                ]
               }
-            },
-          ],
-        },
+            }
+          ]
+        }
       ],
       tableData: [],
       userSelect: [],
@@ -711,104 +709,104 @@ export default {
         current: 0,
         page: setting.page,
         pageSize: setting.pageSize,
-        pageOpts: setting.pageOpts,
+        pageOpts: setting.pageOpts
       },
       spinShow: false,
-      bClearPlayerGameState:false,
-      iClearPlayerGameId:"",
-      gameId:0,
+      bClearPlayerGameState: false,
+      iClearPlayerGameId: '',
+      gameId: 0,
       gameOptions: [],
-      games: JSON.parse(sessionStorage.getItem("games") || "[]"),
-      gameCurrency:[],
-      currency:"CNY"
-    };
+      games: JSON.parse(sessionStorage.getItem('games') || '[]'),
+      gameCurrency: [],
+      currency: 'CNY'
+    }
   },
   methods: {
-    fClearPlayerGameState() {
+    fClearPlayerGameState () {
       let Data = {
         playerId: this.iClearPlayerGameId,
         gameId: this.gameId,
-        currency:this.currency
-      };
+        currency: this.currency
+      }
       clearPlayerGameState(Data).then((res) => {
         if (res.data.code == 200) {
-          this.$Message.success("清理成功");
-        }else{
-          this.$Message.error("清理失败");
+          this.$Message.success('清理成功')
+        } else {
+          this.$Message.error('清理失败')
         }
-      });
+      })
     },
     /**
      * 查询代理业绩
      */
-    viewDetail2() {
+    viewDetail2 () {
       const route = {
-        name: "players-control",
-      };
+        name: 'players-control'
+      }
 
-      let routeUrl = this.$router.resolve(route);
-      window.open(routeUrl.href, "_blank");
+      let routeUrl = this.$router.resolve(route)
+      window.open(routeUrl.href, '_blank')
     },
-    viewClearPlayerGameState() {
-      this.bClearPlayerGameState = true;
+    viewClearPlayerGameState () {
+      this.bClearPlayerGameState = true
     },
-    onSelect(sel) {
+    onSelect (sel) {
       this.userSelect = sel.map((item) => {
-        return item.id;
-      });
+        return item.id
+      })
     },
-    editBatchState(status) {
+    editBatchState (status) {
       if (!this.userSelect || this.userSelect.length == 0) {
-        return;
+        return
       }
       let Data = {
-        agentId: sessionStorage.getItem("agentVal"),
+        agentId: sessionStorage.getItem('agentVal'),
         id: JSON.stringify(this.userSelect),
-        state: status,
-      };
+        state: status
+      }
       editPlayerState(Data).then((res) => {
-        if (res.data.code == 200) this.$Message.success("批量修改状态成功");
+        if (res.data.code == 200) this.$Message.success('批量修改状态成功')
         this.$nextTick(() => {
-          this.userSelect = [];
-          this.handleSearch();
-        });
-      });
+          this.userSelect = []
+          this.handleSearch()
+        })
+      })
     },
-    setLinkage(i, key) {
-      if (key == "webId") {
-        let [k, m] = [null, null];
+    setLinkage (i, key) {
+      if (key == 'webId') {
+        let [k, m] = [null, null]
         for (const j in this.req) {
-          this.req[j].key == "webId" ? (k = j) : "";
-          this.req[j].key == "agentId" ? (m = j) : "";
+          if (this.req[j].key == 'webId') k = j
+          if (this.req[j].key == 'agentId') m = j
         }
-        this.req[m].option = [];
+        this.req[m].option = []
         this.req[m].value =
-          sessionStorage.getItem("agentVal") != null
-            ? Number(sessionStorage.getItem("agentVal"))
-            : "";
+          sessionStorage.getItem('agentVal') != null
+            ? Number(sessionStorage.getItem('agentVal'))
+            : ''
         this.req[k].option.forEach((item) => {
           if (item.agentList.length > 0 && item.id == i) {
-            this.req[m].option.push(...item.agentList);
+            this.req[m].option.push(...item.agentList)
           }
-        });
+        })
       }
     },
-    sortProfit(e) {
-      this.order = e.order == "desc" ? `-${e.key}` : e.key;
-      this.handleSearch();
+    sortProfit (e) {
+      this.order = e.order == 'desc' ? `-${e.key}` : e.key
+      this.handleSearch()
     },
 
-    handleSearch() {
-      this.spinShow = true;
-      let id, st, et;
+    handleSearch () {
+      this.spinShow = true
+      let st, et
 
       st = dayjs(
-        dayjs(this.startDate.getTime()).format("YYYY-MM-DD 00:00:00")
-      ).unix();
+        dayjs(this.startDate.getTime()).format('YYYY-MM-DD 00:00:00')
+      ).unix()
 
       et = dayjs(
-        dayjs(this.endDate.getTime()).format("YYYY-MM-DD 23:59:59")
-      ).unix();
+        dayjs(this.endDate.getTime()).format('YYYY-MM-DD 23:59:59')
+      ).unix()
 
       let Data = [
         { order: this.order },
@@ -817,109 +815,109 @@ export default {
         { webId: this.site },
         { agentId: this.agent === 9999999 ? undefined : this.agent },
         { startTime: st },
-        { endTime: et },
-      ];
-      if (sessionStorage.getItem("siteVal")) {
-        Data = [{ webId: Number(sessionStorage.getItem("siteVal")) }, ...Data];
+        { endTime: et }
+      ]
+      if (sessionStorage.getItem('siteVal')) {
+        Data = [{ webId: Number(sessionStorage.getItem('siteVal')) }, ...Data]
       }
-      if (sessionStorage.getItem("agentVal")) {
+      if (sessionStorage.getItem('agentVal')) {
         Data = [
-          { agentId: Number(sessionStorage.getItem("agentVal")) },
-          ...Data,
-        ];
+          { agentId: Number(sessionStorage.getItem('agentVal')) },
+          ...Data
+        ]
       }
       this.req.map((item) => {
-        if (item.value !== "") {
+        if (item.value !== '') {
           Data.push({
-            [item.key]: item.value,
-          });
+            [item.key]: item.value
+          })
         }
-      });
+      })
       getPlayerData(Data)
         .then((res) => {
-          this.spinShow = false;
+          this.spinShow = false
           if (res.data.code == 200) {
-            this.tableData = [];
-            this.tableData.push(...res.data.data.data);
-            this.pageData.current = res.data.data.total;
+            this.tableData = []
+            this.tableData.push(...res.data.data.data)
+            this.pageData.current = res.data.data.total
           } else {
             // 判断响应状态是否为Token失效，如果失效则执行退出函数并刷新页面。
             this.$nextTick(() => {
               if (setting.arrStatus.indexOf(res.data.code) != -1) {
                 this.$Message.error(
-                  res.data.code + " ：&nbsp;" + res.data.msg + "请重新登录"
-                );
-                this.handleLogOut();
+                  res.data.code + ' ：&nbsp;' + res.data.msg + '请重新登录'
+                )
+                this.handleLogOut()
               } else {
-                this.$Message.error(res.data.code + " ：&nbsp;" + res.data.msg);
+                this.$Message.error(res.data.code + ' ：&nbsp;' + res.data.msg)
               }
-            });
+            })
           }
         })
         .catch((err) => {
-          this.spinShow = false;
-        });
+          this.spinShow = false
+        })
     },
-    handleAllSearch() {
-      this.spinShow = true;
+    handleAllSearch () {
+      this.spinShow = true
       for (const i in this.req) {
-        if (this.req[i].type === "Checkbox") {
-          this.req[i].value = 0;
+        if (this.req[i].type === 'Checkbox') {
+          this.req[i].value = 0
         } else {
-          this.req[i].value = null;
+          this.req[i].value = null
         }
       }
       let Data = [
         { page: this.pageData.page },
         { pageSize: this.pageData.pageSize },
-        { webId: this.site },
-      ];
-      this.agent = null;
+        { webId: this.site }
+      ]
+      this.agent = null
       getPlayerData(Data).then((res) => {
-        this.spinShow = false;
+        this.spinShow = false
         if (res.data.code == 200) {
-          this.tableData = [];
-          this.pageData.page = 1;
-          this.tableData.push(...res.data.data.data);
-          this.pageData.current = res.data.data.total;
+          this.tableData = []
+          this.pageData.page = 1
+          this.tableData.push(...res.data.data.data)
+          this.pageData.current = res.data.data.total
         } else {
-          this.$Message.error(res.data.code + " ：&nbsp;" + res.data.msg);
+          this.$Message.error(res.data.code + ' ：&nbsp;' + res.data.msg)
         }
-      });
+      })
     },
-    changePage(index) {
-      this.pageData.page = index;
-      this.handleSearch();
+    changePage (index) {
+      this.pageData.page = index
+      this.handleSearch()
     },
-    changePageSize(index) {
-      this.pageData.pageSize = index;
-      this.handleSearch();
+    changePageSize (index) {
+      this.pageData.pageSize = index
+      this.handleSearch()
     },
-    searchAction() {
-      this.pageData.page = 1;
-      this.handleSearch();
+    searchAction () {
+      this.pageData.page = 1
+      this.handleSearch()
     },
     /**
      * 切换站点
      */
-    siteChanged(siteId) {
-      this.agent = 9999999;
-      sessionStorage.setItem("siteVal", siteId);
+    siteChanged (siteId) {
+      this.agent = 9999999
+      sessionStorage.setItem('siteVal', siteId)
       this.agentOption = this.siteOption.find(
         (site) => site.id == siteId
-      ).agentList;
+      ).agentList
       if (!this.agentOption.find((x) => x.id == 9999999)) {
         this.agentOption.unshift({
-          name: "全部",
-          id: 9999999,
-        });
+          name: '全部',
+          id: 9999999
+        })
       }
       if (this.agentOption.length > 1) {
         this.agentOption.map((item) => {
-          item.label = item.name;
-        });
+          item.label = item.name
+        })
       }
-    },
+    }
 
     // clearPlayerLock() {
     //   let _this = this;
@@ -964,96 +962,95 @@ export default {
     //   });
     // },
   },
-  mounted() {
-    window.testis = this;
+  mounted () {
+    window.testis = this
     let mountedfunc = () => {
-      this.userInfo = JSON.parse(Cookies.get("userInfo"));
-      let sid = sessionStorage.getItem("siteVal"); // 获取当前session存储的已选择的站点id
-      let siteOption = JSON.parse(sessionStorage.getItem("siteOption") || "[]"); // 获取当前session存储的站点列表数据
-      this.siteOption = siteOption;
-      this.site = sid * 1;
+      this.userInfo = JSON.parse(Cookies.get('userInfo'))
+      let sid = sessionStorage.getItem('siteVal') // 获取当前session存储的已选择的站点id
+      let siteOption = JSON.parse(sessionStorage.getItem('siteOption') || '[]') // 获取当前session存储的站点列表数据
+      this.siteOption = siteOption
+      this.site = sid * 1
       // 把选择的站点赋值到页面选中开始
       siteOption &&
         siteOption.map((item, index) => {
           if (item.id == sid) {
-            this.agentOption = item.agentList || [];
+            this.agentOption = item.agentList || []
             this.agentOption.map((item) => {
-              item.value = item.id;
-              item.label = item.name;
-            });
-            this.agent = 9999999;
+              item.value = item.id
+              item.label = item.name
+            })
+            this.agent = 9999999
             this.agentOption.unshift({
-              name: "全部",
+              name: '全部',
               id: 9999999,
               value: 9999999,
-              label: "全部",
-            });
+              label: '全部'
+            })
             this.agentOption.map((item) => {
-              item.label = item.name;
-            });
+              item.label = item.name
+            })
           }
-        });
-      let newArray = this.games;
-      let a = [];
-      a.push(...newArray);
+        })
+      let newArray = this.games
+      let a = []
+      a.push(...newArray)
       a.map((item) => {
         if (item.nameZH.length > 0) {
-          item.label = item.name + " [" + item.nameZH + "]";
+          item.label = item.name + ' [' + item.nameZH + ']'
         } else {
-          item.label = item.name;
+          item.label = item.name
         }
-        return item;
-      });
-      this.gameOptions = a;
+        return item
+      })
+      this.gameOptions = a
       this.siteOption.map((item) => {
-        item.label = item.name;
-      });
+        item.label = item.name
+      })
       // 把选择的站点赋值到页面选中结束
-      this.handleSearch();
+      this.handleSearch()
       this.req.map((item) => {
-        if (item.key == "webId") {
+        if (item.key == 'webId') {
           item.option.push(
-            ...Object.assign(JSON.parse(sessionStorage.getItem("siteOption")))
-          );
-          if (sessionStorage.getItem("siteVal")) {
-            item.value = Number(sessionStorage.getItem("siteVal"));
+            ...Object.assign(JSON.parse(sessionStorage.getItem('siteOption')))
+          )
+          if (sessionStorage.getItem('siteVal')) {
+            item.value = Number(sessionStorage.getItem('siteVal'))
             this.$nextTick(() => {
-              this.setLinkage(item.value, "webId");
-            });
+              this.setLinkage(item.value, 'webId')
+            })
           }
         }
-        if (item.key == "agentId" && sessionStorage.getItem("agentVal")) {
-          item.value = Number(sessionStorage.getItem("agentVal"));
+        if (item.key == 'agentId' && sessionStorage.getItem('agentVal')) {
+          item.value = Number(sessionStorage.getItem('agentVal'))
         }
-        if (item.key == "gameType") {
+        if (item.key == 'gameType') {
           item.option.push(
-            ...Object.assign(JSON.parse(sessionStorage.getItem("typeOption")))
-          );
+            ...Object.assign(JSON.parse(sessionStorage.getItem('typeOption')))
+          )
         }
-      });
-    };
+      })
+    }
 
     let timer = setInterval(() => {
-      if (!!sessionStorage.getItem("siteOption")) {
-        clearInterval(timer);
-        mountedfunc();
+      if (sessionStorage.getItem('siteOption')) {
+        clearInterval(timer)
+        mountedfunc()
       }
-    }, 500);
-    
-    getGameCurrency([]).then((res) => {
-      if (res.data.code == 200){
-        let tmp = JSON.parse(res.data.data)
-        if(tmp) {
-          let arr = [];
-          Object.keys(tmp["currency"]).forEach(item=>{
-            arr.push(item);
-          })
-          this.gameCurrency = arr;
+    }, 500)
+
+    getGameCurrency().then((res) => {
+      if (res.data.code == 200) {
+        let tmp = res.data.data
+        if (typeof tmp === 'string') {
+          tmp = JSON.parse(tmp)
         }
-      };
-    });
-  },
-};
+        if (tmp && tmp.currency) {
+          this.gameCurrency = Object.keys(tmp.currency)
+        }
+      }
+    })
+  }
+}
 </script>
 
 <style lang="less">

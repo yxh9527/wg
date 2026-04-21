@@ -25,25 +25,25 @@
 </template>
 
 <script>
-import Tables from "_c/tables";
+import Tables from '_c/tables'
 import {
   getAgentData,
-  addControlAgentPomp,
-} from "@/api/data";
-import { setting } from "@/config";
+  addControlAgentPomp
+} from '@/api/data'
+import { setting } from '@/config'
 export default {
-  name: "gameManage",
+  name: 'gameManage',
   components: {
-    Tables,
+    Tables
   },
-  inject: ["handleLogOut"],
-  data() {
+  inject: ['handleLogOut'],
+  data () {
     return {
       columns: [
-        { title: "序号", width: 80, key: "id", align: "center" },
-        { title: "站点", key: "webName", align: "center" },
-        { title: "代理", key: "nickName", align: "center" },
-        { title: "剩余点数", key: "point", align: "right" },
+        { title: '序号', width: 80, key: 'id', align: 'center' },
+        { title: '站点', key: 'webName', align: 'center' },
+        { title: '代理', key: 'nickName', align: 'center' },
+        { title: '剩余点数', key: 'point', align: 'right' },
         // {
         //   title: "总消耗",
         //   key: "totalConsume",
@@ -74,251 +74,251 @@ export default {
         //   key: "stock"
         // },
         {
-          title: "操作",
-          key: "handle",
+          title: '操作',
+          key: 'handle',
           width: 450,
-          align: "center",
+          align: 'center',
           button: [
             (h, params) => {
               return h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "info",
-                    size: "small",
+                    type: 'info',
+                    size: 'small',
                     to:
-                      "/oper-manage-user/" +
+                      '/oper-manage-user/' +
                       params.row.id +
-                      "/" +
-                      params.row.id,
+                      '/' +
+                      params.row.id
                   },
                   style: {
-                    marginRight: "8px",
-                    padding: "0 20px",
+                    marginRight: '8px',
+                    padding: '0 20px'
                   },
                   on: {
-                    click: () => {},
-                  },
+                    click: () => {}
+                  }
                 },
-                "玩家单控"
-              );
+                '玩家单控'
+              )
             },
             (h, params) => {
               return h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "info",
-                    size: "small",
-                    to: "/oper-manage-game-" + params.row.id,
+                    type: 'info',
+                    size: 'small',
+                    to: '/oper-manage-game-' + params.row.id
                   },
                   style: {
-                    marginRight: "8px",
-                    padding: "0 20px",
-                  },
+                    marginRight: '8px',
+                    padding: '0 20px'
+                  }
                 },
-                "游戏控制"
-              );
+                '游戏控制'
+              )
             },
             (h, params) => {
               return h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "info",
-                    size: "small",
+                    type: 'info',
+                    size: 'small'
                     // to: "/oper-manage-agent-" + params.row.id
                   },
                   style: {
-                    marginRight: "8px",
-                    padding: "0 20px",
+                    marginRight: '8px',
+                    padding: '0 20px'
                   },
                   on: {
                     click: () => {
                       this.$Modal.confirm({
-                        title: "代理总控",
+                        title: '代理总控',
                         render: (h) => {
                           return [
                             h(
-                              "div",
+                              'div',
                               {
                                 style: {
-                                  marginTop: "30px",
-                                  marginBottom: "10px",
-                                  fontSize: "18px",
-                                },
+                                  marginTop: '30px',
+                                  marginBottom: '10px',
+                                  fontSize: '18px'
+                                }
                               },
-                              "站点：" + params.row.webName
+                              '站点：' + params.row.webName
                             ),
                             h(
-                              "div",
+                              'div',
                               {
                                 style: {
-                                  marginBottom: "10px",
-                                  fontSize: "18px",
-                                },
+                                  marginBottom: '10px',
+                                  fontSize: '18px'
+                                }
                               },
-                              "代理：" + params.row.nickName
+                              '代理：' + params.row.nickName
                             ),
                             h(
-                              "label",
+                              'label',
                               {
                                 style: {
-                                  fontSize: "18px",
-                                  marginBottom: "10px",
-                                },
+                                  fontSize: '18px',
+                                  marginBottom: '10px'
+                                }
                               },
-                              "抽水设置："
+                              '抽水设置：'
                             ),
-                            h("InputNumber", {
+                            h('InputNumber', {
                               props: {
                                 value: params.row.pomp,
                                 max: 100,
                                 min: 0,
-                                placeholder: "范围：0%-100%",
+                                placeholder: '范围：0%-100%'
                               },
                               style: {
-                                width: "180px",
-                                fontSize: "18px",
-                                marginBottom: "10px",
+                                width: '180px',
+                                fontSize: '18px',
+                                marginBottom: '10px'
                               },
                               on: {
                                 input: (val) => {
-                                  params.row.pomp = val;
-                                },
-                              },
+                                  params.row.pomp = val
+                                }
+                              }
                             }),
                             h(
-                              "span",
+                              'span',
                               {
                                 style: {
-                                  fontSize: "18px",
-                                },
+                                  fontSize: '18px'
+                                }
                               },
-                              " %"
-                            ),
-                          ];
+                              ' %'
+                            )
+                          ]
                         },
                         closable: true,
                         onOk: () => {
-                          let Data = {};
+                          let Data = {}
                           Data = {
                             id: params.row.id,
-                            pomp: params.row.pomp,
-                          };
+                            pomp: params.row.pomp
+                          }
                           addControlAgentPomp(Data).then((res) => {
                             if (res.data.code == 200) {
-                              this.$Message.success("修改代理控制成功");
-                              this.handleSearch();
+                              this.$Message.success('修改代理控制成功')
+                              this.handleSearch()
                             }
-                          });
-                        },
-                      });
-                    },
-                  },
+                          })
+                        }
+                      })
+                    }
+                  }
                 },
-                "代理总控"
-              );
+                '代理总控'
+              )
             },
             (h, params) => {
               return h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "info",
-                    size: "small",
-                    to: "/oper-manage-log/" + params.row.id,
+                    type: 'info',
+                    size: 'small',
+                    to: '/oper-manage-log/' + params.row.id
                   },
                   style: {
-                    marginRight: "8px",
-                    padding: "0 20px",
-                  },
+                    marginRight: '8px',
+                    padding: '0 20px'
+                  }
                 },
-                "日志"
-              );
-            },
-          ],
-        },
+                '日志'
+              )
+            }
+          ]
+        }
       ],
       tableData: [],
       pageData: {
         current: 0,
         page: setting.page,
         pageSize: setting.pageSize,
-        pageOpts: setting.pageOpts,
+        pageOpts: setting.pageOpts
       },
-      spinShow: false,
-    };
+      spinShow: false
+    }
   },
   methods: {
-    handleSearch() {
-      this.spinShow = true;
+    handleSearch () {
+      this.spinShow = true
       let Data = [
         { page: this.pageData.page },
-        { pageSize: this.pageData.pageSize },
-      ];
-      if (sessionStorage.getItem("siteVal")) {
-        Data = [{ webId: Number(sessionStorage.getItem("siteVal")) }, ...Data];
+        { pageSize: this.pageData.pageSize }
+      ]
+      if (sessionStorage.getItem('siteVal')) {
+        Data = [{ webId: Number(sessionStorage.getItem('siteVal')) }, ...Data]
       }
       getAgentData(Data).then((res) => {
-        this.spinShow = false;
+        this.spinShow = false
         if (res.data.code == 200) {
-          this.tableData = [];
-          this.tableData.push(...res.data.data.data);
-          this.pageData.current = res.data.data.total;
+          this.tableData = []
+          this.tableData.push(...res.data.data.data)
+          this.pageData.current = res.data.data.total
         } else {
           // 判断响应状态是否为Token失效，如果失效则执行退出函数并刷新页面。
           this.$nextTick(() => {
             if (setting.arrStatus.indexOf(res.data.code) != -1) {
               this.$Message.error(
-                res.data.code + " ：&nbsp;" + res.data.msg + "请重新登录"
-              );
-              this.handleLogOut();
+                res.data.code + ' ：&nbsp;' + res.data.msg + '请重新登录'
+              )
+              this.handleLogOut()
             } else {
-              this.$Message.error(res.data.code + " ：&nbsp;" + res.data.msg);
+              this.$Message.error(res.data.code + ' ：&nbsp;' + res.data.msg)
             }
-          });
+          })
         }
-      });
+      })
     },
-    handleAllSearch() {
-      this.spinShow = true;
+    handleAllSearch () {
+      this.spinShow = true
       for (const i in this.req) {
-        this.req[i].value = "";
+        this.req[i].value = ''
       }
       let Data = [
         { page: this.pageData.page },
-        { pageSize: this.pageData.pageSize },
-      ];
+        { pageSize: this.pageData.pageSize }
+      ]
       getAgentData(Data).then((res) => {
-        this.spinShow = false;
+        this.spinShow = false
         if (res.data.code == 200) {
-          this.tableData = [];
-          this.pageData.page = 1;
-          this.tableData.push(...res.data.data.data);
-          this.pageData.current = res.data.data.total;
+          this.tableData = []
+          this.pageData.page = 1
+          this.tableData.push(...res.data.data.data)
+          this.pageData.current = res.data.data.total
         } else {
-          this.$Message.error(res.data.code + " ：&nbsp;" + res.data.msg);
+          this.$Message.error(res.data.code + ' ：&nbsp;' + res.data.msg)
         }
-      });
+      })
     },
-    changePage(index) {
-      this.pageData.page = index;
-      this.handleSearch();
+    changePage (index) {
+      this.pageData.page = index
+      this.handleSearch()
     },
-    changePageSize(index) {
-      this.pageData.pageSize = index;
-      this.handleSearch();
+    changePageSize (index) {
+      this.pageData.pageSize = index
+      this.handleSearch()
     },
-    searchAction() {
-      this.pageData.page = 1;
-      this.handleSearch();
-    },
+    searchAction () {
+      this.pageData.page = 1
+      this.handleSearch()
+    }
   },
-  mounted() {
-    this.handleSearch();
-  },
-};
+  mounted () {
+    this.handleSearch()
+  }
+}
 </script>
 
 <style>

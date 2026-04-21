@@ -89,51 +89,51 @@
 </template>
 
 <script>
-import Step from "_c/step";
+import Step from '_c/step'
 export default {
-  name: "agency-add",
+  name: 'agency-add',
   components: {
     Step
   },
-  data() {
+  data () {
     return {
       state: this.$route.meta.state,
       stepList: [
-        { title: "填写基本信息", content: "填写基本信息" },
-        { title: "配置代理商", content: "配置代理商" },
-        { title: "创建成功", content: "创建成功" }
+        { title: '填写基本信息', content: '填写基本信息' },
+        { title: '配置代理商', content: '配置代理商' },
+        { title: '创建成功', content: '创建成功' }
       ],
       itemCreate: [
-        { lable: "代理商标识", input: "" },
-        { lable: "代理商昵称", input: "" },
-        { lable: "代理商邮箱", input: "" },
-        { lable: "所属站点", input: "" },
-        { lable: "上级代理商", input: "" },
-        { lable: "备注信息", input: "" },
-        { lable: "负责人", input: "" },
-        { lable: "负责人联系方式", input: "" }
+        { lable: '代理商标识', input: '' },
+        { lable: '代理商昵称', input: '' },
+        { lable: '代理商邮箱', input: '' },
+        { lable: '所属站点', input: '' },
+        { lable: '上级代理商', input: '' },
+        { lable: '备注信息', input: '' },
+        { lable: '负责人', input: '' },
+        { lable: '负责人联系方式', input: '' }
       ],
       itemSeting: [
-        { lable: "代理商初始点数", input: "" },
-        { lable: "上级剩余点数", input: "" },
-        { lable: "点数预警值", input: "" },
-        { lable: "点数停用值", input: "" },
-        { lable: "代理商直管下级数量", input: "" },
-        { lable: "代理商拥有游戏", input: "" },
-        { lable: "代理前端域名", input: "" }
+        { lable: '代理商初始点数', input: '' },
+        { lable: '上级剩余点数', input: '' },
+        { lable: '点数预警值', input: '' },
+        { lable: '点数停用值', input: '' },
+        { lable: '代理商直管下级数量', input: '' },
+        { lable: '代理商拥有游戏', input: '' },
+        { lable: '代理前端域名', input: '' }
       ]
-    };
-  },
-  methods: {
-    next() {
-      this.state += 1;
-    },
-    change() {
-      this.state = 0;
     }
   },
-  mounted() {}
-};
+  methods: {
+    next () {
+      this.state += 1
+    },
+    change () {
+      this.state = 0
+    }
+  },
+  mounted () {}
+}
 </script>
 
 <style>

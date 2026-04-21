@@ -12,11 +12,11 @@
 </template>
 <script>
 export default {
-  name: "step",
+  name: 'step',
   props: { state: Number, data: Array },
-  data() {
-    return {};
+  data () {
+    return {}
   },
-  mounted() {}
-};
+  mounted () {}
+}
 </script>

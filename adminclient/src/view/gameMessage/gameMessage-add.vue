@@ -49,46 +49,46 @@
 </template>
 
 <script>
-import Step from "_c/step";
+import Step from '_c/step'
 export default {
-  name: "game_add",
+  name: 'game_add',
   components: {
     Step
   },
-  data() {
+  data () {
     return {
       state: this.$route.meta.state,
       stepList: [
-        { title: "基本信息", content: "填写基本信息" },
-        { title: "创建成功", content: "游戏消息创建成功" }
+        { title: '基本信息', content: '填写基本信息' },
+        { title: '创建成功', content: '游戏消息创建成功' }
       ],
       itemCreate: [
-        { lable: "消息序号", input: "" },
-        { lable: "消息标题", input: "" },
-        { lable: "消息类型", input: "" },
-        { lable: "收件代理", input: "" },
-        { lable: "游戏平台", input: "" },
-        { lable: "游戏类型", input: "" },
-        { lable: "游戏名称", input: "" },
-        { lable: "消息内容", input: "" },
-        { lable: "备注", input: "" }
+        { lable: '消息序号', input: '' },
+        { lable: '消息标题', input: '' },
+        { lable: '消息类型', input: '' },
+        { lable: '收件代理', input: '' },
+        { lable: '游戏平台', input: '' },
+        { lable: '游戏类型', input: '' },
+        { lable: '游戏名称', input: '' },
+        { lable: '消息内容', input: '' },
+        { lable: '备注', input: '' }
       ],
       itemTime: [
-        { lable: "发布时间", input: "" },
-        { lable: "停止时间", input: "" }
+        { lable: '发布时间', input: '' },
+        { lable: '停止时间', input: '' }
       ]
-    };
-  },
-  methods: {
-    next() {
-      this.state += 1;
-    },
-    change() {
-      this.state = 0;
     }
   },
-  mounted() {}
-};
+  methods: {
+    next () {
+      this.state += 1
+    },
+    change () {
+      this.state = 0
+    }
+  },
+  mounted () {}
+}
 </script>
 
 <style>

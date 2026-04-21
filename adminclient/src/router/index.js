@@ -15,7 +15,6 @@ const {
   homeName
 } = config
 
-
 Vue.use(Router)
 const router = new Router({
   routes,
@@ -24,21 +23,22 @@ const router = new Router({
 const LOGIN_PAGE_NAME = 'login'
 
 const turnTo = (to, access, next) => {
-
   if (canTurnTo(to.name, access, routes)) {
     next()
-  } else next({
-    replace: true,
-    name: 'error_401'
-  })
+  } else {
+    next({
+      replace: true,
+      name: 'error_401'
+    })
+  }
 }
 
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
   const token = getToken()
-  if (to.name=="queryOrder") {
+  if (to.name == 'queryOrder') {
     next() // 跳转
-  }else{
+  } else {
     if (!token && to.name !== LOGIN_PAGE_NAME) {
       // 未登录且要跳转的页面不是登录页
       next({
@@ -53,10 +53,10 @@ router.beforeEach((to, from, next) => {
         name: homeName // 跳转到homeName页
       })
     } else {
-      let str = Cookies.get("userInfo")
-      if (str!=undefined) {
+      let str = Cookies.get('userInfo')
+      if (str != undefined) {
         let userData = JSON.parse(str)
-        if (userData&&userData!=undefined) {
+        if (userData && userData != undefined) {
           turnTo(to, userData.access, next)
           store.dispatch('getUserInfo').then(user => {}).catch(() => {
             setToken('')
@@ -65,7 +65,7 @@ router.beforeEach((to, from, next) => {
             })
           })
         }
-      }else{
+      } else {
         store.dispatch('getUserInfo').then(user => {
           turnTo(to, user.access, next)
         }).catch(() => {

@@ -72,135 +72,135 @@
 </template>
 
 <script>
-import Step from "_c/step";
-import { createGameData, getClassList, getTypeList } from "@/api/data";
+import Step from '_c/step'
+import { createGameData } from '@/api/data'
 export default {
-  name: "game_add",
+  name: 'game_add',
   components: {
     Step
   },
-  data() {
+  data () {
     return {
       state: this.$route.meta.state,
       stepList: [
-        { title: "填写基本信息", content: "填写基本信息" },
-        { title: "创建成功", content: "站点创建成功" }
+        { title: '填写基本信息', content: '填写基本信息' },
+        { title: '创建成功', content: '站点创建成功' }
       ],
       itemCreate: [
-        { lable: "游戏序号", type: "text", key: "number", value: "" },
-        { lable: "游戏名称", type: "text", key: "name", value: "" },
-        { lable: "游戏Url", type: "text", key: "url", value: "" },
+        { lable: '游戏序号', type: 'text', key: 'number', value: '' },
+        { lable: '游戏名称', type: 'text', key: 'name', value: '' },
+        { lable: '游戏Url', type: 'text', key: 'url', value: '' },
         {
-          lable: "游戏分类",
-          type: "select",
-          key: "gameType",
-          value: "",
+          lable: '游戏分类',
+          type: 'select',
+          key: 'gameType',
+          value: '',
           option: []
         },
         {
-          lable: "游戏平台",
-          type: "select",
-          key: "gameClass",
-          value: "",
+          lable: '游戏平台',
+          type: 'select',
+          key: 'gameClass',
+          value: '',
           option: []
         },
-        { lable: "单局时长设定", type: "text", key: "limitTime", value: "" },
-        { lable: "备注信息", type: "text", key: "remarks", value: "" }
+        { lable: '单局时长设定', type: 'text', key: 'limitTime', value: '' },
+        { lable: '备注信息', type: 'text', key: 'remarks', value: '' }
       ],
       confParam: [
         {
           roomType: 1,
-          lable1: "初级房底注",
-          key1: "baseScore",
-          value1: "",
-          lable2: "初级房准入",
-          key2: "getIntoScore",
-          value2: ""
+          lable1: '初级房底注',
+          key1: 'baseScore',
+          value1: '',
+          lable2: '初级房准入',
+          key2: 'getIntoScore',
+          value2: ''
         },
         {
           roomType: 2,
-          lable1: "中级房底注",
-          key1: "baseScore",
-          value1: "",
-          lable2: "中级房准入",
-          key2: "getIntoScore",
-          value2: ""
+          lable1: '中级房底注',
+          key1: 'baseScore',
+          value1: '',
+          lable2: '中级房准入',
+          key2: 'getIntoScore',
+          value2: ''
         },
         {
           roomType: 3,
-          lable1: "高级房底注",
-          key1: "baseScore",
-          value1: "",
-          lable2: "高级房准入",
-          key2: "getIntoScore",
-          value2: ""
+          lable1: '高级房底注',
+          key1: 'baseScore',
+          value1: '',
+          lable2: '高级房准入',
+          key2: 'getIntoScore',
+          value2: ''
         },
         {
           roomType: 4,
-          lable1: "王者房底注",
-          key1: "baseScore",
-          value1: "",
-          lable2: "王者房准入",
-          key2: "getIntoScore",
-          value2: ""
+          lable1: '王者房底注',
+          key1: 'baseScore',
+          value1: '',
+          lable2: '王者房准入',
+          key2: 'getIntoScore',
+          value2: ''
         },
         {
           roomType: 5,
-          lable1: "至尊房底注",
-          key1: "baseScore",
-          value1: "",
-          lable2: "至尊房准入",
-          key2: "getIntoScore",
-          value2: ""
+          lable1: '至尊房底注',
+          key1: 'baseScore',
+          value1: '',
+          lable2: '至尊房准入',
+          key2: 'getIntoScore',
+          value2: ''
         },
         {
           roomType: 6,
-          lable1: "尊享房底注",
-          key1: "baseScore",
-          value1: "",
-          lable2: "尊享房准入",
-          key2: "getIntoScore",
-          value2: ""
+          lable1: '尊享房底注',
+          key1: 'baseScore',
+          value1: '',
+          lable2: '尊享房准入',
+          key2: 'getIntoScore',
+          value2: ''
         }
       ]
-    };
+    }
   },
   methods: {
-    resForm() {
+    resForm () {
       this.itemCreate.forEach(item => {
-        item.value = "";
-      });
+        item.value = ''
+      })
     },
-    next() {
-      this.state += 1;
+    next () {
+      this.state += 1
     },
-    change() {
-      this.state = 0;
+    change () {
+      this.state = 0
     },
-    submit() {
-      let Data = [];
-      let Room = [];
+    submit () {
+      let Data = []
+      let Room = []
       this.itemCreate.map(item => {
         Data.push({
           [item.key]: item.value
-        });
-      });
+        })
+      })
       this.confParam.map(item => {
         Room.push({
           roomType: item.roomType,
           [item.key1]: item.value1,
           [item.key2]: item.value2
-        });
-      });
-      Data.push({ confParam: [...Room] });
+        })
+      })
+      Data.push({ confParam: [...Room] })
       createGameData(Data).then(res => {
-        if (res.data.msg == "操作成功") {
-          this.state += 1;
+        if (res.data.msg == '操作成功') {
+          this.state += 1
         }
-      });
+      })
     }
   },
-  mounted() {
+  mounted () {
     this.itemCreate.map(item => {
       // if (item.key == "gameClass") {
       //   getClassList(sessionStorage.getItem("agentVal")).then(res => {
@@ -212,9 +212,9 @@ export default {
       //     item.option.push(...Object.assign(res.data.data));
       //   });
       // }
-    });
+    })
   }
-};
+}
 </script>
 
 <style>

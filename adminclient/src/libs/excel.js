@@ -1,6 +1,6 @@
 import XLSX from 'xlsx'
 
-export function exportExcel(columns, data, filename = '导出数据') {
+export function exportExcel (columns, data, filename = '导出数据') {
   // 处理表头
   const headers = columns.map(item => {
     return {
@@ -9,10 +9,10 @@ export function exportExcel(columns, data, filename = '导出数据') {
       width: item.width / 5 || 20 // 调整列宽
     }
   })
-  
+
   // 创建工作簿
   const wb = XLSX.utils.book_new()
-  
+
   // 处理数据
   const wsData = [
     headers.map(item => item.header), // 表头行
@@ -22,16 +22,16 @@ export function exportExcel(columns, data, filename = '导出数据') {
       })
     })
   ]
-  
+
   // 创建工作表
   const ws = XLSX.utils.aoa_to_sheet(wsData)
-  
+
   // 设置列宽
   ws['!cols'] = headers.map(item => ({ wch: item.width }))
-  
+
   // 将工作表添加到工作簿
   XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
-  
+
   // 生成Excel文件并下载
   const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
 
@@ -39,5 +39,5 @@ export function exportExcel(columns, data, filename = '导出数据') {
 }
 
 export default {
-    exportExcel,
+  exportExcel
 }

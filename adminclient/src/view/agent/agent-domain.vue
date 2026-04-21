@@ -116,270 +116,268 @@
 </template>
 
 <script>
-import axios from "@/libs/api.request";
-import { getToken } from "@/libs/util";
-import Tables from "_c/tables";
+import axios from '@/libs/api.request'
+import { getToken } from '@/libs/util'
+import Tables from '_c/tables'
 
 export default {
-  name: "agency-domain",
+  name: 'agency-domain',
   components: {
-    Tables,
+    Tables
   },
-  inject: ["handleLogOut", "reFreshSiteAgentList"],
-  data() {
-    var _this = this;
+  inject: ['handleLogOut', 'reFreshSiteAgentList'],
+  data () {
     return {
-      gameUrl: "",
-      replay: "",
+      gameUrl: '',
+      replay: '',
       showEditGameUrl: false,
-      //添加弹出框
+      // 添加弹出框
       showConfigModal: false,
       configModalType: 0, // 0添加 1修改
-      //添加弹出框数据
+      // 添加弹出框数据
       modalData: {
-        name: "",
-        client_api_urls: "",
-        hall_urls: "",
+        name: '',
+        client_api_urls: '',
+        hall_urls: '',
         max_score: 0,
-        min_score: 0,
+        min_score: 0
       },
-      //当前页
+      // 当前页
       ListPage: 1,
       total: 0,
-      //当前页数据
+      // 当前页数据
       domainList: [],
-      //数据表格
+      // 数据表格
       configColumns: [
-        { title: "序号", type: "index", align: "center" },
-        { title: "名称", key: "name", align: "center" },
+        { title: '序号', type: 'index', align: 'center' },
+        { title: '名称', key: 'name', align: 'center' },
         // { title: "Client Api 地址", key: "client_api_urls", align: "center" },
-        { title: "大厅地址", key: "hall_urls", align: "center" },
-        { title: "最大分数", key: "max_score", align: "center" },
-        { title: "最小分数", key: "min_score", align: "center" },
+        { title: '大厅地址', key: 'hall_urls', align: 'center' },
+        { title: '最大分数', key: 'max_score', align: 'center' },
+        { title: '最小分数', key: 'min_score', align: 'center' },
         {
-          title: "操作",
-          key: "handle",
-          align: "center",
+          title: '操作',
+          key: 'handle',
+          align: 'center',
           width: 200,
           button: [
             (h, params) => {
               return h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "info",
-                    size: "small",
+                    type: 'info',
+                    size: 'small'
                   },
                   style: {
-                    marginRight: "5px",
+                    marginRight: '5px'
                   },
                   on: {
                     click: () => {
-                      this.modalData = params.row || {};
-                      this.showConfigModal = true;
-                      this.configModalType = 1;
-                    },
-                  },
+                      this.modalData = params.row || {}
+                      this.showConfigModal = true
+                      this.configModalType = 1
+                    }
+                  }
                 },
-                "编辑"
-              );
+                '编辑'
+              )
             },
             (h, params) => {
               return [
                 h(
-                  "Button",
+                  'Button',
                   {
                     props: {
-                      type: "error",
-                      size: "small",
+                      type: 'error',
+                      size: 'small'
                     },
                     on: {
                       click: () => {
-                        this.deleteConfig(params.row.id);
-                      },
-                    },
+                        this.deleteConfig(params.row.id)
+                      }
+                    }
                   },
-                  "删除"
-                ),
-              ];
-            },
-          ],
-        },
-      ],
-    };
+                  '删除'
+                )
+              ]
+            }
+          ]
+        }
+      ]
+    }
   },
   methods: {
-    //获取默认api和域名设置
-    async getDomainConfig(page) {
+    // 获取默认api和域名设置
+    async getDomainConfig (page) {
       let params = {
         token: getToken(),
         pageSize: 20,
-        page: page ? page : this.ListPage,
-      };
+        page: page || this.ListPage
+      }
       let data = await axios.request({
-        url: "v2/game/apiConfigList",
-        method: "post",
-        params,
-      });
-      //设置默认配置
+        url: 'v2/game/apiConfigList',
+        method: 'post',
+        params
+      })
+      // 设置默认配置
       if (data && data.data && data.data.code == 200) {
-        this.domainList = data.data.data.data;
-        this.total = data.data.data.total;
+        this.domainList = data.data.data.data
+        this.total = data.data.data.total
       }
     },
 
-    //获取客户端游戏地址
-    async loadGameUrl() {
+    // 获取客户端游戏地址
+    async loadGameUrl () {
       let params = {
-        token: getToken(),
-      };
-      return await axios.request({
-        url: "v2/game/getGameUrl",
-        method: "post",
-        params,
-      });
+        token: getToken()
+      }
+      return axios.request({
+        url: 'v2/game/getGameUrl',
+        method: 'post',
+        params
+      })
     },
 
-    async updateGameUrl(d, r) {
+    async updateGameUrl (d, r) {
       let data = {
         token: getToken(),
         gameUrl: d,
-        replay: r,
-      };
-      return await axios.request({
-        url: "v2/game/updateGameUrl",
-        method: "post",
-        params: data,
-      });
+        replay: r
+      }
+      return axios.request({
+        url: 'v2/game/updateGameUrl',
+        method: 'post',
+        params: data
+      })
     },
 
-    //打开添加弹出框
-    openAddModal() {
-      this.showConfigModal = true;
-      this.configModalType = 0;
-      //重置弹出框数据
+    // 打开添加弹出框
+    openAddModal () {
+      this.showConfigModal = true
+      this.configModalType = 0
+      // 重置弹出框数据
       this.modalData = {
-        name: "",
-        client_api_urls: "",
-        hall_urls: "",
+        name: '',
+        client_api_urls: '',
+        hall_urls: '',
         max_score: 0,
-        min_score: 0,
-      };
-    },
-
-    async gameUrlLoadHandler() {
-      let data = await this.loadGameUrl();
-      console.log(data);
-      if (data && data.data && data.data.code == 200) {
-        this.gameUrl = data.data.data.game_url.join(",");
-        this.replay = data.data.data.replays.join(",");
+        min_score: 0
       }
     },
 
-    //打开添加弹出框
-    openUpdateGameUrl() {
-      this.showEditGameUrl = true;
+    async gameUrlLoadHandler () {
+      let data = await this.loadGameUrl()
+      console.log(data)
+      if (data && data.data && data.data.code == 200) {
+        this.gameUrl = data.data.data.game_url.join(',')
+        this.replay = data.data.data.replays.join(',')
+      }
     },
 
-    async gameUrlSaveHandler() {
-      let data = await this.updateGameUrl(this.gameUrl, this.replay);
+    // 打开添加弹出框
+    openUpdateGameUrl () {
+      this.showEditGameUrl = true
     },
 
-    //添加代理配置
-    async handleConfigModal(isCancel) {
+    async gameUrlSaveHandler () {
+      await this.updateGameUrl(this.gameUrl, this.replay)
+    },
+
+    // 添加代理配置
+    async handleConfigModal (isCancel) {
       if (isCancel) {
-        this.showConfigModal = false;
-        return;
+        this.showConfigModal = false
+        return
       }
       if (
-        this.modalData.name == "" ||
+        this.modalData.name == '' ||
         // this.modalData.client_api_urls == "" ||
-        this.modalData.hall_urls == ""
+        this.modalData.hall_urls == ''
       ) {
-        this.$Message.error("不能为空");
-        return;
+        this.$Message.error('不能为空')
+        return
       }
 
       if (this.modalData.max_score == 0 || this.modalData.min_score == 0) {
       }
 
-      ((await this.configModalType) && this.updateConfig()) || this.AddConfig();
+      ((await this.configModalType) && this.updateConfig()) || this.AddConfig()
       this.modalData = {
-        name: "",
-        client_api_urls: "",
-        hall_urls: "",
+        name: '',
+        client_api_urls: '',
+        hall_urls: '',
         max_score: 0,
-        min_score: 0,
-      };
+        min_score: 0
+      }
     },
 
-    //add
-    async AddConfig() {
-      let params = JSON.parse(JSON.stringify(this.modalData));
-      params.token = getToken();
+    // add
+    async AddConfig () {
+      let params = JSON.parse(JSON.stringify(this.modalData))
+      params.token = getToken()
       let data = await axios.request({
-        url: "v2/game/apiConfigAdd",
-        method: "post",
-        params,
-      });
+        url: 'v2/game/apiConfigAdd',
+        method: 'post',
+        params
+      })
       if (data && data.data && data.data.code == 200) {
-        this.$Message.info(data.data.msg);
-        this.getDomainConfig(1);
-        this.ListPage = 1;
-        this.showConfigModal = false;
+        this.$Message.info(data.data.msg)
+        this.getDomainConfig(1)
+        this.ListPage = 1
+        this.showConfigModal = false
       } else {
-        this.$Message.error(data.data.msg);
+        this.$Message.error(data.data.msg)
       }
     },
 
-    //update
-    async updateConfig() {
-      let params = JSON.parse(JSON.stringify(this.modalData));
-      params.token = getToken();
+    // update
+    async updateConfig () {
+      let params = JSON.parse(JSON.stringify(this.modalData))
+      params.token = getToken()
       let data = await axios.request({
-        url: "v2/game/apiConfigUpdate",
-        method: "post",
-        params,
-      });
+        url: 'v2/game/apiConfigUpdate',
+        method: 'post',
+        params
+      })
       if (data && data.data && data.data.code == 200) {
-        this.getDomainConfig();
-        this.showConfigModal = false;
+        this.getDomainConfig()
+        this.showConfigModal = false
       }
     },
 
-    //delete
-    async deleteConfig(id) {
+    // delete
+    async deleteConfig (id) {
       let dofunc = async () => {
         let params = {
           token: getToken(),
-          id,
-        };
-        let data = await axios.request({
-          url: "v2/game/apiConfigDel",
-          method: "post",
-          params,
-        });
-        if (data && data.data && data.data.code == 200) {
-          this.getDomainConfig(1);
-        } else {
-          this.$Message.error(data.data.msg);
+          id
         }
-      };
+        let data = await axios.request({
+          url: 'v2/game/apiConfigDel',
+          method: 'post',
+          params
+        })
+        if (data && data.data && data.data.code == 200) {
+          this.getDomainConfig(1)
+        } else {
+          this.$Message.error(data.data.msg)
+        }
+      }
       this.$Modal.confirm({
-        title: "请确认",
-        content: "确认删除配置吗？",
-        onOk: dofunc,
-      });
-    },
+        title: '请确认',
+        content: '确认删除配置吗？',
+        onOk: dofunc
+      })
+    }
   },
-  mounted() {
-    //获取初始化列表
-    this.getDomainConfig(1);
-    this.gameUrlLoadHandler();
-  },
-};
+  mounted () {
+    // 获取初始化列表
+    this.getDomainConfig(1)
+    this.gameUrlLoadHandler()
+  }
+}
 </script>
 
 <style lang="less">
 </style>
-

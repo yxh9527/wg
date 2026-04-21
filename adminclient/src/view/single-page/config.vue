@@ -215,300 +215,299 @@
 </template>
 
 <script>
-import axios from "@/libs/api.request";
-import { getToken } from "@/libs/util";
+import axios from '@/libs/api.request'
+import { getToken } from '@/libs/util'
 
 export default {
   components: {},
-  data() {
-    let _this = this;
+  data () {
     return {
-      //配置列表
+      // 配置列表
       configList: [],
-      //添加配置对话框
+      // 添加配置对话框
       addConfigModel: false,
-      //mysql配置
+      // mysql配置
       mysqlConfig: {
-        host: "",
-        port: "",
-        user: "",
-        password: "",
-        database: "",
+        host: '',
+        port: '',
+        user: '',
+        password: '',
+        database: '',
         pool: {
-          ObjectTimeout: "",
-          IntervalCheckTime: "",
-          MaxIdleTime: "",
-          MaxObjectNum: "",
-          MinObjectNum: "",
-        },
+          ObjectTimeout: '',
+          IntervalCheckTime: '',
+          MaxIdleTime: '',
+          MaxObjectNum: '',
+          MinObjectNum: ''
+        }
       },
-      //redis配置
+      // redis配置
       redisConfig: {
         default: {
-          host: "",
-          port: "",
-          password: "",
-          database: "",
-          max_active: "",
-          max_idle: "",
+          host: '',
+          port: '',
+          password: '',
+          database: '',
+          max_active: '',
+          max_idle: '',
           pool: {
-            MaxObjectNum: "",
-            MinObjectNum: "",
-          },
+            MaxObjectNum: '',
+            MinObjectNum: ''
+          }
         },
         webRedis: {
-          host: "",
-          port: "",
-          password: "",
-          database: "",
-          max_active: "",
-          max_idle: "",
+          host: '',
+          port: '',
+          password: '',
+          database: '',
+          max_active: '',
+          max_idle: '',
           pool: {
-            MaxObjectNum: "",
-            MinObjectNum: "",
-          },
-        },
+            MaxObjectNum: '',
+            MinObjectNum: ''
+          }
+        }
       },
-      //etcd配置
+      // etcd配置
       etcdConfig: {
-        ETCD_HOST: "",
-        ETCD_VERSION: "",
-        ETCD_USERNAME: "",
-        ETCD_PASSWORD: "",
+        ETCD_HOST: '',
+        ETCD_VERSION: '',
+        ETCD_USERNAME: '',
+        ETCD_PASSWORD: '',
         POOL: {
-          maxIdleTime: "",
-          maxObjectNum: "",
-          minObjectNum: "",
-        },
+          maxIdleTime: '',
+          maxObjectNum: '',
+          minObjectNum: ''
+        }
       },
-      //新建配置对象
+      // 新建配置对象
       formItem: {
-        id: "",
-        config: "",
-        remark: "",
+        id: '',
+        config: '',
+        remark: ''
       },
-      //编辑模式
-      isEdit: false,
-    };
+      // 编辑模式
+      isEdit: false
+    }
   },
   methods: {
     /**
      * 显示添加
      */
-    showAdd() {
-      this.isEdit = false;
-      this.addConfigModel = true;
-      //重置默认配置
+    showAdd () {
+      this.isEdit = false
+      this.addConfigModel = true
+      // 重置默认配置
       this.formItem = {
-        id: "",
-        config: "",
-        remark: "",
-      };
+        id: '',
+        config: '',
+        remark: ''
+      }
       this.mysqlConfig = {
-        host: "",
-        port: "",
-        user: "",
-        password: "",
-        database: "",
+        host: '',
+        port: '',
+        user: '',
+        password: '',
+        database: '',
         pool: {
-          ObjectTimeout: "",
-          IntervalCheckTime: "",
-          MaxIdleTime: "",
-          MaxObjectNum: "",
-          MinObjectNum: "",
-        },
-      };
+          ObjectTimeout: '',
+          IntervalCheckTime: '',
+          MaxIdleTime: '',
+          MaxObjectNum: '',
+          MinObjectNum: ''
+        }
+      }
       this.etcdConfig = {
-        ETCD_HOST: "",
-        ETCD_VERSION: "",
-        ETCD_USERNAME: "",
-        ETCD_PASSWORD: "",
+        ETCD_HOST: '',
+        ETCD_VERSION: '',
+        ETCD_USERNAME: '',
+        ETCD_PASSWORD: '',
         POOL: {
-          maxIdleTime: "",
-          maxObjectNum: "",
-          minObjectNum: "",
-        },
-      };
+          maxIdleTime: '',
+          maxObjectNum: '',
+          minObjectNum: ''
+        }
+      }
       this.redisConfig = {
         default: {
-          host: "",
-          port: "",
-          password: "",
-          database: "",
-          max_active: "",
-          max_idle: "",
+          host: '',
+          port: '',
+          password: '',
+          database: '',
+          max_active: '',
+          max_idle: '',
           pool: {
-            MaxObjectNum: "",
-            MinObjectNum: "",
-          },
+            MaxObjectNum: '',
+            MinObjectNum: ''
+          }
         },
         webRedis: {
-          host: "",
-          port: "",
-          password: "",
-          database: "",
-          max_active: "",
-          max_idle: "",
+          host: '',
+          port: '',
+          password: '',
+          database: '',
+          max_active: '',
+          max_idle: '',
           pool: {
-            MaxObjectNum: "",
-            MinObjectNum: "",
-          },
-        },
-      };
+            MaxObjectNum: '',
+            MinObjectNum: ''
+          }
+        }
+      }
     },
 
     /**
      * 格式化JSON
      */
-    formatJson(msg) {
-      let obj;
+    formatJson (msg) {
+      let obj
       try {
-        obj = JSON.parse(msg);
+        obj = JSON.parse(msg)
       } catch (error) {
-        return msg;
+        return msg
       }
-      var jsonStr = JSON.stringify(obj, null, 6);
-      return `${jsonStr}`;
+      var jsonStr = JSON.stringify(obj, null, 6)
+      return `${jsonStr}`
     },
 
     /**
      *编辑配置
      */
-    editConfig(config) {
-      this.isEdit = true;
-      this.addConfigModel = true;
-      this.formItem = config;
+    editConfig (config) {
+      this.isEdit = true
+      this.addConfigModel = true
+      this.formItem = config
       switch (config.id) {
-        case "mysql":
-          this.mysqlConfig = JSON.parse(config.config).mysql;
-          break;
-        case "redis":
-          this.redisConfig = JSON.parse(config.config);
-          break;
-        case "etcd":
-          this.etcdConfig = JSON.parse(config.config);
-          break;
+        case 'mysql':
+          this.mysqlConfig = JSON.parse(config.config).mysql
+          break
+        case 'redis':
+          this.redisConfig = JSON.parse(config.config)
+          break
+        case 'etcd':
+          this.etcdConfig = JSON.parse(config.config)
+          break
       }
     },
 
     /**
      * 删除配置
      */
-    async deleteConfig(id) {
+    async deleteConfig (id) {
       let data = await axios.request({
-        url: "v1/default-config/delete",
-        method: "POST",
+        url: 'v1/default-config/delete',
+        method: 'POST',
         params: {
           token: getToken(),
-          id,
-        },
-      });
+          id
+        }
+      })
 
       if (data && data.data.code == 200) {
-        this.$Message.info("删除成功");
-        this.refreshConfig();
+        this.$Message.info('删除成功')
+        this.refreshConfig()
       }
     },
 
     /**
      * 提交修改
      */
-    async confirmEdit() {
+    async confirmEdit () {
       switch (this.formItem.id) {
-        case "mysql":
-          this.formItem.config = JSON.stringify({ mysql: this.mysqlConfig });
-          break;
-        case "redis":
-          this.formItem.config = JSON.stringify(this.redisConfig);
-          break;
-        case "etcd":
-          this.formItem.config = JSON.stringify(this.etcdConfig);
-          break;
+        case 'mysql':
+          this.formItem.config = JSON.stringify({ mysql: this.mysqlConfig })
+          break
+        case 'redis':
+          this.formItem.config = JSON.stringify(this.redisConfig)
+          break
+        case 'etcd':
+          this.formItem.config = JSON.stringify(this.etcdConfig)
+          break
       }
 
       let data = await axios.request({
-        url: "v1/default-config/update",
-        method: "post",
+        url: 'v1/default-config/update',
+        method: 'post',
         params: {
           token: getToken(),
           id: this.formItem.id,
           config: this.formItem.config,
-          remark: this.formItem.remark,
-        },
-      });
+          remark: this.formItem.remark
+        }
+      })
 
       if (data && data.data.code == 200) {
-        this.$Message.info("修改成功");
-        this.refreshConfig();
+        this.$Message.info('修改成功')
+        this.refreshConfig()
       }
     },
 
     /**
      * 提交配置
      */
-    async confirmConfig() {
+    async confirmConfig () {
       if (this.isEdit) {
-        this.confirmEdit();
-        return;
+        this.confirmEdit()
+        return
       }
 
       if (this.configList.find((x) => x.id == this.formItem.id)) {
-        this.$Message.error("配置KEY存在");
-        return;
+        this.$Message.error('配置KEY存在')
+        return
       }
       switch (this.formItem.id) {
-        case "mysql":
-          this.formItem.config = JSON.stringify({ mysql: this.mysqlConfig });
-          break;
-        case "redis":
-          this.formItem.config = JSON.stringify(this.redisConfig);
-          break;
-        case "etcd":
-          this.formItem.config = JSON.stringify(this.etcdConfig);
-          break;
+        case 'mysql':
+          this.formItem.config = JSON.stringify({ mysql: this.mysqlConfig })
+          break
+        case 'redis':
+          this.formItem.config = JSON.stringify(this.redisConfig)
+          break
+        case 'etcd':
+          this.formItem.config = JSON.stringify(this.etcdConfig)
+          break
       }
 
       if (this.formItem.id && this.formItem.config) {
         let data = await axios.request({
-          url: "v1/default-config/add",
-          method: "post",
+          url: 'v1/default-config/add',
+          method: 'post',
           params: {
             token: getToken(),
             id: this.formItem.id,
             config: this.formItem.config,
-            remark: this.formItem.remark,
-          },
-        });
+            remark: this.formItem.remark
+          }
+        })
 
         if (data && data.data.code == 200) {
-          this.$Message.info("添加成功");
-          this.refreshConfig();
+          this.$Message.info('添加成功')
+          this.refreshConfig()
         }
       } else {
-        this.$Message.error("请输入正确配置");
+        this.$Message.error('请输入正确配置')
       }
     },
 
     /**
      * 获取配置
      */
-    async refreshConfig() {
+    async refreshConfig () {
       let data = await axios.request({
-        url: "v1/default-config/list",
-        method: "get",
+        url: 'v1/default-config/list',
+        method: 'get',
         params: {
-          token: getToken(),
-        },
-      });
+          token: getToken()
+        }
+      })
       if (data && data.data.code == 200) {
-        this.configList = data.data.data;
+        this.configList = data.data.data
       }
-    },
+    }
   },
-  mounted() {
-    this.refreshConfig();
-  },
-};
+  mounted () {
+    this.refreshConfig()
+  }
+}
 </script>
 
 <style scoped lang="less">

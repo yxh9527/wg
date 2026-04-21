@@ -27,76 +27,75 @@
 </template>
 
 <script>
-import Tables from "_c/tables";
-import { setting } from "@/config";
-import { getTableData } from "@/api/data";
+import Tables from '_c/tables'
+import { setting } from '@/config'
+import { getTableData } from '@/api/data'
 export default {
-  name: "gameManage",
+  name: 'gameManage',
   components: {
     Tables
   },
-  inject: ["handleLogOut"],
-  data() {
+  inject: ['handleLogOut'],
+  data () {
     return {
       labelList: [
-        { label: "异常类型", value: "" },
-        { label: "异常级别", value: "" }
+        { label: '异常类型', value: '' },
+        { label: '异常级别', value: '' }
       ],
       columns: [
-        { title: "序号", width: 80, type: "index" },
-        { title: "异常类型", key: "game" },
-        { title: "异常级别", key: "num" },
-        { title: "异常位置", key: "plat" },
-        { title: "异常原因", key: "ctitle" },
-        { title: "时间", key: "date" },
-        { title: "处理结果", key: "state" },
+        { title: '序号', width: 80, type: 'index' },
+        { title: '异常类型', key: 'game' },
+        { title: '异常级别', key: 'num' },
+        { title: '异常位置', key: 'plat' },
+        { title: '异常原因', key: 'ctitle' },
+        { title: '时间', key: 'date' },
+        { title: '处理结果', key: 'state' },
         {
-          title: "操作",
-          key: "handle",
-          align: "center",
+          title: '操作',
+          key: 'handle',
+          align: 'center',
           button: [
             (h, params) => {
               return h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "info",
-                    size: "small"
+                    type: 'info',
+                    size: 'small'
                   }
                 },
-                "确定"
-              );
+                '确定'
+              )
             }
           ]
         }
       ],
       tableData: []
-    };
+    }
   },
   methods: {},
-  mounted() {
+  mounted () {
     // $$ 需要修改
     getTableData()
       .then(res => {
         if (res.data.code == 200) {
-          this.tableData = res.data;
+          this.tableData = res.data
         } else {
           // 判断响应状态是否为Token失效，如果失效则执行退出函数并刷新页面。
           this.$nextTick(() => {
             if (setting.arrStatus.indexOf(res.data.code) != -1) {
               this.$Message.error(
-                res.data.code + " ：&nbsp;" + res.data.msg + "请重新登录"
-              );
-              this.handleLogOut();
+                res.data.code + ' ：&nbsp;' + res.data.msg + '请重新登录'
+              )
+              this.handleLogOut()
             } else {
-              this.$Message.warning("没有异常数据");
+              this.$Message.warning('没有异常数据')
             }
-          });
+          })
         }
       })
-  
   }
-};
+}
 </script>
 
 <style>

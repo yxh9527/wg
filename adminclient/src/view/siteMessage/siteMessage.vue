@@ -32,96 +32,96 @@
 </template>
 
 <script>
-import Tables from "_c/tables";
-import { getTableData } from "@/api/data";
+import Tables from '_c/tables'
+import { getTableData } from '@/api/data'
 export default {
-  name: "gameMessage",
+  name: 'gameMessage',
   components: {
     Tables
   },
-  data() {
+  data () {
     return {
       labelList: [
         {
-          label: "邮件类型",
-          value: "",
+          label: '邮件类型',
+          value: '',
           option: [
-            { label: "全部", value: "" },
-            { label: "系统消息", value: "" },
-            { label: "维护公告", value: "" }
+            { label: '全部', value: '' },
+            { label: '系统消息', value: '' },
+            { label: '维护公告', value: '' }
           ]
         }
       ],
       columns: [
-        { title: "序号", type: "index", width: 80 },
-        { title: "消息标题", key: "ctitle" },
-        { title: "消息内容", key: "ccontent", width: 280 },
-        { title: "发布时间", key: "date" },
-        { title: "游戏类型", key: "mode" },
-        { title: "游戏名称", key: "game" },
-        { title: "状态", key: "msgstate" },
+        { title: '序号', type: 'index', width: 80 },
+        { title: '消息标题', key: 'ctitle' },
+        { title: '消息内容', key: 'ccontent', width: 280 },
+        { title: '发布时间', key: 'date' },
+        { title: '游戏类型', key: 'mode' },
+        { title: '游戏名称', key: 'game' },
+        { title: '状态', key: 'msgstate' },
         {
-          title: "类型",
-          key: "msgmode",
-          render(h, params) {
-            return params.row.msgmode == "系统消息" ? (
+          title: '类型',
+          key: 'msgmode',
+          render (h, params) {
+            return params.row.msgmode == '系统消息' ? (
               <span style="color:red">{params.row.msgmode}</span>
             ) : (
               <span style="color:orange">{params.row.msgmode} </span>
-            );
+            )
           }
         },
-        { title: "备注", key: "ctitle" },
+        { title: '备注', key: 'ctitle' },
         {
-          title: "操作",
-          key: "handle",
-          align: "center",
+          title: '操作',
+          key: 'handle',
+          align: 'center',
           width: 250,
           button: [
             (h, params) => {
               return h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "info",
-                    size: "small"
+                    type: 'info',
+                    size: 'small'
                   },
                   style: {
-                    marginRight: "5px"
+                    marginRight: '5px'
                   }
                 },
-                "编辑"
-              );
+                '编辑'
+              )
             },
             (h, params) => {
               return h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "error",
-                    size: "small"
+                    type: 'error',
+                    size: 'small'
                   }
                 },
-                "删除"
-              );
+                '删除'
+              )
             }
           ]
         }
       ],
       tableData: []
-    };
-  },
-  methods: {
-    handleDelete(params) {
-       
     }
   },
-  mounted() {
+  methods: {
+    handleDelete (params) {
+
+    }
+  },
+  mounted () {
     getTableData().then(res => {
-      this.tableData = res.data;
-    });
+      this.tableData = res.data
+    })
   }
-};
+}
 </script>
 
 <style>

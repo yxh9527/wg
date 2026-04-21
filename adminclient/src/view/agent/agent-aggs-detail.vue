@@ -33,150 +33,150 @@
 </template>
 
 <script>
-import Tables from "_c/tables";
-import { getAgentGameDataAggs } from "@/api/data";
+import Tables from '_c/tables'
+import { getAgentGameDataAggs } from '@/api/data'
 export default {
-  name: "agent-aggs-detail",
+  name: 'agent-aggs-detail',
   components: {
-    Tables,
+    Tables
   },
-  inject: ["viewAccess", "handleLogOut", "reFreshSiteAgentList"],
-  data() {
+  inject: ['viewAccess', 'handleLogOut', 'reFreshSiteAgentList'],
+  data () {
     return {
       tableData: [],
       agentOption: [],
       agentId: 0,
       columns: [
         {
-          title: "代理ID",
-          key: "agentId",
+          title: '代理ID',
+          key: 'agentId',
           width: 80,
-          align: "center",
-          isdisabled: true,
+          align: 'center',
+          isdisabled: true
         },
         {
-          title: "代理名称",
-          key: "agentName",
+          title: '代理名称',
+          key: 'agentName',
           width: 150,
-          align: "center",
-          isdisabled: true,
+          align: 'center',
+          isdisabled: true
         },
         {
-          title: "游戏名称",
-          key: "gameName",
+          title: '游戏名称',
+          key: 'gameName',
           width: 450,
-          align: "center",
-          isdisabled: true,
+          align: 'center',
+          isdisabled: true
         },
         {
-          title: "Symbol",
-          key: "symbol",
+          title: 'Symbol',
+          key: 'symbol',
           width: 150,
-          align: "center",
-          isdisabled: true,
+          align: 'center',
+          isdisabled: true
         },
         {
-          title: "人次",
-          key: "userNumber",
-          align: "center",
+          title: '人次',
+          key: 'userNumber',
+          align: 'center',
           minWidth: 100,
-          showRedPoint: true,
+          showRedPoint: true
         },
-        { title: "局数", key: "gameNumber", align: "right", minWidth: 100 },
+        { title: '局数', key: 'gameNumber', align: 'right', minWidth: 100 },
         {
-          title: "有效下注",
-          key: "effeBetsScore",
-          align: "center",
+          title: '有效下注',
+          key: 'effeBetsScore',
+          align: 'center',
           minWidth: 100,
-          render(h, params) {
+          render (h, params) {
             return (
               <span>
                 {(params.row.effeBetsScore &&
                   params.row.effeBetsScore.toFixed(2)) ||
                   0}
               </span>
-            );
-          },
+            )
+          }
         },
         {
-          title: "有效打码",
-          key: "chips",
-          align: "right",
+          title: '有效打码',
+          key: 'chips',
+          align: 'right',
           minWidth: 100,
-          render(h, params) {
+          render (h, params) {
             return (
               <span>
                 {(params.row.chipsTotal && params.row.chipsTotal.toFixed(2)) ||
                   0}
               </span>
-            );
-          },
+            )
+          }
         },
         {
-          title: "赔付",
-          key: "profitLossTotal",
-          align: "right",
+          title: '赔付',
+          key: 'profitLossTotal',
+          align: 'right',
           minWidth: 100,
-          render(h, params) {
+          render (h, params) {
             if (params.row.profitLossTotal) {
-              let sum;
+              let sum
               sum = Number(
-                String(params.row.profitLossTotal).replace(/\,/g, "")
-              );
-              sum = sum.toFixed(2);
-              return <span>{String(sum)}</span>;
+                String(params.row.profitLossTotal).replace(/,/g, '')
+              )
+              sum = sum.toFixed(2)
+              return <span>{String(sum)}</span>
             } else {
-              return <span style="color:#000">0</span>;
+              return <span style="color:#000">0</span>
             }
-          },
+          }
         },
         {
-          title: "盈亏",
-          key: "yk",
-          align: "right",
+          title: '盈亏',
+          key: 'yk',
+          align: 'right',
           minWidth: 100,
-          render(h, params) {
-            let sum, effect;
-            sum = Number(String(params.row.profitLossTotal).replace(/\,/g, ""));
+          render (h, params) {
+            let sum, effect
+            sum = Number(String(params.row.profitLossTotal).replace(/,/g, ''))
             effect = Number(
-              String(params.row.effectiveBetsTotal).replace(/\,/g, "")
-            );
+              String(params.row.effectiveBetsTotal).replace(/,/g, '')
+            )
             return effect - sum >= 0 ? (
               <span style="color:green">
                 {String((effect - sum).toFixed(2))}
               </span>
             ) : (
               <span style="color:red">{String((effect - sum).toFixed(2))}</span>
-            );
-          },
+            )
+          }
         },
         {
-          title: "税收",
-          key: "revenueTotal",
-          align: "right",
+          title: '税收',
+          key: 'revenueTotal',
+          align: 'right',
           minWidth: 80,
-          render(h, params) {
+          render (h, params) {
             return (
               <span>
                 {(params.row.revenueTotal &&
                   params.row.revenueTotal.toFixed(2)) ||
                   0}
               </span>
-            );
-          },
+            )
+          }
         },
         {
-          title: "杀数",
-          key: "",
-          align: "right",
+          title: '杀数',
+          key: '',
+          align: 'right',
           minWidth: 80,
-          render(h, params) {
+          render (h, params) {
             let sum = Number(
-              String(params.row.profitLossTotal).replace(/\,/g, "")
-            );
+              String(params.row.profitLossTotal).replace(/,/g, '')
+            )
             let effect = Number(
-              String(params.row.effectiveBetsTotal).replace(/\,/g, "")
-            );
+              String(params.row.effectiveBetsTotal).replace(/,/g, '')
+            )
             return (
               <span>
                 {isNaN(
@@ -185,55 +185,55 @@ export default {
                   ? 0
                   : ((effect - sum) / params.row.effectiveBetsTotal).toFixed(3)}
               </span>
-            );
-          },
-        },
+            )
+          }
+        }
       ],
-      spinShow: false,
-    };
+      spinShow: false
+    }
   },
   methods: {
-    getAgentGameAggs() {
+    getAgentGameAggs () {
       let Data = [
         { agentId: this.$route.query.agent },
         { startTime: this.$route.query.startTime },
-        { endTime: this.$route.query.endTime },
-      ];
+        { endTime: this.$route.query.endTime }
+      ]
       getAgentGameDataAggs(Data)
         .then((res) => {
-          this.tableData = res.data.data.data;
+          this.tableData = res.data.data.data
         })
         .catch((err) => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    refreshPage() {
+    refreshPage () {
       let Data = [
         { agentId: this.agentId },
         { startTime: this.$route.query.startTime },
         { endTime: this.$route.query.endTime },
-        { webId: this.$route.query.webId },
-      ];
+        { webId: this.$route.query.webId }
+      ]
       getAgentGameDataAggs(Data)
         .then((res) => {
-          this.tableData = res.data.data.data;
+          this.tableData = res.data.data.data
         })
         .catch((err) => {
-          console.log(err);
-        });
-    },
+          console.log(err)
+        })
+    }
   },
-  mounted() {
-    let siteOption = JSON.parse(sessionStorage.getItem("siteOption") || "[]"); // 获取当前session存储的站点列表数据
+  mounted () {
+    let siteOption = JSON.parse(sessionStorage.getItem('siteOption') || '[]') // 获取当前session存储的站点列表数据
     this.agentOption = siteOption.find(
       (site) => site.id == this.$route.query.webId
-    ).agentList;
+    ).agentList
     this.agentOption.map((item) => {
-      item.label = item.name;
-    });
-    this.getAgentGameAggs();
-  },
-};
+      item.label = item.name
+    })
+    this.getAgentGameAggs()
+  }
+}
 </script>
 
 <style lang="less">

@@ -36,7 +36,7 @@ export default [{
 },
 {
   path: '/queryOrder/:order/:account/:token',
-  name:'queryOrder',
+  name: 'queryOrder',
   meta: {
     title: '注单详情',
     hideInMenu: true
@@ -48,7 +48,7 @@ export default [{
   name: 'newHome-menu',
   component: Main,
   meta: {
-    access: ["administrator"],
+    access: ['administrator'],
     icon: 'md-apps',
     title: '首页'
   },
@@ -90,8 +90,8 @@ export default [{
       title: '用户流水'
     },
     component: () => import('@/view/single-page/agentOrders.vue')
-  }
-    , {
+  },
+  {
     path: '/newHome-weekIndicator',
     props: true,
     name: 'newHome-weekIndicator',
@@ -110,7 +110,7 @@ export default [{
   name: 'report',
   component: Main,
   meta: {
-    access: ["administrator"],
+    access: ['administrator']
   },
   children: [{
     path: '/report-page',
@@ -126,7 +126,7 @@ export default [{
   path: '/website-menu',
   name: 'website-menu',
   meta: {
-    access: ["administrator"],
+    access: ['administrator'],
     icon: 'md-apps',
     title: '站点'
   },
@@ -164,13 +164,13 @@ export default [{
     },
     component: () => import('@/view/website/website-add.vue')
   }
-  ],
+  ]
 },
 {
   path: '/agent-menu',
   name: 'agent-menu',
   meta: {
-    access: ["operation"],
+    access: ['operation'],
     icon: 'md-apps',
     title: '代理'
   },
@@ -228,7 +228,7 @@ export default [{
   path: '/players-menu',
   name: 'players-menu',
   meta: {
-    access: ["userCenter"],
+    access: ['userCenter'],
     icon: 'md-apps',
     title: '用户'
   },
@@ -252,7 +252,7 @@ export default [{
       title: '用户中心'
     },
     component: () => import('@/view/players/players-control.vue')
-  }, 
+  },
   {
     path: '/players-record-:id',
     props: true,
@@ -306,7 +306,7 @@ export default [{
   name: 'control',
   component: Main,
   meta: {
-    access: ["userCenter"],
+    access: ['userCenter'],
     icon: 'md-apps',
     title: '注单'
   },
@@ -324,7 +324,7 @@ export default [{
   path: '/userControl-menu',
   name: 'userControl-menu',
   meta: {
-    access: ["administrator"],
+    access: ['administrator'],
     icon: 'md-apps',
     title: '控制管理'
   },
@@ -344,7 +344,7 @@ export default [{
   path: '/game-manage-menu',
   name: 'game-manage-menu',
   meta: {
-    access: ["operation"],
+    access: ['operation'],
     icon: 'md-apps',
     title: '游戏管理'
   },
@@ -364,7 +364,7 @@ export default [{
     meta: {
       icon: 'md-apps',
       hideInMenu: true,
-      title: '全部代理游戏管理',
+      title: '全部代理游戏管理'
     },
     component: () => import('@/view/gameManage/game-manage-allAgent.vue')
   },
@@ -426,13 +426,13 @@ export default [{
   name: 'manage-log-menu',
   component: Main,
   meta: {
-    access: ["administrator"],
+    access: ['administrator']
   },
   children: [{
     path: '/manage-log',
     name: 'manage-log',
     meta: {
-      access: ["administrator"],
+      access: ['administrator'],
       icon: 'md-apps',
       title: '日志管理'
     },
@@ -444,13 +444,13 @@ export default [{
   name: 'account-menu',
   component: Main,
   meta: {
-    access: ["administrator"],
+    access: ['administrator']
   },
   children: [{
     path: '/account',
     name: 'account',
     meta: {
-      access: ["administrator"],
+      access: ['administrator'],
       icon: 'md-apps',
       title: '账号管理'
     },
@@ -462,7 +462,7 @@ export default [{
   name: 'exception-menu',
   meta: {
     hideInMenu: true,
-    access: ["administrator"],
+    access: ['administrator'],
     icon: 'md-apps',
     title: '异常提示'
   },
@@ -471,7 +471,7 @@ export default [{
     path: '/exception',
     name: 'exception',
     meta: {
-      access: ["administrator"],
+      access: ['administrator'],
       icon: 'md-apps',
       title: '异常提示列表'
     },
@@ -481,7 +481,7 @@ export default [{
     path: '/exception-rule',
     name: 'exception-rule',
     meta: {
-      access: ["administrator"],
+      access: ['administrator'],
       icon: 'md-apps',
       title: '异常规则管理'
     },
@@ -491,12 +491,12 @@ export default [{
     path: 'key_page',
     name: 'key_page',
     meta: {
-      access: ["administrator"],
+      access: ['administrator'],
       title: 'Key',
       hideInMenu: true
     },
     component: () => import('@/view/single-page/key.vue')
-  },
+  }
   ]
 },
 {
@@ -504,7 +504,7 @@ export default [{
   name: 'systemSetting',
   component: Main,
   meta: {
-    access: ["administrator"],
+    access: ['administrator'],
     icon: 'md-apps',
     title: '系统配置',
     hideInMenu: true

@@ -222,273 +222,272 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
-import axios from "@/libs/api.request";
-import Tables from "_c/tables";
+import { mapActions } from 'vuex'
+import Tables from '_c/tables'
 import {
   getHomeData,
   getHomeGameData,
   getHomeGameAvgData,
   getLinkageList,
   // getClassList,
-  getSelectGames,
-} from "@/api/data";
-import CountTo from "_c/count-to";
-import { ChartPie, ChartBar } from "_c/charts";
-import Example from "./example.vue";
-import { getDate } from "@/libs/tools";
+  getSelectGames
+} from '@/api/data'
+import CountTo from '_c/count-to'
+import { ChartPie, ChartBar } from '_c/charts'
+import Example from './example.vue'
+import { getDate } from '@/libs/tools'
 export default {
-  name: "home",
+  name: 'home',
   components: {
     Tables,
     CountTo,
     ChartPie,
     ChartBar,
-    Example,
+    Example
   },
-  data() {
+  data () {
     return {
       timeVal: [1, 1, 1, 1, 1, 1],
 
       timeList: [
         {
-          label: "今日",
-          value: 1,
+          label: '今日',
+          value: 1
         },
         {
-          label: "昨日",
-          value: 2,
+          label: '昨日',
+          value: 2
         },
         {
-          label: "本周",
-          value: 3,
+          label: '本周',
+          value: 3
         },
         {
-          label: "上周",
-          value: 4,
+          label: '上周',
+          value: 4
         },
         {
-          label: "本月",
-          value: 5,
+          label: '本月',
+          value: 5
         },
         {
-          label: "上月",
-          value: 6,
-        },
+          label: '上月',
+          value: 6
+        }
       ],
       inforCardData: [
         {
-          title: "新增玩家",
-          key: "userNumber",
-          icon: "md-person-add",
+          title: '新增玩家',
+          key: 'userNumber',
+          icon: 'md-person-add',
           count: 0,
           decimals: 0,
-          color: "#444444",
-          subTitle: "本月日均新增玩家",
+          color: '#444444',
+          subTitle: '本月日均新增玩家',
           subCount: 0,
-          show: true,
+          show: true
         },
         {
-          title: "新增有效下注",
-          key: "bets",
-          icon: "logo-usd",
+          title: '新增有效下注',
+          key: 'bets',
+          icon: 'logo-usd',
           count: 0,
           decimals: 2,
-          color: "#19be6b",
-          subTitle: "本月日均有效下注",
+          color: '#19be6b',
+          subTitle: '本月日均有效下注',
           subCount: 0,
-          show: true,
+          show: true
         },
         {
-          title: "盈亏",
-          key: "profitLoss",
-          icon: "md-ionic",
+          title: '盈亏',
+          key: 'profitLoss',
+          icon: 'md-ionic',
           count: 0,
           decimals: 2,
-          color: "#ed3f14",
-          subTitle: "本月日均盈亏",
+          color: '#ed3f14',
+          subTitle: '本月日均盈亏',
           subCount: 0,
-          show: true,
+          show: true
         },
         {
-          title: "抽水分数",
-          key: "pump",
-          icon: "logo-yen",
+          title: '抽水分数',
+          key: 'pump',
+          icon: 'logo-yen',
           count: 0,
           decimals: 2,
-          color: "#ff9900",
-          subTitle: "本月日均抽水分数",
+          color: '#ff9900',
+          subTitle: '本月日均抽水分数',
           subCount: 0,
-          show: true,
+          show: true
         },
         {
-          title: "玩家赔付率",
-          key: "odds",
-          icon: "ios-ribbon",
+          title: '玩家赔付率',
+          key: 'odds',
+          icon: 'ios-ribbon',
           count: 0,
           decimals: 2,
-          color: "#996600",
-          subTitle: "本月日均玩家赔付率",
+          color: '#996600',
+          subTitle: '本月日均玩家赔付率',
           subCount: 0,
-          show: false,
+          show: false
         },
         {
-          title: "玩家赔付率",
-          key: "netClaims",
-          icon: "ios-cash",
+          title: '玩家赔付率',
+          key: 'netClaims',
+          icon: 'ios-cash',
           count: 0,
           decimals: 2,
-          color: "#66aa11",
-          subTitle: "本月日均玩家净赔付率",
+          color: '#66aa11',
+          subTitle: '本月日均玩家净赔付率',
           subCount: 0,
-          show: true,
-        },
+          show: true
+        }
       ],
 
       tableLabel: [
         {
-          label: "游戏平台",
-          value: "",
-          key: "platFrom",
-          option: [],
+          label: '游戏平台',
+          value: '',
+          key: 'platFrom',
+          option: []
         },
         {
-          label: "游戏名",
-          key: "gameId",
-          value: "",
-          option: [],
-        },
+          label: '游戏名',
+          key: 'gameId',
+          value: '',
+          option: []
+        }
       ],
       tableDate: {
-        time: "",
-        timeType: "",
+        time: '',
+        timeType: ''
       },
       columnsTable: [
         {
-          title: "排名",
-          type: "index",
-          align: "center",
-          width: 90,
+          title: '排名',
+          type: 'index',
+          align: 'center',
+          width: 90
         },
         {
-          title: "模式",
-          key: "platFromName",
-          align: "center",
-          width: 120,
+          title: '模式',
+          key: 'platFromName',
+          align: 'center',
+          width: 120
         },
         {
-          title: "游戏",
-          key: "gameName",
-          align: "center",
+          title: '游戏',
+          key: 'gameName',
+          align: 'center'
         },
         {
-          title: "总消耗点数",
-          key: "profitLossAvg",
-          align: "center",
+          title: '总消耗点数',
+          key: 'profitLossAvg',
+          align: 'center',
           sortable: true,
           sortMethod: (a, b, type) => {
-            if (type == "asc") {
+            if (type == 'asc') {
               return Number(this.changeNum(a)) > Number(this.changeNum(b))
                 ? 1
-                : -1;
+                : -1
             } else {
               return Number(this.changeNum(a)) > Number(this.changeNum(b))
                 ? -1
-                : 1;
+                : 1
             }
-          },
+          }
         },
         {
-          title: "玩家人数",
-          key: "userNumber",
-          align: "center",
-          sortable: true,
+          title: '玩家人数',
+          key: 'userNumber',
+          align: 'center',
+          sortable: true
         },
         {
-          title: "玩家平均消耗点数",
-          key: "profUserAvg",
-          align: "center",
+          title: '玩家平均消耗点数',
+          key: 'profUserAvg',
+          align: 'center',
           width: 180,
           sortable: true,
           sortMethod: (a, b, type) => {
-            if (type == "asc") {
+            if (type == 'asc') {
               return Number(this.changeNum(a)) > Number(this.changeNum(b))
                 ? 1
-                : -1;
+                : -1
             } else {
               return Number(this.changeNum(a)) > Number(this.changeNum(b))
                 ? -1
-                : 1;
+                : 1
             }
-          },
+          }
         },
         {
-          title: "总局数",
-          key: "gameNumber",
-          align: "center",
-          sortable: true,
-        },
+          title: '总局数',
+          key: 'gameNumber',
+          align: 'center',
+          sortable: true
+        }
       ],
       tableData: [],
 
       setExample: [
         {
-          barText: "活跃玩家详情",
+          barText: '活跃玩家详情',
           show: true,
           pieShow: true,
-          legend: ["活跃玩家"],
+          legend: ['活跃玩家'],
           columns: 1,
           barData: {
-            sum: [],
+            sum: []
           },
-          type: "line",
+          type: 'line',
           pieSet: 0,
           pieData: [],
-          pieText: "活跃玩家分布",
+          pieText: '活跃玩家分布'
         },
         {
-          barText: "玩家局数详情",
+          barText: '玩家局数详情',
           barData: {
-            sum: [],
+            sum: []
           },
           show: true,
           pieShow: true,
-          legend: ["总局数"],
+          legend: ['总局数'],
           columns: 1,
-          type: "bar",
+          type: 'bar',
           pieData: [],
-          pieText: "玩家局数分布",
+          pieText: '玩家局数分布'
         },
         {
-          barText: "有效下注详情",
+          barText: '有效下注详情',
           show: true,
           pieShow: true,
           columns: 1,
-          barData: {
-            sum: [],
-            bet: [],
-            vs: [],
-            fish: [],
-          },
-          type: "line",
-          pieData: [],
-          pieText: "有效下注分布",
-        },
-        {
-          barText: "盈亏分数详情",
-          show: true,
-          pieShow: true,
-          columns: 1,
-          type: "line",
           barData: {
             sum: [],
             bet: [],
             vs: [],
-            fish: [],
+            fish: []
+          },
+          type: 'line',
+          pieData: [],
+          pieText: '有效下注分布'
+        },
+        {
+          barText: '盈亏分数详情',
+          show: true,
+          pieShow: true,
+          columns: 1,
+          type: 'line',
+          barData: {
+            sum: [],
+            bet: [],
+            vs: [],
+            fish: []
           },
           pieData: [],
-          pieText: "盈亏分布",
-        },
+          pieText: '盈亏分布'
+        }
       ],
 
       gameSelectList: [],
@@ -508,121 +507,121 @@ export default {
         timeType: null,
         agentId: null,
         webId: null,
-        gameId: null,
-      },
-    };
+        gameId: null
+      }
+    }
   },
   methods: {
-    ...mapActions(["handleLogOut"]),
-    searchAll() {
+    ...mapActions(['handleLogOut']),
+    searchAll () {
       for (let i = 1; i <= 5; i++) {
-        this.searchIndex(i, 1);
-        this.searchGameData(i, 1);
+        this.searchIndex(i, 1)
+        this.searchGameData(i, 1)
       }
-      this.timeVal = [1, 1, 1, 1, 1, 1];
+      this.timeVal = [1, 1, 1, 1, 1, 1]
     },
 
-    clearTimeDatess() {
-      //清除快捷日期
-      this.tableDate.timeType = null;
+    clearTimeDatess () {
+      // 清除快捷日期
+      this.tableDate.timeType = null
     },
 
-    handleSearch(param) {
-      //点击快捷日期选择 清空日期输入框
+    handleSearch (param) {
+      // 点击快捷日期选择 清空日期输入框
       if (param && param.clearDate) {
-        this.$refs.isclearDate.handleClear();
+        this.$refs.isclearDate.handleClear()
       }
 
-      //清除快捷日期
+      // 清除快捷日期
       if (param && param.clearShortcut) {
-        this.tableDate.timeType = null;
+        this.tableDate.timeType = null
       }
 
-      this.spinShow = true;
+      this.spinShow = true
       let Data = [
         {
-          time: getDate(this.tableDate.time),
+          time: getDate(this.tableDate.time)
         },
         {
-          timeType: this.tableDate.timeType,
+          timeType: this.tableDate.timeType
         },
         {
-          agentId: this.agent === 9999999 ? null : this.agent,
+          agentId: this.agent === 9999999 ? null : this.agent
         },
         {
-          webId: this.site,
-        },
-      ];
+          webId: this.site
+        }
+      ]
       this.params = {
         time: getDate(this.tableDate.time),
         timeType: this.tableDate.timeType,
         agentId: this.agent === 9999999 ? null : this.agent,
-        webId: this.site,
-      };
+        webId: this.site
+      }
 
       if (this.tableDate.timeType) {
         Data = [
           {
             timeType: this.tableDate.timeType,
             webId: this.site,
-            agentId: this.agent === 9999999 ? null : this.agent,
-          },
-        ];
+            agentId: this.agent === 9999999 ? null : this.agent
+          }
+        ]
       }
 
       Data.push(
         ...this.tableLabel.map((item) => {
           return {
-            [item.key]: item.value,
-          };
+            [item.key]: item.value
+          }
         })
-      );
+      )
       getHomeGameAvgData(Data).then((res) => {
         res.data.data.map(
           (item) => (item.gameNumber = Number(item.gameNumber))
-        );
-        this.spinShow = false;
-        this.tableData = [];
-        this.tableData.push(...res.data.data);
-      });
+        )
+        this.spinShow = false
+        this.tableData = []
+        this.tableData.push(...res.data.data)
+      })
     },
-    changeTimeData(type, time, gameId) {
+    changeTimeData (type, time, gameId) {
       this.params = {
         timeType: time,
         dataType: type,
         agentId: this.agent,
         webId: this.site,
-        gameId: gameId,
+        gameId: gameId
       }
-      this.searchIndex(type, time);
-      this.searchIndex(type, time, gameId);
-      this.searchGameData(type, time, gameId);
+      this.searchIndex(type, time)
+      this.searchIndex(type, time, gameId)
+      this.searchGameData(type, time, gameId)
     },
-    changeNum(num) {
-      return Number(String(num).replace(/\,/g, ""));
+    changeNum (num) {
+      return Number(String(num).replace(/\,/g, ''))
     },
 
     /**
      * 搜索图表：折线图
      */
-    searchIndex(type, time, gameId) {
+    searchIndex (type, time, gameId) {
       let Data = [
         {
-          timeType: time,
+          timeType: time
         },
         {
-          dataType: type,
+          dataType: type
         },
         {
-          gameId: gameId,
+          gameId: gameId
         },
         {
-          webId: this.site,
+          webId: this.site
         },
         {
-          agentId: this.agent === 9999999 ? null : this.agent,
-        },
-      ];
+          agentId: this.agent === 9999999 ? null : this.agent
+        }
+      ]
       /**
        * 游戏总数据（非图表）
        */
@@ -631,15 +630,15 @@ export default {
           .then((res) => {
             this.inforCardData.forEach((item, index) => {
               if (item.key == Object.keys(res.data.data.sumData)[index]) {
-                item.count = this.changeNum(res.data.data.sumData[item.key]);
+                item.count = this.changeNum(res.data.data.sumData[item.key])
                 let subCount = this.changeNum(
                   res.data.data.thisMonthAvg[item.key]
-                );
-                item.subCount = subCount ? subCount : 0;
+                )
+                item.subCount = subCount || 0
               }
-            });
+            })
           })
-          .catch((err) => {});
+          .catch((err) => {})
       } else {
         /**
          * 折线图表，2-5 为列表Type
@@ -648,109 +647,108 @@ export default {
           if (type == index) {
             getHomeData(Data)
               .then((res) => {
-                this.setExample[type - 2].show = false;
-                this.setExample[type - 2].columns = time;
+                this.setExample[type - 2].show = false
+                this.setExample[type - 2].columns = time
                 this.setExample[type - 2].barData.sum = Object.assign(
                   res.data.data.map((item) => {
                     if (
                       time == 1 &&
                       type != 3 &&
-                      Number(item.key.split(":")[0]) > new Date().getHours()
+                      Number(item.key.split(':')[0]) > new Date().getHours()
                     ) {
-                      return;
+
                     } else {
-                      return this.changeNum(item.number);
+                      return this.changeNum(item.number)
                     }
                   })
-                );
+                )
                 if (type - 2 == 0) {
-                  this.setExample[0].pieShow = false;
+                  this.setExample[0].pieShow = false
                   this.setExample[0].pieData = res.data.data
                     .map((item) => {
                       return {
                         value: item.number,
-                        name: item.key,
-                      };
+                        name: item.key
+                      }
                     })
-                    .filter((item) => item);
+                    .filter((item) => item)
                   this.$nextTick(() => {
-                    this.setExample[0].pieShow = true;
-                  });
+                    this.setExample[0].pieShow = true
+                  })
                 }
                 this.$nextTick(() => {
-                  this.setExample[type - 2].show = true;
-                });
+                  this.setExample[type - 2].show = true
+                })
               })
-              .catch((err) => {});
+              .catch((err) => {})
           }
         }
       }
     },
-    searchGameData(type, time, gameId) {
+    searchGameData (type, time, gameId) {
       let Data = [
         {
           timeType: time,
           webId: this.site,
-          agentId: this.agent === 9999999 ? null : this.agent,
-        },
-      ];
+          agentId: this.agent === 9999999 ? null : this.agent
+        }
+      ]
       if (type >= 3) {
         getHomeGameData(Data)
           .then((res) => {
             if (res.data.code == 200) {
-              let option = [];
-              this.setExample[type - 2].pieShow = false;
+              let option = []
+              this.setExample[type - 2].pieShow = false
               this.setExample[type - 2].pieData = res.data.data
                 .map((item) => {
-                  item.profitLoss = String(-Number(item.profitLoss));
+                  item.profitLoss = String(-Number(item.profitLoss))
                   option = this.changeNum(
                     {
                       1: item.gameNumber,
                       2: item.effectiveBets,
-                      3: item.profitLoss,
+                      3: item.profitLoss
                     }[type - 2]
-                  );
+                  )
                   if (option > 0 && type != 5) {
                     return {
                       value: option,
-                      name: item.name,
-                    };
+                      name: item.name
+                    }
                   } else if (type == 5) {
                     return {
-                      [item.name]: option,
-                    };
+                      [item.name]: option
+                    }
                   }
                 })
-                .filter((item) => item);
+                .filter((item) => item)
 
               this.$nextTick(() => {
-                this.setExample[type - 2].pieShow = true;
-              });
+                this.setExample[type - 2].pieShow = true
+              })
             } else {
-              if (res.data.data)
-                this.$Message.error(res.data.data.code, res.data.msg);
+              if (res.data.data) { this.$Message.error(res.data.data.code, res.data.msg) }
             }
           })
-          .catch((err) => {});
+          .catch((err) => {})
       }
     },
     /**
      * set sit
      */
-    setSite(val) {
-      this.site = val;
+    setSite (val) {
+      this.site = val
       if (val > 0) {
-        sessionStorage.setItem("siteVal", val);
+        sessionStorage.setItem('siteVal', val)
         this.agentOption = this.siteOption.find(
           (site) => site.id == val
-        ).agentList;
+        ).agentList
         if (!this.agentOption.find((x) => x.id == 9999999)) {
           this.agentOption.unshift({
-            name: "全部",
-            id: 9999999,
-          });
+            name: '全部',
+            id: 9999999
+          })
         }
-        this.agentOption.map((item)=>{
+        this.agentOption.map((item) => {
           item.label = item.name
         })
       }
@@ -759,37 +757,37 @@ export default {
     /**
      * 查询
      */
-    async selectIndex() {
+    async selectIndex () {
       this.searchIndex(1, this.params.timeType)
       // this.searchIndex(2, this.params.timeType, this.params.gameId)
-    },
+    }
   },
-  async mounted() {
+  async mounted () {
     getLinkageList()
       .then((res) => {
-        window.windowData_getLinkageList = res.data.data;
-        let sid = sessionStorage.getItem("siteVal"); // 获取当前session存储的已选择的站点id
+        window.windowData_getLinkageList = res.data.data
+        let sid = sessionStorage.getItem('siteVal') // 获取当前session存储的已选择的站点id
         let siteOption = JSON.parse(
-          sessionStorage.getItem("siteOption") || "[]"
-        ); // 获取当前session存储的站点列表数据
-        this.siteOption = siteOption;
-        let agent = sessionStorage.getItem("agentVal");
-        this.site = sid * 1;
+          sessionStorage.getItem('siteOption') || '[]'
+        ) // 获取当前session存储的站点列表数据
+        this.siteOption = siteOption
+        let agent = sessionStorage.getItem('agentVal')
+        this.site = sid * 1
         // 把选择的站点赋值到页面选中
         siteOption &&
           siteOption.map((item, index) => {
             if (item.id == sid) {
-              this.agentOption = item.agentList;
+              this.agentOption = item.agentList
               // this.agentOption.unshift({
               //   name: "全部",
               //   id: 9999999,
               // });
-              this.agent = agent * 1;
-              this.agentOption.map((item)=>{
+              this.agent = agent * 1
+              this.agentOption.map((item) => {
                 item.label = item.name
               })
             }
-          });
+          })
         // this.siteOption = res.data.data;
         // this.site = res.data.data[0].id;
         // res.data.data[0].agentList.unshift({
@@ -800,51 +798,51 @@ export default {
         // this.agent = 9999999;
 
         for (let i = 1; i <= 5; i++) {
-          this.searchIndex(i, 1, 0);
-          this.searchGameData(i, 1, 0);
+          this.searchIndex(i, 1, 0)
+          this.searchGameData(i, 1, 0)
         }
 
-      this.handleSearch();
-        this.siteOption.map((item)=>{
-        item.label = item.name
-      })
+        this.handleSearch()
+        this.siteOption.map((item) => {
+          item.label = item.name
+        })
 
         let temptimer = setInterval(() => {
-          if (sessionStorage.getItem("agentVal")) {
+          if (sessionStorage.getItem('agentVal')) {
             this.tableLabel.map((item) => {
-              if (item.key == "gameId") {
-                getSelectGames(sessionStorage.getItem("agentVal")).then(
+              if (item.key == 'gameId') {
+                getSelectGames(sessionStorage.getItem('agentVal')).then(
                   (res) => {
                     item.option.push(
                       {
                         id: 0,
-                        name: "全部",
+                        name: '全部'
                       },
                       ...res.data.data
-                    );
+                    )
                     this.gameSelectList.push(
                       {
                         id: 0,
-                        name: "全部",
+                        name: '全部'
                       },
                       ...res.data.data
-                    );
+                    )
                   }
-                );
+                )
               }
-              if (item.key == "platFrom") {
+              if (item.key == 'platFrom') {
                 // getClassList(sessionStorage.getItem("agentVal")).then((res) => {
                 //   item.option.push(...res.data.data);
                 // });
               }
-            });
-            clearInterval(temptimer);
+            })
+            clearInterval(temptimer)
           }
-        }, 200);
+        }, 200)
       })
-      .catch((err) => {});
-  },
-};
+      .catch((err) => {})
+  }
+}
 </script>
 
 <style lang="less" scoped>

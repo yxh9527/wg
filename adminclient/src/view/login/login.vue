@@ -24,75 +24,75 @@
 </template>
 
 <script>
-import LoginForm from "_c/login-form";
-import { mapActions } from "vuex";
-import { getGameData2 } from "@/api/data";
+import LoginForm from '_c/login-form'
+import { mapActions } from 'vuex'
+import { getGameData2 } from '@/api/data'
 export default {
   components: {
-    LoginForm,
+    LoginForm
   },
-  data() {
+  data () {
     return {
       modal1: false,
       urlList: [],
-      url: "",
-    };
+      url: ''
+    }
   },
   methods: {
-    ...mapActions(["handleLogin", "getUserInfo"]),
-    ok() {
+    ...mapActions(['handleLogin', 'getUserInfo']),
+    ok () {
       if (this.url) {
-        sessionStorage.setItem("node_url", this.url);
+        sessionStorage.setItem('node_url', this.url)
         getGameData2().then(({ data }) => {
           if (data.code === 200) {
-            sessionStorage.setItem("games", JSON.stringify(data.data));
+            sessionStorage.setItem('games', JSON.stringify(data.data))
           } else {
-            this.$Message.error(data.code + " ：&nbsp;" + data.msg);
+            this.$Message.error(data.code + ' ：&nbsp;' + data.msg)
           }
-        });
-        this.modal1 = false;
+        })
+        this.modal1 = false
         this.$router.push({
-          name: "newHome",
-        });
+          name: 'newHome'
+        })
       } else {
-        this.$Message.error("选择一个地址");
+        this.$Message.error('选择一个地址')
       }
     },
-    handleSubmit({ name, password }) {
+    handleSubmit ({ name, password }) {
       this.handleLogin({ name, password }).then((res) => {
         if (res.status === 200) {
-          this.urlList = res.data.data.web_node || [];
+          this.urlList = res.data.data.web_node || []
           getGameData2().then(({ data }) => {
             if (data.code === 200) {
-              sessionStorage.setItem("games", JSON.stringify(data.data));
+              sessionStorage.setItem('games', JSON.stringify(data.data))
             } else {
-              this.$Message.error(data.code + " ：&nbsp;" + data.msg);
+              this.$Message.error(data.code + ' ：&nbsp;' + data.msg)
             }
-          });
+          })
           switch (res.data.data.user.userType) {
             case 1:
               this.$router.push({
-                name: "newHome",
-              });
-              break;
+                name: 'newHome'
+              })
+              break
             case 2:
               this.$router.push({
-                name: "players",
-              });
-              break;
+                name: 'players'
+              })
+              break
             case 3:
               this.$router.push({
-                name: "agent",
-              });
-              break;
+                name: 'agent'
+              })
+              break
           }
 
-          sessionStorage.setItem("sign", res.data.data.sign);
+          sessionStorage.setItem('sign', res.data.data.sign)
         }
-      });
-    },
-  },
-};
+      })
+    }
+  }
+}
 </script>
 
 <style>

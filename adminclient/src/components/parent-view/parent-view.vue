@@ -5,26 +5,26 @@
 </template>
 <script>
 export default {
-  name: "ParentView",
+  name: 'ParentView',
   computed: {
-    tagNavList() {
-      return this.$store.state.app.tagNavList;
+    tagNavList () {
+      return this.$store.state.app.tagNavList
     },
-    notCacheName() {
+    notCacheName () {
       return [
-        this.$route.meta && this.$route.meta.notCache ? this.$route.name : ""
-      ];
+        this.$route.meta && this.$route.meta.notCache ? this.$route.name : ''
+      ]
     },
-    cacheList() {
+    cacheList () {
       return [
-        "ParentView",
+        'ParentView',
         ...(this.tagNavList.length
           ? this.tagNavList
-              .filter(item => !(item.meta && item.meta.notCache))
-              .map(item => item.name)
+            .filter(item => !(item.meta && item.meta.notCache))
+            .map(item => item.name)
           : [])
-      ];
+      ]
     }
   }
-};
+}
 </script>
