@@ -146,7 +146,12 @@ func (s *SingleCtrlMgr) setSingleCtrlScore(uid uint32, delta decimal.Decimal) {
 }
 
 func (s *SingleCtrlMgr) randInt(n int) int {
-	s.r = rand.New(rand.NewSource(time.Now().Unix()))
+	s.lock.Lock()
+	defer s.lock.Unlock()
+
+	if s.r == nil {
+		s.r = rand.New(rand.NewSource(time.Now().UnixNano()))
+	}
 	return s.r.Intn(n)
 }
 
@@ -374,8 +379,8 @@ func (gcm *GameCacheMgr) ChangePoolWithNoLock(agentId int64, userId int32, symbo
 func (gcm *GameCacheMgr) GetPool(agentId int64, symbol string) decimal.Decimal {
 	agent := gcm.GetAgent(agentId)
 	//细分代理锁
-	agent.lock.RLock()
-	defer agent.lock.RUnlock()
+	agent.lock.Lock()
+	defer agent.lock.Unlock()
 
 	game := agent.GetGame(symbol)
 	// zap.L().Debug("GetPool", zap.Any("agentId", agentId), zap.Any("symbol", symbol))
@@ -479,8 +484,8 @@ func (gcm *GameCacheMgr) SaveRoundData(agentId int64, roundId string, maxPay dec
 func (gcm *GameCacheMgr) GetPlayerAccount(agentId, userId int64) string {
 	agent := gcm.GetAgent(agentId)
 	//细分代理锁
-	agent.lock.RLock()
-	defer agent.lock.RUnlock()
+	agent.lock.Lock()
+	defer agent.lock.Unlock()
 
 	user := agent.GetUser(uint32(userId))
 	if user != nil {
@@ -899,6 +904,7 @@ func CahceInit() {
 	if singleCtrl == nil {
 		singleCtrl = &SingleCtrlMgr{
 			lock: &sync.RWMutex{},
+			r:    rand.New(rand.NewSource(time.Now().UnixNano())),
 			sc:   make(map[uint32]*Ctrl),
 		}
 		//加载所有的控制信息
