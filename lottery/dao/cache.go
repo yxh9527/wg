@@ -327,7 +327,7 @@ func (gcm *GameCacheMgr) ChangePool(agentId int64, userId int32, symbol, currenc
 		game := agent.GetGame(symbol)
 		before := (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)
 		//所有情况都需要扣除水池值 记录赔付
-		game.TotalProfLoss = game.TotalProfLoss.Add(award)
+		game.TotalProfLoss = game.TotalProfLoss.Add(award.Truncate(4))
 		//增加水池
 		game.TotalEffectBet = game.TotalEffectBet.Add(bet)
 		//累计税收
@@ -353,7 +353,7 @@ func (gcm *GameCacheMgr) ChangePoolWithNoLock(agentId int64, userId int32, symbo
 		game := agent.GetGame(symbol)
 		before := (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)
 		//所有情况都需要扣除水池值 记录赔付
-		game.TotalProfLoss = game.TotalProfLoss.Add(award)
+		game.TotalProfLoss = game.TotalProfLoss.Add(award.Truncate(4))
 		//增加水池
 		game.TotalEffectBet = game.TotalEffectBet.Add(bet)
 		//
@@ -399,7 +399,7 @@ func (gcm *GameCacheMgr) CheckPoolWithChange(agentId int64, symbol, recordId, cu
 	if user.IsTourist == 0 {
 		before := (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)
 		//所有情况都需要扣除水池值 记录赔付
-		game.TotalProfLoss = game.TotalProfLoss.Add(award)
+		game.TotalProfLoss = game.TotalProfLoss.Add(award.Truncate(4))
 		//增加水池
 		game.TotalEffectBet = game.TotalEffectBet.Add(bet)
 		//
@@ -434,7 +434,7 @@ func (gcm *GameCacheMgr) CheckPoolWithOutBet(agentId int64, symbol, recordId, cu
 	if user.IsTourist == 0 {
 		before := (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)
 		//所有情况都需要扣除水池值 记录赔付
-		game.TotalProfLoss = game.TotalProfLoss.Add(award)
+		game.TotalProfLoss = game.TotalProfLoss.Add(award.Truncate(4))
 		//增加水池
 		game.TotalEffectBet = game.TotalEffectBet.Add(bet)
 		//
