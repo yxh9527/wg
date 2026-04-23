@@ -510,7 +510,6 @@ func (gcm *GameCacheMgr) FinishRoundData(agentId int64, roundId string) *RoundIt
 
 	ri := agent.RoundCache[roundId]
 	if ri == nil {
-		zap.L().Debug("鏃犻鎵ｄ俊鎭?", zap.Any("agentId", agentId), zap.Any("roundId", roundId))
 		return nil
 	}
 	ri.Over = true
