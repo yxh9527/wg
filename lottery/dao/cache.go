@@ -291,7 +291,7 @@ func (gcm *GameCacheMgr) Complete(agentId int64, userId uint32, symbol string, b
 			//bet作为有效打码
 			chips = bet
 		}
-		game.TotalChips = game.TotalChips.Add(chips)
+		game.TotalChips = game.TotalChips.Add(chips.Truncate(4))
 		//以有效下注计算水池后   可以直接放在下注的时候计算税收
 		// game.TotalRevenue = game.TotalRevenue.Add(bet.Mul(rate).Truncate(4))
 		game.UpdateTime = time.Now().Unix()
