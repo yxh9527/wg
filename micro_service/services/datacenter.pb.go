@@ -337,6 +337,7 @@ type GetGameRecordsListReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	GameId        int32                  `protobuf:"varint,1,opt,name=gameId,proto3" json:"gameId,omitempty"`
 	UserId        int32                  `protobuf:"varint,2,opt,name=userId,proto3" json:"userId,omitempty"`
+	IsWinGold     bool                   `protobuf:"varint,3,opt,name=isWinGold,proto3" json:"isWinGold,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -383,6 +384,13 @@ func (x *GetGameRecordsListReq) GetUserId() int32 {
 		return x.UserId
 	}
 	return 0
+}
+
+func (x *GetGameRecordsListReq) GetIsWinGold() bool {
+	if x != nil {
+		return x.IsWinGold
+	}
+	return false
 }
 
 type GetGameRecordsListResp struct {
@@ -1583,10 +1591,11 @@ const file_datacenter_proto_rawDesc = "" +
 	"\x04seed\x18\x02 \x01(\tR\x04seed\"R\n" +
 	"\x18GetHashLotteryResultResp\x12$\n" +
 	"\x04code\x18\x01 \x01(\x0e2\x10.base.error_codeR\x04code\x12\x10\n" +
-	"\x03str\x18\x02 \x01(\tR\x03str\"G\n" +
+	"\x03str\x18\x02 \x01(\tR\x03str\"e\n" +
 	"\x15GetGameRecordsListReq\x12\x16\n" +
 	"\x06gameId\x18\x01 \x01(\x05R\x06gameId\x12\x16\n" +
-	"\x06userId\x18\x02 \x01(\x05R\x06userId\"X\n" +
+	"\x06userId\x18\x02 \x01(\x05R\x06userId\x12\x1c\n" +
+	"\tisWinGold\x18\x03 \x01(\bR\tisWinGold\"X\n" +
 	"\x16GetGameRecordsListResp\x12$\n" +
 	"\x04code\x18\x01 \x01(\x0e2\x10.base.error_codeR\x04code\x12\x18\n" +
 	"\arecords\x18\x02 \x03(\tR\arecords\"\x10\n" +

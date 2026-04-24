@@ -47,8 +47,8 @@ func formatHashLotteryResultCacheKey(gameID int32, seed string) string {
 	return "hash_lottery_result:" + formatHashLotteryResultKey(gameID, seed)
 }
 
-func formatGameRecordsListCacheKey(gameID, userID int32) string {
-	return fmt.Sprintf("game_records_list:%d:%d", gameID, userID)
+func formatGameRecordsListCacheKey(gameID, userID int32, isWinGold bool) string {
+	return fmt.Sprintf("game_records_list:%d:%d:%t", gameID, userID, isWinGold)
 }
 
 // 注单入库
@@ -234,7 +234,7 @@ func (d *DataCenterService) GetHashLotteryResult(_ context.Context, req *service
 
 func (d *DataCenterService) GetGameRecordsList(_ context.Context, req *services.GetGameRecordsListReq) (resp *services.GetGameRecordsListResp, err error) {
 	resp = &services.GetGameRecordsListResp{Code: services.ErrorCode_OK}
-	cacheKey := formatGameRecordsListCacheKey(req.GameId, req.UserId)
+	cacheKey := formatGameRecordsListCacheKey(req.GameId, req.UserId, req.IsWinGold)
 	cacheValue, err := d.rds.Get(cacheKey, gameRecordsListCacheTTL)
 	if err == nil {
 		unmarshalErr := json.Unmarshal([]byte(cacheValue), &resp.Records)
@@ -246,7 +246,7 @@ func (d *DataCenterService) GetGameRecordsList(_ context.Context, req *services.
 		zap.L().Warn("GetGameRecordsList,读取Redis缓存失败", zap.String("key", cacheKey), zap.Error(err))
 	}
 
-	records, err := d.es.GetGameRecordsList(req.GameId, req.UserId)
+	records, err := d.es.GetGameRecordsList(req.GameId, req.UserId, req.IsWinGold)
 	if err != nil {
 		resp.Code = services.ErrorCode_SYSTEM_ERROR
 		return resp, err

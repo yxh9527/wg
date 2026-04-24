@@ -67,6 +67,7 @@ message GetHashLotteryResultResp {
 message GetGameRecordsListReq {
     int32 gameId = 1;
     int32 userId = 2;
+    bool isWinGold = 3;
 }
 
 message GetGameRecordsListResp {

@@ -70,10 +70,13 @@ func (esDao *ESDao) GetHashLotteryResult(key string) (string, error) {
 	return doc.Value, nil
 }
 
-func (esDao *ESDao) GetGameRecordsList(gameID, userID int32) ([]string, error) {
+func (esDao *ESDao) GetGameRecordsList(gameID, userID int32, isWinGold bool) ([]string, error) {
 	querys := []elastic.Query{
 		elastic.NewTermQuery("gameId", gameID),
 		elastic.NewTermQuery("userId", userID),
+	}
+	if isWinGold {
+		querys = append(querys, elastic.NewRangeQuery("win").Gt(0))
 	}
 	includeFields := elastic.NewFetchSourceContext(true).Include("log")
 	resp, err := esDao.es.Search().
@@ -85,7 +88,7 @@ func (esDao *ESDao) GetGameRecordsList(gameID, userID int32) ([]string, error) {
 		Sort("playedDate", false).
 		Do(context.Background())
 	if err != nil {
-		zap.L().Error("GetGameRecordsList,读取ES失败", zap.Int32("gameId", gameID), zap.Int32("userId", userID), zap.Error(err))
+		zap.L().Error("GetGameRecordsList,读取ES失败", zap.Int32("gameId", gameID), zap.Int32("userId", userID), zap.Bool("isWinGold", isWinGold), zap.Error(err))
 		return nil, err
 	}
 
