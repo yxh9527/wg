@@ -1215,6 +1215,10 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 			zap.L().Error("panic", zap.Any("err", err))
 		}
 	}()
+	resp = &services.QKLSettleMultiplayerResp{
+		Code:      services.ErrorCode_SYSTEM_ERROR,
+		Currencys: make([]*services.QKLNewCurrencyItem, 0),
+	}
 	if len(req.Records) <= 0 {
 		zap.L().Error("QKLSettleMultiplayer:批量结算", zap.Any("record count", len(req.Records)))
 		return resp, nil
@@ -1375,5 +1379,6 @@ func (d *LotteryService) QKLSettleMultiplayer(_ context.Context, req *services.Q
 		resArr = append(resArr, v)
 	}
 	resp.Currencys = resArr
+	resp.Code = services.ErrorCode_OK
 	return resp, nil
 }
