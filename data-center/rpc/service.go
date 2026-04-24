@@ -49,11 +49,11 @@ func formatHashLotteryResultKey(gameID int32, seed string) string {
 }
 
 func formatHashLotteryResultCacheKey(gameID int32, seed string) string {
-	return "hash_lottery_result:" + formatHashLotteryResultKey(gameID, seed)
+	return "hlrc:" + formatHashLotteryResultKey(gameID, seed)
 }
 
 func formatGameRecordsListCacheKey(gameID, userID int32, isWinGold bool) string {
-	return fmt.Sprintf("game_records_list:%d:%d:%t", gameID, userID, isWinGold)
+	return fmt.Sprintf("grlc:%d:%d:%t", gameID, userID, isWinGold)
 }
 
 // 注单入库
@@ -65,29 +65,30 @@ func (dc *DataCenterService) syncRecords() {
 			}
 		}()
 		data := make([]*entity.CacheRecordsReq, 0, 16)
-		//十秒写一次
 		t := time.NewTicker(10 * time.Second)
+		defer t.Stop()
+
 		for {
 			select {
 			case <-t.C:
 				if len(data) > 0 {
 					dc.es.BulkRecordsSave(data)
-					ids := make([]string, 0, 64)
+					ids := make([]string, 0, len(data))
 					for _, v := range data {
 						ids = append(ids, v.RoundID)
 					}
-					zap.L().Debug("批量写入注单信息", zap.Any("roundIds", ids))
+					zap.L().Debug("syncRecords,批量写入注单信息", zap.Strings("roundIds", ids), zap.Int("count", len(data)))
 					data = make([]*entity.CacheRecordsReq, 0, 16)
 				}
 			case req := <-dc.RecordChan:
 				data = append(data, req)
 				if len(data) >= 8 {
 					dc.es.BulkRecordsSave(data)
-					ids := make([]string, 0, 64)
+					ids := make([]string, 0, len(data))
 					for _, v := range data {
 						ids = append(ids, v.RoundID)
 					}
-					zap.L().Debug("批量写入注单信息", zap.Any("roundIds", ids))
+					zap.L().Debug("syncRecords,达到阈值批量写入注单信息", zap.Strings("roundIds", ids), zap.Int("count", len(data)))
 					data = make([]*entity.CacheRecordsReq, 0, 16)
 				}
 			}
@@ -107,8 +108,17 @@ func (dc *DataCenterService) syncHashLotteryResults() {
 			if len(data) == 0 {
 				return data
 			}
+
+			keys := make([]string, 0, len(data))
+			for _, item := range data {
+				keys = append(keys, item.Key)
+			}
+
+			zap.L().Debug("syncHashLotteryResults,开始批量写入ES", zap.Int("count", len(data)), zap.Strings("keys", keys))
 			if err := dc.es.BulkSaveHashLotteryResult(data); err != nil {
-				zap.L().Error("syncHashLotteryResults,批量写入失败", zap.Int("count", len(data)), zap.Error(err))
+				zap.L().Error("syncHashLotteryResults,批量写入失败", zap.Int("count", len(data)), zap.Strings("keys", keys), zap.Error(err))
+			} else {
+				zap.L().Debug("syncHashLotteryResults,批量写入ES成功", zap.Int("count", len(data)), zap.Strings("keys", keys))
 			}
 			return make([]*dao.HashLotteryResultDoc, 0, hashLotteryResultBatchSize)
 		}
@@ -120,10 +130,15 @@ func (dc *DataCenterService) syncHashLotteryResults() {
 		for {
 			select {
 			case <-ticker.C:
+				if len(data) > 0 {
+					zap.L().Debug("syncHashLotteryResults,定时触发批量写入", zap.Int("count", len(data)))
+				}
 				data = flush(data)
 			case req := <-dc.HashLotteryResultChan:
 				data = append(data, req)
+				zap.L().Debug("syncHashLotteryResults,收到写入请求", zap.String("key", req.Key), zap.Int("pending", len(data)))
 				if len(data) >= hashLotteryResultBatchSize {
+					zap.L().Debug("syncHashLotteryResults,达到批量阈值，立即写入", zap.Int("count", len(data)))
 					data = flush(data)
 				}
 			}
@@ -141,35 +156,34 @@ func (d *DataCenterService) GetPlayer(ctx context.Context, req *services.GetPlay
 		resp.HumanPlayer = p
 		return resp, nil
 	}
-	// 在redis中没有找到玩家信息，从db中加载
+
 	player, err := d.db.GetPlayer(ctx, req.PlayerId)
 	if err != nil {
 		return nil, err
 	}
 	p = ConvertUserEntityToHumanPlayer(player)
 	if err := d.rds.SetPlayer(p, false); err != nil {
-		zap.L().Warn("向redis写入玩家信息缓存失败，下一次获取该玩家信息时还将从数据库中读取", zap.Uint32("player_id", p.Id))
+		zap.L().Warn("GetPlayer,写入Redis玩家缓存失败", zap.Uint32("playerId", p.Id), zap.Error(err))
 	}
 	resp.HumanPlayer = p
-	zap.L().Debug("get player", zap.Any("resp", resp))
+	zap.L().Debug("GetPlayer,返回玩家信息", zap.Uint32("playerId", p.Id))
 	return resp, nil
 }
 
 func (d *DataCenterService) UpdatePlayerAvatarAndGender(ctx context.Context, req *services.UpdatePlayerAvatarAndGenderReq) (resp *services.UpdatePlayerAvatarAndGenderResp, err error) {
 	err = d.rds.UpdatePlayerAvatarAndGender(req.PlayerId, req.Avatar, req.Name, req.Gender)
 	if err == redis.Nil {
-		// 在redis中没有找到玩家信息，从db中加载
 		player, err := d.db.GetPlayer(ctx, req.PlayerId)
 		if err != nil {
-			zap.L().Error("从数据库加载玩家信息失败", zap.Stringer("req", req), zap.Error(err))
+			zap.L().Error("UpdatePlayerAvatarAndGender,数据库加载玩家信息失败", zap.Stringer("req", req), zap.Error(err))
 			return nil, err
 		}
 		if err := d.rds.SetPlayer(ConvertUserEntityToHumanPlayer(player), true); err != nil {
-			zap.L().Error("向redis写入玩家信息缓存失败", zap.Stringer("req", req), zap.Error(err))
+			zap.L().Error("UpdatePlayerAvatarAndGender,写入Redis玩家缓存失败", zap.Stringer("req", req), zap.Error(err))
 			return nil, err
 		}
 	} else if err != nil {
-		zap.L().Error("更新玩家头像或性别失败", zap.Stringer("req", req), zap.Error(err))
+		zap.L().Error("UpdatePlayerAvatarAndGender,更新玩家信息失败", zap.Stringer("req", req), zap.Error(err))
 		return nil, err
 	}
 	return &services.UpdatePlayerAvatarAndGenderResp{}, nil
@@ -203,14 +217,14 @@ func (d *DataCenterService) GetRecords(ctx context.Context, req *services.GetRec
 	return resp, nil
 }
 
-// 玩家锁 加锁
+// 玩家加锁
 func (d *DataCenterService) UserLock(ctx context.Context, req *services.UserLockReq) (resp *services.UserLockResp, err error) {
 	resp = &services.UserLockResp{}
 	resp.Result = d.rds.UserLock(req.UserId)
 	return resp, nil
 }
 
-// 玩家锁 解锁
+// 玩家解锁
 func (d *DataCenterService) UserUnLock(ctx context.Context, req *services.UserUnLockReq) (resp *services.UserUnLockResp, err error) {
 	resp = &services.UserUnLockResp{}
 	resp.Result = d.rds.UserUnLock(req.UserId, req.Token)
@@ -220,7 +234,6 @@ func (d *DataCenterService) UserUnLock(ctx context.Context, req *services.UserUn
 // 获取游戏列表
 func (d *DataCenterService) GetGameList(ctx context.Context, req *services.GetGameListReq) (resp *services.GetGameListResp, err error) {
 	resp = d.db.GetGameList()
-	// zap.L().Debug("游戏列表", zap.Any("data", resp), zap.Any("count", len(resp.All)))
 	return resp, nil
 }
 
@@ -228,7 +241,7 @@ func (d *DataCenterService) GetSesson(ctx context.Context, req *services.GetSess
 	resp = &services.GetSessionResp{Code: services.ErrorCode_OK}
 	res, err := d.rds.Get(req.Key, req.TimeOut)
 	if err != nil && err != redis.Nil {
-		zap.L().Debug("====>getSession", zap.Any("req", req))
+		zap.L().Debug("GetSesson,读取session失败", zap.Any("req", req), zap.Error(err))
 		resp.Code = services.ErrorCode_SYSTEM_ERROR
 		return resp, err
 	}
@@ -239,6 +252,7 @@ func (d *DataCenterService) GetSesson(ctx context.Context, req *services.GetSess
 func (d *DataCenterService) SaveHashLotteryResult(_ context.Context, req *services.SaveHashLotteryResultReq) (resp *services.SaveHashLotteryResultResp, err error) {
 	resp = &services.SaveHashLotteryResultResp{Code: services.ErrorCode_OK}
 	key := formatHashLotteryResultKey(req.GameId, req.Seed)
+	zap.L().Debug("SaveHashLotteryResult,请求入队", zap.Int32("gameId", req.GameId), zap.String("seed", req.Seed), zap.String("key", key))
 	d.HashLotteryResultChan <- &dao.HashLotteryResultDoc{
 		Key:   key,
 		Value: req.Value,

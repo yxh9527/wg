@@ -46,6 +46,7 @@ func (esDao *ESDao) SaveHashLotteryResult(key, value string) error {
 		zap.L().Error("SaveHashLotteryResult,写入ES失败", zap.String("key", key), zap.Error(err))
 		return err
 	}
+	zap.L().Debug("SaveHashLotteryResult,写入ES成功", zap.String("key", key))
 	return nil
 }
 
@@ -59,20 +60,24 @@ func (esDao *ESDao) BulkSaveHashLotteryResult(data []*HashLotteryResultDoc) erro
 			Doc(item))
 	}
 	bulkService.Add(records...)
+	zap.L().Debug("BulkSaveHashLotteryResult,准备提交ES批量请求", zap.Int("count", len(data)))
 	_, err := bulkService.Do(context.Background())
 	if err != nil {
 		zap.L().Error("BulkSaveHashLotteryResult,批量写入ES失败", zap.Int("count", len(data)), zap.Error(err))
 		return err
 	}
+	zap.L().Debug("BulkSaveHashLotteryResult,批量写入ES完成", zap.Int("count", len(data)))
 	return nil
 }
 
 func (esDao *ESDao) GetHashLotteryResult(key string) (string, error) {
+	zap.L().Debug("GetHashLotteryResult,开始查询ES", zap.String("key", key))
 	resp, err := esDao.es.Get().
 		Index(hashLotteryResultIndex).
 		Id(key).
 		Do(context.Background())
 	if elastic.IsNotFound(err) {
+		zap.L().Debug("GetHashLotteryResult,ES未找到结果", zap.String("key", key))
 		return "", nil
 	}
 	if err != nil {
@@ -85,6 +90,7 @@ func (esDao *ESDao) GetHashLotteryResult(key string) (string, error) {
 		zap.L().Error("GetHashLotteryResult,解析ES结果失败", zap.String("key", key), zap.Error(err))
 		return "", err
 	}
+	zap.L().Debug("GetHashLotteryResult,ES查询成功", zap.String("key", key), zap.Bool("found", doc.Value != ""))
 	return doc.Value, nil
 }
 
@@ -96,6 +102,7 @@ func (esDao *ESDao) GetGameRecordsList(gameID, userID int32, isWinGold bool) ([]
 	if isWinGold {
 		querys = append(querys, elastic.NewRangeQuery("win").Gt(0))
 	}
+	zap.L().Debug("GetGameRecordsList,开始查询ES", zap.Int32("gameId", gameID), zap.Int32("userId", userID), zap.Bool("isWinGold", isWinGold))
 	includeFields := elastic.NewFetchSourceContext(true).Include("log")
 	resp, err := esDao.es.Search().
 		Index("pp_gp_settlement").
@@ -122,6 +129,7 @@ func (esDao *ESDao) GetGameRecordsList(gameID, userID int32, isWinGold bool) ([]
 			records = append(records, r.Log)
 		}
 	}
+	zap.L().Debug("GetGameRecordsList,ES查询结果完成", zap.Int32("gameId", gameID), zap.Int32("userId", userID), zap.Bool("isWinGold", isWinGold), zap.Int("count", len(records)))
 	return records, nil
 }
 
@@ -195,7 +203,6 @@ func (esDao *ESDao) GetRecordsByRoundId(roundId string) []*services.RecordItem {
 	querys := make([]elastic.Query, 0)
 	rid, _ := strconv.ParseInt(roundId, 10, 64)
 	querys = append(querys, elastic.NewTermQuery("roundID", rid))
-	// querys = append(querys, elastic.NewTermQuery("symbol", symbol))
 	sorce := []string{"currency", "currencySymbol", "symbol", "log"}
 	includeFields := elastic.NewFetchSourceContext(true).Include(sorce...)
 	boolQuery := elastic.NewBoolQuery().Must(querys...)
