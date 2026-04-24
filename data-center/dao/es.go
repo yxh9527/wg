@@ -49,6 +49,24 @@ func (esDao *ESDao) SaveHashLotteryResult(key, value string) error {
 	return nil
 }
 
+func (esDao *ESDao) BulkSaveHashLotteryResult(data []*HashLotteryResultDoc) error {
+	bulkService := esDao.es.Bulk()
+	records := make([]elastic.BulkableRequest, 0, len(data))
+	for _, item := range data {
+		records = append(records, elastic.NewBulkIndexRequest().
+			Index(hashLotteryResultIndex).
+			Id(item.Key).
+			Doc(item))
+	}
+	bulkService.Add(records...)
+	_, err := bulkService.Do(context.Background())
+	if err != nil {
+		zap.L().Error("BulkSaveHashLotteryResult,批量写入ES失败", zap.Int("count", len(data)), zap.Error(err))
+		return err
+	}
+	return nil
+}
+
 func (esDao *ESDao) GetHashLotteryResult(key string) (string, error) {
 	resp, err := esDao.es.Get().
 		Index(hashLotteryResultIndex).

@@ -17,6 +17,8 @@ import (
 
 const hashLotteryResultCacheTTL = 60
 const gameRecordsListCacheTTL = 60
+const hashLotteryResultBatchSize = 50
+const hashLotteryResultFlushInterval = 5 * time.Second
 
 type DataCenterService struct {
 	services.UnimplementedDataCenterServiceServer
@@ -24,18 +26,21 @@ type DataCenterService struct {
 	rds *dao.RedisDao
 	es  *dao.ESDao
 
-	RecordChan chan *entity.CacheRecordsReq
+	RecordChan            chan *entity.CacheRecordsReq
+	HashLotteryResultChan chan *dao.HashLotteryResultDoc
 }
 
 func NewDataCenterService(db, mdb *gorm.DB, es *elastic.Client) *DataCenterService {
 	tmp := &DataCenterService{
-		db:         dao.NewDBDao(db, mdb),
-		rds:        dao.RedisIns(),
-		es:         dao.NewESDao(es),
-		RecordChan: make(chan *entity.CacheRecordsReq, 10240),
+		db:                    dao.NewDBDao(db, mdb),
+		rds:                   dao.RedisIns(),
+		es:                    dao.NewESDao(es),
+		RecordChan:            make(chan *entity.CacheRecordsReq, 10240),
+		HashLotteryResultChan: make(chan *dao.HashLotteryResultDoc, 10240),
 	}
 
 	tmp.syncRecords()
+	tmp.syncHashLotteryResults()
 	return tmp
 }
 
@@ -84,6 +89,42 @@ func (dc *DataCenterService) syncRecords() {
 					}
 					zap.L().Debug("批量写入注单信息", zap.Any("roundIds", ids))
 					data = make([]*entity.CacheRecordsReq, 0, 16)
+				}
+			}
+		}
+	}()
+}
+
+func (dc *DataCenterService) syncHashLotteryResults() {
+	go func() {
+		defer func() {
+			if e := recover(); e != nil {
+				zap.L().Error("syncHashLotteryResults,数据落地协程panic", zap.Any("recover", e))
+			}
+		}()
+
+		flush := func(data []*dao.HashLotteryResultDoc) []*dao.HashLotteryResultDoc {
+			if len(data) == 0 {
+				return data
+			}
+			if err := dc.es.BulkSaveHashLotteryResult(data); err != nil {
+				zap.L().Error("syncHashLotteryResults,批量写入失败", zap.Int("count", len(data)), zap.Error(err))
+			}
+			return make([]*dao.HashLotteryResultDoc, 0, hashLotteryResultBatchSize)
+		}
+
+		data := make([]*dao.HashLotteryResultDoc, 0, hashLotteryResultBatchSize)
+		ticker := time.NewTicker(hashLotteryResultFlushInterval)
+		defer ticker.Stop()
+
+		for {
+			select {
+			case <-ticker.C:
+				data = flush(data)
+			case req := <-dc.HashLotteryResultChan:
+				data = append(data, req)
+				if len(data) >= hashLotteryResultBatchSize {
+					data = flush(data)
 				}
 			}
 		}
@@ -198,9 +239,9 @@ func (d *DataCenterService) GetSesson(ctx context.Context, req *services.GetSess
 func (d *DataCenterService) SaveHashLotteryResult(_ context.Context, req *services.SaveHashLotteryResultReq) (resp *services.SaveHashLotteryResultResp, err error) {
 	resp = &services.SaveHashLotteryResultResp{Code: services.ErrorCode_OK}
 	key := formatHashLotteryResultKey(req.GameId, req.Seed)
-	if err := d.es.SaveHashLotteryResult(key, req.Value); err != nil {
-		resp.Code = services.ErrorCode_SYSTEM_ERROR
-		return resp, err
+	d.HashLotteryResultChan <- &dao.HashLotteryResultDoc{
+		Key:   key,
+		Value: req.Value,
 	}
 	return resp, nil
 }
