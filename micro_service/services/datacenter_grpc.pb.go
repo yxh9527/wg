@@ -30,6 +30,7 @@ const (
 	DataCenterService_GetSesson_FullMethodName                   = "/datacenter.DataCenterService/GetSesson"
 	DataCenterService_SaveHashLotteryResult_FullMethodName       = "/datacenter.DataCenterService/SaveHashLotteryResult"
 	DataCenterService_GetHashLotteryResult_FullMethodName        = "/datacenter.DataCenterService/GetHashLotteryResult"
+	DataCenterService_GetGameRecordsList_FullMethodName          = "/datacenter.DataCenterService/GetGameRecordsList"
 )
 
 // DataCenterServiceClient is the client API for DataCenterService service.
@@ -58,6 +59,8 @@ type DataCenterServiceClient interface {
 	SaveHashLotteryResult(ctx context.Context, in *SaveHashLotteryResultReq, opts ...grpc.CallOption) (*SaveHashLotteryResultResp, error)
 	// 获取哈希开奖结果
 	GetHashLotteryResult(ctx context.Context, in *GetHashLotteryResultReq, opts ...grpc.CallOption) (*GetHashLotteryResultResp, error)
+	// 获取游戏开奖记录列表
+	GetGameRecordsList(ctx context.Context, in *GetGameRecordsListReq, opts ...grpc.CallOption) (*GetGameRecordsListResp, error)
 }
 
 type dataCenterServiceClient struct {
@@ -178,6 +181,16 @@ func (c *dataCenterServiceClient) GetHashLotteryResult(ctx context.Context, in *
 	return out, nil
 }
 
+func (c *dataCenterServiceClient) GetGameRecordsList(ctx context.Context, in *GetGameRecordsListReq, opts ...grpc.CallOption) (*GetGameRecordsListResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetGameRecordsListResp)
+	err := c.cc.Invoke(ctx, DataCenterService_GetGameRecordsList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DataCenterServiceServer is the server API for DataCenterService service.
 // All implementations must embed UnimplementedDataCenterServiceServer
 // for forward compatibility.
@@ -204,6 +217,8 @@ type DataCenterServiceServer interface {
 	SaveHashLotteryResult(context.Context, *SaveHashLotteryResultReq) (*SaveHashLotteryResultResp, error)
 	// 获取哈希开奖结果
 	GetHashLotteryResult(context.Context, *GetHashLotteryResultReq) (*GetHashLotteryResultResp, error)
+	// 获取游戏开奖记录列表
+	GetGameRecordsList(context.Context, *GetGameRecordsListReq) (*GetGameRecordsListResp, error)
 	mustEmbedUnimplementedDataCenterServiceServer()
 }
 
@@ -246,6 +261,9 @@ func (UnimplementedDataCenterServiceServer) SaveHashLotteryResult(context.Contex
 }
 func (UnimplementedDataCenterServiceServer) GetHashLotteryResult(context.Context, *GetHashLotteryResultReq) (*GetHashLotteryResultResp, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetHashLotteryResult not implemented")
+}
+func (UnimplementedDataCenterServiceServer) GetGameRecordsList(context.Context, *GetGameRecordsListReq) (*GetGameRecordsListResp, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetGameRecordsList not implemented")
 }
 func (UnimplementedDataCenterServiceServer) mustEmbedUnimplementedDataCenterServiceServer() {}
 func (UnimplementedDataCenterServiceServer) testEmbeddedByValue()                           {}
@@ -466,6 +484,24 @@ func _DataCenterService_GetHashLotteryResult_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DataCenterService_GetGameRecordsList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGameRecordsListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DataCenterServiceServer).GetGameRecordsList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DataCenterService_GetGameRecordsList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DataCenterServiceServer).GetGameRecordsList(ctx, req.(*GetGameRecordsListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DataCenterService_ServiceDesc is the grpc.ServiceDesc for DataCenterService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -516,6 +552,10 @@ var DataCenterService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetHashLotteryResult",
 			Handler:    _DataCenterService_GetHashLotteryResult_Handler,
+		},
+		{
+			MethodName: "GetGameRecordsList",
+			Handler:    _DataCenterService_GetGameRecordsList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -24,6 +24,10 @@ type HashLotteryResultDoc struct {
 	Value string `json:"value"`
 }
 
+type GameRecordLogDoc struct {
+	Log string `json:"log"`
+}
+
 func NewESDao(client *elastic.Client) *ESDao {
 	return &ESDao{es: client}
 }
@@ -64,6 +68,40 @@ func (esDao *ESDao) GetHashLotteryResult(key string) (string, error) {
 		return "", err
 	}
 	return doc.Value, nil
+}
+
+func (esDao *ESDao) GetGameRecordsList(gameID, userID int32) ([]string, error) {
+	querys := []elastic.Query{
+		elastic.NewTermQuery("gameId", gameID),
+		elastic.NewTermQuery("userId", userID),
+	}
+	includeFields := elastic.NewFetchSourceContext(true).Include("log")
+	resp, err := esDao.es.Search().
+		Index("pp_gp_settlement").
+		FetchSourceContext(includeFields).
+		Query(elastic.NewBoolQuery().Must(querys...)).
+		Pretty(true).
+		Size(20).
+		Sort("playedDate", false).
+		Do(context.Background())
+	if err != nil {
+		zap.L().Error("GetGameRecordsList,读取ES失败", zap.Int32("gameId", gameID), zap.Int32("userId", userID), zap.Error(err))
+		return nil, err
+	}
+
+	records := make([]string, 0, len(resp.Hits.Hits))
+	for _, v := range resp.Hits.Hits {
+		b, _ := v.Source.MarshalJSON()
+		r := &GameRecordLogDoc{}
+		if err := json.Unmarshal(b, r); err != nil {
+			zap.L().Warn("GetGameRecordsList,解析log失败", zap.Error(err))
+			continue
+		}
+		if r.Log != "" {
+			records = append(records, r.Log)
+		}
+	}
+	return records, nil
 }
 
 func (esDao *ESDao) BulkRecordsSave(data []*entity.CacheRecordsReq) error {

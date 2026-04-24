@@ -21,15 +21,17 @@ service DataCenterService {
     //获取游戏列表
     rpc GetGameList(GetGameListReq) returns (GetGameListResp);
     //加锁
-	rpc UserLock(UserLockReq) returns (UserLockResp);
+    rpc UserLock(UserLockReq) returns (UserLockResp);
     //解锁
-	rpc UserUnLock(UserUnLockReq) returns (UserUnLockResp);
+    rpc UserUnLock(UserUnLockReq) returns (UserUnLockResp);
     //获取session
     rpc GetSesson(GetSessionReq) returns (GetSessionResp);
     //保存哈希开奖结果
     rpc SaveHashLotteryResult(SaveHashLotteryResultReq) returns (SaveHashLotteryResultResp);
     //获取哈希开奖结果
     rpc GetHashLotteryResult(GetHashLotteryResultReq) returns (GetHashLotteryResultResp);
+    //获取游戏开奖记录列表
+    rpc GetGameRecordsList(GetGameRecordsListReq) returns (GetGameRecordsListResp);
 }
 
 message GetSessionReq {
@@ -62,48 +64,58 @@ message GetHashLotteryResultResp {
     string str = 2;
 }
 
+message GetGameRecordsListReq {
+    int32 gameId = 1;
+    int32 userId = 2;
+}
+
+message GetGameRecordsListResp {
+    base.error_code code = 1;
+    repeated string records = 2;
+}
+
 message GetGameListReq {
 
 }
 
 message GetGameListResp {
-    base.error_code   code = 1;
+    base.error_code code = 1;
     //热门游戏的symbol
-    repeated string hot  = 2;
+    repeated string hot = 2;
     //新游戏
-    repeated string new  = 3;
+    repeated string new = 3;
     //推荐游戏
     repeated string recommend = 4;
     //所有游戏及状态
-    repeated  GameInfoItem all = 5;
+    repeated GameInfoItem all = 5;
 
     message GameInfoItem {
         //游戏标志
         string symbol = 1;
         //游戏状态 1 正常 2 维护
-        int32   state = 2; 
+        int32 state = 2;
     }
 }
 
 message UserLockReq {
-	uint32 userId = 1;
+    uint32 userId = 1;
 }
 
-message UserLockResp{
-	string result = 1;
+message UserLockResp {
+    string result = 1;
 }
 
-message UserUnLockReq{
-	uint32 userId = 1;
-	string token = 2;
+message UserUnLockReq {
+    uint32 userId = 1;
+    string token = 2;
 }
 
-message UserUnLockResp{
-	bool result = 1;
+message UserUnLockResp {
+    bool result = 1;
 }
 
 message GetRecordsReq {
-    int64  UserId = 1;
+    int64 UserId = 1;
     string Symbol = 2;
     string Hash = 3; //hash不为空，则以hash为准忽略其他参数
 }
@@ -117,18 +129,18 @@ message RecordItem {
     double base_bet = 6;
     double win = 7;
     double rtp = 8;
-    int64  playedDate = 9;
-    string roundID =10;
+    int64 playedDate = 9;
+    string roundID = 10;
     string init = 11;
     repeated RecordLog log = 12; //详细
     string symbol = 13; //游戏id
     double balance = 14;
-    double balance_cash = 15 ;
+    double balance_cash = 15;
     double balance_bonus = 16;
     string hash = 17;
 }
 
-message GetRecordsResp{
+message GetRecordsResp {
     base.error_code code = 1;
     repeated RecordItem data = 2;
 }
@@ -141,7 +153,7 @@ message RecordLog {
 
 message GetPlayerReq {
     uint32 PlayerId = 1;
-	uint32 Factory =  2;
+    uint32 Factory = 2;
 }
 
 message GetPlayerResp {
@@ -172,8 +184,8 @@ message UpdatePlayerAvatarAndGenderReq {
     uint32 PlayerId = 1;
     string Avatar = 2;
     uint32 Gender = 3;
-	uint32 Factory = 4;
-	string head_frame = 5;
+    uint32 Factory = 4;
+    string head_frame = 5;
     string name = 6; //昵称
 }
 

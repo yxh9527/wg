@@ -4,6 +4,7 @@ import (
 	"app/entity"
 	"context"
 	"data-center/dao"
+	"encoding/json"
 	"fmt"
 	"micro_service/services"
 	"time"
@@ -13,6 +14,9 @@ import (
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
+
+const hashLotteryResultCacheTTL = 60
+const gameRecordsListCacheTTL = 60
 
 type DataCenterService struct {
 	services.UnimplementedDataCenterServiceServer
@@ -37,6 +41,14 @@ func NewDataCenterService(db, mdb *gorm.DB, es *elastic.Client) *DataCenterServi
 
 func formatHashLotteryResultKey(gameID int32, seed string) string {
 	return fmt.Sprintf("%d:%s", gameID, seed)
+}
+
+func formatHashLotteryResultCacheKey(gameID int32, seed string) string {
+	return "hash_lottery_result:" + formatHashLotteryResultKey(gameID, seed)
+}
+
+func formatGameRecordsListCacheKey(gameID, userID int32) string {
+	return fmt.Sprintf("game_records_list:%d:%d", gameID, userID)
 }
 
 // 注单入库
@@ -195,12 +207,57 @@ func (d *DataCenterService) SaveHashLotteryResult(_ context.Context, req *servic
 
 func (d *DataCenterService) GetHashLotteryResult(_ context.Context, req *services.GetHashLotteryResultReq) (resp *services.GetHashLotteryResultResp, err error) {
 	resp = &services.GetHashLotteryResultResp{Code: services.ErrorCode_OK}
+	cacheKey := formatHashLotteryResultCacheKey(req.GameId, req.Seed)
+	value, err := d.rds.Get(cacheKey, hashLotteryResultCacheTTL)
+	if err == nil {
+		resp.Str = value
+		return resp, nil
+	}
+	if err != redis.Nil {
+		zap.L().Warn("GetHashLotteryResult,读取Redis缓存失败", zap.String("key", cacheKey), zap.Error(err))
+	}
+
 	key := formatHashLotteryResultKey(req.GameId, req.Seed)
-	value, err := d.es.GetHashLotteryResult(key)
+	value, err = d.es.GetHashLotteryResult(key)
 	if err != nil {
 		resp.Code = services.ErrorCode_SYSTEM_ERROR
 		return resp, err
 	}
 	resp.Str = value
+	if value != "" {
+		if cacheErr := d.rds.Set(cacheKey, value, hashLotteryResultCacheTTL); cacheErr != nil {
+			zap.L().Warn("GetHashLotteryResult,回填Redis缓存失败", zap.String("key", cacheKey), zap.Error(cacheErr))
+		}
+	}
+	return resp, nil
+}
+
+func (d *DataCenterService) GetGameRecordsList(_ context.Context, req *services.GetGameRecordsListReq) (resp *services.GetGameRecordsListResp, err error) {
+	resp = &services.GetGameRecordsListResp{Code: services.ErrorCode_OK}
+	cacheKey := formatGameRecordsListCacheKey(req.GameId, req.UserId)
+	cacheValue, err := d.rds.Get(cacheKey, gameRecordsListCacheTTL)
+	if err == nil {
+		unmarshalErr := json.Unmarshal([]byte(cacheValue), &resp.Records)
+		if unmarshalErr == nil {
+			return resp, nil
+		}
+		zap.L().Warn("GetGameRecordsList,解析Redis缓存失败", zap.String("key", cacheKey), zap.Error(unmarshalErr))
+	} else if err != redis.Nil {
+		zap.L().Warn("GetGameRecordsList,读取Redis缓存失败", zap.String("key", cacheKey), zap.Error(err))
+	}
+
+	records, err := d.es.GetGameRecordsList(req.GameId, req.UserId)
+	if err != nil {
+		resp.Code = services.ErrorCode_SYSTEM_ERROR
+		return resp, err
+	}
+	resp.Records = records
+	if cacheBytes, marshalErr := json.Marshal(records); marshalErr == nil {
+		if cacheErr := d.rds.Set(cacheKey, string(cacheBytes), gameRecordsListCacheTTL); cacheErr != nil {
+			zap.L().Warn("GetGameRecordsList,回填Redis缓存失败", zap.String("key", cacheKey), zap.Error(cacheErr))
+		}
+	} else {
+		zap.L().Warn("GetGameRecordsList,序列化缓存失败", zap.String("key", cacheKey), zap.Error(marshalErr))
+	}
 	return resp, nil
 }
