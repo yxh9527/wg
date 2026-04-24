@@ -125,6 +125,214 @@ func (x *GetSessionResp) GetValue() string {
 	return ""
 }
 
+type SaveHashLotteryResultReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	GameId        int32                  `protobuf:"varint,1,opt,name=gameId,proto3" json:"gameId,omitempty"`
+	Seed          string                 `protobuf:"bytes,2,opt,name=seed,proto3" json:"seed,omitempty"`
+	Value         string                 `protobuf:"bytes,3,opt,name=value,proto3" json:"value,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SaveHashLotteryResultReq) Reset() {
+	*x = SaveHashLotteryResultReq{}
+	mi := &file_datacenter_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SaveHashLotteryResultReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SaveHashLotteryResultReq) ProtoMessage() {}
+
+func (x *SaveHashLotteryResultReq) ProtoReflect() protoreflect.Message {
+	mi := &file_datacenter_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SaveHashLotteryResultReq.ProtoReflect.Descriptor instead.
+func (*SaveHashLotteryResultReq) Descriptor() ([]byte, []int) {
+	return file_datacenter_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *SaveHashLotteryResultReq) GetGameId() int32 {
+	if x != nil {
+		return x.GameId
+	}
+	return 0
+}
+
+func (x *SaveHashLotteryResultReq) GetSeed() string {
+	if x != nil {
+		return x.Seed
+	}
+	return ""
+}
+
+func (x *SaveHashLotteryResultReq) GetValue() string {
+	if x != nil {
+		return x.Value
+	}
+	return ""
+}
+
+type SaveHashLotteryResultResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          ErrorCode              `protobuf:"varint,1,opt,name=code,proto3,enum=base.ErrorCode" json:"code,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SaveHashLotteryResultResp) Reset() {
+	*x = SaveHashLotteryResultResp{}
+	mi := &file_datacenter_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SaveHashLotteryResultResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SaveHashLotteryResultResp) ProtoMessage() {}
+
+func (x *SaveHashLotteryResultResp) ProtoReflect() protoreflect.Message {
+	mi := &file_datacenter_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SaveHashLotteryResultResp.ProtoReflect.Descriptor instead.
+func (*SaveHashLotteryResultResp) Descriptor() ([]byte, []int) {
+	return file_datacenter_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *SaveHashLotteryResultResp) GetCode() ErrorCode {
+	if x != nil {
+		return x.Code
+	}
+	return ErrorCode_OK
+}
+
+type GetHashLotteryResultReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	GameId        int32                  `protobuf:"varint,1,opt,name=gameId,proto3" json:"gameId,omitempty"`
+	Seed          string                 `protobuf:"bytes,2,opt,name=seed,proto3" json:"seed,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetHashLotteryResultReq) Reset() {
+	*x = GetHashLotteryResultReq{}
+	mi := &file_datacenter_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetHashLotteryResultReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetHashLotteryResultReq) ProtoMessage() {}
+
+func (x *GetHashLotteryResultReq) ProtoReflect() protoreflect.Message {
+	mi := &file_datacenter_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetHashLotteryResultReq.ProtoReflect.Descriptor instead.
+func (*GetHashLotteryResultReq) Descriptor() ([]byte, []int) {
+	return file_datacenter_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetHashLotteryResultReq) GetGameId() int32 {
+	if x != nil {
+		return x.GameId
+	}
+	return 0
+}
+
+func (x *GetHashLotteryResultReq) GetSeed() string {
+	if x != nil {
+		return x.Seed
+	}
+	return ""
+}
+
+type GetHashLotteryResultResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          ErrorCode              `protobuf:"varint,1,opt,name=code,proto3,enum=base.ErrorCode" json:"code,omitempty"`
+	Str           string                 `protobuf:"bytes,2,opt,name=str,proto3" json:"str,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetHashLotteryResultResp) Reset() {
+	*x = GetHashLotteryResultResp{}
+	mi := &file_datacenter_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetHashLotteryResultResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetHashLotteryResultResp) ProtoMessage() {}
+
+func (x *GetHashLotteryResultResp) ProtoReflect() protoreflect.Message {
+	mi := &file_datacenter_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetHashLotteryResultResp.ProtoReflect.Descriptor instead.
+func (*GetHashLotteryResultResp) Descriptor() ([]byte, []int) {
+	return file_datacenter_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetHashLotteryResultResp) GetCode() ErrorCode {
+	if x != nil {
+		return x.Code
+	}
+	return ErrorCode_OK
+}
+
+func (x *GetHashLotteryResultResp) GetStr() string {
+	if x != nil {
+		return x.Str
+	}
+	return ""
+}
+
 type GetGameListReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -133,7 +341,7 @@ type GetGameListReq struct {
 
 func (x *GetGameListReq) Reset() {
 	*x = GetGameListReq{}
-	mi := &file_datacenter_proto_msgTypes[2]
+	mi := &file_datacenter_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -145,7 +353,7 @@ func (x *GetGameListReq) String() string {
 func (*GetGameListReq) ProtoMessage() {}
 
 func (x *GetGameListReq) ProtoReflect() protoreflect.Message {
-	mi := &file_datacenter_proto_msgTypes[2]
+	mi := &file_datacenter_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -158,7 +366,7 @@ func (x *GetGameListReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGameListReq.ProtoReflect.Descriptor instead.
 func (*GetGameListReq) Descriptor() ([]byte, []int) {
-	return file_datacenter_proto_rawDescGZIP(), []int{2}
+	return file_datacenter_proto_rawDescGZIP(), []int{6}
 }
 
 type GetGameListResp struct {
@@ -178,7 +386,7 @@ type GetGameListResp struct {
 
 func (x *GetGameListResp) Reset() {
 	*x = GetGameListResp{}
-	mi := &file_datacenter_proto_msgTypes[3]
+	mi := &file_datacenter_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -190,7 +398,7 @@ func (x *GetGameListResp) String() string {
 func (*GetGameListResp) ProtoMessage() {}
 
 func (x *GetGameListResp) ProtoReflect() protoreflect.Message {
-	mi := &file_datacenter_proto_msgTypes[3]
+	mi := &file_datacenter_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -203,7 +411,7 @@ func (x *GetGameListResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGameListResp.ProtoReflect.Descriptor instead.
 func (*GetGameListResp) Descriptor() ([]byte, []int) {
-	return file_datacenter_proto_rawDescGZIP(), []int{3}
+	return file_datacenter_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GetGameListResp) GetCode() ErrorCode {
@@ -250,7 +458,7 @@ type UserLockReq struct {
 
 func (x *UserLockReq) Reset() {
 	*x = UserLockReq{}
-	mi := &file_datacenter_proto_msgTypes[4]
+	mi := &file_datacenter_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -262,7 +470,7 @@ func (x *UserLockReq) String() string {
 func (*UserLockReq) ProtoMessage() {}
 
 func (x *UserLockReq) ProtoReflect() protoreflect.Message {
-	mi := &file_datacenter_proto_msgTypes[4]
+	mi := &file_datacenter_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -275,7 +483,7 @@ func (x *UserLockReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserLockReq.ProtoReflect.Descriptor instead.
 func (*UserLockReq) Descriptor() ([]byte, []int) {
-	return file_datacenter_proto_rawDescGZIP(), []int{4}
+	return file_datacenter_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *UserLockReq) GetUserId() uint32 {
@@ -294,7 +502,7 @@ type UserLockResp struct {
 
 func (x *UserLockResp) Reset() {
 	*x = UserLockResp{}
-	mi := &file_datacenter_proto_msgTypes[5]
+	mi := &file_datacenter_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -306,7 +514,7 @@ func (x *UserLockResp) String() string {
 func (*UserLockResp) ProtoMessage() {}
 
 func (x *UserLockResp) ProtoReflect() protoreflect.Message {
-	mi := &file_datacenter_proto_msgTypes[5]
+	mi := &file_datacenter_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -319,7 +527,7 @@ func (x *UserLockResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserLockResp.ProtoReflect.Descriptor instead.
 func (*UserLockResp) Descriptor() ([]byte, []int) {
-	return file_datacenter_proto_rawDescGZIP(), []int{5}
+	return file_datacenter_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *UserLockResp) GetResult() string {
@@ -339,7 +547,7 @@ type UserUnLockReq struct {
 
 func (x *UserUnLockReq) Reset() {
 	*x = UserUnLockReq{}
-	mi := &file_datacenter_proto_msgTypes[6]
+	mi := &file_datacenter_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -351,7 +559,7 @@ func (x *UserUnLockReq) String() string {
 func (*UserUnLockReq) ProtoMessage() {}
 
 func (x *UserUnLockReq) ProtoReflect() protoreflect.Message {
-	mi := &file_datacenter_proto_msgTypes[6]
+	mi := &file_datacenter_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -364,7 +572,7 @@ func (x *UserUnLockReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserUnLockReq.ProtoReflect.Descriptor instead.
 func (*UserUnLockReq) Descriptor() ([]byte, []int) {
-	return file_datacenter_proto_rawDescGZIP(), []int{6}
+	return file_datacenter_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *UserUnLockReq) GetUserId() uint32 {
@@ -390,7 +598,7 @@ type UserUnLockResp struct {
 
 func (x *UserUnLockResp) Reset() {
 	*x = UserUnLockResp{}
-	mi := &file_datacenter_proto_msgTypes[7]
+	mi := &file_datacenter_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -402,7 +610,7 @@ func (x *UserUnLockResp) String() string {
 func (*UserUnLockResp) ProtoMessage() {}
 
 func (x *UserUnLockResp) ProtoReflect() protoreflect.Message {
-	mi := &file_datacenter_proto_msgTypes[7]
+	mi := &file_datacenter_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -415,7 +623,7 @@ func (x *UserUnLockResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserUnLockResp.ProtoReflect.Descriptor instead.
 func (*UserUnLockResp) Descriptor() ([]byte, []int) {
-	return file_datacenter_proto_rawDescGZIP(), []int{7}
+	return file_datacenter_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *UserUnLockResp) GetResult() bool {
@@ -436,7 +644,7 @@ type GetRecordsReq struct {
 
 func (x *GetRecordsReq) Reset() {
 	*x = GetRecordsReq{}
-	mi := &file_datacenter_proto_msgTypes[8]
+	mi := &file_datacenter_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -448,7 +656,7 @@ func (x *GetRecordsReq) String() string {
 func (*GetRecordsReq) ProtoMessage() {}
 
 func (x *GetRecordsReq) ProtoReflect() protoreflect.Message {
-	mi := &file_datacenter_proto_msgTypes[8]
+	mi := &file_datacenter_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -461,7 +669,7 @@ func (x *GetRecordsReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRecordsReq.ProtoReflect.Descriptor instead.
 func (*GetRecordsReq) Descriptor() ([]byte, []int) {
-	return file_datacenter_proto_rawDescGZIP(), []int{8}
+	return file_datacenter_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *GetRecordsReq) GetUserId() int64 {
@@ -510,7 +718,7 @@ type RecordItem struct {
 
 func (x *RecordItem) Reset() {
 	*x = RecordItem{}
-	mi := &file_datacenter_proto_msgTypes[9]
+	mi := &file_datacenter_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -522,7 +730,7 @@ func (x *RecordItem) String() string {
 func (*RecordItem) ProtoMessage() {}
 
 func (x *RecordItem) ProtoReflect() protoreflect.Message {
-	mi := &file_datacenter_proto_msgTypes[9]
+	mi := &file_datacenter_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -535,7 +743,7 @@ func (x *RecordItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RecordItem.ProtoReflect.Descriptor instead.
 func (*RecordItem) Descriptor() ([]byte, []int) {
-	return file_datacenter_proto_rawDescGZIP(), []int{9}
+	return file_datacenter_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *RecordItem) GetAgentId() uint32 {
@@ -667,7 +875,7 @@ type GetRecordsResp struct {
 
 func (x *GetRecordsResp) Reset() {
 	*x = GetRecordsResp{}
-	mi := &file_datacenter_proto_msgTypes[10]
+	mi := &file_datacenter_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -679,7 +887,7 @@ func (x *GetRecordsResp) String() string {
 func (*GetRecordsResp) ProtoMessage() {}
 
 func (x *GetRecordsResp) ProtoReflect() protoreflect.Message {
-	mi := &file_datacenter_proto_msgTypes[10]
+	mi := &file_datacenter_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -692,7 +900,7 @@ func (x *GetRecordsResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRecordsResp.ProtoReflect.Descriptor instead.
 func (*GetRecordsResp) Descriptor() ([]byte, []int) {
-	return file_datacenter_proto_rawDescGZIP(), []int{10}
+	return file_datacenter_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *GetRecordsResp) GetCode() ErrorCode {
@@ -720,7 +928,7 @@ type RecordLog struct {
 
 func (x *RecordLog) Reset() {
 	*x = RecordLog{}
-	mi := &file_datacenter_proto_msgTypes[11]
+	mi := &file_datacenter_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -732,7 +940,7 @@ func (x *RecordLog) String() string {
 func (*RecordLog) ProtoMessage() {}
 
 func (x *RecordLog) ProtoReflect() protoreflect.Message {
-	mi := &file_datacenter_proto_msgTypes[11]
+	mi := &file_datacenter_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -745,7 +953,7 @@ func (x *RecordLog) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RecordLog.ProtoReflect.Descriptor instead.
 func (*RecordLog) Descriptor() ([]byte, []int) {
-	return file_datacenter_proto_rawDescGZIP(), []int{11}
+	return file_datacenter_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *RecordLog) GetCr() string {
@@ -779,7 +987,7 @@ type GetPlayerReq struct {
 
 func (x *GetPlayerReq) Reset() {
 	*x = GetPlayerReq{}
-	mi := &file_datacenter_proto_msgTypes[12]
+	mi := &file_datacenter_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -791,7 +999,7 @@ func (x *GetPlayerReq) String() string {
 func (*GetPlayerReq) ProtoMessage() {}
 
 func (x *GetPlayerReq) ProtoReflect() protoreflect.Message {
-	mi := &file_datacenter_proto_msgTypes[12]
+	mi := &file_datacenter_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -804,7 +1012,7 @@ func (x *GetPlayerReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPlayerReq.ProtoReflect.Descriptor instead.
 func (*GetPlayerReq) Descriptor() ([]byte, []int) {
-	return file_datacenter_proto_rawDescGZIP(), []int{12}
+	return file_datacenter_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *GetPlayerReq) GetPlayerId() uint32 {
@@ -830,7 +1038,7 @@ type GetPlayerResp struct {
 
 func (x *GetPlayerResp) Reset() {
 	*x = GetPlayerResp{}
-	mi := &file_datacenter_proto_msgTypes[13]
+	mi := &file_datacenter_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -842,7 +1050,7 @@ func (x *GetPlayerResp) String() string {
 func (*GetPlayerResp) ProtoMessage() {}
 
 func (x *GetPlayerResp) ProtoReflect() protoreflect.Message {
-	mi := &file_datacenter_proto_msgTypes[13]
+	mi := &file_datacenter_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -855,7 +1063,7 @@ func (x *GetPlayerResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPlayerResp.ProtoReflect.Descriptor instead.
 func (*GetPlayerResp) Descriptor() ([]byte, []int) {
-	return file_datacenter_proto_rawDescGZIP(), []int{13}
+	return file_datacenter_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *GetPlayerResp) GetHumanPlayer() *HumanPlayer {
@@ -875,7 +1083,7 @@ type GetValueReq struct {
 
 func (x *GetValueReq) Reset() {
 	*x = GetValueReq{}
-	mi := &file_datacenter_proto_msgTypes[14]
+	mi := &file_datacenter_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -887,7 +1095,7 @@ func (x *GetValueReq) String() string {
 func (*GetValueReq) ProtoMessage() {}
 
 func (x *GetValueReq) ProtoReflect() protoreflect.Message {
-	mi := &file_datacenter_proto_msgTypes[14]
+	mi := &file_datacenter_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -900,7 +1108,7 @@ func (x *GetValueReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetValueReq.ProtoReflect.Descriptor instead.
 func (*GetValueReq) Descriptor() ([]byte, []int) {
-	return file_datacenter_proto_rawDescGZIP(), []int{14}
+	return file_datacenter_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *GetValueReq) GetKey() string {
@@ -927,7 +1135,7 @@ type GetValueResp struct {
 
 func (x *GetValueResp) Reset() {
 	*x = GetValueResp{}
-	mi := &file_datacenter_proto_msgTypes[15]
+	mi := &file_datacenter_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -939,7 +1147,7 @@ func (x *GetValueResp) String() string {
 func (*GetValueResp) ProtoMessage() {}
 
 func (x *GetValueResp) ProtoReflect() protoreflect.Message {
-	mi := &file_datacenter_proto_msgTypes[15]
+	mi := &file_datacenter_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -952,7 +1160,7 @@ func (x *GetValueResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetValueResp.ProtoReflect.Descriptor instead.
 func (*GetValueResp) Descriptor() ([]byte, []int) {
-	return file_datacenter_proto_rawDescGZIP(), []int{15}
+	return file_datacenter_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *GetValueResp) GetCode() ErrorCode {
@@ -980,7 +1188,7 @@ type SetValueReq struct {
 
 func (x *SetValueReq) Reset() {
 	*x = SetValueReq{}
-	mi := &file_datacenter_proto_msgTypes[16]
+	mi := &file_datacenter_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -992,7 +1200,7 @@ func (x *SetValueReq) String() string {
 func (*SetValueReq) ProtoMessage() {}
 
 func (x *SetValueReq) ProtoReflect() protoreflect.Message {
-	mi := &file_datacenter_proto_msgTypes[16]
+	mi := &file_datacenter_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1005,7 +1213,7 @@ func (x *SetValueReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetValueReq.ProtoReflect.Descriptor instead.
 func (*SetValueReq) Descriptor() ([]byte, []int) {
-	return file_datacenter_proto_rawDescGZIP(), []int{16}
+	return file_datacenter_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *SetValueReq) GetKey() string {
@@ -1038,7 +1246,7 @@ type SetValueResp struct {
 
 func (x *SetValueResp) Reset() {
 	*x = SetValueResp{}
-	mi := &file_datacenter_proto_msgTypes[17]
+	mi := &file_datacenter_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1050,7 +1258,7 @@ func (x *SetValueResp) String() string {
 func (*SetValueResp) ProtoMessage() {}
 
 func (x *SetValueResp) ProtoReflect() protoreflect.Message {
-	mi := &file_datacenter_proto_msgTypes[17]
+	mi := &file_datacenter_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1063,7 +1271,7 @@ func (x *SetValueResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetValueResp.ProtoReflect.Descriptor instead.
 func (*SetValueResp) Descriptor() ([]byte, []int) {
-	return file_datacenter_proto_rawDescGZIP(), []int{17}
+	return file_datacenter_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *SetValueResp) GetCode() ErrorCode {
@@ -1087,7 +1295,7 @@ type UpdatePlayerAvatarAndGenderReq struct {
 
 func (x *UpdatePlayerAvatarAndGenderReq) Reset() {
 	*x = UpdatePlayerAvatarAndGenderReq{}
-	mi := &file_datacenter_proto_msgTypes[18]
+	mi := &file_datacenter_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1099,7 +1307,7 @@ func (x *UpdatePlayerAvatarAndGenderReq) String() string {
 func (*UpdatePlayerAvatarAndGenderReq) ProtoMessage() {}
 
 func (x *UpdatePlayerAvatarAndGenderReq) ProtoReflect() protoreflect.Message {
-	mi := &file_datacenter_proto_msgTypes[18]
+	mi := &file_datacenter_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1112,7 +1320,7 @@ func (x *UpdatePlayerAvatarAndGenderReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdatePlayerAvatarAndGenderReq.ProtoReflect.Descriptor instead.
 func (*UpdatePlayerAvatarAndGenderReq) Descriptor() ([]byte, []int) {
-	return file_datacenter_proto_rawDescGZIP(), []int{18}
+	return file_datacenter_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *UpdatePlayerAvatarAndGenderReq) GetPlayerId() uint32 {
@@ -1165,7 +1373,7 @@ type UpdatePlayerAvatarAndGenderResp struct {
 
 func (x *UpdatePlayerAvatarAndGenderResp) Reset() {
 	*x = UpdatePlayerAvatarAndGenderResp{}
-	mi := &file_datacenter_proto_msgTypes[19]
+	mi := &file_datacenter_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1177,7 +1385,7 @@ func (x *UpdatePlayerAvatarAndGenderResp) String() string {
 func (*UpdatePlayerAvatarAndGenderResp) ProtoMessage() {}
 
 func (x *UpdatePlayerAvatarAndGenderResp) ProtoReflect() protoreflect.Message {
-	mi := &file_datacenter_proto_msgTypes[19]
+	mi := &file_datacenter_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1190,7 +1398,7 @@ func (x *UpdatePlayerAvatarAndGenderResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdatePlayerAvatarAndGenderResp.ProtoReflect.Descriptor instead.
 func (*UpdatePlayerAvatarAndGenderResp) Descriptor() ([]byte, []int) {
-	return file_datacenter_proto_rawDescGZIP(), []int{19}
+	return file_datacenter_proto_rawDescGZIP(), []int{23}
 }
 
 type GetGameListResp_GameInfoItem struct {
@@ -1205,7 +1413,7 @@ type GetGameListResp_GameInfoItem struct {
 
 func (x *GetGameListResp_GameInfoItem) Reset() {
 	*x = GetGameListResp_GameInfoItem{}
-	mi := &file_datacenter_proto_msgTypes[20]
+	mi := &file_datacenter_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1217,7 +1425,7 @@ func (x *GetGameListResp_GameInfoItem) String() string {
 func (*GetGameListResp_GameInfoItem) ProtoMessage() {}
 
 func (x *GetGameListResp_GameInfoItem) ProtoReflect() protoreflect.Message {
-	mi := &file_datacenter_proto_msgTypes[20]
+	mi := &file_datacenter_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1230,7 +1438,7 @@ func (x *GetGameListResp_GameInfoItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGameListResp_GameInfoItem.ProtoReflect.Descriptor instead.
 func (*GetGameListResp_GameInfoItem) Descriptor() ([]byte, []int) {
-	return file_datacenter_proto_rawDescGZIP(), []int{3, 0}
+	return file_datacenter_proto_rawDescGZIP(), []int{7, 0}
 }
 
 func (x *GetGameListResp_GameInfoItem) GetSymbol() string {
@@ -1259,7 +1467,19 @@ const file_datacenter_proto_rawDesc = "" +
 	"\atimeOut\x18\x02 \x01(\x03R\atimeOut\"L\n" +
 	"\x0eGetSessionResp\x12$\n" +
 	"\x04code\x18\x01 \x01(\x0e2\x10.base.error_codeR\x04code\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value\"\x10\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value\"\\\n" +
+	"\x18SaveHashLotteryResultReq\x12\x16\n" +
+	"\x06gameId\x18\x01 \x01(\x05R\x06gameId\x12\x12\n" +
+	"\x04seed\x18\x02 \x01(\tR\x04seed\x12\x14\n" +
+	"\x05value\x18\x03 \x01(\tR\x05value\"A\n" +
+	"\x19SaveHashLotteryResultResp\x12$\n" +
+	"\x04code\x18\x01 \x01(\x0e2\x10.base.error_codeR\x04code\"E\n" +
+	"\x17GetHashLotteryResultReq\x12\x16\n" +
+	"\x06gameId\x18\x01 \x01(\x05R\x06gameId\x12\x12\n" +
+	"\x04seed\x18\x02 \x01(\tR\x04seed\"R\n" +
+	"\x18GetHashLotteryResultResp\x12$\n" +
+	"\x04code\x18\x01 \x01(\x0e2\x10.base.error_codeR\x04code\x12\x10\n" +
+	"\x03str\x18\x02 \x01(\tR\x03str\"\x10\n" +
 	"\x0eGetGameListReq\"\xf3\x01\n" +
 	"\x0fGetGameListResp\x12$\n" +
 	"\x04code\x18\x01 \x01(\x0e2\x10.base.error_codeR\x04code\x12\x10\n" +
@@ -1337,7 +1557,7 @@ const file_datacenter_proto_rawDesc = "" +
 	"\n" +
 	"head_frame\x18\x05 \x01(\tR\theadFrame\x12\x12\n" +
 	"\x04name\x18\x06 \x01(\tR\x04name\"!\n" +
-	"\x1fUpdatePlayerAvatarAndGenderResp2\xa0\x05\n" +
+	"\x1fUpdatePlayerAvatarAndGenderResp2\xe9\x06\n" +
 	"\x11DataCenterService\x12@\n" +
 	"\tGetPlayer\x12\x18.datacenter.GetPlayerReq\x1a\x19.datacenter.GetPlayerResp\x12=\n" +
 	"\bGetValue\x12\x17.datacenter.GetValueReq\x1a\x18.datacenter.GetValueResp\x12=\n" +
@@ -1349,7 +1569,9 @@ const file_datacenter_proto_rawDesc = "" +
 	"\bUserLock\x12\x17.datacenter.UserLockReq\x1a\x18.datacenter.UserLockResp\x12C\n" +
 	"\n" +
 	"UserUnLock\x12\x19.datacenter.UserUnLockReq\x1a\x1a.datacenter.UserUnLockResp\x12B\n" +
-	"\tGetSesson\x12\x19.datacenter.GetSessionReq\x1a\x1a.datacenter.GetSessionRespB\x15Z\x13./services;servicesb\x06proto3"
+	"\tGetSesson\x12\x19.datacenter.GetSessionReq\x1a\x1a.datacenter.GetSessionResp\x12d\n" +
+	"\x15SaveHashLotteryResult\x12$.datacenter.SaveHashLotteryResultReq\x1a%.datacenter.SaveHashLotteryResultResp\x12a\n" +
+	"\x14GetHashLotteryResult\x12#.datacenter.GetHashLotteryResultReq\x1a$.datacenter.GetHashLotteryResultRespB\x15Z\x13./services;servicesb\x06proto3"
 
 var (
 	file_datacenter_proto_rawDescOnce sync.Once
@@ -1363,65 +1585,75 @@ func file_datacenter_proto_rawDescGZIP() []byte {
 	return file_datacenter_proto_rawDescData
 }
 
-var file_datacenter_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
+var file_datacenter_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
 var file_datacenter_proto_goTypes = []any{
 	(*GetSessionReq)(nil),                   // 0: datacenter.GetSessionReq
 	(*GetSessionResp)(nil),                  // 1: datacenter.GetSessionResp
-	(*GetGameListReq)(nil),                  // 2: datacenter.GetGameListReq
-	(*GetGameListResp)(nil),                 // 3: datacenter.GetGameListResp
-	(*UserLockReq)(nil),                     // 4: datacenter.UserLockReq
-	(*UserLockResp)(nil),                    // 5: datacenter.UserLockResp
-	(*UserUnLockReq)(nil),                   // 6: datacenter.UserUnLockReq
-	(*UserUnLockResp)(nil),                  // 7: datacenter.UserUnLockResp
-	(*GetRecordsReq)(nil),                   // 8: datacenter.GetRecordsReq
-	(*RecordItem)(nil),                      // 9: datacenter.RecordItem
-	(*GetRecordsResp)(nil),                  // 10: datacenter.GetRecordsResp
-	(*RecordLog)(nil),                       // 11: datacenter.RecordLog
-	(*GetPlayerReq)(nil),                    // 12: datacenter.GetPlayerReq
-	(*GetPlayerResp)(nil),                   // 13: datacenter.GetPlayerResp
-	(*GetValueReq)(nil),                     // 14: datacenter.GetValueReq
-	(*GetValueResp)(nil),                    // 15: datacenter.GetValueResp
-	(*SetValueReq)(nil),                     // 16: datacenter.SetValueReq
-	(*SetValueResp)(nil),                    // 17: datacenter.SetValueResp
-	(*UpdatePlayerAvatarAndGenderReq)(nil),  // 18: datacenter.UpdatePlayerAvatarAndGenderReq
-	(*UpdatePlayerAvatarAndGenderResp)(nil), // 19: datacenter.UpdatePlayerAvatarAndGenderResp
-	(*GetGameListResp_GameInfoItem)(nil),    // 20: datacenter.GetGameListResp.GameInfoItem
-	(ErrorCode)(0),                          // 21: base.error_code
-	(*HumanPlayer)(nil),                     // 22: player.HumanPlayer
+	(*SaveHashLotteryResultReq)(nil),        // 2: datacenter.SaveHashLotteryResultReq
+	(*SaveHashLotteryResultResp)(nil),       // 3: datacenter.SaveHashLotteryResultResp
+	(*GetHashLotteryResultReq)(nil),         // 4: datacenter.GetHashLotteryResultReq
+	(*GetHashLotteryResultResp)(nil),        // 5: datacenter.GetHashLotteryResultResp
+	(*GetGameListReq)(nil),                  // 6: datacenter.GetGameListReq
+	(*GetGameListResp)(nil),                 // 7: datacenter.GetGameListResp
+	(*UserLockReq)(nil),                     // 8: datacenter.UserLockReq
+	(*UserLockResp)(nil),                    // 9: datacenter.UserLockResp
+	(*UserUnLockReq)(nil),                   // 10: datacenter.UserUnLockReq
+	(*UserUnLockResp)(nil),                  // 11: datacenter.UserUnLockResp
+	(*GetRecordsReq)(nil),                   // 12: datacenter.GetRecordsReq
+	(*RecordItem)(nil),                      // 13: datacenter.RecordItem
+	(*GetRecordsResp)(nil),                  // 14: datacenter.GetRecordsResp
+	(*RecordLog)(nil),                       // 15: datacenter.RecordLog
+	(*GetPlayerReq)(nil),                    // 16: datacenter.GetPlayerReq
+	(*GetPlayerResp)(nil),                   // 17: datacenter.GetPlayerResp
+	(*GetValueReq)(nil),                     // 18: datacenter.GetValueReq
+	(*GetValueResp)(nil),                    // 19: datacenter.GetValueResp
+	(*SetValueReq)(nil),                     // 20: datacenter.SetValueReq
+	(*SetValueResp)(nil),                    // 21: datacenter.SetValueResp
+	(*UpdatePlayerAvatarAndGenderReq)(nil),  // 22: datacenter.UpdatePlayerAvatarAndGenderReq
+	(*UpdatePlayerAvatarAndGenderResp)(nil), // 23: datacenter.UpdatePlayerAvatarAndGenderResp
+	(*GetGameListResp_GameInfoItem)(nil),    // 24: datacenter.GetGameListResp.GameInfoItem
+	(ErrorCode)(0),                          // 25: base.error_code
+	(*HumanPlayer)(nil),                     // 26: player.HumanPlayer
 }
 var file_datacenter_proto_depIdxs = []int32{
-	21, // 0: datacenter.GetSessionResp.code:type_name -> base.error_code
-	21, // 1: datacenter.GetGameListResp.code:type_name -> base.error_code
-	20, // 2: datacenter.GetGameListResp.all:type_name -> datacenter.GetGameListResp.GameInfoItem
-	11, // 3: datacenter.RecordItem.log:type_name -> datacenter.RecordLog
-	21, // 4: datacenter.GetRecordsResp.code:type_name -> base.error_code
-	9,  // 5: datacenter.GetRecordsResp.data:type_name -> datacenter.RecordItem
-	22, // 6: datacenter.GetPlayerResp.HumanPlayer:type_name -> player.HumanPlayer
-	21, // 7: datacenter.GetValueResp.code:type_name -> base.error_code
-	21, // 8: datacenter.SetValueResp.code:type_name -> base.error_code
-	12, // 9: datacenter.DataCenterService.GetPlayer:input_type -> datacenter.GetPlayerReq
-	14, // 10: datacenter.DataCenterService.GetValue:input_type -> datacenter.GetValueReq
-	16, // 11: datacenter.DataCenterService.SetValue:input_type -> datacenter.SetValueReq
-	18, // 12: datacenter.DataCenterService.UpdatePlayerAvatarAndGender:input_type -> datacenter.UpdatePlayerAvatarAndGenderReq
-	8,  // 13: datacenter.DataCenterService.GetRecords:input_type -> datacenter.GetRecordsReq
-	2,  // 14: datacenter.DataCenterService.GetGameList:input_type -> datacenter.GetGameListReq
-	4,  // 15: datacenter.DataCenterService.UserLock:input_type -> datacenter.UserLockReq
-	6,  // 16: datacenter.DataCenterService.UserUnLock:input_type -> datacenter.UserUnLockReq
-	0,  // 17: datacenter.DataCenterService.GetSesson:input_type -> datacenter.GetSessionReq
-	13, // 18: datacenter.DataCenterService.GetPlayer:output_type -> datacenter.GetPlayerResp
-	15, // 19: datacenter.DataCenterService.GetValue:output_type -> datacenter.GetValueResp
-	17, // 20: datacenter.DataCenterService.SetValue:output_type -> datacenter.SetValueResp
-	19, // 21: datacenter.DataCenterService.UpdatePlayerAvatarAndGender:output_type -> datacenter.UpdatePlayerAvatarAndGenderResp
-	10, // 22: datacenter.DataCenterService.GetRecords:output_type -> datacenter.GetRecordsResp
-	3,  // 23: datacenter.DataCenterService.GetGameList:output_type -> datacenter.GetGameListResp
-	5,  // 24: datacenter.DataCenterService.UserLock:output_type -> datacenter.UserLockResp
-	7,  // 25: datacenter.DataCenterService.UserUnLock:output_type -> datacenter.UserUnLockResp
-	1,  // 26: datacenter.DataCenterService.GetSesson:output_type -> datacenter.GetSessionResp
-	18, // [18:27] is the sub-list for method output_type
-	9,  // [9:18] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	25, // 0: datacenter.GetSessionResp.code:type_name -> base.error_code
+	25, // 1: datacenter.SaveHashLotteryResultResp.code:type_name -> base.error_code
+	25, // 2: datacenter.GetHashLotteryResultResp.code:type_name -> base.error_code
+	25, // 3: datacenter.GetGameListResp.code:type_name -> base.error_code
+	24, // 4: datacenter.GetGameListResp.all:type_name -> datacenter.GetGameListResp.GameInfoItem
+	15, // 5: datacenter.RecordItem.log:type_name -> datacenter.RecordLog
+	25, // 6: datacenter.GetRecordsResp.code:type_name -> base.error_code
+	13, // 7: datacenter.GetRecordsResp.data:type_name -> datacenter.RecordItem
+	26, // 8: datacenter.GetPlayerResp.HumanPlayer:type_name -> player.HumanPlayer
+	25, // 9: datacenter.GetValueResp.code:type_name -> base.error_code
+	25, // 10: datacenter.SetValueResp.code:type_name -> base.error_code
+	16, // 11: datacenter.DataCenterService.GetPlayer:input_type -> datacenter.GetPlayerReq
+	18, // 12: datacenter.DataCenterService.GetValue:input_type -> datacenter.GetValueReq
+	20, // 13: datacenter.DataCenterService.SetValue:input_type -> datacenter.SetValueReq
+	22, // 14: datacenter.DataCenterService.UpdatePlayerAvatarAndGender:input_type -> datacenter.UpdatePlayerAvatarAndGenderReq
+	12, // 15: datacenter.DataCenterService.GetRecords:input_type -> datacenter.GetRecordsReq
+	6,  // 16: datacenter.DataCenterService.GetGameList:input_type -> datacenter.GetGameListReq
+	8,  // 17: datacenter.DataCenterService.UserLock:input_type -> datacenter.UserLockReq
+	10, // 18: datacenter.DataCenterService.UserUnLock:input_type -> datacenter.UserUnLockReq
+	0,  // 19: datacenter.DataCenterService.GetSesson:input_type -> datacenter.GetSessionReq
+	2,  // 20: datacenter.DataCenterService.SaveHashLotteryResult:input_type -> datacenter.SaveHashLotteryResultReq
+	4,  // 21: datacenter.DataCenterService.GetHashLotteryResult:input_type -> datacenter.GetHashLotteryResultReq
+	17, // 22: datacenter.DataCenterService.GetPlayer:output_type -> datacenter.GetPlayerResp
+	19, // 23: datacenter.DataCenterService.GetValue:output_type -> datacenter.GetValueResp
+	21, // 24: datacenter.DataCenterService.SetValue:output_type -> datacenter.SetValueResp
+	23, // 25: datacenter.DataCenterService.UpdatePlayerAvatarAndGender:output_type -> datacenter.UpdatePlayerAvatarAndGenderResp
+	14, // 26: datacenter.DataCenterService.GetRecords:output_type -> datacenter.GetRecordsResp
+	7,  // 27: datacenter.DataCenterService.GetGameList:output_type -> datacenter.GetGameListResp
+	9,  // 28: datacenter.DataCenterService.UserLock:output_type -> datacenter.UserLockResp
+	11, // 29: datacenter.DataCenterService.UserUnLock:output_type -> datacenter.UserUnLockResp
+	1,  // 30: datacenter.DataCenterService.GetSesson:output_type -> datacenter.GetSessionResp
+	3,  // 31: datacenter.DataCenterService.SaveHashLotteryResult:output_type -> datacenter.SaveHashLotteryResultResp
+	5,  // 32: datacenter.DataCenterService.GetHashLotteryResult:output_type -> datacenter.GetHashLotteryResultResp
+	22, // [22:33] is the sub-list for method output_type
+	11, // [11:22] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_datacenter_proto_init() }
@@ -1437,7 +1669,7 @@ func file_datacenter_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_datacenter_proto_rawDesc), len(file_datacenter_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   21,
+			NumMessages:   25,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

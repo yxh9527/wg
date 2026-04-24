@@ -4,6 +4,7 @@ import (
 	"app/entity"
 	"context"
 	"data-center/dao"
+	"fmt"
 	"micro_service/services"
 	"time"
 
@@ -32,6 +33,10 @@ func NewDataCenterService(db, mdb *gorm.DB, es *elastic.Client) *DataCenterServi
 
 	tmp.syncRecords()
 	return tmp
+}
+
+func formatHashLotteryResultKey(gameID int32, seed string) string {
+	return fmt.Sprintf("%d:%s", gameID, seed)
 }
 
 // 注单入库
@@ -175,5 +180,27 @@ func (d *DataCenterService) GetSesson(ctx context.Context, req *services.GetSess
 		return resp, err
 	}
 	resp.Value = res
+	return resp, nil
+}
+
+func (d *DataCenterService) SaveHashLotteryResult(_ context.Context, req *services.SaveHashLotteryResultReq) (resp *services.SaveHashLotteryResultResp, err error) {
+	resp = &services.SaveHashLotteryResultResp{Code: services.ErrorCode_OK}
+	key := formatHashLotteryResultKey(req.GameId, req.Seed)
+	if err := d.es.SaveHashLotteryResult(key, req.Value); err != nil {
+		resp.Code = services.ErrorCode_SYSTEM_ERROR
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (d *DataCenterService) GetHashLotteryResult(_ context.Context, req *services.GetHashLotteryResultReq) (resp *services.GetHashLotteryResultResp, err error) {
+	resp = &services.GetHashLotteryResultResp{Code: services.ErrorCode_OK}
+	key := formatHashLotteryResultKey(req.GameId, req.Seed)
+	value, err := d.es.GetHashLotteryResult(key)
+	if err != nil {
+		resp.Code = services.ErrorCode_SYSTEM_ERROR
+		return resp, err
+	}
+	resp.Str = value
 	return resp, nil
 }

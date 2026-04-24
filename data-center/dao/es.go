@@ -17,8 +17,53 @@ type ESDao struct {
 	es *elastic.Client
 }
 
+const hashLotteryResultIndex = "hash_lottery_result"
+
+type HashLotteryResultDoc struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
+
 func NewESDao(client *elastic.Client) *ESDao {
 	return &ESDao{es: client}
+}
+
+func (esDao *ESDao) SaveHashLotteryResult(key, value string) error {
+	doc := &HashLotteryResultDoc{
+		Key:   key,
+		Value: value,
+	}
+	_, err := esDao.es.Index().
+		Index(hashLotteryResultIndex).
+		Id(key).
+		BodyJson(doc).
+		Do(context.Background())
+	if err != nil {
+		zap.L().Error("SaveHashLotteryResult,写入ES失败", zap.String("key", key), zap.Error(err))
+		return err
+	}
+	return nil
+}
+
+func (esDao *ESDao) GetHashLotteryResult(key string) (string, error) {
+	resp, err := esDao.es.Get().
+		Index(hashLotteryResultIndex).
+		Id(key).
+		Do(context.Background())
+	if elastic.IsNotFound(err) {
+		return "", nil
+	}
+	if err != nil {
+		zap.L().Error("GetHashLotteryResult,读取ES失败", zap.String("key", key), zap.Error(err))
+		return "", err
+	}
+
+	doc := &HashLotteryResultDoc{}
+	if err := json.Unmarshal(resp.Source, doc); err != nil {
+		zap.L().Error("GetHashLotteryResult,解析ES结果失败", zap.String("key", key), zap.Error(err))
+		return "", err
+	}
+	return doc.Value, nil
 }
 
 func (esDao *ESDao) BulkRecordsSave(data []*entity.CacheRecordsReq) error {

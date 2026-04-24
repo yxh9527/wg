@@ -28,6 +28,8 @@ const (
 	DataCenterService_UserLock_FullMethodName                    = "/datacenter.DataCenterService/UserLock"
 	DataCenterService_UserUnLock_FullMethodName                  = "/datacenter.DataCenterService/UserUnLock"
 	DataCenterService_GetSesson_FullMethodName                   = "/datacenter.DataCenterService/GetSesson"
+	DataCenterService_SaveHashLotteryResult_FullMethodName       = "/datacenter.DataCenterService/SaveHashLotteryResult"
+	DataCenterService_GetHashLotteryResult_FullMethodName        = "/datacenter.DataCenterService/GetHashLotteryResult"
 )
 
 // DataCenterServiceClient is the client API for DataCenterService service.
@@ -52,6 +54,10 @@ type DataCenterServiceClient interface {
 	UserUnLock(ctx context.Context, in *UserUnLockReq, opts ...grpc.CallOption) (*UserUnLockResp, error)
 	// 获取session
 	GetSesson(ctx context.Context, in *GetSessionReq, opts ...grpc.CallOption) (*GetSessionResp, error)
+	// 保存哈希开奖结果
+	SaveHashLotteryResult(ctx context.Context, in *SaveHashLotteryResultReq, opts ...grpc.CallOption) (*SaveHashLotteryResultResp, error)
+	// 获取哈希开奖结果
+	GetHashLotteryResult(ctx context.Context, in *GetHashLotteryResultReq, opts ...grpc.CallOption) (*GetHashLotteryResultResp, error)
 }
 
 type dataCenterServiceClient struct {
@@ -152,6 +158,26 @@ func (c *dataCenterServiceClient) GetSesson(ctx context.Context, in *GetSessionR
 	return out, nil
 }
 
+func (c *dataCenterServiceClient) SaveHashLotteryResult(ctx context.Context, in *SaveHashLotteryResultReq, opts ...grpc.CallOption) (*SaveHashLotteryResultResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SaveHashLotteryResultResp)
+	err := c.cc.Invoke(ctx, DataCenterService_SaveHashLotteryResult_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dataCenterServiceClient) GetHashLotteryResult(ctx context.Context, in *GetHashLotteryResultReq, opts ...grpc.CallOption) (*GetHashLotteryResultResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetHashLotteryResultResp)
+	err := c.cc.Invoke(ctx, DataCenterService_GetHashLotteryResult_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DataCenterServiceServer is the server API for DataCenterService service.
 // All implementations must embed UnimplementedDataCenterServiceServer
 // for forward compatibility.
@@ -174,6 +200,10 @@ type DataCenterServiceServer interface {
 	UserUnLock(context.Context, *UserUnLockReq) (*UserUnLockResp, error)
 	// 获取session
 	GetSesson(context.Context, *GetSessionReq) (*GetSessionResp, error)
+	// 保存哈希开奖结果
+	SaveHashLotteryResult(context.Context, *SaveHashLotteryResultReq) (*SaveHashLotteryResultResp, error)
+	// 获取哈希开奖结果
+	GetHashLotteryResult(context.Context, *GetHashLotteryResultReq) (*GetHashLotteryResultResp, error)
 	mustEmbedUnimplementedDataCenterServiceServer()
 }
 
@@ -210,6 +240,12 @@ func (UnimplementedDataCenterServiceServer) UserUnLock(context.Context, *UserUnL
 }
 func (UnimplementedDataCenterServiceServer) GetSesson(context.Context, *GetSessionReq) (*GetSessionResp, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetSesson not implemented")
+}
+func (UnimplementedDataCenterServiceServer) SaveHashLotteryResult(context.Context, *SaveHashLotteryResultReq) (*SaveHashLotteryResultResp, error) {
+	return nil, status.Error(codes.Unimplemented, "method SaveHashLotteryResult not implemented")
+}
+func (UnimplementedDataCenterServiceServer) GetHashLotteryResult(context.Context, *GetHashLotteryResultReq) (*GetHashLotteryResultResp, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetHashLotteryResult not implemented")
 }
 func (UnimplementedDataCenterServiceServer) mustEmbedUnimplementedDataCenterServiceServer() {}
 func (UnimplementedDataCenterServiceServer) testEmbeddedByValue()                           {}
@@ -394,6 +430,42 @@ func _DataCenterService_GetSesson_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DataCenterService_SaveHashLotteryResult_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SaveHashLotteryResultReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DataCenterServiceServer).SaveHashLotteryResult(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DataCenterService_SaveHashLotteryResult_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DataCenterServiceServer).SaveHashLotteryResult(ctx, req.(*SaveHashLotteryResultReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DataCenterService_GetHashLotteryResult_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetHashLotteryResultReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DataCenterServiceServer).GetHashLotteryResult(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DataCenterService_GetHashLotteryResult_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DataCenterServiceServer).GetHashLotteryResult(ctx, req.(*GetHashLotteryResultReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DataCenterService_ServiceDesc is the grpc.ServiceDesc for DataCenterService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -436,6 +508,14 @@ var DataCenterService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetSesson",
 			Handler:    _DataCenterService_GetSesson_Handler,
+		},
+		{
+			MethodName: "SaveHashLotteryResult",
+			Handler:    _DataCenterService_SaveHashLotteryResult_Handler,
+		},
+		{
+			MethodName: "GetHashLotteryResult",
+			Handler:    _DataCenterService_GetHashLotteryResult_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
