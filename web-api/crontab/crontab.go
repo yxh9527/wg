@@ -53,6 +53,7 @@ func clearSettlementData() {
 	dao.Es().DeleteByQuery("pp_gp_settlement").Query(elastic.NewBoolQuery().Filter(elastic.NewRangeQuery("playedDate").Lte(t))).WaitForCompletion(false).Do(context.Background())
 	dao.Es().DeleteByQuery("pp_flowing_water").Query(elastic.NewBoolQuery().Filter(elastic.NewRangeQuery("beginTime").Lte(t))).WaitForCompletion(false).Do(context.Background())
 	dao.Es().DeleteByQuery("pp_pool_record_log").Query(elastic.NewBoolQuery().Filter(elastic.NewRangeQuery("beginTime").Lte(t))).WaitForCompletion(false).Do(context.Background())
+	dao.Es().DeleteByQuery("hash_lottery_result").Query(elastic.NewBoolQuery().Filter(elastic.NewRangeQuery("timeStamp").Lte(t))).WaitForCompletion(false).Do(context.Background())
 	zap.L().Debug("定时清理数据结束")
 }
 
