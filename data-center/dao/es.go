@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"micro_service/services"
 	"strconv"
+	"time"
 
 	"github.com/olivere/elastic/v7"
 	"go.uber.org/zap"
@@ -20,8 +21,9 @@ type ESDao struct {
 const hashLotteryResultIndex = "hash_lottery_result"
 
 type HashLotteryResultDoc struct {
-	Key   string `json:"key"`
-	Value string `json:"value"`
+	Key       string `json:"key"`
+	Value     string `json:"value"`
+	TimeStamp int64  `json:"timeStamp"`
 }
 
 type GameRecordLogDoc struct {
@@ -34,8 +36,9 @@ func NewESDao(client *elastic.Client) *ESDao {
 
 func (esDao *ESDao) SaveHashLotteryResult(key, value string) error {
 	doc := &HashLotteryResultDoc{
-		Key:   key,
-		Value: value,
+		Key:       key,
+		Value:     value,
+		TimeStamp: time.Now().Unix(),
 	}
 	_, err := esDao.es.Index().
 		Index(hashLotteryResultIndex).
@@ -53,7 +56,9 @@ func (esDao *ESDao) SaveHashLotteryResult(key, value string) error {
 func (esDao *ESDao) BulkSaveHashLotteryResult(data []*HashLotteryResultDoc) error {
 	bulkService := esDao.es.Bulk()
 	records := make([]elastic.BulkableRequest, 0, len(data))
+	now := time.Now().Unix()
 	for _, item := range data {
+		item.TimeStamp = now
 		records = append(records, elastic.NewBulkIndexRequest().
 			Index(hashLotteryResultIndex).
 			Id(item.Key).
