@@ -300,6 +300,7 @@ func (gcm *GameCacheMgr) Complete(agentId int64, userId uint32, symbol string, b
 		//以有效下注计算水池后   可以直接放在下注的时候计算税收
 		// game.TotalRevenue = game.TotalRevenue.Add(bet.Mul(rate).Truncate(4))
 		game.UpdateTime = time.Now().Unix()
+		user.Count = user.Count.Add(decimal.NewFromInt(1))
 		user.TotalProfLoss = user.TotalProfLoss.Add(award)
 		user.UpdateTime = time.Now().Unix()
 	}
@@ -602,7 +603,7 @@ func (gcm *GameCacheMgr) Lottery(agentId int64, userId int32, pc *config.Pool, s
 	if user.Count.Equal(decimal.Zero) {
 		cnt = decimal.NewFromInt(1)
 	} else {
-		cnt = user.Count
+		cnt = user.Count.Add(decimal.NewFromInt(1))
 	}
 	//平均值*倍数
 	p2 := (user.TotalEffectBet.Div(cnt)).Mul(item.M)
