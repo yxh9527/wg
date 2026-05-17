@@ -553,6 +553,11 @@ func ConvertRecord(agentId, userId uint32, recordId, currencyType, symbol, accou
 	if chips.LessThan(award) {
 		chips = award
 	}
+
+	if account == "" {
+		account = dao.CacheIns().GetPlayerAccount(int64(agentId), int64(userId))
+	}
+
 	r := bet.Mul(p.Pool[1].Revenue)
 	record := &entity.CacheRecordsReq{
 		WebId:          webId,
