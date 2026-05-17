@@ -99,6 +99,12 @@ func (esc *EsClient) GetListWithRowVersion(agentId, rowVersion int64) []interfac
 				continue
 			}
 			s.Id = v.Id
+			if s.Account == "" || s.NickName == "" {
+				p := dbIns.GetGamePlayer(s.AgentId, s.UserId)
+				if p != nil {
+					s.Account, s.NickName = p.Account, p.NickName
+				}
+			}
 			result = append(result, s)
 		}
 		return result
@@ -130,6 +136,12 @@ func (esc *EsClient) GetListWithTimeRange(agentId, startTime, endTime int64) []i
 				continue
 			}
 			s.Id = v.Id
+			if s.Account == "" || s.NickName == "" {
+				p := dbIns.GetGamePlayer(s.AgentId, s.UserId)
+				if p != nil {
+					s.Account, s.NickName = p.Account, p.NickName
+				}
+			}
 			result = append(result, s)
 		}
 		return result
