@@ -174,6 +174,11 @@ func Login(ctx *gin.Context, params url.Values, agent *manager.Agent) {
 	if lang == "" {
 		lang = "zh"
 	}
+	if isTourist > 1 || isTourist < 0 {
+		ctx.JSON(http.StatusOK, GetJsonObj(API_LOGIN.String(), &SimpleResp{Code: int(CODE_CHECK_ERR)}))
+		zap.L().Error("参数异常", zap.Any("isTourist", isTourist))
+		return
+	}
 	game := GameCacheIns.GetGame(symbol)
 	if game == nil {
 		ctx.JSON(http.StatusOK, GetJsonObj(API_LOGIN.String(), &SimpleResp{Code: int(CODE_GAME_NOT)}))
