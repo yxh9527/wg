@@ -5,7 +5,6 @@ import (
 	"app/entity"
 	"context"
 	"fmt"
-	"micro_service/services"
 	"os"
 	"reflect"
 	"strings"
@@ -69,104 +68,6 @@ func ConfigHandler(data interface{}) {
 // 	addCtrl := data.(entity.DelPlayerSingleCtrl)
 // 	SCIns().delSingleCtrl(addCtrl.Uid)
 // }
-
-func (rd *RedisDao) GetPlayer(playerId, factory uint32) (*services.HumanPlayer, error) {
-	res, err := rd.Client.HGetAll(context.Background(), "player_"+strconv.FormatUint(uint64(playerId), 10)).Result()
-	if err != nil {
-		if err == redis.Nil {
-			return nil, nil
-		}
-		return nil, err
-	}
-	if len(res) == 0 {
-		return nil, nil
-	}
-	var p services.HumanPlayer
-	zap.L().Info("Redis:GetPlayer", zap.Uint32("player_id", playerId), zap.Any("player", res))
-	for key, value := range res {
-		switch key {
-		case "id":
-			id, err := strconv.ParseUint(value, 10, 32)
-			if err != nil {
-				return nil, err
-			}
-			p.Id = uint32(id)
-		case "nickname":
-			p.Nickname = value
-		case "currency":
-			strCurrency, err := decimal.NewFromString(value)
-			if err != nil {
-				return nil, err
-			}
-			// redis中存储的单位为分，这里需要转换一下
-			p.GameCurrency = strCurrency.Div(decimal.New(1, 2)).StringFixed(2)
-		case "avatar":
-			p.Avatar = value
-		case "gender":
-			gender, err := strconv.ParseUint(value, 10, 32)
-			if err != nil {
-				return nil, err
-			}
-			p.Gender = uint32(gender)
-		case "exp":
-		case "agent_id":
-			agentId, err := strconv.ParseUint(value, 10, 32)
-			if err != nil {
-				return nil, err
-			}
-			p.AgentId = uint32(agentId)
-		case "login_ip":
-			p.LoginIP = value
-		case "login_time":
-			loginTimestamp, err := strconv.ParseInt(value, 10, 64)
-			if err != nil {
-				return nil, err
-			}
-			p.LoginTimeStamp = loginTimestamp
-		case "currency_limit":
-			p.CurrencyLimit = value
-		case "account":
-			p.Account = value
-		case "currency_type":
-			p.CurrencyType = value
-		case "website_id":
-			websiteId, err := strconv.ParseUint(value, 10, 32)
-			if err != nil {
-				return nil, err
-			}
-			p.WebSiteId = uint32(websiteId)
-		case "all_times":
-			allTimes, _ := strconv.Atoi(value)
-			p.AllTimes = int32(allTimes)
-		}
-	}
-	return &p, nil
-}
-
-func (rd *RedisDao) SetPlayer(p *services.HumanPlayer) error {
-	pID := "player_" + strconv.FormatUint(uint64(p.Id), 10)
-	err := rd.Client.HSet(context.Background(), pID, map[string]interface{}{
-		"id":             p.Id,
-		"nickname":       p.Nickname,
-		"currency":       decimal.RequireFromString(p.GameCurrency).Mul(decimal.New(1, 2)).IntPart(), // 方便incr，转换为分
-		"avatar":         p.Avatar,
-		"gender":         p.Gender,
-		"exp":            p.Exp,
-		"agent_id":       p.AgentId,
-		"login_ip":       p.LoginIP,
-		"login_time":     p.LoginTimeStamp,
-		"currency_limit": p.CurrencyLimit,
-		"website_id":     p.WebSiteId,
-		"account":        p.Account,
-		"currency_type":  p.CurrencyType,
-		"all_times":      p.AllTimes,
-	}).Err()
-	if err == nil {
-		rd.Client.Expire(context.Background(), pID, time.Minute*20)
-		rd.Client.SAdd(context.Background(), "dirty_list", p.Id)
-	}
-	return err
-}
 
 func (rd *RedisDao) UpdatePlayerCurrency(playerId uint32, currencyDelta int64, exp, factory uint32, source int) (newCurrency int64, err error) {
 	pID := "player_" + strconv.FormatUint(uint64(playerId), 10)
