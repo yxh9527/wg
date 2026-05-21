@@ -34,10 +34,18 @@ func RedisIns() *RedisDao {
 func NewRedisDao(hosts []string, user, pwd string) {
 	if redisDao == nil {
 		cli := redis.NewUniversalClient(&redis.UniversalOptions{
-			Addrs:    hosts,
-			Password: pwd,
-			Username: user,
-			DB:       0,
+			Addrs:           hosts,
+			Password:        pwd,
+			Username:        user,
+			DB:              0,
+			PoolSize:        100,
+			MinIdleConns:    10,
+			MaxIdleConns:    0,
+			ConnMaxIdleTime: 60 * time.Second,
+			ConnMaxLifetime: 2 * time.Minute,
+			ReadBufferSize:  32 * 1024,
+			WriteBufferSize: 32 * 1024,
+			PoolTimeout:     5 * time.Second,
 		})
 		redisDao = &RedisDao{cli: cli}
 		redisDao.Subscribe("message", func() *event.EventMgr {
