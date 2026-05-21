@@ -75,9 +75,9 @@ func NewLotteryService(es *elastic.Client) *LotteryService {
 		db:         dao.NewDBDao(),
 		rds:        dao.RedisIns(),
 		es:         dao.NewESDao(es),
-		poolChange: make(chan *view.PoolLogItem, 1024),
-		RecordChan: make(chan *entity.CacheRecordsReq, 10240),
-		BillChan:   make(chan *entity.CacheBillsReq, 1024),
+		poolChange: make(chan *view.PoolLogItem, 10240*5),
+		RecordChan: make(chan *entity.CacheRecordsReq, 10240*5),
+		BillChan:   make(chan *entity.CacheBillsReq, 10240*5),
 		pcr: &PoolChangeRecord{
 			lock:   &sync.RWMutex{},
 			record: make(map[string]decimal.Decimal),
@@ -306,7 +306,7 @@ func (d *LotteryService) consumerRecord() {
 				}
 			case req := <-d.RecordChan:
 				data = append(data, req)
-				if len(data) >= 16 {
+				if len(data) >= 50 {
 					d.es.BulkRecordsSave(data)
 					data = make([]*entity.CacheRecordsReq, 0, 64)
 				}
@@ -337,7 +337,7 @@ func (d *LotteryService) consumerBill() {
 				}
 			case req := <-d.BillChan:
 				data = append(data, req)
-				if len(data) >= 16 {
+				if len(data) >= 50 {
 					d.es.BulkBillsSave(data)
 					data = make([]*entity.CacheBillsReq, 0, 64)
 				}
