@@ -42,7 +42,7 @@ func NewRedisDao(hosts []string, user, pwd string) {
 			MinIdleConns:    10,
 			MaxIdleConns:    0,
 			ConnMaxIdleTime: 60 * time.Second,
-			ConnMaxLifetime: 2 * time.Minute,
+			ConnMaxLifetime: 5 * time.Minute,
 			ReadBufferSize:  32 * 1024,
 			WriteBufferSize: 32 * 1024,
 			PoolTimeout:     5 * time.Second,
