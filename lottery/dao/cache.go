@@ -352,11 +352,8 @@ func (gcm *GameCacheMgr) ChangePool(agentId int64, userId int32, symbol, currenc
 }
 
 // 下注
-func (gcm *GameCacheMgr) ChangePoolWithNoLock(agentId int64, userId int32, symbol, currencyType, recordId string, bet, award, revence decimal.Decimal) bool {
-	agent := gcm.GetAgent(agentId)
-	user := agent.GetUser(uint32(userId))
+func (gcm *GameCacheMgr) ChangePoolWithNoLock(agent *AgentData, user *User, game *Game, currencyType, recordId string, bet, award, revence decimal.Decimal) bool {
 	if user.IsTourist == 0 {
-		game := agent.GetGame(symbol)
 		before := (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)
 		//所有情况都需要扣除水池值 记录赔付
 		game.TotalProfLoss = game.TotalProfLoss.Add(award.Truncate(4))
@@ -372,7 +369,7 @@ func (gcm *GameCacheMgr) ChangePoolWithNoLock(agentId int64, userId int32, symbo
 		// user.Count = user.Count.Add(decimal.NewFromInt(1))
 		user.UpdateTime = time.Now().Unix()
 		after := (game.TotalEffectBet.Sub(game.TotalProfLoss)).Sub(game.TotalRevenue)
-		zap.L().Debug("Pool", zap.Any("agentId", agentId), zap.Any("symbol", symbol), zap.Any("recordId", recordId), zap.Any("userId", userId), zap.Any("currencyType", currencyType), zap.Any("bet", bet), zap.Any("award", award), zap.Any("before", before), zap.Any("after", after))
+		zap.L().Debug("Pool", zap.Any("agentId", agent.Id), zap.Any("symbol", game.Symbol), zap.Any("recordId", recordId), zap.Any("userId", user.UserId), zap.Any("currencyType", currencyType), zap.Any("bet", bet), zap.Any("award", award), zap.Any("before", before), zap.Any("after", after))
 	}
 	return true
 }
@@ -622,7 +619,7 @@ func (gcm *GameCacheMgr) Lottery(agentId int64, userId int32, pc *config.Pool, s
 	}
 	zap.L().Debug("Lottery:赔付成功", zap.Any("agentId", agentId), zap.Any("symbol", symbol), zap.Any("roundId", roundId), zap.Any("playerId", userId), zap.Any("可赔付", p), zap.Any("返奖值", award))
 
-	CacheIns().ChangePoolWithNoLock(int64(agentId), int32(userId), symbol, currencyType, roundId, bet, award, revence)
+	CacheIns().ChangePoolWithNoLock(agent, user, game, currencyType, roundId, bet, award, revence)
 
 	return pool, true
 }
