@@ -29,9 +29,20 @@ var redisDao *RedisDao = nil
 
 func InitRedis(sc *config.RunConfig) error {
 	c := redis.NewUniversalClient(&redis.UniversalOptions{
-		Addrs:    sc.Redis.Host,
-		Password: sc.Redis.Pwd,
-		DB:       0,
+		Addrs:                 sc.Redis.Host,
+		Password:              sc.Redis.Pwd,
+		DB:                    0,
+		PoolSize:              50,
+		MinIdleConns:          10,
+		MaxIdleConns:          0,
+		ConnMaxIdleTime:       60 * time.Second,
+		ConnMaxLifetime:       5 * time.Minute,
+		ReadBufferSize:        32 * 1024,
+		WriteBufferSize:       32 * 1024,
+		PoolTimeout:           5 * time.Second,
+		ReadTimeout:           10 * time.Second,
+		WriteTimeout:          10 * time.Second,
+		ContextTimeoutEnabled: true,
 	})
 	redisDao = &RedisDao{redis: c}
 	redisDao.Subscribe("message", func() *event.EventMgr {

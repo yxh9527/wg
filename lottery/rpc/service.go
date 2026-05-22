@@ -306,7 +306,7 @@ func (d *LotteryService) consumerRecord() {
 				}
 			case req := <-d.RecordChan:
 				data = append(data, req)
-				if len(data) >= 50 {
+				if len(data) >= 40 {
 					d.es.BulkRecordsSave(data)
 					data = make([]*entity.CacheRecordsReq, 0, 64)
 				}
