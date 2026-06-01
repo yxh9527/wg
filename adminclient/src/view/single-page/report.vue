@@ -197,56 +197,56 @@
 </template>
 
 <script>
-import Tables from '_c/tables'
-import { setting } from '@/config'
-import { getDate } from '@/libs/tools'
-import { exportExcel } from '@/libs/excel'
-import JSZip from 'jszip'
-import FileSaver from 'file-saver'
+import Tables from "_c/tables";
+import { setting } from "@/config";
+import { getDate } from "@/libs/tools";
+import { exportExcel } from "@/libs/excel";
+import JSZip from "jszip";
+import FileSaver from "file-saver";
 
-import * as dayjs from 'dayjs'
-import { getReportData, exportAgentData } from '@/api/data'
+import * as dayjs from "dayjs";
+import { getReportData, exportAgentData } from "@/api/data";
 export default {
-  name: 'gameManage',
+  name: "gameManage",
   components: {
-    Tables
+    Tables,
   },
-  inject: ['handleLogOut'],
-  data () {
-    let _this = this
+  inject: ["handleLogOut"],
+  data() {
+    let _this = this;
     return {
       loading: false,
       model1: [],
       startDateRestrict: {
-        disabledDate (date) {
+        disabledDate(date) {
           if (date.getYear() != new Date().getYear()) {
-            return true
+            return true;
           }
           if (date.getMonth() - new Date().getMonth() < -1) {
-            return true
+            return true;
           }
           if (date.getMonth() - new Date().getMonth() > 0) {
-            return true
+            return true;
           }
-        }
+        },
       },
       req1: [
         {
-          key: 'startTime',
-          label: '开始日期',
-          type: 'datetime',
-          value: ''
+          key: "startTime",
+          label: "开始日期",
+          type: "datetime",
+          value: "",
         },
-        { key: 'endTime', label: '结束日期', type: 'datetime', value: '' },
+        { key: "endTime", label: "结束日期", type: "datetime", value: "" },
         {
-          key: 'timeType',
-          type: 'radio',
-          value: '',
+          key: "timeType",
+          type: "radio",
+          value: "",
           option: [
-            { title: '今日', label: 4 },
-            { title: '昨日', label: 5 }
-          ]
-        }
+            { title: "今日", label: 4 },
+            { title: "昨日", label: 5 },
+          ],
+        },
       ],
       req: [
         // {
@@ -257,78 +257,78 @@ export default {
         // },
       ],
       betList: [
-        { label: '总局数', value: '' },
-        { label: '有效下注', value: '' },
-        { label: '有效打码', value: '' },
-        { label: '盈亏', value: '' },
-        { label: '税收', value: '' }
+        { label: "总局数", value: "" },
+        { label: "有效下注", value: "" },
+        { label: "有效打码", value: "" },
+        { label: "盈亏", value: "" },
+        { label: "税收", value: "" },
       ],
       selectValue: [],
       columns: [
-        { title: '代理', key: 'agentName', align: 'center', minWidth: 100 },
-        { title: '人次', key: 'userNumber', width: 100, align: 'center' },
-        { title: '局数', key: 'gameNumber', width: 100, align: 'center' },
+        { title: "代理", key: "agentName", align: "center", minWidth: 100 },
+        { title: "人次", key: "userNumber", width: 100, align: "center" },
+        { title: "局数", key: "gameNumber", width: 100, align: "center" },
         {
-          title: '有效下注',
-          key: 'effeBetsScore',
-          align: 'right',
+          title: "有效下注",
+          key: "effeBetsScore",
+          align: "right",
           minWidth: 100,
-          render (h, params) {
+          render(h, params) {
             return (
               <span>
                 {(params.row.effectiveBetsTotal &&
                   params.row.effectiveBetsTotal.toFixed(2)) ||
                   0}
               </span>
-            )
-          }
+            );
+          },
         },
         {
-          title: '有效打码',
-          key: 'chips',
-          align: 'right',
+          title: "有效打码",
+          key: "chips",
+          align: "right",
           minWidth: 100,
-          render (h, params) {
+          render(h, params) {
             return (
               <span>
                 {(params.row.chipsTotal && params.row.chipsTotal.toFixed(2)) ||
                   0}
               </span>
-            )
-          }
+            );
+          },
         },
         {
-          title: '赔付',
-          key: 'profitLossTotal',
-          align: 'right',
+          title: "赔付",
+          key: "profitLossTotal",
+          align: "right",
           minWidth: 100,
-          render (h, params) {
+          render(h, params) {
             if (params.row.profitLossTotal) {
-              let sum
+              let sum;
               sum = Number(
-                String(params.row.profitLossTotal).replace(/\,/g, '')
-              )
-              sum = sum.toFixed(2)
-              return <span>{String(sum)}</span>
+                String(params.row.profitLossTotal).replace(/\,/g, "")
+              );
+              sum = sum.toFixed(2);
+              return <span>{String(sum)}</span>;
             } else {
-              return <span style="color:#000">0</span>
+              return <span style="color:#000">0</span>;
             }
-          }
+          },
         },
         {
-          title: '盈亏',
-          key: 'yk',
-          align: 'right',
+          title: "盈亏",
+          key: "yk",
+          align: "right",
           minWidth: 100,
-          render (h, params) {
+          render(h, params) {
             if (params.row.profitLossTotal) {
-              let sum, effect
+              let sum, effect;
               sum = Number(
-                String(params.row.profitLossTotal).replace(/\,/g, '')
-              )
+                String(params.row.profitLossTotal).replace(/\,/g, "")
+              );
               effect = Number(
-                String(params.row.effectiveBetsTotal).replace(/\,/g, '')
-              )
+                String(params.row.effectiveBetsTotal).replace(/\,/g, "")
+              );
               return effect - sum >= 0 ? (
                 <span style="color:green">
                   {String((effect - sum).toFixed(2))}
@@ -337,39 +337,39 @@ export default {
                 <span style="color:red">
                   {String((effect - sum).toFixed(2))}
                 </span>
-              )
+              );
             } else {
-              return <span style="color:#000">0</span>
+              return <span style="color:#000">0</span>;
             }
-          }
+          },
         },
         {
-          title: '税收',
-          key: 'revenueTotal',
-          align: 'right',
+          title: "税收",
+          key: "revenueTotal",
+          align: "right",
           minWidth: 80,
-          render (h, params) {
+          render(h, params) {
             return (
               <span>
                 {(params.row.revenueTotal &&
                   params.row.revenueTotal.toFixed(2)) ||
                   0}
               </span>
-            )
-          }
+            );
+          },
         },
         {
-          title: '杀数',
-          key: '',
-          align: 'right',
+          title: "杀数",
+          key: "",
+          align: "right",
           minWidth: 80,
-          render (h, params) {
+          render(h, params) {
             let sum = Number(
-              String(params.row.profitLossTotal).replace(/\,/g, '')
-            )
+              String(params.row.profitLossTotal).replace(/\,/g, "")
+            );
             let effect = Number(
-              String(params.row.effectiveBetsTotal).replace(/\,/g, '')
-            )
+              String(params.row.effectiveBetsTotal).replace(/\,/g, "")
+            );
             return (
               <span>
                 {isNaN(
@@ -378,39 +378,39 @@ export default {
                   ? 0
                   : ((effect - sum) / params.row.effectiveBetsTotal).toFixed(3)}
               </span>
-            )
-          }
+            );
+          },
         },
         {
-          title: '操作',
-          key: 'handle',
-          align: 'center',
+          title: "操作",
+          key: "handle",
+          align: "center",
           width: 200,
           button: [
             (h, params) => {
               return h(
-                'a',
+                "a",
                 {
                   on: {
                     click: () => {
                       let routeData = _this.$router.resolve({
-                        path: '/agent-aggs-detail',
+                        path: "/agent-aggs-detail",
                         query: {
                           webId: _this.webId,
                           agent: params.row.agentId,
                           startTime: _this.searchData.startTime,
-                          endTime: _this.searchData.endTime
-                        }
-                      })
-                      window.open(routeData.href, '_blank')
-                    }
-                  }
+                          endTime: _this.searchData.endTime,
+                        },
+                      });
+                      window.open(routeData.href, "_blank");
+                    },
+                  },
                 },
-                '详情'
-              )
-            }
-          ]
-        }
+                "详情"
+              );
+            },
+          ],
+        },
       ],
       tableData: [],
       dataScore: [],
@@ -422,7 +422,7 @@ export default {
         current: 0,
         page: setting.page,
         pageSize: setting.pageSize,
-        pageOpts: setting.pageOpts
+        pageOpts: setting.pageOpts,
       },
       spinShow: false,
       /**
@@ -431,87 +431,87 @@ export default {
       webId: null,
       siteOption: [],
       agentId: null,
-      agentOption: []
-    }
+      agentOption: [],
+    };
   },
   methods: {
-    clearTimeDatess () {
+    clearTimeDatess() {
       // 清除快捷日期
-      this.req1[2].value = ''
+      this.req1[2].value = "";
     },
-    reresetDatePiker (v) {
+    reresetDatePiker(v) {
       if (v) {
-        this.req1[0].value = ''
-        this.req1[1].value = ''
+        this.req1[0].value = "";
+        this.req1[1].value = "";
       }
     },
-    formatterTime (time) {
+    formatterTime(time) {
       if (time) {
-        return dayjs(time).format('YYYY-MM-DD')
+        return dayjs(time).format("YYYY-MM-DD");
       } else {
-        return ''
+        return "";
       }
     },
-    handleSearch () {
-      let tmp = []
+    handleSearch() {
+      let tmp = [];
       this.req1.map((item) => {
         if (item.value) {
-          if (item.type == 'datetime') {
+          if (item.type == "datetime") {
             tmp.push({
-              [item.key]: getDate(item.value)
-            })
+              [item.key]: getDate(item.value),
+            });
           } else {
             tmp.push({
-              [item.key]: item.value
-            })
+              [item.key]: item.value,
+            });
           }
         }
-      })
+      });
       this.req.map((item) => {
-        if (item.value !== '') {
+        if (item.value !== "") {
           tmp.push({
-            [item.key]: item.value
-          })
+            [item.key]: item.value,
+          });
         }
-      })
-      this.spinShow = true
+      });
+      this.spinShow = true;
       // 今日昨日
-      let timeRange = tmp.find((x) => x.timeType)
+      let timeRange = tmp.find((x) => x.timeType);
       if (timeRange) {
         switch (timeRange.timeType) {
           case 4:
             this.searchData.startTime = dayjs()
-              .subtract(0, 'days')
-              .startOf('day')
-              .unix()
+              .subtract(0, "days")
+              .startOf("day")
+              .unix();
             this.searchData.endTime = dayjs()
-              .subtract(0, 'days')
-              .endOf('day')
-              .unix()
-            break
+              .subtract(0, "days")
+              .endOf("day")
+              .unix();
+            break;
           case 5:
             this.searchData.startTime = dayjs()
-              .subtract(1, 'days')
-              .startOf('day')
-              .unix()
+              .subtract(1, "days")
+              .startOf("day")
+              .unix();
             this.searchData.endTime = dayjs()
-              .subtract(1, 'days')
-              .endOf('day')
-              .unix()
-            break
+              .subtract(1, "days")
+              .endOf("day")
+              .unix();
+            break;
         }
       } else {
         tmp.filter((params) => {
           if (params.startTime) {
-            this.searchData.startTime = dayjs(params.startTime).unix()
+            this.searchData.startTime = dayjs(params.startTime).unix();
           }
           if (params.endTime) {
             this.searchData.endTime = dayjs(params.endTime)
-              .subtract(0, 'days')
-              .endOf('day')
-              .unix()
+              .subtract(0, "days")
+              .endOf("day")
+              .unix();
           }
-        })
+        });
       }
       let Data = [
         { page: this.pageData.page },
@@ -519,23 +519,23 @@ export default {
         { webId: this.webId },
         { agentId: this.agentId === 9999999 ? undefined : this.agentId },
         { startTime: this.searchData.startTime },
-        { endTime: this.searchData.endTime }
-      ]
+        { endTime: this.searchData.endTime },
+      ];
       if (this.req1[0].value && this.req1[1].value) {
-        this.req1[2].value = ''
+        this.req1[2].value = "";
       }
       getReportData(Data)
         .then((res) => {
-          this.spinShow = false
+          this.spinShow = false;
           if (res.data.code == 200) {
-            this.tableData = res.data.data.data
+            this.tableData = res.data.data.data;
             this.pageData.current = res.data.data.total;
             [
               this.betList[0].value,
               this.betList[1].value,
               this.betList[2].value,
               this.betList[3].value,
-              this.betList[4].value
+              this.betList[4].value,
             ] = [
               res.data.data.docCount.toFixed(2),
               res.data.data.effectiveBetsTotal.toFixed(2),
@@ -546,181 +546,181 @@ export default {
               ).toFixed(2),
               (res.data.data.revenueTotal &&
                 res.data.data.revenueTotal.toFixed(2)) ||
-                0
-            ]
+                0,
+            ];
           }
         })
         .catch((err) => {
-          this.spinShow = false
-        })
+          this.spinShow = false;
+        });
     },
-    exportAgentDataWithTime () {
-      this.loading = true
-      let tmp = []
+    exportAgentDataWithTime() {
+      this.loading = true;
+      let tmp = [];
       this.req1.map((item) => {
         if (item.value) {
-          if (item.type == 'datetime') {
+          if (item.type == "datetime") {
             tmp.push({
-              [item.key]: getDate(item.value)
-            })
+              [item.key]: getDate(item.value),
+            });
           } else {
             tmp.push({
-              [item.key]: item.value
-            })
+              [item.key]: item.value,
+            });
           }
         }
-      })
+      });
       this.req.map((item) => {
-        if (item.value !== '') {
+        if (item.value !== "") {
           tmp.push({
-            [item.key]: item.value
-          })
+            [item.key]: item.value,
+          });
         }
-      })
+      });
       // 今日昨日
-      let timeRange = tmp.find((x) => x.timeType)
+      let timeRange = tmp.find((x) => x.timeType);
       if (timeRange) {
         switch (timeRange.timeType) {
           case 4:
             this.searchData.startTime = dayjs()
-              .subtract(0, 'days')
-              .startOf('day')
-              .unix()
+              .subtract(0, "days")
+              .startOf("day")
+              .unix();
             this.searchData.endTime = dayjs()
-              .subtract(0, 'days')
-              .endOf('day')
-              .unix()
-            break
+              .subtract(0, "days")
+              .endOf("day")
+              .unix();
+            break;
           case 5:
             this.searchData.startTime = dayjs()
-              .subtract(1, 'days')
-              .startOf('day')
-              .unix()
+              .subtract(1, "days")
+              .startOf("day")
+              .unix();
             this.searchData.endTime = dayjs()
-              .subtract(1, 'days')
-              .endOf('day')
-              .unix()
-            break
+              .subtract(1, "days")
+              .endOf("day")
+              .unix();
+            break;
         }
       } else {
         tmp.filter((params) => {
           if (params.startTime) {
-            this.searchData.startTime = dayjs(params.startTime).unix()
+            this.searchData.startTime = dayjs(params.startTime).unix();
           }
           if (params.endTime) {
             this.searchData.endTime = dayjs(params.endTime)
-              .subtract(0, 'days')
-              .endOf('day')
-              .unix()
+              .subtract(0, "days")
+              .endOf("day")
+              .unix();
           }
-        })
+        });
       }
       let Data = [
         { startTime: this.searchData.startTime },
-        { endTime: this.searchData.endTime }
-      ]
-      let _this = this
+        { endTime: this.searchData.endTime },
+      ];
+      let _this = this;
       exportAgentData(Data).then((res) => {
         const columns = [
-          { title: 'Symbol', key: 'symbol', width: 100 },
-          { title: '游戏名称', key: 'gameName', width: 80 },
-          { title: '注单数量', key: 'doc_count', width: 80 },
-          { title: '玩家数量', key: 'userTotal', width: 80 },
-          { title: '有效投注', key: 'effectiveBetsTotal', width: 80 },
-          { title: '有效打码', key: 'chipsTotal', width: 80 },
-          { title: '总返奖', key: 'profitLossTotal', width: 80 },
-          { title: '总税收', key: 'revenueTotal', width: 80 }
-        ]
-        let data = {}
+          { title: "Symbol", key: "symbol", width: 100 },
+          { title: "游戏名称", key: "gameName", width: 80 },
+          { title: "注单数量", key: "doc_count", width: 80 },
+          { title: "玩家数量", key: "userTotal", width: 80 },
+          { title: "有效投注", key: "effectiveBetsTotal", width: 80 },
+          { title: "有效打码", key: "chipsTotal", width: 80 },
+          { title: "总返奖", key: "profitLossTotal", width: 80 },
+          { title: "总税收", key: "revenueTotal", width: 80 },
+        ];
+        let data = {};
         Object.keys(res.data.data).forEach((key) => {
-          let item = res.data.data[key]
+          let item = res.data.data[key];
           if (data[item.agentId]) {
-            data[item.agentId].push(item)
+            data[item.agentId].push(item);
           } else {
-            data[item.agentId] = [item]
+            data[item.agentId] = [item];
           }
-        })
-        const zip = new JSZip()
+        });
+        const zip = new JSZip();
         Object.keys(data).forEach((key) => {
           (function (tmp) {
-            let ec = exportExcel(columns, data[tmp], tmp)
-            zip.file(`${tmp}.xlsx`, ec, { binary: true })
-          })(key)
-        })
+            let ec = exportExcel(columns, data[tmp], tmp);
+            zip.file(`${tmp}.xlsx`, ec, { binary: true });
+          })(key);
+        });
         // 生成zip文件并下载
-        zip.generateAsync({ type: 'blob' }).then((content) => {
+        zip.generateAsync({ type: "blob" }).then((content) => {
           FileSaver.saveAs(
             content,
             `agent统计[${tmp[0].startTime}-${tmp[1].endTime}].zip`
-          )
-        })
-        _this.loading = false
-      })
+          );
+        });
+        _this.loading = false;
+      });
     },
-    handleAllSearch () {
+    handleAllSearch() {
       // 重置时间
-      this.req1[0].value = ''
-      this.req1[1].value = ''
-      this.req1[2].value = ''
-      this.agentId = null
-      this.webId = this.siteOption[0].id
-      sessionStorage.setItem('siteVal', this.siteOption[0].id)
+      this.req1[0].value = "";
+      this.req1[1].value = "";
+      this.req1[2].value = "";
+      this.agentId = null;
+      this.webId = this.siteOption[0].id;
+      sessionStorage.setItem("siteVal", this.siteOption[0].id);
 
-      this.spinShow = true
+      this.spinShow = true;
       for (const i in this.req) {
-        this.req[i].value = ''
+        this.req[i].value = "";
       }
       let Data = [
         { page: this.pageData.page },
-        { pageSize: this.pageData.pageSize }
-      ]
-      this.searchData.startTime = 0
-      this.searchData.endTime = 0
+        { pageSize: this.pageData.pageSize },
+      ];
+      this.searchData.startTime = 0;
+      this.searchData.endTime = 0;
       getReportData(Data).then((res) => {
-        this.spinShow = false
+        this.spinShow = false;
         if (res.data.code == 200) {
-          this.pageData.page = 1
-          this.tableData = res.data.data.data
-          this.pageData.current = res.data.data.total
+          this.pageData.page = 1;
+          this.tableData = res.data.data.data;
+          this.pageData.current = res.data.data.total;
         }
-      })
+      });
     },
-    changePage (index) {
-      this.pageData.page = index
-      this.handleSearch()
+    changePage(index) {
+      this.pageData.page = index;
+      this.handleSearch();
     },
-    changePageSize (index) {
-      this.pageData.pageSize = index
-      this.handleSearch()
+    changePageSize(index) {
+      this.pageData.pageSize = index;
+      this.handleSearch();
     },
     /**
      * set sit
      */
-    setSite (val) {
-      this.webId = val
+    setSite(val) {
+      this.webId = val;
       if (val > 0) {
-        sessionStorage.setItem('siteVal', val)
+        sessionStorage.setItem("siteVal", val);
         this.agentOption = this.siteOption.find(
           (site) => site.id == val
-        ).agentList
+        ).agentList;
         if (!this.agentOption.find((x) => x.id == 9999999)) {
           this.agentOption.unshift({
-            name: '全部',
-            id: 9999999
-          })
+            name: "全部",
+            id: 9999999,
+          });
         }
         this.agentOption.map((item) => {
-          item.label = item.name
-        })
+          item.label = item.name;
+        });
       }
     },
     /**
      * 根据代理id查询游戏
      */
-    selectGameByAgent (val) {
+    selectGameByAgent(val) {
       if (val === 9999999) {
         //  选择的全部则不执行下面的代码
-        return
+        return;
       }
       this.req = [
         // {
@@ -729,56 +729,56 @@ export default {
         //   value: "",
         //   option: [],
         // },
-      ]
-    }
+      ];
+    },
   },
-  mounted () {
+  mounted() {
     /**
      * 填充页面的站点参数
      */
-    let sid = sessionStorage.getItem('siteVal') // 获取当前session存储的已选择的站点id
-    let siteOption = JSON.parse(sessionStorage.getItem('siteOption') || '[]') // 获取当前session存储的站点列表数据
-    this.siteOption = siteOption
-    this.webId = sid * 1
+    let sid = sessionStorage.getItem("siteVal"); // 获取当前session存储的已选择的站点id
+    let siteOption = JSON.parse(sessionStorage.getItem("siteOption") || "[]"); // 获取当前session存储的站点列表数据
+    this.siteOption = siteOption;
+    this.webId = sid * 1;
     // 把选择的站点赋值到页面选中
     siteOption &&
       siteOption.map((item, index) => {
         if (item.id == sid) {
-          this.agentOption = item.agentList
-          this.agent = 9999999
+          this.agentOption = item.agentList;
+          this.agent = 9999999;
           this.agentOption.unshift({
-            name: '全部',
-            id: 9999999
-          })
+            name: "全部",
+            id: 9999999,
+          });
           this.agentOption.map((item) => {
-            item.label = item.name
-          })
+            item.label = item.name;
+          });
         }
-      })
+      });
     this.siteOption.map((item) => {
-      item.label = item.name
-    })
+      item.label = item.name;
+    });
     this.req.map((item) => {
-      if (item.key == 'gameId') {
-        let newArray = JSON.parse(sessionStorage.getItem('games'))
+      if (item.key == "gameId") {
+        let newArray = JSON.parse(sessionStorage.getItem("games"));
         item.option.push(
-          { id: 0, number: 0, name: '全部', nameZH: '' },
+          { id: 0, number: 0, name: "全部", nameZH: "" },
           ...newArray
-        )
+        );
         item.option.map((o) => {
           if (o.nameZH.trim().length > 0) {
-            o.label = o.name + '  [' + o.nameZH + ']'
+            o.label = o.name + "  [" + o.nameZH + "]";
           } else {
-            o.label = o.name
+            o.label = o.name;
           }
-          return o
-        })
+          return o;
+        });
       }
-      return item
-    })
-    this.handleSearch()
-  }
-}
+      return item;
+    });
+    this.handleSearch();
+  },
+};
 </script>
 
 <style lang="less">

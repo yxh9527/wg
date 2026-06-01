@@ -69,7 +69,7 @@ func main() {
 		symbol      = flag.String("symbol", "sjddj", "symbol")
 		recordPref  = flag.String("record-prefix", "APICNY", "record prefix")
 		bet         = flag.String("bet", "1", "bet amount")
-		awardMax    = flag.Float64("award-max", 50, "max random award")
+		awardMax    = flag.Float64("award-max", 10, "max random award")
 		currency    = flag.String("currency", "CNY", "currency type")
 		state       = flag.String("state", defaultState, "state json")
 		token       = flag.String("token", "", "token")
