@@ -1443,6 +1443,44 @@ GENERIC_SLOT_ICON_NAME_MAP.tgpd = {
   35: "钻石",
 };
 
+GENERIC_SLOT_ICON_NAME_MAP.xldb = {
+  1: "龙眼",
+  2: "A",
+  3: "K",
+  11: "Q",
+  12: "J",
+  13: "10",
+  21: "Wild",
+  100: "绿奖",
+  200: "蓝奖",
+  500: "红奖",
+  666: "空位",
+};
+
+const XLDB_SPECIAL_PIC_MAP = {
+  31: 100,
+  32: 100,
+  33: 100,
+  34: 200,
+  35: 200,
+  36: 200,
+  37: 200,
+  38: 500,
+  39: 500,
+};
+
+const XLDB_SPECIAL_MULTI_MAP = {
+  31: 0.5,
+  32: 1,
+  33: 2,
+  34: 5,
+  35: 10,
+  36: 20,
+  37: 50,
+  38: 100,
+  39: 500,
+};
+
 const GENERIC_SLOT_ICON_ATLAS_MAP = {
   cjsgj: {
     url: "/cjsgj-icons-atlas.webp",
@@ -1686,6 +1724,139 @@ function normalizeTgpdArea(area) {
   return normalizedArea;
 }
 
+function normalizeXldbIconValue(value) {
+  if (value === null || value === undefined || value === "") return "";
+  const numericValue = Number(value);
+  if (!Number.isFinite(numericValue)) return value;
+  if (numericValue === 0) return 666;
+  if (Object.prototype.hasOwnProperty.call(XLDB_SPECIAL_PIC_MAP, numericValue)) {
+    return XLDB_SPECIAL_PIC_MAP[numericValue];
+  }
+  return numericValue;
+}
+
+function normalizeXldbArea(area) {
+  const normalizedArea = {
+    ...(area || {}),
+  };
+  const normalizedIconId = normalizeXldbIconValue(
+    normalizedArea.iconId !== undefined ? normalizedArea.iconId : normalizedArea.betAreaId
+  );
+  if (normalizedIconId !== "") {
+    normalizedArea.iconId = normalizedIconId;
+  }
+  return normalizedArea;
+}
+
+function mapXldbIndexToCoord(index) {
+  const columnHeights = [3, 4, 3];
+  let offset = 0;
+  for (let columnIndex = 0; columnIndex < columnHeights.length; columnIndex += 1) {
+    const height = columnHeights[columnIndex];
+    if (index < offset + height) {
+      return [index - offset, columnIndex];
+    }
+    offset += height;
+  }
+  return null;
+}
+
+function buildXldbAreaHighlight(area, icons) {
+  const normalizedTarget = normalizeXldbIconValue(area && area.iconId);
+  const hitIndexes = toArray(icons).reduce((result, icon, index) => {
+    if (normalizeXldbIconValue(icon) === normalizedTarget) {
+      result.push(index);
+    }
+    return result;
+  }, []);
+  const linePos = hitIndexes
+    .map((index) => mapXldbIndexToCoord(index))
+    .filter(Boolean);
+  return {
+    linePos,
+    highlightKeys: linePos.map(([row, col]) => `${row}-${col}`),
+    linePosText: linePos.length ? stringifySlotLinePos(linePos) : "",
+  };
+}
+
+function buildXldbViewModel(parsed, confName) {
+  const source = parsed.source || {};
+  const connection = parsed.connectionRecord || {};
+  const betRecord = parsed.betRecord || {};
+  const mergedSource = {
+    ...betRecord,
+    ...connection,
+    ...source,
+  };
+
+  const allAreas = toArray(mergedSource.betAreas || betRecord.betAreas).map(normalizeXldbArea);
+  const rawRounds = String(mergedSource.icons || "")
+    .split(";")
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  const rounds = (rawRounds.length ? rawRounds : [String(mergedSource.icons || "")]).map((segment, roundIndex) => {
+    const rawIconTokens = String(segment || "")
+      .split(",")
+      .map((item) => String(item).trim())
+      .filter((item) => item !== "");
+    const icons = rawIconTokens.map(normalizeXldbIconValue);
+
+    let roundAreas = [];
+    if (rawRounds.length > 1) {
+      const matchedArea = allAreas.find((area) => Number(area && area.lineNo) === roundIndex);
+      roundAreas = matchedArea
+        ? [
+            {
+              ...createSlotWinArea(matchedArea, 0, buildXldbAreaHighlight(matchedArea, icons)),
+              lineNo: matchedArea.lineNo,
+            },
+          ]
+        : [];
+    } else {
+      roundAreas = allAreas.map((area, index) => ({
+        ...createSlotWinArea(area, index, buildXldbAreaHighlight(area, icons)),
+        lineNo: area.lineNo,
+      }));
+    }
+
+    return {
+      roundIndex,
+      label: `第 ${roundIndex + 1} 回合`,
+      icons,
+      rawIconTokens,
+      raw: segment,
+      timestamp: "",
+      winAreas: roundAreas,
+      columns: 3,
+      rows: 4,
+      slotHeights: [3, 4, 3],
+      winLoseGold:
+        roundAreas.length === 1
+          ? Number(roundAreas[0].winLoseGold || 0)
+          : roundAreas.reduce((total, area) => total + Number(area && area.winLoseGold || 0), 0),
+    };
+  });
+
+  if (!rounds.length && !allAreas.length) return null;
+
+  return {
+    mode: "xldb",
+    confName,
+    betSingle: Number(mergedSource.betSingle || 0),
+    betTimes: Number(mergedSource.betTimes || 0),
+    totalBetGold: Number(mergedSource.totalBetGold ?? betRecord.totalBetGold ?? 0),
+    totalWinLoseGold: Number(mergedSource.winLoseGold ?? parsed.commonRecord.dispatchRewardGold ?? 0),
+    rounds,
+    winAreas: allAreas.map((area, index) => ({
+      ...createSlotWinArea(area, index, buildXldbAreaHighlight(area, rounds[0] ? rounds[0].icons : [])),
+      lineNo: area.lineNo,
+    })),
+    iconNameMap: GENERIC_SLOT_ICON_NAME_MAP.xldb || {},
+    iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP.xldb || null,
+  };
+}
+
 function buildTgpdAreaHighlight(area, columns) {
   const posList = toArray(area && area.pos)
     .map((value) => Number(value))
@@ -1808,7 +1979,10 @@ function buildGenericSlotViewModel(parsed, confName) {
   };
 
   const allWinAreas = toArray(mergedSource.betAreas || betRecord.betAreas).map((area, index) =>
-    createSlotWinArea(confName === "tgpd" ? normalizeTgpdArea(area) : area, index)
+    createSlotWinArea(
+      confName === "tgpd" ? normalizeTgpdArea(area) : confName === "xldb" ? normalizeXldbArea(area) : area,
+      index
+    )
   );
 
   const timestampList = source.timestampList || connection.timestampList || betRecord.timestampList || [];
@@ -1817,10 +1991,17 @@ function buildGenericSlotViewModel(parsed, confName) {
   const normalizedRounds = (rounds.length ? rounds : [{ roundIndex: 0, label: "第 1 回合", icons: [], raw: "", winAreas: [] }]).map(
     (round) => {
       const winAreas = round.winAreas && round.winAreas.length ? round.winAreas : rounds.length <= 1 ? allWinAreas : [];
-      const normalizedIcons = confName === "tgpd" ? (round.icons || []).map(normalizeTgpdIconValue) : round.icons || [];
+      const normalizedIcons =
+        confName === "tgpd"
+          ? (round.icons || []).map(normalizeTgpdIconValue)
+          : confName === "xldb"
+          ? (round.icons || []).map(normalizeXldbIconValue)
+          : round.icons || [];
       const normalizedWinAreas =
         confName === "tgpd"
           ? toArray(winAreas).map((area, index) => createSlotWinArea(normalizeTgpdArea(area), index))
+          : confName === "xldb"
+          ? toArray(winAreas).map((area, index) => createSlotWinArea(normalizeXldbArea(area), index))
           : winAreas;
       const grid = inferSlotGrid(normalizedIcons.length, normalizedWinAreas);
       return {
@@ -2288,7 +2469,7 @@ function buildLhdbViewModel(parsed) {
   };
 }
 
-const SLOT_CUSTOM_VIEW_CONF_NAMES = new Set(["sjddj", "shz", "lhdb", "dfdc"]);
+const SLOT_CUSTOM_VIEW_CONF_NAMES = new Set(["sjddj", "shz", "lhdb", "dfdc", "xldb", "xldb2"]);
 
 function buildSpecialBlocks(confName, parsed) {
   switch (confName) {
@@ -2351,6 +2532,8 @@ export function buildSettlementRecordDetail(row) {
         ? buildDfdcViewModel(parsed)
         : confName === "lhdb"
         ? buildLhdbViewModel(parsed)
+        : confName === "xldb" || confName === "xldb2"
+        ? buildXldbViewModel(parsed, confName)
         : confName === "tgpd"
         ? buildTgpdViewModel(parsed)
         : SLOT_GAME_CONF_NAMES.has(confName)

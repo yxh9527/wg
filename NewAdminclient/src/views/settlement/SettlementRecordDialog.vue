@@ -69,13 +69,18 @@
         :view="detail.customView"
       />
 
+      <xldb-record-view
+        v-else-if="detail.customView && detail.customView.mode === 'xldb'"
+        :view="detail.customView"
+      />
+
       <slot-record-view
         v-else-if="detail.customView && detail.customView.mode === 'slot'"
         :view="detail.customView"
       />
 
       <div
-        v-for="block in detail.customView && ['sjddj', 'shz', 'lhdb', 'slot'].includes(detail.customView.mode) ? [] : detail.blocks"
+        v-for="block in detail.customView && ['sjddj', 'shz', 'lhdb', 'xldb', 'slot'].includes(detail.customView.mode) ? [] : detail.blocks"
         :key="`${block.type}-${block.title}`"
         class="record-block"
       >
@@ -123,6 +128,7 @@ import SjddjRecordView from "./SjddjRecordView.vue";
 import ShzRecordView from "./ShzRecordView.vue";
 import SlotRecordView from "./SlotRecordView.vue";
 import LhdbRecordView from "./LhdbRecordView.vue";
+import XldbRecordView from "./XldbRecordView.vue";
 
 export default {
   name: "SettlementRecordDialog",
@@ -131,6 +137,7 @@ export default {
     ShzRecordView,
     SlotRecordView,
     LhdbRecordView,
+    XldbRecordView,
   },
   data() {
     return {
@@ -168,7 +175,7 @@ export default {
       return !!(
         this.detail &&
         this.detail.customView &&
-        ["sjddj", "shz", "lhdb", "slot"].includes(this.detail.customView.mode)
+        ["sjddj", "shz", "lhdb", "xldb", "slot"].includes(this.detail.customView.mode)
       );
     },
     dialogProps() {

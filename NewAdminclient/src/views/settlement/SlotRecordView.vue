@@ -508,9 +508,14 @@ export default {
 .slot-line-list,
 .slot-detail-row {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 6px;
   margin-top: 6px;
+  overflow-x: visible;
+}
+
+.slot-detail-row {
+  flex-wrap: nowrap;
   overflow-x: auto;
 }
 
