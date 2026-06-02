@@ -1457,6 +1457,47 @@ GENERIC_SLOT_ICON_NAME_MAP.xldb = {
   666: "空位",
 };
 
+GENERIC_SLOT_ICON_NAME_MAP.jqb = {
+  1: "鹰鹉",
+  2: "鳄鱼",
+  3: "豹",
+  11: "蛇",
+  12: "青蛙",
+  13: "10",
+  21: "Wild",
+  100: "绿奖",
+  200: "蓝奖",
+  500: "红奖",
+  666: "空位",
+};
+
+GENERIC_SLOT_ICON_NAME_MAP.hgxs = {
+  1: "蝴蝶鱼",
+  2: "燕鱼",
+  3: "小丑鱼",
+  11: "水母",
+  12: "海星",
+  13: "海螺",
+  21: "海龟",
+};
+
+GENERIC_SLOT_ICON_NAME_MAP.worldcup = {
+  1: "姆巴佩",
+  2: "哈兰德",
+  3: "C罗",
+  4: "内马尔",
+  5: "梅西",
+  11: "A",
+  12: "K",
+  13: "Q",
+  14: "J",
+  15: "10",
+  21: "SCATTER",
+  31: "WILD",
+};
+
+const GENERIC_SLOT_ICON_IMAGE_MAP = {};
+
 const XLDB_SPECIAL_PIC_MAP = {
   31: 100,
   32: 100,
@@ -1480,6 +1521,19 @@ const XLDB_SPECIAL_MULTI_MAP = {
   38: 100,
   39: 500,
 };
+
+const JQB_LINE_ARRAY = [
+  [0, 0, 0],
+  [0, 1, 0],
+  [0, 1, 1],
+  [1, 1, 0],
+  [1, 1, 1],
+  [1, 2, 1],
+  [1, 2, 2],
+  [2, 2, 1],
+  [2, 2, 2],
+  [2, 3, 2],
+];
 
 const GENERIC_SLOT_ICON_ATLAS_MAP = {
   cjsgj: {
@@ -1558,6 +1612,71 @@ const GENERIC_SLOT_ICON_ATLAS_MAP = {
       200: { x: 4, y: 425, width: 284, height: 196, rotated: false, originalWidth: 284, originalHeight: 196, offset: { x: 0, y: 0 } },
       500: { x: 4, y: 212, width: 284, height: 209, rotated: false, originalWidth: 284, originalHeight: 209, offset: { x: 0, y: 0 } },
       666: { x: 311, y: 4, width: 200, height: 149, rotated: true, originalWidth: 200, originalHeight: 159, offset: { x: 0, y: 0 } },
+    },
+  },
+  jqb: {
+    url: "/jqb-game-ui2.webp",
+    frames: {
+      1: { x: 3, y: 224, width: 220, height: 207, rotated: true, originalWidth: 220, originalHeight: 207, offset: { x: 0, y: 0 } },
+      2: { x: 214, y: 386, width: 195, height: 200, rotated: true, originalWidth: 195, originalHeight: 200, offset: { x: 0, y: 0 } },
+      3: { x: 224, y: 197, width: 206, height: 185, rotated: false, originalWidth: 206, originalHeight: 185, offset: { x: 0, y: 0 } },
+      11: { x: 224, y: 3, width: 215, height: 190, rotated: false, originalWidth: 215, originalHeight: 190, offset: { x: 0, y: 0 } },
+      12: { x: 3, y: 448, width: 224, height: 192, rotated: true, originalWidth: 224, originalHeight: 192, offset: { x: 0, y: 0 } },
+      13: { x: 199, y: 585, width: 195, height: 175, rotated: false, originalWidth: 195, originalHeight: 175, offset: { x: 0, y: 0 } },
+      21: { x: 3, y: 3, width: 217, height: 217, rotated: false, originalWidth: 217, originalHeight: 217, offset: { x: 0, y: 0 } },
+      100: { x: 3, y: 3, width: 217, height: 217, rotated: false, originalWidth: 217, originalHeight: 217, offset: { x: 0, y: 0 } },
+      200: { x: 3, y: 3, width: 217, height: 217, rotated: false, originalWidth: 217, originalHeight: 217, offset: { x: 0, y: 0 } },
+      500: { x: 3, y: 3, width: 217, height: 217, rotated: false, originalWidth: 217, originalHeight: 217, offset: { x: 0, y: 0 } },
+      666: { x: 3, y: 3, width: 217, height: 217, rotated: false, originalWidth: 217, originalHeight: 217, offset: { x: 0, y: 0 } },
+    },
+  },
+  hgxs: {
+    url: "/hgxs-rollers-bg.webp",
+    frames: {
+      1: { x: 2, y: 248, width: 258, height: 210, rotated: false, originalWidth: 258, originalHeight: 210, offset: { x: 0, y: 0 } },
+      2: { x: 263, y: 2, width: 224, height: 179, rotated: false, originalWidth: 224, originalHeight: 179, offset: { x: 0, y: 0 } },
+      3: { x: 2, y: 460, width: 249, height: 163, rotated: false, originalWidth: 249, originalHeight: 163, offset: { x: 0, y: 0 } },
+      11: { x: 262, y: 389, width: 216, height: 210, rotated: false, originalWidth: 216, originalHeight: 210, offset: { x: 0, y: 0 } },
+      12: { x: 263, y: 183, width: 219, height: 204, rotated: false, originalWidth: 219, originalHeight: 204, offset: { x: 0, y: 0 } },
+      13: { x: 253, y: 601, width: 205, height: 160, rotated: false, originalWidth: 207, originalHeight: 160, offset: { x: 1, y: 0 } },
+      21: { x: 2, y: 2, width: 259, height: 244, rotated: false, originalWidth: 259, originalHeight: 244, offset: { x: 0, y: 0 } },
+    },
+  },
+  worldcup: {
+    url: "/worldcup-icon-clear.webp",
+    frames: {
+      1: { x: 2, y: 224, width: 213, height: 225, rotated: false, originalWidth: 217, originalHeight: 225, offset: { x: 0, y: 0 } },
+      2: { x: 226, y: 2, width: 205, height: 225, rotated: true, originalWidth: 209, originalHeight: 227, offset: { x: 0, y: 0 } },
+      3: { x: 673, y: 2, width: 207, height: 209, rotated: true, originalWidth: 209, originalHeight: 217, offset: { x: -1, y: -2 } },
+      4: { x: 226, y: 209, width: 192, height: 209, rotated: true, originalWidth: 196, originalHeight: 211, offset: { x: -1, y: 1 } },
+      5: { x: 884, y: 2, width: 190, height: 212, rotated: false, originalWidth: 192, originalHeight: 216, offset: { x: -1, y: 0 } },
+      11: { x: 609, y: 362, width: 166, height: 148, rotated: false, originalWidth: 170, originalHeight: 150, offset: { x: 0, y: 0 } },
+      12: { x: 437, y: 362, width: 170, height: 148, rotated: false, originalWidth: 172, originalHeight: 150, offset: { x: -1, y: 0 } },
+      13: { x: 830, y: 216, width: 161, height: 153, rotated: false, originalWidth: 163, originalHeight: 155, offset: { x: 0, y: 0 } },
+      14: { x: 673, y: 211, width: 155, height: 149, rotated: false, originalWidth: 157, originalHeight: 151, offset: { x: 0, y: 0 } },
+      15: { x: 437, y: 212, width: 185, height: 148, rotated: false, originalWidth: 187, originalHeight: 150, offset: { x: 0, y: 0 } },
+      21: { x: 453, y: 2, width: 208, height: 218, rotated: true, originalWidth: 212, originalHeight: 220, offset: { x: 0, y: 0 } },
+      31: { x: 2, y: 2, width: 222, height: 220, rotated: false, originalWidth: 226, originalHeight: 232, offset: { x: 0, y: 5 } },
+    },
+  },
+};
+
+const GENERIC_SLOT_FUZZY_ATLAS_MAP = {
+  worldcup: {
+    url: "/worldcup-icon-fuzzy.webp",
+    frames: {
+      1: { x: 2, y: 242, width: 211, height: 241, rotated: false, originalWidth: 217, originalHeight: 243, offset: { x: 0, y: 1 } },
+      2: { x: 215, y: 242, width: 205, height: 242, rotated: false, originalWidth: 209, originalHeight: 244, offset: { x: 0, y: 0 } },
+      3: { x: 422, y: 237, width: 207, height: 228, rotated: false, originalWidth: 209, originalHeight: 228, offset: { x: -1, y: 0 } },
+      4: { x: 624, y: 2, width: 190, height: 226, rotated: false, originalWidth: 196, originalHeight: 228, offset: { x: -1, y: 1 } },
+      5: { x: 432, y: 2, width: 190, height: 230, rotated: false, originalWidth: 192, originalHeight: 232, offset: { x: 0, y: 0 } },
+      11: { x: 798, y: 230, width: 164, height: 165, rotated: false, originalWidth: 168, originalHeight: 165, offset: { x: 0, y: 0 } },
+      12: { x: 816, y: 2, width: 166, height: 163, rotated: true, originalWidth: 170, originalHeight: 165, offset: { x: 0, y: 1 } },
+      13: { x: 964, y: 170, width: 159, height: 170, rotated: false, originalWidth: 161, originalHeight: 170, offset: { x: 0, y: 0 } },
+      14: { x: 964, y: 342, width: 153, height: 166, rotated: false, originalWidth: 155, originalHeight: 166, offset: { x: 0, y: 0 } },
+      15: { x: 631, y: 230, width: 183, height: 165, rotated: true, originalWidth: 185, originalHeight: 165, offset: { x: 0, y: 0 } },
+      21: { x: 224, y: 2, width: 206, height: 233, rotated: false, originalWidth: 210, originalHeight: 235, offset: { x: -1, y: 1 } },
+      31: { x: 2, y: 2, width: 220, height: 238, rotated: false, originalWidth: 226, originalHeight: 240, offset: { x: 1, y: 1 } },
     },
   },
 };
@@ -1726,7 +1845,14 @@ function normalizeTgpdArea(area) {
 
 function normalizeXldbIconValue(value) {
   if (value === null || value === undefined || value === "") return "";
-  const numericValue = Number(value);
+  const normalizedValue =
+    typeof value === "string"
+      ? String(value)
+          .replace(/[^0-9.-]/g, "")
+          .trim()
+      : value;
+  if (normalizedValue === "") return "";
+  const numericValue = Number(normalizedValue);
   if (!Number.isFinite(numericValue)) return value;
   if (numericValue === 0) return 666;
   if (Object.prototype.hasOwnProperty.call(XLDB_SPECIAL_PIC_MAP, numericValue)) {
@@ -1779,6 +1905,283 @@ function buildXldbAreaHighlight(area, icons) {
   };
 }
 
+function buildJqbAreaHighlight(area) {
+  const lineIndex = Number(area && area.betAreaId) - 1;
+  const lineTemplate = JQB_LINE_ARRAY[lineIndex];
+  if (!Array.isArray(lineTemplate) || lineTemplate.length !== 3) {
+    return {
+      linePos: [],
+      highlightKeys: [],
+      linePosText: "",
+    };
+  }
+  const linePos = lineTemplate.map((rowIndex, columnIndex) => [Number(rowIndex), columnIndex]);
+  return {
+    linePos,
+    highlightKeys: linePos.map(([row, col]) => `${row}-${col}`),
+    linePosText: stringifySlotLinePos(linePos),
+  };
+}
+
+const HGXS_LINE_ARRAY = [
+  [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+  ],
+  [
+    [1, 0],
+    [1, 1],
+    [1, 2],
+  ],
+  [
+    [2, 0],
+    [2, 1],
+    [2, 2],
+  ],
+  [
+    [0, 0],
+    [1, 1],
+    [2, 2],
+  ],
+  [
+    [2, 0],
+    [1, 1],
+    [0, 2],
+  ],
+];
+
+function buildHgxsAreaHighlight(area, isFullScreenGame) {
+  if (isFullScreenGame) {
+    const linePos = [
+      [0, 0],
+      [0, 1],
+      [0, 2],
+      [1, 0],
+      [1, 1],
+      [1, 2],
+      [2, 0],
+      [2, 1],
+      [2, 2],
+    ];
+    return {
+      linePos,
+      highlightKeys: linePos.map(([row, col]) => `${row}-${col}`),
+      linePosText: stringifySlotLinePos(linePos),
+    };
+  }
+
+  const lineTemplate = HGXS_LINE_ARRAY[Number(area && area.betAreaId) - 1];
+  if (!Array.isArray(lineTemplate) || !lineTemplate.length) {
+    return {
+      linePos: [],
+      highlightKeys: [],
+      linePosText: "",
+    };
+  }
+
+  const hitCount = Math.min(
+    Math.max(Number(area && area.num) || lineTemplate.length, 0),
+    lineTemplate.length
+  );
+  const linePos = lineTemplate.slice(0, hitCount);
+  return {
+    linePos,
+    highlightKeys: linePos.map(([row, col]) => `${row}-${col}`),
+    linePosText: stringifySlotLinePos(linePos),
+  };
+}
+
+function parseWorldcupLinePos(area) {
+  const rawLinePos = toArray(area && area.linePos);
+  const linePos = [];
+  rawLinePos.forEach((columnEntry, columnIndex) => {
+    const values = toArray(columnEntry && columnEntry.pos);
+    values.forEach((rowValue) => {
+      const rowIndex = Number(rowValue);
+      if (Number.isFinite(rowIndex)) {
+        linePos.push([rowIndex, columnIndex]);
+      }
+    });
+  });
+  return linePos;
+}
+
+function createWorldcupArea(area, index) {
+  const linePos = parseWorldcupLinePos(area);
+  return createSlotWinArea(area, index, {
+    linePos,
+    highlightKeys: linePos.map(([row, col]) => `${row}-${col}`),
+    linePosText: stringifySlotLinePos(linePos),
+  });
+}
+
+function parseWorldcupRawIcons(rawIcons) {
+  return String(rawIcons || "")
+    .split(",")
+    .map((item) => Number(String(item).trim()))
+    .filter((item) => Number.isFinite(item));
+}
+
+function applyWorldcupBlessConversion(rawIcons, blessPrizeType) {
+  const values = parseWorldcupRawIcons(rawIcons);
+  if (!blessPrizeType || values.length <= 8) return values;
+  const targetIcon = Number(values[8]);
+  if (!Number.isFinite(targetIcon)) return values;
+  return values.map((iconValue) => {
+    if (iconValue <= 5 && iconValue !== targetIcon) {
+      return targetIcon;
+    }
+    return iconValue;
+  });
+}
+
+function normalizeWorldcupIcons(rawIcons, blessPrizeType) {
+  const values = applyWorldcupBlessConversion(rawIcons, blessPrizeType);
+  if (values.length !== 20) return values;
+  const rows = 4;
+  const columns = 5;
+  const ordered = [];
+  for (let rowIndex = 0; rowIndex < rows; rowIndex += 1) {
+    for (let columnIndex = 0; columnIndex < columns; columnIndex += 1) {
+      const sourceIndex = columnIndex * rows + rowIndex;
+      ordered.push(values[sourceIndex]);
+    }
+  }
+  return ordered;
+}
+
+function parseWorldcupSpecialRound(rawValue) {
+  if (typeof rawValue !== "string" || !rawValue.trim()) return null;
+  const parts = rawValue.split("#");
+  if (!parts.length) return null;
+
+  const round = {
+    icons: parts[1] || "",
+    betAreas: [],
+    winLoseGold: 0,
+  };
+
+  const areaSource = parts[0] || "";
+  const firstSplit = areaSource.split("$");
+  const areasRaw = firstSplit[0] || "";
+  round.winLoseGold = Number(firstSplit[1] || 0);
+
+  if (!areasRaw) return round;
+
+  areasRaw.split("*").forEach((segment) => {
+    if (!segment) return;
+    const values = segment.split(",");
+    if (values.length < 8) return;
+    const area = {
+      betAreaId: Number(values[0]),
+      betGold: Number(values[1]),
+      betMultiple: Number(values[2]),
+      winLoseGold: Number(values[3]),
+      num: Number(values[4]),
+      iconMultiple: Number(values[5]),
+      iconId: Number(values[6]),
+      leftRight: String(values[7] || ""),
+      linePos: [],
+    };
+    const lineRaw = String(values[7] || "");
+    for (let columnIndex = 0; columnIndex < lineRaw.length; columnIndex += 1) {
+      const rowValue = Number(lineRaw.charAt(columnIndex));
+      if (Number.isFinite(rowValue)) {
+        area.linePos.push({ pos: [rowValue] });
+      }
+    }
+    round.betAreas.push(area);
+  });
+
+  return round;
+}
+
+function buildWorldcupViewModel(parsed) {
+  const source = parsed.source || {};
+  const connection = parsed.connectionRecord || {};
+  const betRecord = parsed.betRecord || {};
+  const mergedSource = {
+    ...betRecord,
+    ...connection,
+    ...source,
+  };
+
+  const specialInfoSource =
+    toArray(mergedSource.specialInfo || connection.specialInfo || betRecord.specialInfo).length
+      ? toArray(mergedSource.specialInfo || connection.specialInfo || betRecord.specialInfo)
+      : typeof mergedSource.specialInfoStr === "string" && mergedSource.specialInfoStr.trim()
+      ? mergedSource.specialInfoStr
+          .split("|")
+          .map((item) => item.trim())
+          .filter(Boolean)
+      : [];
+
+  const rawSpecialInfo = toArray(specialInfoSource);
+  const specialRounds = rawSpecialInfo
+    .map((item) => (typeof item === "string" ? parseWorldcupSpecialRound(item) : item))
+    .filter(Boolean);
+
+  const baseRound = {
+    icons: mergedSource.icons || "",
+    betAreas: toArray(mergedSource.betAreas || betRecord.betAreas),
+    winLoseGold: Number(mergedSource.winLoseGold || 0),
+    blessPrizeType: mergedSource.blessPrizeType,
+    exTimes: mergedSource.exTimes,
+  };
+
+  const roundSource = [baseRound].concat(specialRounds);
+  const rounds = roundSource.map((item, roundIndex) => {
+    const winAreas = toArray(item && item.betAreas).map((area, index) => createWorldcupArea(area, index));
+    return {
+      roundIndex,
+      label: `第 ${roundIndex + 1} 回合`,
+      icons: normalizeWorldcupIcons(item && item.icons, item && item.blessPrizeType),
+      raw: item && item.icons ? String(item.icons) : "",
+      timestamp: "",
+      winAreas,
+      columns: 5,
+      rows: 4,
+      winLoseGold: Number((item && item.winLoseGold) || 0),
+      fuzzyAtlas: GENERIC_SLOT_FUZZY_ATLAS_MAP.worldcup,
+      boardOrder: "row-major",
+    };
+  });
+
+  return {
+    mode: "slot",
+    confName: "worldcup",
+    betGold: Number(mergedSource.betGold || 0),
+    betSingle: Number(mergedSource.betSingle || 0),
+    betTimes: Number(mergedSource.betTimes || 0),
+    totalBetGold: Number(mergedSource.totalBetGold ?? betRecord.totalBetGold ?? 0),
+    totalWinLoseGold: Number(mergedSource.winLoseGold ?? parsed.commonRecord.dispatchRewardGold ?? 0),
+    rounds,
+    winAreas: rounds[0] ? rounds[0].winAreas : [],
+    iconNameMap: GENERIC_SLOT_ICON_NAME_MAP.worldcup || {},
+    iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP.worldcup || null,
+    fuzzyAtlas: GENERIC_SLOT_FUZZY_ATLAS_MAP.worldcup || null,
+  };
+}
+
+function buildXldbTemplateAreaHighlight(area) {
+  const lineIndexSource =
+    area && area.lineNo !== undefined && area.lineNo !== null && area.lineNo !== ""
+      ? Number(area.lineNo)
+      : Number(area && area.betAreaId) - 1;
+  const lineIndex = Number(lineIndexSource);
+  const lineTemplate = JQB_LINE_ARRAY[lineIndex];
+  if (!Array.isArray(lineTemplate) || lineTemplate.length !== 3) {
+    return null;
+  }
+  const linePos = lineTemplate.map((rowIndex, columnIndex) => [Number(rowIndex), columnIndex]);
+  return {
+    linePos,
+    highlightKeys: linePos.map(([row, col]) => `${row}-${col}`),
+    linePosText: stringifySlotLinePos(linePos),
+  };
+}
+
 function buildXldbViewModel(parsed, confName) {
   const source = parsed.source || {};
   const connection = parsed.connectionRecord || {};
@@ -1808,16 +2211,28 @@ function buildXldbViewModel(parsed, confName) {
       roundAreas = matchedArea
         ? [
             {
-              ...createSlotWinArea(matchedArea, 0, buildXldbAreaHighlight(matchedArea, icons)),
+              ...createSlotWinArea(
+                matchedArea,
+                0,
+                confName === "jqb" ? buildJqbAreaHighlight(matchedArea) : buildXldbAreaHighlight(matchedArea, icons)
+              ),
               lineNo: matchedArea.lineNo,
             },
           ]
         : [];
     } else {
-      roundAreas = allAreas.map((area, index) => ({
-        ...createSlotWinArea(area, index, buildXldbAreaHighlight(area, icons)),
-        lineNo: area.lineNo,
-      }));
+      roundAreas = allAreas.map((area, index) => {
+        const highlight =
+          confName === "jqb"
+            ? buildJqbAreaHighlight(area)
+            : (confName === "xldb" || confName === "xldb2") && buildXldbTemplateAreaHighlight(area)
+            ? buildXldbTemplateAreaHighlight(area)
+            : buildXldbAreaHighlight(area, icons);
+        return {
+          ...createSlotWinArea(area, index, highlight),
+          lineNo: area.lineNo,
+        };
+      });
     }
 
     return {
@@ -1843,17 +2258,26 @@ function buildXldbViewModel(parsed, confName) {
   return {
     mode: "xldb",
     confName,
+    betGold: Number(mergedSource.betGold || 0),
     betSingle: Number(mergedSource.betSingle || 0),
     betTimes: Number(mergedSource.betTimes || 0),
     totalBetGold: Number(mergedSource.totalBetGold ?? betRecord.totalBetGold ?? 0),
     totalWinLoseGold: Number(mergedSource.winLoseGold ?? parsed.commonRecord.dispatchRewardGold ?? 0),
     rounds,
-    winAreas: allAreas.map((area, index) => ({
-      ...createSlotWinArea(area, index, buildXldbAreaHighlight(area, rounds[0] ? rounds[0].icons : [])),
-      lineNo: area.lineNo,
-    })),
-    iconNameMap: GENERIC_SLOT_ICON_NAME_MAP.xldb || {},
-    iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP.xldb || null,
+    winAreas: allAreas.map((area, index) => {
+      const highlight =
+        confName === "jqb"
+          ? buildJqbAreaHighlight(area)
+          : (confName === "xldb" || confName === "xldb2") && buildXldbTemplateAreaHighlight(area)
+          ? buildXldbTemplateAreaHighlight(area)
+          : buildXldbAreaHighlight(area, rounds[0] ? rounds[0].icons : []);
+      return {
+        ...createSlotWinArea(area, index, highlight),
+        lineNo: area.lineNo,
+      };
+    }),
+    iconNameMap: GENERIC_SLOT_ICON_NAME_MAP[confName] || GENERIC_SLOT_ICON_NAME_MAP.xldb || {},
+    iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP[confName] || GENERIC_SLOT_ICON_ATLAS_MAP.xldb || null,
   };
 }
 
@@ -2027,6 +2451,72 @@ function buildGenericSlotViewModel(parsed, confName) {
     winAreas: allWinAreas,
     iconNameMap: GENERIC_SLOT_ICON_NAME_MAP[confName] || {},
     iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP[confName] || null,
+    iconImageMap: GENERIC_SLOT_ICON_IMAGE_MAP[confName] || null,
+  };
+}
+
+function buildHgxsViewModel(parsed) {
+  const source = parsed.source || {};
+  const connection = parsed.connectionRecord || {};
+  const betRecord = parsed.betRecord || {};
+  const mergedSource = {
+    ...betRecord,
+    ...connection,
+    ...source,
+  };
+
+  const rawIcons = parseSlotIconTokens(mergedSource.icons).map((item) => Number(item));
+  const boardOrder = [0, 3, 6, 1, 4, 7, 2, 5, 8];
+  const icons =
+    rawIcons.length === 9
+      ? boardOrder.map((index) => rawIcons[index]).filter((icon) => icon !== undefined)
+      : rawIcons;
+  const isFullScreenGame =
+    toArray(mergedSource.betAreas).length === 5 &&
+    toArray(mergedSource.betAreas).every((area) => Number(area && area.iconId) === 21);
+
+  const winAreas = toArray(mergedSource.betAreas)
+    .slice()
+    .sort((left, right) => Number(left && left.betAreaId) - Number(right && right.betAreaId))
+    .map((area, index) => {
+      const normalizedArea = {
+        ...area,
+        iconId: Number(area && area.iconId),
+        betAreaId: Number(area && area.betAreaId),
+      };
+      const isFullScreen = isFullScreenGame && Number(normalizedArea.iconId) === 21;
+      const highlight = buildHgxsAreaHighlight(normalizedArea, isFullScreen);
+      return createSlotWinArea(normalizedArea, index, {
+        ...highlight,
+        linePosText: isFullScreen ? "满屏海龟" : highlight.linePosText,
+      });
+    });
+
+  return {
+    mode: "slot",
+    confName: "hgxs",
+    betGold: Number(mergedSource.betGold || 0),
+    betSingle: Number(mergedSource.betSingle || 0),
+    betTimes: Number(mergedSource.betTimes || 0),
+    totalBetGold: Number(mergedSource.totalBetGold ?? betRecord.totalBetGold ?? 0),
+    totalWinLoseGold: Number(mergedSource.winLoseGold ?? parsed.commonRecord.dispatchRewardGold ?? 0),
+    rounds: [
+      {
+        roundIndex: 0,
+        label: "第 1 回合",
+        icons,
+        raw: String(mergedSource.icons || ""),
+        timestamp: "",
+        columns: 3,
+        rows: 3,
+        winLoseGold: Number(mergedSource.winLoseGold || 0),
+        winAreas,
+      },
+    ],
+    winAreas,
+    iconNameMap: GENERIC_SLOT_ICON_NAME_MAP.hgxs,
+    iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP.hgxs,
+    hideLinePosChip: true,
   };
 }
 
@@ -2469,7 +2959,7 @@ function buildLhdbViewModel(parsed) {
   };
 }
 
-const SLOT_CUSTOM_VIEW_CONF_NAMES = new Set(["sjddj", "shz", "lhdb", "dfdc", "xldb", "xldb2"]);
+const SLOT_CUSTOM_VIEW_CONF_NAMES = new Set(["sjddj", "shz", "lhdb", "dfdc", "xldb", "jqb", "xldb2", "worldcup"]);
 
 function buildSpecialBlocks(confName, parsed) {
   switch (confName) {
@@ -2528,11 +3018,15 @@ export function buildSettlementRecordDetail(row) {
         ? buildSjddjViewModelClient(parsed)
         : confName === "shz"
         ? buildShzViewModel(parsed)
+        : confName === "worldcup"
+        ? buildWorldcupViewModel(parsed)
+        : confName === "hgxs"
+        ? buildHgxsViewModel(parsed)
         : confName === "dfdc"
         ? buildDfdcViewModel(parsed)
         : confName === "lhdb"
         ? buildLhdbViewModel(parsed)
-        : confName === "xldb" || confName === "xldb2"
+        : confName === "xldb" || confName === "jqb" || confName === "xldb2"
         ? buildXldbViewModel(parsed, confName)
         : confName === "tgpd"
         ? buildTgpdViewModel(parsed)

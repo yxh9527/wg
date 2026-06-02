@@ -156,7 +156,7 @@ import { toMoney } from "./settlementHelpers";
 import AtlasSprite from "./AtlasSprite.vue";
 
 const COLUMN_HEIGHTS = [3, 4, 3];
-const XLDB_SPECIAL_MULTI_MAP = {
+const SPECIAL_MULTI_MAP = {
   31: 0.5,
   32: 1,
   33: 2,
@@ -189,6 +189,7 @@ export default {
     currentRound() {
       return this.view.rounds[this.roundIndex] || {
         icons: [],
+        rawIconTokens: [],
         label: "第 1 回合",
         winAreas: [],
       };
@@ -258,9 +259,11 @@ export default {
       return "-";
     },
     buildBonusText(rawToken) {
-      if (!Object.prototype.hasOwnProperty.call(XLDB_SPECIAL_MULTI_MAP, rawToken)) return "";
-      const value = XLDB_SPECIAL_MULTI_MAP[rawToken] * Number(this.view.totalBetGold || 0);
-      return value.toFixed(2);
+      if (!Object.prototype.hasOwnProperty.call(SPECIAL_MULTI_MAP, rawToken)) return "";
+      const baseGold = Number(this.view.betGold || 0) || Number(this.view.betSingle || 0) || Number(this.view.totalBetGold || 0);
+      if (!baseGold) return "";
+      const value = SPECIAL_MULTI_MAP[rawToken] * baseGold;
+      return Number.isInteger(value) ? String(value) : value.toFixed(2);
     },
   },
 };
@@ -408,7 +411,7 @@ export default {
 
 .xldb-stage {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 290px;
+  grid-template-columns: minmax(0, 1fr) 348px;
   gap: 10px;
   align-items: start;
 }

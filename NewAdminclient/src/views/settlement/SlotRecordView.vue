@@ -68,8 +68,22 @@
               'is-dimmed': hasHighlight && !(activeArea && activeArea.highlightKeys.includes(cell.coordKey)),
             }"
           >
+            <img
+              v-if="hasIconImage(cell.icon)"
+              class="slot-cell-image"
+              :src="iconImageSrc(cell.icon)"
+              :alt="iconLabel(cell.icon)"
+            >
             <atlas-sprite
-              v-if="hasIconAsset(cell.icon)"
+              v-else-if="cellAtlas(cell)"
+              class="slot-cell-icon"
+              :atlas="cellAtlas(cell)"
+              :frame-key="cell.icon"
+              :max-width="46"
+              :max-height="46"
+            />
+            <atlas-sprite
+              v-else-if="hasIconAsset(cell.icon)"
               class="slot-cell-icon"
               :atlas="view.iconAtlas"
               :frame-key="cell.icon"
@@ -93,7 +107,14 @@
               :class="{ 'is-active': index === activeLineIndex }"
               @click="activeLineIndex = index"
             >
-              <span v-if="hasIconAsset(area.iconId)" class="slot-line-icon">
+              <span v-if="hasIconImage(area.iconId)" class="slot-line-icon">
+                <img
+                  class="slot-line-image"
+                  :src="iconImageSrc(area.iconId)"
+                  :alt="iconLabel(area.iconId)"
+                >
+              </span>
+              <span v-else-if="hasIconAsset(area.iconId)" class="slot-line-icon">
                 <atlas-sprite
                   :atlas="view.iconAtlas"
                   :frame-key="area.iconId"
@@ -120,7 +141,14 @@
           <span class="slot-detail-value">{{ activeArea.betAreaId || "-" }}</span>
         </div>
         <div class="slot-detail-chip">
-          <span v-if="hasIconAsset(activeArea.iconId)" class="slot-detail-icon">
+          <span v-if="hasIconImage(activeArea.iconId)" class="slot-detail-icon">
+            <img
+              class="slot-detail-image"
+              :src="iconImageSrc(activeArea.iconId)"
+              :alt="iconLabel(activeArea.iconId)"
+            >
+          </span>
+          <span v-else-if="hasIconAsset(activeArea.iconId)" class="slot-detail-icon">
             <atlas-sprite
               :atlas="view.iconAtlas"
               :frame-key="activeArea.iconId"
@@ -147,7 +175,7 @@
           <span class="slot-detail-label">中奖</span>
           <span class="slot-detail-value">+{{ formatMoney(activeArea.winLoseGold) }}</span>
         </div>
-        <div class="slot-detail-chip slot-detail-chip-wide">
+        <div v-if="!view.hideLinePosChip" class="slot-detail-chip slot-detail-chip-wide">
           <span class="slot-detail-label">线位</span>
           <span class="slot-detail-value">{{ activeArea.linePosText || "-" }}</span>
         </div>
@@ -226,6 +254,30 @@ export default {
         this.view.iconAtlas.frames &&
         this.view.iconAtlas.frames[String(icon)]
       );
+    },
+    hasIconImage(icon) {
+      return !!(this.view && this.view.iconImageMap && this.view.iconImageMap[String(icon)]);
+    },
+    hasAtlasFrame(atlas, icon) {
+      return !!(atlas && atlas.frames && atlas.frames[String(icon)]);
+    },
+    cellAtlas(cell) {
+      if (!cell) return null;
+      const isHighlighted = !!(this.activeArea && this.activeArea.highlightKeys.includes(cell.coordKey));
+      if (isHighlighted && this.hasAtlasFrame(this.view && this.view.iconAtlas, cell.icon)) {
+        return this.view.iconAtlas;
+      }
+      if (!this.hasHighlight && this.hasAtlasFrame(this.view && this.view.iconAtlas, cell.icon)) {
+        return this.view.iconAtlas;
+      }
+      if (this.hasHighlight && this.hasAtlasFrame(this.view && this.view.fuzzyAtlas, cell.icon)) {
+        return this.view.fuzzyAtlas;
+      }
+      return this.hasAtlasFrame(this.view && this.view.iconAtlas, cell.icon) ? this.view.iconAtlas : null;
+    },
+    iconImageSrc(icon) {
+      if (!this.hasIconImage(icon)) return "";
+      return this.view.iconImageMap[String(icon)];
     },
     formatMoney(value) {
       return toMoney(value || 0);
@@ -444,7 +496,7 @@ export default {
 
 .slot-stage {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 290px;
+  grid-template-columns: minmax(0, 1fr) 348px;
   gap: 10px;
   align-items: start;
 }
@@ -481,6 +533,13 @@ export default {
 
 .slot-cell-icon {
   flex: 0 0 auto;
+}
+
+.slot-cell-image {
+  display: block;
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
 }
 
 .slot-cell.is-highlight {
@@ -561,6 +620,14 @@ export default {
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
+}
+
+.slot-line-image,
+.slot-detail-image {
+  display: block;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
 }
 
 .slot-line-count,
