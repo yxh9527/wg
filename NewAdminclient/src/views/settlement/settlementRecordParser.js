@@ -1354,6 +1354,150 @@ function buildShzViewModel(parsed) {
   };
 }
 
+const SLOT_GRID_BY_COUNT = {
+  9: { columns: 3, rows: 3 },
+  12: { columns: 4, rows: 3 },
+  15: { columns: 5, rows: 3 },
+  18: { columns: 6, rows: 3 },
+  20: { columns: 5, rows: 4 },
+  24: { columns: 6, rows: 4 },
+  25: { columns: 5, rows: 5 },
+  30: { columns: 6, rows: 5 },
+};
+
+const GENERIC_SLOT_ICON_NAME_MAP = {};
+
+const GENERIC_SLOT_ICON_ATLAS_MAP = {
+  cjsgj: {
+    url: "/cjsgj-icons-atlas.webp",
+    width: 435,
+    height: 502,
+    frames: {
+      0: { x: 287, y: 286, width: 132, height: 127, rotated: false, originalWidth: 132, originalHeight: 127 },
+      1: { x: 3, y: 131, width: 139, height: 120, rotated: false, originalWidth: 139, originalHeight: 120 },
+      2: { x: 146, y: 133, width: 139, height: 117, rotated: false, originalWidth: 139, originalHeight: 117 },
+      3: { x: 146, y: 254, width: 121, height: 137, rotated: true, originalWidth: 123, originalHeight: 137 },
+      4: { x: 300, y: 3, width: 132, height: 138, rotated: false, originalWidth: 132, originalHeight: 138 },
+      5: { x: 154, y: 3, width: 126, height: 142, rotated: true, originalWidth: 128, originalHeight: 142 },
+      6: { x: 3, y: 379, width: 120, height: 134, rotated: true, originalWidth: 120, originalHeight: 134 },
+      7: { x: 3, y: 3, width: 124, height: 147, rotated: true, originalWidth: 124, originalHeight: 147 },
+      8: { x: 289, y: 145, width: 138, height: 137, rotated: false, originalWidth: 138, originalHeight: 137 },
+      9: { x: 3, y: 255, width: 129, height: 120, rotated: false, originalWidth: 129, originalHeight: 120 },
+      10: { x: 141, y: 379, width: 117, height: 128, rotated: true, originalWidth: 117, originalHeight: 128 },
+    },
+  },
+};
+
+function isFiniteNumberLike(value) {
+  if (value === null || value === undefined || value === "") return false;
+  const num = Number(value);
+  return Number.isFinite(num);
+}
+
+function normalizeSlotLinePos(linePos) {
+  return toArray(linePos)
+    .map((point) => {
+      if (Array.isArray(point)) return [Number(point[0] || 0), Number(point[1] || 0)];
+      if (point && Array.isArray(point.pos)) return [Number(point.pos[0] || 0), Number(point.pos[1] || 0)];
+      return null;
+    })
+    .filter(Boolean);
+}
+
+function resolveSlotLinePos(area) {
+  return normalizeSlotLinePos((area && (area.linePos || area.pos)) || []);
+}
+
+function stringifySlotLinePos(linePos) {
+  const normalized = normalizeSlotLinePos(linePos);
+  if (!normalized.length) return "";
+  return normalized.map(([x, y]) => `${x}-${y}`).join(" / ");
+}
+
+function inferSlotGrid(iconCount, winAreas) {
+  const knownGrid = SLOT_GRID_BY_COUNT[iconCount];
+  if (knownGrid) return knownGrid;
+
+  let maxColumn = 0;
+  let maxRow = 0;
+  toArray(winAreas).forEach((area) => {
+    normalizeSlotLinePos(area && area.linePos).forEach(([x, y]) => {
+      maxColumn = Math.max(maxColumn, Number(x || 0));
+      maxRow = Math.max(maxRow, Number(y || 0));
+    });
+  });
+
+  const columnsFromLine = maxColumn + 1;
+  const rowsFromLine = maxRow + 1;
+  if (columnsFromLine > 1 && rowsFromLine > 1 && columnsFromLine * rowsFromLine >= iconCount) {
+    return { columns: columnsFromLine, rows: rowsFromLine };
+  }
+
+  if (iconCount <= 9) return { columns: 3, rows: Math.max(Math.ceil(iconCount / 3), 1) };
+  if (iconCount <= 12) return { columns: 4, rows: Math.max(Math.ceil(iconCount / 4), 1) };
+  if (iconCount <= 20) return { columns: 5, rows: Math.max(Math.ceil(iconCount / 5), 1) };
+  return { columns: 6, rows: Math.max(Math.ceil(iconCount / 6), 1) };
+}
+
+function splitGenericSlotRounds(rawIcons, allAreas, timestampList) {
+  const segments = String(rawIcons || "")
+    .split(";")
+    .map((segment) => segment.trim())
+    .filter(Boolean);
+  const rounds = [];
+  let areaOffset = 0;
+
+  segments.forEach((segment, roundIndex) => {
+    const tokens = segment
+      .split(",")
+      .map((item) => String(item).trim())
+      .filter((item) => item !== "");
+
+    let icons = tokens.slice();
+    let areaCount = null;
+    let timestampIndex = null;
+    const tailTwoCount = tokens.length - 2;
+    const tailOneCount = tokens.length - 1;
+
+    if (
+      tailTwoCount > 0 &&
+      SLOT_GRID_BY_COUNT[tailTwoCount] &&
+      isFiniteNumberLike(tokens.at(-2)) &&
+      isFiniteNumberLike(tokens.at(-1))
+    ) {
+      icons = tokens.slice(0, -2);
+      areaCount = Number(tokens.at(-2));
+      timestampIndex = Number(tokens.at(-1));
+    } else if (tailOneCount > 0 && SLOT_GRID_BY_COUNT[tailOneCount] && isFiniteNumberLike(tokens.at(-1))) {
+      icons = tokens.slice(0, -1);
+      areaCount = Number(tokens.at(-1));
+    }
+
+    const roundAreas =
+      areaCount !== null && areaCount >= 0
+        ? toArray(allAreas).slice(areaOffset, areaOffset + areaCount)
+        : segments.length === 1
+        ? toArray(allAreas)
+        : [];
+    if (areaCount !== null && areaCount >= 0) {
+      areaOffset += areaCount;
+    }
+
+    rounds.push({
+      roundIndex,
+      label: `第 ${roundIndex + 1} 回合`,
+      icons,
+      raw: segment,
+      timestampIndex,
+      timestamp:
+        Array.isArray(timestampList) && timestampIndex !== null && timestampIndex >= 0 ? timestampList[timestampIndex] : "",
+      winAreas: roundAreas,
+    });
+  });
+
+  return rounds;
+}
+
 function buildGenericSlotViewModel(parsed, confName) {
   const source = parsed.source || {};
   const connection = parsed.connectionRecord || {};
@@ -1364,42 +1508,41 @@ function buildGenericSlotViewModel(parsed, confName) {
     ...source,
   };
 
+  const allWinAreas = toArray(mergedSource.betAreas || betRecord.betAreas).map((area, index) => {
+    const linePos = resolveSlotLinePos(area);
+    const highlightKeys = linePos.map(([x, y]) => `${x}-${y}`);
+    return {
+      index,
+      betAreaId: area && area.betAreaId !== undefined ? area.betAreaId : "",
+      iconId: area && area.iconId !== undefined ? area.iconId : "",
+      num: area && area.num !== undefined ? area.num : "",
+      betMultiple: area && area.betMultiple !== undefined ? area.betMultiple : "",
+      iconMultiple: area && area.iconMultiple !== undefined ? area.iconMultiple : "",
+      betGold: Number((area && area.betGold) || 0),
+      winLoseGold: Number((area && area.winLoseGold) || 0),
+      linePos,
+      highlightKeys,
+      linePosText: linePos.length ? stringifySlotLinePos(linePos) : area && (area.linePos || area.pos) ? stringifyValue(area.linePos || area.pos) : "",
+    };
+  });
+
+  const timestampList = source.timestampList || connection.timestampList || betRecord.timestampList || [];
   const rawIcons = String(mergedSource.icons || "");
-  const rounds = rawIcons
-    .split(";")
-    .filter(Boolean)
-    .map((segment, roundIndex) => ({
-      roundIndex,
-      label: `第 ${roundIndex + 1} 回合`,
-      icons: segment
-        .split(",")
-        .map((item) => String(item).trim())
-        .filter(Boolean),
-      raw: segment,
-    }));
+  const rounds = splitGenericSlotRounds(rawIcons, allWinAreas, timestampList);
+  const normalizedRounds = (rounds.length ? rounds : [{ roundIndex: 0, label: "第 1 回合", icons: [], raw: "", winAreas: [] }]).map(
+    (round) => {
+      const winAreas = round.winAreas && round.winAreas.length ? round.winAreas : rounds.length <= 1 ? allWinAreas : [];
+      const grid = inferSlotGrid((round.icons || []).length, winAreas);
+      return {
+        ...round,
+        winAreas,
+        columns: grid.columns,
+        rows: grid.rows,
+      };
+    }
+  );
 
-  const winAreas = toArray(mergedSource.betAreas || betRecord.betAreas).map((area) => ({
-    betAreaId: area && area.betAreaId !== undefined ? area.betAreaId : "",
-    iconId: area && area.iconId !== undefined ? area.iconId : "",
-    num: area && area.num !== undefined ? area.num : "",
-    betMultiple: area && area.betMultiple !== undefined ? area.betMultiple : "",
-    iconMultiple: area && area.iconMultiple !== undefined ? area.iconMultiple : "",
-    winLoseGold: Number((area && area.winLoseGold) || 0),
-    linePosText: Array.isArray(area && area.linePos)
-      ? area.linePos
-          .map((point) => {
-            if (Array.isArray(point)) return `${point[0]}-${point[1]}`;
-            if (point && Array.isArray(point.pos)) return `${point.pos[0]}-${point.pos[1]}`;
-            return "";
-          })
-          .filter(Boolean)
-          .join(" / ")
-      : area && area.linePos
-      ? stringifyValue(area.linePos)
-      : "",
-  }));
-
-  if (!rounds.length && !winAreas.length) return null;
+  if (!normalizedRounds.length && !allWinAreas.length) return null;
 
   return {
     mode: "slot",
@@ -1408,12 +1551,279 @@ function buildGenericSlotViewModel(parsed, confName) {
     betTimes: Number(mergedSource.betTimes || 0),
     totalBetGold: Number(mergedSource.totalBetGold ?? betRecord.totalBetGold ?? 0),
     totalWinLoseGold: Number(mergedSource.winLoseGold ?? parsed.commonRecord.dispatchRewardGold ?? 0),
-    rounds: rounds.length ? rounds : [{ roundIndex: 0, label: "第 1 回合", icons: [], raw: "" }],
-    winAreas,
+    rounds: normalizedRounds,
+    winAreas: allWinAreas,
+    iconNameMap: GENERIC_SLOT_ICON_NAME_MAP[confName] || {},
+    iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP[confName] || null,
   };
 }
 
-const SLOT_CUSTOM_VIEW_CONF_NAMES = new Set(["sjddj", "shz"]);
+const LHDB_GRID_BY_STAGE = {
+  1: { columns: 4, rows: 4 },
+  2: { columns: 5, rows: 5 },
+  3: { columns: 6, rows: 6 },
+};
+
+const LHDB_JEWEL_TYPE = {
+  ZUAN_TOU: 0,
+  BAI_YU: 97,
+  BI_YU: 98,
+  MO_YU: 99,
+  MA_NAO: 100,
+  HU_PO: 101,
+};
+
+const LHDB_CHAR_TO_TYPE = {
+  x: LHDB_JEWEL_TYPE.ZUAN_TOU,
+  a: LHDB_JEWEL_TYPE.BAI_YU,
+  b: LHDB_JEWEL_TYPE.BI_YU,
+  c: LHDB_JEWEL_TYPE.MO_YU,
+  d: LHDB_JEWEL_TYPE.MA_NAO,
+  e: LHDB_JEWEL_TYPE.HU_PO,
+};
+
+const LHDB_STAGE_IMAGE_MAP = {
+  1: {
+    [LHDB_JEWEL_TYPE.ZUAN_TOU]: 1,
+    [LHDB_JEWEL_TYPE.BAI_YU]: 11,
+    [LHDB_JEWEL_TYPE.BI_YU]: 12,
+    [LHDB_JEWEL_TYPE.MO_YU]: 13,
+    [LHDB_JEWEL_TYPE.MA_NAO]: 14,
+    [LHDB_JEWEL_TYPE.HU_PO]: 15,
+  },
+  2: {
+    [LHDB_JEWEL_TYPE.ZUAN_TOU]: 1,
+    [LHDB_JEWEL_TYPE.BAI_YU]: 21,
+    [LHDB_JEWEL_TYPE.BI_YU]: 22,
+    [LHDB_JEWEL_TYPE.MO_YU]: 23,
+    [LHDB_JEWEL_TYPE.MA_NAO]: 24,
+    [LHDB_JEWEL_TYPE.HU_PO]: 25,
+  },
+  3: {
+    [LHDB_JEWEL_TYPE.ZUAN_TOU]: 1,
+    [LHDB_JEWEL_TYPE.BAI_YU]: 31,
+    [LHDB_JEWEL_TYPE.BI_YU]: 32,
+    [LHDB_JEWEL_TYPE.MO_YU]: 33,
+    [LHDB_JEWEL_TYPE.MA_NAO]: 34,
+    [LHDB_JEWEL_TYPE.HU_PO]: 35,
+  },
+};
+
+const LHDB_STAGE_LABEL_MAP = {
+  1: {
+    [LHDB_JEWEL_TYPE.ZUAN_TOU]: "龙珠",
+    [LHDB_JEWEL_TYPE.BAI_YU]: "绿宝石",
+    [LHDB_JEWEL_TYPE.BI_YU]: "蓝宝石",
+    [LHDB_JEWEL_TYPE.MO_YU]: "黄宝石",
+    [LHDB_JEWEL_TYPE.MA_NAO]: "红宝石",
+    [LHDB_JEWEL_TYPE.HU_PO]: "白宝石",
+  },
+  2: {
+    [LHDB_JEWEL_TYPE.ZUAN_TOU]: "龙珠",
+    [LHDB_JEWEL_TYPE.BAI_YU]: "碧玉",
+    [LHDB_JEWEL_TYPE.BI_YU]: "琥珀",
+    [LHDB_JEWEL_TYPE.MO_YU]: "玛瑙",
+    [LHDB_JEWEL_TYPE.MA_NAO]: "黑玉",
+    [LHDB_JEWEL_TYPE.HU_PO]: "白玉",
+  },
+  3: {
+    [LHDB_JEWEL_TYPE.ZUAN_TOU]: "龙珠",
+    [LHDB_JEWEL_TYPE.BAI_YU]: "夜明珠",
+    [LHDB_JEWEL_TYPE.BI_YU]: "守财",
+    [LHDB_JEWEL_TYPE.MO_YU]: "凤凰",
+    [LHDB_JEWEL_TYPE.MA_NAO]: "白龙",
+    [LHDB_JEWEL_TYPE.HU_PO]: "传世",
+  },
+};
+
+const LHDB_STAGE_SHORT_LABEL_MAP = {
+  1: {
+    [LHDB_JEWEL_TYPE.ZUAN_TOU]: "龙",
+    [LHDB_JEWEL_TYPE.BAI_YU]: "绿",
+    [LHDB_JEWEL_TYPE.BI_YU]: "蓝",
+    [LHDB_JEWEL_TYPE.MO_YU]: "黄",
+    [LHDB_JEWEL_TYPE.MA_NAO]: "红",
+    [LHDB_JEWEL_TYPE.HU_PO]: "白",
+  },
+  2: {
+    [LHDB_JEWEL_TYPE.ZUAN_TOU]: "龙",
+    [LHDB_JEWEL_TYPE.BAI_YU]: "碧",
+    [LHDB_JEWEL_TYPE.BI_YU]: "琥",
+    [LHDB_JEWEL_TYPE.MO_YU]: "玛",
+    [LHDB_JEWEL_TYPE.MA_NAO]: "黑",
+    [LHDB_JEWEL_TYPE.HU_PO]: "白",
+  },
+  3: {
+    [LHDB_JEWEL_TYPE.ZUAN_TOU]: "龙",
+    [LHDB_JEWEL_TYPE.BAI_YU]: "夜",
+    [LHDB_JEWEL_TYPE.BI_YU]: "守",
+    [LHDB_JEWEL_TYPE.MO_YU]: "凤",
+    [LHDB_JEWEL_TYPE.MA_NAO]: "白",
+    [LHDB_JEWEL_TYPE.HU_PO]: "传",
+  },
+};
+
+const LHDB_SPECIAL_LABEL_MAP = {
+  0: "钥匙",
+  7: "龙珠探宝",
+};
+
+const LHDB_SPECIAL_SHORT_LABEL_MAP = {
+  0: "钥",
+  7: "探",
+};
+
+function normalizeLhdbStage(value) {
+  const stage = Number(value);
+  return LHDB_GRID_BY_STAGE[stage] ? stage : 1;
+}
+
+function getLhdbLabel(stage, typeId) {
+  if (Object.prototype.hasOwnProperty.call(LHDB_SPECIAL_LABEL_MAP, typeId)) {
+    return LHDB_SPECIAL_LABEL_MAP[typeId];
+  }
+  return (LHDB_STAGE_LABEL_MAP[stage] && LHDB_STAGE_LABEL_MAP[stage][typeId]) || `图标${typeId}`;
+}
+
+function getLhdbShortLabel(stage, typeId, label) {
+  if (Object.prototype.hasOwnProperty.call(LHDB_SPECIAL_SHORT_LABEL_MAP, typeId)) {
+    return LHDB_SPECIAL_SHORT_LABEL_MAP[typeId];
+  }
+  return (LHDB_STAGE_SHORT_LABEL_MAP[stage] && LHDB_STAGE_SHORT_LABEL_MAP[stage][typeId]) || String(label || "-").slice(0, 1);
+}
+
+function decodeLhdbIconToken(token, stage) {
+  const raw = String(token || "").trim();
+  const normalizedStage = normalizeLhdbStage(stage);
+  const typeId = Object.prototype.hasOwnProperty.call(LHDB_CHAR_TO_TYPE, raw)
+    ? LHDB_CHAR_TO_TYPE[raw]
+    : isFiniteNumberLike(raw)
+    ? Number(raw)
+    : null;
+  const imageId =
+    typeId !== null && LHDB_STAGE_IMAGE_MAP[normalizedStage]
+      ? LHDB_STAGE_IMAGE_MAP[normalizedStage][typeId] ?? (Number.isFinite(typeId) ? typeId : null)
+      : null;
+  const label = typeId !== null ? getLhdbLabel(normalizedStage, typeId) : raw || "-";
+  const shortLabel = typeId !== null ? getLhdbShortLabel(normalizedStage, typeId, label) : (raw || "-").slice(0, 1);
+
+  return {
+    raw,
+    typeId,
+    imageId,
+    label,
+    shortLabel,
+    isDragon: typeId === LHDB_JEWEL_TYPE.ZUAN_TOU,
+  };
+}
+
+function parseLhdbIcons(value, stage) {
+  const raw = String(value || "").trim();
+  if (!raw) return [];
+
+  if (raw.includes(",")) {
+    return raw
+      .split(",")
+      .map((item) => decodeLhdbIconToken(String(item).trim(), stage))
+      .filter((item) => item.raw !== "");
+  }
+
+  return Array.from(raw).map((token) => decodeLhdbIconToken(token, stage));
+}
+
+function buildLhdbViewModel(parsed) {
+  const source = parsed.source || {};
+  const connection = parsed.connectionRecord || {};
+  const betRecord = parsed.betRecord || {};
+  const mergedSource = {
+    ...betRecord,
+    ...connection,
+    ...source,
+  };
+  const specialInfo = toArray(
+    connection.specialInfoStrParsed ||
+    betRecord.specialInfoStrParsed ||
+    mergedSource.specialInfoStrParsed ||
+    mergedSource.specialInfo ||
+    []
+  );
+
+  const stage = normalizeLhdbStage(
+    mergedSource.betAreaCount ?? connection.betAreaCount ?? betRecord.betAreaCount ?? source.betAreaCount
+  );
+  const grid = LHDB_GRID_BY_STAGE[stage] || LHDB_GRID_BY_STAGE[1];
+
+  const normalizeArea = (area, index) => {
+    const posList = toArray(area && (area.pos || area.linePos))
+      .map((item) => Number(item))
+      .filter((item) => Number.isFinite(item));
+    const betAreaId = Number(area && area.betAreaId);
+    const iconMeta = decodeLhdbIconToken(String(betAreaId), stage);
+    const label = Number.isFinite(betAreaId) ? getLhdbLabel(stage, betAreaId) : iconMeta.label;
+    const shortLabel = Number.isFinite(betAreaId) ? getLhdbShortLabel(stage, betAreaId, label) : iconMeta.shortLabel;
+
+    return {
+      index,
+      betAreaId: Number.isFinite(betAreaId) ? betAreaId : "",
+      iconId: Number.isFinite(betAreaId) ? betAreaId : area && area.iconId !== undefined ? area.iconId : "",
+      imageId: iconMeta.imageId,
+      label,
+      shortLabel,
+      num: area && area.num !== undefined ? area.num : "",
+      betMultiple: area && area.betMultiple !== undefined ? area.betMultiple : "",
+      iconMultiple: area && area.iconMultiple !== undefined ? area.iconMultiple : "",
+      betGold: Number((area && area.betGold) || 0),
+      winLoseGold: Number((area && area.winLoseGold) || 0),
+      posList,
+      highlightKeys: posList.map((item) => String(item)),
+      linePosText: posList.length ? `[ ${posList.join(", ")} ]` : "",
+      formula:
+        area && area.betMultiple !== undefined && area.betGold !== undefined
+          ? `${toMoney(area.betGold)} x ${area.betMultiple}`
+          : toMoney((area && area.betGold) || 0),
+    };
+  };
+
+  const mainAreas = toArray(mergedSource.betAreas || betRecord.betAreas).map(normalizeArea);
+  const roundSource = specialInfo.length
+    ? specialInfo
+    : [{ icons: mergedSource.icons || "", betAreas: mergedSource.betAreas || betRecord.betAreas || [], winLoseGold: mergedSource.winLoseGold }];
+  const rounds = roundSource.map((item, roundIndex) => {
+    const icons = parseLhdbIcons(item && item.icons, stage);
+    return {
+      roundIndex,
+      label: `第${roundIndex + 1}页`,
+      icons,
+      raw: item && item.icons ? String(item.icons) : "",
+      timestamp: "",
+      columns: grid.columns,
+      rows: grid.rows,
+      winAreas: toArray(item && item.betAreas).map(normalizeArea),
+      winLoseGold: Number((item && item.winLoseGold) || 0),
+      hasKeyCells: icons.some((icon) => Number(icon && icon.typeId) === LHDB_JEWEL_TYPE.ZUAN_TOU),
+    };
+  });
+
+  if (!rounds.length) return null;
+
+  return {
+    mode: "lhdb",
+    confName: "lhdb",
+    stage,
+    betSingle: Number(mergedSource.betSingle || 0),
+    betTimes: Number(mergedSource.betTimes || 0),
+    totalBetGold: Number(mergedSource.totalBetGold ?? betRecord.totalBetGold ?? 0),
+    totalWinLoseGold: Number(mergedSource.winLoseGold ?? parsed.commonRecord.dispatchRewardGold ?? 0),
+    rounds,
+    winAreas: mainAreas,
+    iconNameMap: LHDB_STAGE_LABEL_MAP[stage] || {},
+    shortLabelMap: LHDB_STAGE_SHORT_LABEL_MAP[stage] || {},
+    isFreeGame: !!mergedSource.isFreeGame,
+    specialInfo,
+  };
+}
+
+const SLOT_CUSTOM_VIEW_CONF_NAMES = new Set(["sjddj", "shz", "lhdb"]);
 
 function buildSpecialBlocks(confName, parsed) {
   switch (confName) {
@@ -1472,6 +1882,8 @@ export function buildSettlementRecordDetail(row) {
         ? buildSjddjViewModelClient(parsed)
         : confName === "shz"
         ? buildShzViewModel(parsed)
+        : confName === "lhdb"
+        ? buildLhdbViewModel(parsed)
         : SLOT_GAME_CONF_NAMES.has(confName)
         ? buildGenericSlotViewModel(parsed, confName)
         : null;

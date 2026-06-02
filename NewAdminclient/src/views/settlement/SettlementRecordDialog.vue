@@ -64,13 +64,18 @@
         :view="detail.customView"
       />
 
+      <lhdb-record-view
+        v-else-if="detail.customView && detail.customView.mode === 'lhdb'"
+        :view="detail.customView"
+      />
+
       <slot-record-view
         v-else-if="detail.customView && detail.customView.mode === 'slot'"
         :view="detail.customView"
       />
 
       <div
-        v-for="block in detail.customView && ['sjddj', 'shz', 'slot'].includes(detail.customView.mode) ? [] : detail.blocks"
+        v-for="block in detail.customView && ['sjddj', 'shz', 'lhdb', 'slot'].includes(detail.customView.mode) ? [] : detail.blocks"
         :key="`${block.type}-${block.title}`"
         class="record-block"
       >
@@ -117,6 +122,7 @@ import { buildSettlementRecordDetail } from "./settlementRecordParser";
 import SjddjRecordView from "./SjddjRecordView.vue";
 import ShzRecordView from "./ShzRecordView.vue";
 import SlotRecordView from "./SlotRecordView.vue";
+import LhdbRecordView from "./LhdbRecordView.vue";
 
 export default {
   name: "SettlementRecordDialog",
@@ -124,6 +130,7 @@ export default {
     SjddjRecordView,
     ShzRecordView,
     SlotRecordView,
+    LhdbRecordView,
   },
   data() {
     return {
@@ -161,7 +168,7 @@ export default {
       return !!(
         this.detail &&
         this.detail.customView &&
-        ["sjddj", "shz", "slot"].includes(this.detail.customView.mode)
+        ["sjddj", "shz", "lhdb", "slot"].includes(this.detail.customView.mode)
       );
     },
     dialogProps() {

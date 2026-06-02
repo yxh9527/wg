@@ -99,7 +99,13 @@
       </div>
     </el-card>
 
-    <el-dialog title="游戏详情" :visible.sync="detailVisible" width="70%">
+    <el-dialog
+      title="游戏详情"
+      :visible.sync="detailVisible"
+      width="70%"
+      custom-class="settlement-detail-dialog"
+      append-to-body
+    >
       <settlement-record-dialog :row="detailRow" embedded />
       <span slot="footer"></span>
     </el-dialog>
@@ -558,6 +564,25 @@ export default {
 
   .field-span-2 {
     grid-column: span 1;
+  }
+}
+
+:global(.settlement-detail-dialog) {
+  width: min(1360px, calc(100vw - 48px)) !important;
+  max-width: calc(100vw - 48px);
+  margin: 0 auto !important;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+:global(.settlement-detail-dialog .el-dialog__body) {
+  padding: 12px 16px 16px;
+}
+
+@media (max-width: 768px) {
+  :global(.settlement-detail-dialog) {
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px);
   }
 }
 </style>
