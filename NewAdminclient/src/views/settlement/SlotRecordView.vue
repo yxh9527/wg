@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="slot-view">
     <div class="slot-topline">
       <div class="slot-metrics">
@@ -112,9 +112,9 @@
       </div>
     </div>
 
-    <div v-if="activeArea" class="slot-panel">
+    <div class="slot-panel slot-detail-panel">
       <div class="slot-panel-title">当前中奖明细</div>
-      <div class="slot-detail-row">
+      <div v-if="activeArea" class="slot-detail-row">
         <div class="slot-detail-chip">
           <span class="slot-detail-label">区域</span>
           <span class="slot-detail-value">{{ activeArea.betAreaId || "-" }}</span>
@@ -152,6 +152,7 @@
           <span class="slot-detail-value">{{ activeArea.linePosText || "-" }}</span>
         </div>
       </div>
+      <div v-else class="slot-empty slot-detail-empty">当前回合没有中奖明细</div>
     </div>
   </div>
 </template>
@@ -244,7 +245,7 @@ export default {
     buildAreaTitle(area) {
       if (!area) return "-";
       if (area.betAreaId !== "" && area.betAreaId !== null && area.betAreaId !== undefined) {
-        return `线${area.betAreaId}`;
+        return `线 ${area.betAreaId}`;
       }
       return `图标 ${this.iconLabel(area.iconId)}`;
     },
@@ -381,8 +382,8 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  min-width: 96px;
-  padding: 8px 12px;
+  min-width: 58px;
+  padding: 8px 8px;
   border-radius: 12px;
   background: rgba(15, 23, 42, 0.05);
   color: #475569;
@@ -587,6 +588,16 @@ export default {
   color: #94a3b8;
   font-size: 12px;
   margin-top: 6px;
+}
+
+.slot-detail-panel {
+  min-height: 76px;
+}
+
+.slot-detail-empty {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
 }
 
 @media (max-width: 1100px) {

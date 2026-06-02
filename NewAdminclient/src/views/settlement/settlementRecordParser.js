@@ -1367,6 +1367,82 @@ const SLOT_GRID_BY_COUNT = {
 
 const GENERIC_SLOT_ICON_NAME_MAP = {};
 
+const TGPD_JEWEL_TYPE = {
+  BOOM_CANDY: 1,
+  BAI_YU: 97,
+  BI_YU: 98,
+  MO_YU: 99,
+  MA_NAO: 100,
+  HU_PO: 101,
+  ZU_MU_LV: 102,
+  MAO_YAN_SHI: 103,
+  ZI_SHUI_JING: 104,
+  FEI_CUI: 105,
+  ZHEN_ZHU: 106,
+  HONG_BAO_SHI: 107,
+  LV_BAO_SHI: 108,
+  HUANG_BAO_SHI: 109,
+  LAN_BAO_SHI: 110,
+  ZUAN_SHI: 111,
+};
+
+const TGPD_CHAR_TO_TYPE = {
+  x: TGPD_JEWEL_TYPE.BOOM_CANDY,
+  a: TGPD_JEWEL_TYPE.BAI_YU,
+  b: TGPD_JEWEL_TYPE.BI_YU,
+  c: TGPD_JEWEL_TYPE.MO_YU,
+  d: TGPD_JEWEL_TYPE.MA_NAO,
+  e: TGPD_JEWEL_TYPE.HU_PO,
+  f: TGPD_JEWEL_TYPE.ZU_MU_LV,
+  g: TGPD_JEWEL_TYPE.MAO_YAN_SHI,
+  h: TGPD_JEWEL_TYPE.ZI_SHUI_JING,
+  i: TGPD_JEWEL_TYPE.FEI_CUI,
+  j: TGPD_JEWEL_TYPE.ZHEN_ZHU,
+  k: TGPD_JEWEL_TYPE.HONG_BAO_SHI,
+  l: TGPD_JEWEL_TYPE.LV_BAO_SHI,
+  m: TGPD_JEWEL_TYPE.HUANG_BAO_SHI,
+  n: TGPD_JEWEL_TYPE.LAN_BAO_SHI,
+  o: TGPD_JEWEL_TYPE.ZUAN_SHI,
+};
+
+const TGPD_IMAGE_MAP = {
+  [TGPD_JEWEL_TYPE.BOOM_CANDY]: 1,
+  [TGPD_JEWEL_TYPE.BAI_YU]: 11,
+  [TGPD_JEWEL_TYPE.BI_YU]: 12,
+  [TGPD_JEWEL_TYPE.MO_YU]: 13,
+  [TGPD_JEWEL_TYPE.MA_NAO]: 14,
+  [TGPD_JEWEL_TYPE.HU_PO]: 15,
+  [TGPD_JEWEL_TYPE.ZU_MU_LV]: 21,
+  [TGPD_JEWEL_TYPE.MAO_YAN_SHI]: 22,
+  [TGPD_JEWEL_TYPE.ZI_SHUI_JING]: 23,
+  [TGPD_JEWEL_TYPE.FEI_CUI]: 24,
+  [TGPD_JEWEL_TYPE.ZHEN_ZHU]: 25,
+  [TGPD_JEWEL_TYPE.HONG_BAO_SHI]: 31,
+  [TGPD_JEWEL_TYPE.LV_BAO_SHI]: 32,
+  [TGPD_JEWEL_TYPE.HUANG_BAO_SHI]: 33,
+  [TGPD_JEWEL_TYPE.LAN_BAO_SHI]: 34,
+  [TGPD_JEWEL_TYPE.ZUAN_SHI]: 35,
+};
+
+GENERIC_SLOT_ICON_NAME_MAP.tgpd = {
+  1: "炸弹糖",
+  11: "白玉",
+  12: "碧玉",
+  13: "墨玉",
+  14: "玛瑙",
+  15: "琥珀",
+  21: "祖母绿",
+  22: "猫眼石",
+  23: "紫水晶",
+  24: "翡翠",
+  25: "珍珠",
+  31: "红宝石",
+  32: "绿宝石",
+  33: "黄宝石",
+  34: "蓝宝石",
+  35: "钻石",
+};
+
 const GENERIC_SLOT_ICON_ATLAS_MAP = {
   cjsgj: {
     url: "/cjsgj-icons-atlas.webp",
@@ -1384,6 +1460,66 @@ const GENERIC_SLOT_ICON_ATLAS_MAP = {
       8: { x: 289, y: 145, width: 138, height: 137, rotated: false, originalWidth: 138, originalHeight: 137 },
       9: { x: 3, y: 255, width: 129, height: 120, rotated: false, originalWidth: 129, originalHeight: 120 },
       10: { x: 141, y: 379, width: 117, height: 128, rotated: true, originalWidth: 117, originalHeight: 128 },
+    },
+  },
+  dfdc: {
+    url: "/dfdc-game-ui1.webp",
+    frames: {
+      0: { x: 1610, y: 2, width: 190, height: 192, rotated: false, originalWidth: 200, originalHeight: 200, offset: { x: -2, y: 1 } },
+      1: { x: 1008, y: 406, width: 200, height: 198, rotated: true, originalWidth: 200, originalHeight: 200, offset: { x: 0, y: -1 } },
+      2: { x: 1812, y: 800, width: 196, height: 120, rotated: true, originalWidth: 200, originalHeight: 200, offset: { x: 2, y: -3 } },
+      3: { x: 1342, y: 604, width: 198, height: 198, rotated: false, originalWidth: 200, originalHeight: 200, offset: { x: 1, y: -1 } },
+      4: { x: 1008, y: 204, width: 200, height: 198, rotated: true, originalWidth: 200, originalHeight: 200, offset: { x: 0, y: -1 } },
+      5: { x: 808, y: 608, width: 200, height: 198, rotated: true, originalWidth: 200, originalHeight: 200, offset: { x: 0, y: -1 } },
+      6: { x: 1612, y: 802, width: 198, height: 196, rotated: false, originalWidth: 200, originalHeight: 200, offset: { x: 1, y: -1 } },
+      7: { x: 808, y: 406, width: 200, height: 198, rotated: true, originalWidth: 200, originalHeight: 200, offset: { x: 0, y: -1 } },
+      8: { x: 1126, y: 810, width: 150, height: 166, rotated: false, originalWidth: 200, originalHeight: 200, offset: { x: -1, y: 0 } },
+      9: { x: 1862, y: 330, width: 136, height: 166, rotated: true, originalWidth: 200, originalHeight: 200, offset: { x: -1, y: 0 } },
+      10: { x: 598, y: 810, width: 140, height: 182, rotated: false, originalWidth: 200, originalHeight: 200, offset: { x: 0, y: 0 } },
+      11: { x: 1934, y: 166, width: 110, height: 162, rotated: false, originalWidth: 200, originalHeight: 200, offset: { x: 0, y: 0 } },
+      12: { x: 1862, y: 632, width: 162, height: 164, rotated: false, originalWidth: 200, originalHeight: 200, offset: { x: -1, y: 0 } },
+      13: { x: 1804, y: 164, width: 120, height: 160, rotated: false, originalWidth: 200, originalHeight: 200, offset: { x: -1, y: 0 } },
+      14: { x: 1410, y: 2, width: 198, height: 198, rotated: false, originalWidth: 200, originalHeight: 200, offset: { x: 1, y: -1 } },
+      15: { x: 1408, y: 202, width: 198, height: 198, rotated: false, originalWidth: 200, originalHeight: 200, offset: { x: 1, y: -1 } },
+      16: { x: 1010, y: 2, width: 200, height: 198, rotated: true, originalWidth: 200, originalHeight: 200, offset: { x: 0, y: -1 } },
+      17: { x: 608, y: 2, width: 200, height: 200, rotated: false, originalWidth: 200, originalHeight: 200, offset: { x: 0, y: 0 } },
+      18: { x: 1606, y: 402, width: 198, height: 196, rotated: true, originalWidth: 200, originalHeight: 200, offset: { x: 1, y: -1 } },
+    },
+  },
+  tgpd: {
+    url: "/tgpd-game-ui.webp",
+    frames: {
+      11: { x: 109, y: 627, width: 102, height: 106, rotated: true, originalWidth: 120, originalHeight: 120, offset: { x: 0, y: -3 } },
+      12: { x: 757, y: 196, width: 106, height: 106, rotated: false, originalWidth: 120, originalHeight: 120, offset: { x: 0, y: -3 } },
+      13: { x: 307, y: 438, width: 114, height: 102, rotated: true, originalWidth: 120, originalHeight: 120, offset: { x: 0, y: -3 } },
+      14: { x: 748, y: 306, width: 106, height: 108, rotated: true, originalWidth: 120, originalHeight: 120, offset: { x: 0, y: -3 } },
+      15: { x: 297, y: 326, width: 112, height: 108, rotated: false, originalWidth: 120, originalHeight: 120, offset: { x: 0, y: -3 } },
+      21: { x: 443, y: 672, width: 110, height: 108, rotated: true, originalWidth: 120, originalHeight: 120, offset: { x: 0, y: -3 } },
+      22: { x: 329, y: 556, width: 112, height: 106, rotated: true, originalWidth: 120, originalHeight: 120, offset: { x: 0, y: -3 } },
+      23: { x: 525, y: 407, width: 108, height: 104, rotated: true, originalWidth: 120, originalHeight: 120, offset: { x: -1, y: -3 } },
+      24: { x: 413, y: 326, width: 112, height: 104, rotated: true, originalWidth: 120, originalHeight: 120, offset: { x: 0, y: -3 } },
+      25: { x: 219, y: 613, width: 114, height: 106, rotated: true, originalWidth: 120, originalHeight: 120, offset: { x: -1, y: -3 } },
+      31: { x: 439, y: 556, width: 112, height: 108, rotated: true, originalWidth: 120, originalHeight: 120, offset: { x: 0, y: -3 } },
+      32: { x: 633, y: 408, width: 106, height: 106, rotated: false, originalWidth: 120, originalHeight: 120, offset: { x: 0, y: -3 } },
+      33: { x: 639, y: 196, width: 114, height: 102, rotated: false, originalWidth: 120, originalHeight: 120, offset: { x: -1, y: -5 } },
+      34: { x: 743, y: 416, width: 104, height: 106, rotated: true, originalWidth: 120, originalHeight: 120, offset: { x: 0, y: -3 } },
+      35: { x: 413, y: 442, width: 108, height: 110, rotated: false, originalWidth: 120, originalHeight: 120, offset: { x: 0, y: -3 } },
+    },
+  },
+  xldb: {
+    url: "/xldb-rollers-bg.webp",
+    frames: {
+      1: { x: 4, y: 625, width: 284, height: 191, rotated: false, originalWidth: 284, originalHeight: 191, offset: { x: 0, y: 0 } },
+      2: { x: 292, y: 568, width: 150, height: 165, rotated: true, originalWidth: 152, originalHeight: 167, offset: { x: 0, y: 0 } },
+      3: { x: 311, y: 208, width: 154, height: 168, rotated: false, originalWidth: 154, originalHeight: 168, offset: { x: 0, y: 0 } },
+      11: { x: 292, y: 380, width: 157, height: 184, rotated: false, originalWidth: 157, originalHeight: 186, offset: { x: 0, y: 0 } },
+      12: { x: 292, y: 722, width: 92, height: 171, rotated: true, originalWidth: 94, originalHeight: 173, offset: { x: 0, y: 0 } },
+      13: { x: 290, y: 820, width: 189, height: 175, rotated: true, originalWidth: 191, originalHeight: 177, offset: { x: 0, y: 0 } },
+      21: { x: 4, y: 4, width: 303, height: 204, rotated: false, originalWidth: 303, originalHeight: 204, offset: { x: 0, y: 0 } },
+      100: { x: 4, y: 820, width: 282, height: 177, rotated: false, originalWidth: 282, originalHeight: 177, offset: { x: 0, y: 0 } },
+      200: { x: 4, y: 425, width: 284, height: 196, rotated: false, originalWidth: 284, originalHeight: 196, offset: { x: 0, y: 0 } },
+      500: { x: 4, y: 212, width: 284, height: 209, rotated: false, originalWidth: 284, originalHeight: 209, offset: { x: 0, y: 0 } },
+      666: { x: 311, y: 4, width: 200, height: 149, rotated: true, originalWidth: 200, originalHeight: 159, offset: { x: 0, y: 0 } },
     },
   },
 };
@@ -1498,6 +1634,169 @@ function splitGenericSlotRounds(rawIcons, allAreas, timestampList) {
   return rounds;
 }
 
+function parseSlotIconTokens(rawIcons) {
+  return String(rawIcons || "")
+    .split(",")
+    .map((item) => String(item).trim())
+    .filter((item) => item !== "");
+}
+
+function parseTgpdIconTokens(rawIcons) {
+  const value = String(rawIcons || "").trim();
+  if (!value) return [];
+  if (value.includes(",")) {
+    return value
+      .split(",")
+      .map((item) => String(item).trim())
+      .filter((item) => item !== "");
+  }
+  return value.split("").filter((item) => item !== " ");
+}
+
+function normalizeTgpdIconValue(value) {
+  if (value === null || value === undefined || value === "") return "";
+  const raw = String(value).trim();
+  if (!raw) return "";
+
+  if (/^-?\d+$/.test(raw)) {
+    const numericValue = Number(raw);
+    if (Object.prototype.hasOwnProperty.call(TGPD_IMAGE_MAP, numericValue)) {
+      return TGPD_IMAGE_MAP[numericValue];
+    }
+    return numericValue;
+  }
+
+  const lower = raw.toLowerCase();
+  if (Object.prototype.hasOwnProperty.call(TGPD_CHAR_TO_TYPE, lower)) {
+    return TGPD_IMAGE_MAP[TGPD_CHAR_TO_TYPE[lower]] || "";
+  }
+
+  return raw;
+}
+
+function normalizeTgpdArea(area) {
+  const normalizedArea = {
+    ...(area || {}),
+  };
+  const areaKey = normalizedArea.betAreaId !== undefined ? normalizedArea.betAreaId : normalizedArea.iconId;
+  const normalizedIconId = normalizeTgpdIconValue(areaKey);
+  if (normalizedIconId !== "") {
+    normalizedArea.iconId = normalizedIconId;
+  }
+  return normalizedArea;
+}
+
+function buildTgpdAreaHighlight(area, columns) {
+  const posList = toArray(area && area.pos)
+    .map((value) => Number(value))
+    .filter((value) => Number.isFinite(value) && value > 0);
+  const linePos = posList.map((pos) => {
+    const zeroBased = pos - 1;
+    return [Math.floor(zeroBased / columns), zeroBased % columns];
+  });
+  return {
+    linePos,
+    highlightKeys: linePos.map(([row, col]) => `${row}-${col}`),
+    linePosText: posList.length ? `[ ${posList.join(", ")} ]` : "",
+  };
+}
+
+function buildTgpdViewModel(parsed) {
+  const source = parsed.source || {};
+  const connection = parsed.connectionRecord || {};
+  const betRecord = parsed.betRecord || {};
+  const mergedSource = {
+    ...betRecord,
+    ...connection,
+    ...source,
+  };
+
+  const specialInfo = toArray(connection.specialInfo || betRecord.specialInfo || mergedSource.specialInfo);
+  const roundSource = specialInfo.length
+    ? specialInfo
+    : [
+        {
+          icons: mergedSource.icons || "",
+          betAreas: mergedSource.betAreas || betRecord.betAreas || [],
+          winLoseGold: mergedSource.winLoseGold,
+        },
+      ];
+
+  const rounds = roundSource.map((item, roundIndex) => {
+    const icons = parseTgpdIconTokens(item && item.icons).map(normalizeTgpdIconValue);
+    const grid = { columns: 4, rows: 4 };
+    const winAreas = toArray(item && item.betAreas)
+      .filter((area) => Number(area && area.betAreaId) !== 23)
+      .map((area, index) => {
+        const normalizedArea = normalizeTgpdArea(area);
+        const highlight = buildTgpdAreaHighlight(normalizedArea, grid.columns);
+        return createSlotWinArea(normalizedArea, index, highlight);
+      });
+    return {
+      roundIndex,
+      label: `第 ${roundIndex + 1} 回合`,
+      icons,
+      raw: item && item.icons ? String(item.icons) : "",
+      timestamp: "",
+      winAreas,
+      columns: grid.columns,
+      rows: grid.rows,
+      winLoseGold: Number((item && item.winLoseGold) || 0),
+    };
+  });
+
+  const topLevelWinAreas = toArray(mergedSource.betAreas || betRecord.betAreas)
+    .filter((area) => Number(area && area.betAreaId) !== 23)
+    .map((area, index) => {
+      const normalizedArea = normalizeTgpdArea(area);
+      const highlight = buildTgpdAreaHighlight(normalizedArea, 4);
+      return createSlotWinArea(normalizedArea, index, highlight);
+    });
+
+  if (!rounds.length && !topLevelWinAreas.length) return null;
+
+  return {
+    mode: "slot",
+    confName: "tgpd",
+    betSingle: Number(mergedSource.betSingle || 0),
+    betTimes: Number(mergedSource.betTimes || 0),
+    totalBetGold: Number(mergedSource.totalBetGold ?? betRecord.totalBetGold ?? 0),
+    totalWinLoseGold: Number(mergedSource.winLoseGold ?? parsed.commonRecord.dispatchRewardGold ?? 0),
+    rounds,
+    winAreas: topLevelWinAreas,
+    iconNameMap: GENERIC_SLOT_ICON_NAME_MAP.tgpd || {},
+    iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP.tgpd || null,
+  };
+}
+
+function createSlotWinArea(area, index, overrides = {}) {
+  const hasOverride = (key) => Object.prototype.hasOwnProperty.call(overrides, key);
+  const linePos = hasOverride("linePos") ? overrides.linePos : resolveSlotLinePos(area);
+  const highlightKeys = hasOverride("highlightKeys") ? overrides.highlightKeys : linePos.map(([x, y]) => `${x}-${y}`);
+  const rawLinePosValue = area && (area.linePos || area.pos);
+  const linePosText = hasOverride("linePosText")
+    ? overrides.linePosText
+    : linePos.length
+    ? stringifySlotLinePos(linePos)
+    : rawLinePosValue
+    ? stringifyValue(rawLinePosValue)
+    : "";
+
+  return {
+    index,
+    betAreaId: hasOverride("betAreaId") ? overrides.betAreaId : area && area.betAreaId !== undefined ? area.betAreaId : "",
+    iconId: hasOverride("iconId") ? overrides.iconId : area && area.iconId !== undefined ? area.iconId : "",
+    num: hasOverride("num") ? overrides.num : area && area.num !== undefined ? area.num : "",
+    betMultiple: hasOverride("betMultiple") ? overrides.betMultiple : area && area.betMultiple !== undefined ? area.betMultiple : "",
+    iconMultiple: hasOverride("iconMultiple") ? overrides.iconMultiple : area && area.iconMultiple !== undefined ? area.iconMultiple : "",
+    betGold: hasOverride("betGold") ? overrides.betGold : Number((area && area.betGold) || 0),
+    winLoseGold: hasOverride("winLoseGold") ? overrides.winLoseGold : Number((area && area.winLoseGold) || 0),
+    linePos,
+    highlightKeys,
+    linePosText,
+  };
+}
+
 function buildGenericSlotViewModel(parsed, confName) {
   const source = parsed.source || {};
   const connection = parsed.connectionRecord || {};
@@ -1508,23 +1807,9 @@ function buildGenericSlotViewModel(parsed, confName) {
     ...source,
   };
 
-  const allWinAreas = toArray(mergedSource.betAreas || betRecord.betAreas).map((area, index) => {
-    const linePos = resolveSlotLinePos(area);
-    const highlightKeys = linePos.map(([x, y]) => `${x}-${y}`);
-    return {
-      index,
-      betAreaId: area && area.betAreaId !== undefined ? area.betAreaId : "",
-      iconId: area && area.iconId !== undefined ? area.iconId : "",
-      num: area && area.num !== undefined ? area.num : "",
-      betMultiple: area && area.betMultiple !== undefined ? area.betMultiple : "",
-      iconMultiple: area && area.iconMultiple !== undefined ? area.iconMultiple : "",
-      betGold: Number((area && area.betGold) || 0),
-      winLoseGold: Number((area && area.winLoseGold) || 0),
-      linePos,
-      highlightKeys,
-      linePosText: linePos.length ? stringifySlotLinePos(linePos) : area && (area.linePos || area.pos) ? stringifyValue(area.linePos || area.pos) : "",
-    };
-  });
+  const allWinAreas = toArray(mergedSource.betAreas || betRecord.betAreas).map((area, index) =>
+    createSlotWinArea(confName === "tgpd" ? normalizeTgpdArea(area) : area, index)
+  );
 
   const timestampList = source.timestampList || connection.timestampList || betRecord.timestampList || [];
   const rawIcons = String(mergedSource.icons || "");
@@ -1532,10 +1817,16 @@ function buildGenericSlotViewModel(parsed, confName) {
   const normalizedRounds = (rounds.length ? rounds : [{ roundIndex: 0, label: "第 1 回合", icons: [], raw: "", winAreas: [] }]).map(
     (round) => {
       const winAreas = round.winAreas && round.winAreas.length ? round.winAreas : rounds.length <= 1 ? allWinAreas : [];
-      const grid = inferSlotGrid((round.icons || []).length, winAreas);
+      const normalizedIcons = confName === "tgpd" ? (round.icons || []).map(normalizeTgpdIconValue) : round.icons || [];
+      const normalizedWinAreas =
+        confName === "tgpd"
+          ? toArray(winAreas).map((area, index) => createSlotWinArea(normalizeTgpdArea(area), index))
+          : winAreas;
+      const grid = inferSlotGrid(normalizedIcons.length, normalizedWinAreas);
       return {
         ...round,
-        winAreas,
+        icons: normalizedIcons,
+        winAreas: normalizedWinAreas,
         columns: grid.columns,
         rows: grid.rows,
       };
@@ -1555,6 +1846,134 @@ function buildGenericSlotViewModel(parsed, confName) {
     winAreas: allWinAreas,
     iconNameMap: GENERIC_SLOT_ICON_NAME_MAP[confName] || {},
     iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP[confName] || null,
+  };
+}
+
+function buildDfdcMaskLinePos(mask, columns) {
+  const hitIndexes = toArray(mask).reduce((result, item, index) => {
+    if (Number(item)) result.push(index);
+    return result;
+  }, []);
+  const linePos = hitIndexes.map((index) => [Math.floor(index / columns), index % columns]);
+  return {
+    hitIndexes,
+    linePos,
+    highlightKeys: linePos.map(([row, col]) => `${row}-${col}`),
+  };
+}
+
+function buildDfdcDetailWinAreas(detailEntry, roundAreas, icons, betSingle) {
+  const detailList = toArray(detailEntry && detailEntry.detail);
+  if (!detailList.length) {
+    return toArray(roundAreas).map((area, index) => createSlotWinArea(area, index));
+  }
+
+  const columns = (SLOT_GRID_BY_COUNT[(icons || []).length] || inferSlotGrid((icons || []).length, [])).columns || 5;
+  return detailList.map((detail, index) => {
+    const relatedArea = toArray(roundAreas)[index] || {};
+    const maskResult = buildDfdcMaskLinePos(detail && detail.pos, columns);
+    const count = Number(detail && detail.count);
+    const mul = Number(detail && detail.mul);
+    const award = Number(detail && detail.award);
+    const derivedWinLoseGold =
+      Number.isFinite(award) && award > 0
+        ? award
+        : Number.isFinite(count) && Number.isFinite(mul) && Number.isFinite(Number(betSingle))
+        ? count * mul * Number(betSingle)
+        : Number((relatedArea && relatedArea.winLoseGold) || 0);
+
+    return createSlotWinArea(relatedArea, index, {
+      betAreaId: relatedArea && relatedArea.betAreaId !== undefined ? relatedArea.betAreaId : index + 1,
+      iconId: detail && detail.icon !== undefined ? detail.icon : relatedArea && relatedArea.iconId !== undefined ? relatedArea.iconId : "",
+      num: Number.isFinite(count) ? count : relatedArea && relatedArea.num !== undefined ? relatedArea.num : "",
+      betMultiple: Number.isFinite(mul) ? mul : relatedArea && relatedArea.betMultiple !== undefined ? relatedArea.betMultiple : "",
+      iconMultiple:
+        Number.isFinite(count) && Number.isFinite(mul)
+          ? count * mul
+          : relatedArea && relatedArea.iconMultiple !== undefined
+          ? relatedArea.iconMultiple
+          : "",
+      winLoseGold: derivedWinLoseGold,
+      linePos: maskResult.linePos,
+      highlightKeys: maskResult.highlightKeys,
+      linePosText: maskResult.linePos.length ? stringifySlotLinePos(maskResult.linePos) : "",
+    });
+  });
+}
+
+function buildDfdcViewModel(parsed) {
+  const source = parsed.source || {};
+  const connection = parsed.connectionRecord || {};
+  const betRecord = parsed.betRecord || {};
+  const mergedSource = {
+    ...betRecord,
+    ...connection,
+    ...source,
+  };
+  const betSingle = Number(mergedSource.betSingle || 0);
+  const topIcons = parseSlotIconTokens(mergedSource.icons);
+  const topAreas = toArray(mergedSource.betAreas || betRecord.betAreas);
+  const freeRounds = toArray(connection.specialInfo || betRecord.specialInfo || mergedSource.specialInfo);
+  const specialInfoDetail =
+    connection.specialInfoStrParsed ||
+    betRecord.specialInfoStrParsed ||
+    mergedSource.specialInfoStrParsed ||
+    null;
+  const detailRounds = toArray(specialInfoDetail && specialInfoDetail.detail);
+
+  const roundSources = [];
+  if (topIcons.length || topAreas.length || detailRounds.length) {
+    roundSources.push({
+      icons: topIcons,
+      raw: String(mergedSource.icons || ""),
+      winLoseGold: Number(mergedSource.winLoseGold || 0),
+      betAreas: topAreas,
+      detailEntry: detailRounds[0] || null,
+    });
+  }
+
+  freeRounds.forEach((item, index) => {
+    roundSources.push({
+      icons: parseSlotIconTokens(item && item.icons),
+      raw: item && item.icons ? String(item.icons) : "",
+      winLoseGold: Number((item && item.winLoseGold) || 0),
+      betAreas: toArray(item && item.betAreas),
+      detailEntry: detailRounds[index + 1] || null,
+    });
+  });
+
+  const rounds = roundSources.map((roundSource, roundIndex) => {
+    const icons = Array.isArray(roundSource.icons) ? roundSource.icons : [];
+    const grid = inferSlotGrid(icons.length, roundSource.betAreas);
+    return {
+      roundIndex,
+      label: `第 ${roundIndex + 1} 回合`,
+      icons,
+      raw: roundSource.raw,
+      timestamp: "",
+      columns: grid.columns,
+      rows: grid.rows,
+      winLoseGold: Number(roundSource.winLoseGold || 0),
+      winAreas: buildDfdcDetailWinAreas(roundSource.detailEntry, roundSource.betAreas, icons, betSingle),
+    };
+  });
+
+  if (!rounds.length) return null;
+
+  const allWinAreas = rounds.reduce((result, round) => result.concat(toArray(round.winAreas)), []);
+
+  return {
+    mode: "slot",
+    confName: "dfdc",
+    betSingle,
+    betTimes: Number(mergedSource.betTimes || 0),
+    totalBetGold: Number(mergedSource.totalBetGold ?? betRecord.totalBetGold ?? 0),
+    totalWinLoseGold: Number(mergedSource.freeGameWin ?? mergedSource.winLoseGold ?? parsed.commonRecord.dispatchRewardGold ?? 0),
+    rounds,
+    winAreas: allWinAreas,
+    iconNameMap: GENERIC_SLOT_ICON_NAME_MAP.dfdc || {},
+    iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP.dfdc || null,
+    isFreeGame: Number(mergedSource.freeType) === 1,
   };
 }
 
@@ -1673,6 +2092,8 @@ const LHDB_SPECIAL_SHORT_LABEL_MAP = {
   7: "探",
 };
 
+const LHDB_SKIP_RESULT_AREA_IDS = new Set([23]);
+
 function normalizeLhdbStage(value) {
   const stage = Number(value);
   return LHDB_GRID_BY_STAGE[stage] ? stage : 1;
@@ -1784,12 +2205,56 @@ function buildLhdbViewModel(parsed) {
     };
   };
 
+  const buildKeyArea = (icons, roundIndex) => {
+    const keyPositions = toArray(icons).reduce((result, icon, index) => {
+      if (Number(icon && icon.typeId) === LHDB_JEWEL_TYPE.ZUAN_TOU) {
+        result.push(index + 1);
+      }
+      return result;
+    }, []);
+    if (!keyPositions.length) return null;
+
+    const keyCount =
+      roundIndex === 0
+        ? Number(
+            mergedSource.jewelMultiple ??
+            connection.jewelMultiple ??
+            betRecord.jewelMultiple ??
+            source.jewelMultiple ??
+            0
+          )
+        : 0;
+
+    return {
+      index: -1,
+      betAreaId: 0,
+      iconId: 0,
+      imageId: 0,
+      label: LHDB_SPECIAL_LABEL_MAP[0],
+      shortLabel: LHDB_SPECIAL_SHORT_LABEL_MAP[0],
+      num: keyCount || keyPositions.length,
+      betMultiple: "",
+      iconMultiple: "",
+      betGold: 0,
+      winLoseGold: 0,
+      posList: keyPositions,
+      highlightKeys: keyPositions.map((item) => String(item)),
+      linePosText: `[ ${keyPositions.join(", ")} ]`,
+      formula: "",
+      isKeyArea: true,
+    };
+  };
+
   const mainAreas = toArray(mergedSource.betAreas || betRecord.betAreas).map(normalizeArea);
   const roundSource = specialInfo.length
     ? specialInfo
     : [{ icons: mergedSource.icons || "", betAreas: mergedSource.betAreas || betRecord.betAreas || [], winLoseGold: mergedSource.winLoseGold }];
   const rounds = roundSource.map((item, roundIndex) => {
     const icons = parseLhdbIcons(item && item.icons, stage);
+    const keyArea = buildKeyArea(icons, roundIndex);
+    const winAreas = toArray(item && item.betAreas)
+      .map(normalizeArea)
+      .filter((area) => !LHDB_SKIP_RESULT_AREA_IDS.has(Number(area && area.betAreaId)));
     return {
       roundIndex,
       label: `第${roundIndex + 1}页`,
@@ -1798,7 +2263,7 @@ function buildLhdbViewModel(parsed) {
       timestamp: "",
       columns: grid.columns,
       rows: grid.rows,
-      winAreas: toArray(item && item.betAreas).map(normalizeArea),
+      winAreas: keyArea ? [keyArea].concat(winAreas) : winAreas,
       winLoseGold: Number((item && item.winLoseGold) || 0),
       hasKeyCells: icons.some((icon) => Number(icon && icon.typeId) === LHDB_JEWEL_TYPE.ZUAN_TOU),
     };
@@ -1823,7 +2288,7 @@ function buildLhdbViewModel(parsed) {
   };
 }
 
-const SLOT_CUSTOM_VIEW_CONF_NAMES = new Set(["sjddj", "shz", "lhdb"]);
+const SLOT_CUSTOM_VIEW_CONF_NAMES = new Set(["sjddj", "shz", "lhdb", "dfdc"]);
 
 function buildSpecialBlocks(confName, parsed) {
   switch (confName) {
@@ -1882,8 +2347,12 @@ export function buildSettlementRecordDetail(row) {
         ? buildSjddjViewModelClient(parsed)
         : confName === "shz"
         ? buildShzViewModel(parsed)
+        : confName === "dfdc"
+        ? buildDfdcViewModel(parsed)
         : confName === "lhdb"
         ? buildLhdbViewModel(parsed)
+        : confName === "tgpd"
+        ? buildTgpdViewModel(parsed)
         : SLOT_GAME_CONF_NAMES.has(confName)
         ? buildGenericSlotViewModel(parsed, confName)
         : null;
