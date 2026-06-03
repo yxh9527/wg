@@ -119,6 +119,7 @@ import StkhRecordView from "./StkhRecordView.vue";
 import BdydsRecordView from "./BdydsRecordView.vue";
 import JbpRecordView from "./JbpRecordView.vue";
 import DwwgRecordView from "./DwwgRecordView.vue";
+import JlbzRecordView from "./JlbzRecordView.vue";
 
 export default {
   name: "SettlementRecordDialog",
@@ -137,6 +138,7 @@ export default {
     BdydsRecordView,
     JbpRecordView,
     DwwgRecordView,
+    JlbzRecordView,
   },
   props: {
     visible: {
@@ -186,6 +188,7 @@ export default {
         bdyds: "BdydsRecordView",
         jbp: "JbpRecordView",
         dwwg: "DwwgRecordView",
+        jlbz: "JlbzRecordView",
         slot: "SlotRecordView",
       };
       return componentMap[mode] || "";

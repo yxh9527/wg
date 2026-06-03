@@ -427,9 +427,9 @@ export default {
   align-items: center;
   justify-content: center;
   border-radius: 18px;
-  border: 1px solid rgba(251, 191, 36, 0.2);
-  background: linear-gradient(180deg, rgba(255, 244, 214, 0.96), rgba(244, 206, 138, 0.88));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 8px 16px rgba(17, 24, 39, 0.18);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 8px 16px rgba(17, 24, 39, 0.1);
 }
 
 .wcg-card-main {
@@ -485,7 +485,8 @@ export default {
   min-height: 38px;
   padding: 0 10px;
   border-radius: 10px;
-  background: rgba(15, 23, 42, 0.06);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: rgba(255, 255, 255, 0.96);
   color: #334155;
   font-size: 11px;
   font-weight: 600;
@@ -493,8 +494,9 @@ export default {
 }
 
 .wcg-line-item.is-active {
-  background: #0f172a;
-  color: #f8fafc;
+  border-color: rgba(249, 115, 22, 0.35);
+  background: rgba(255, 237, 213, 0.96);
+  color: #9a3412;
 }
 
 .wcg-line-id {

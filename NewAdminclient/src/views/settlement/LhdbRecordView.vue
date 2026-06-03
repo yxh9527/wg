@@ -486,8 +486,9 @@ export default {
   width: 100%;
   padding: 12px;
   border-radius: 16px;
-  background: radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.08), transparent 38%),
-    linear-gradient(135deg, #3b1808, #5b2410 60%, #733013);
+  background: radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.08), transparent 42%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
+  border: 1px solid rgba(148, 163, 184, 0.16);
   overflow: hidden;
 }
 
@@ -505,8 +506,9 @@ export default {
   min-height: 88px;
   padding: 8px 6px;
   border-radius: 12px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.04));
-  color: #fff7ed;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
+  color: #334155;
   text-align: center;
   transition: opacity 0.2s ease, box-shadow 0.2s ease;
 }
@@ -598,7 +600,8 @@ export default {
   min-height: 38px;
   padding: 0 10px;
   border-radius: 10px;
-  background: rgba(15, 23, 42, 0.06);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: rgba(255, 255, 255, 0.96);
   color: #334155;
   font-size: 11px;
   font-weight: 600;
@@ -617,8 +620,9 @@ export default {
 }
 
 .lhdb-line-item.is-active {
-  background: #0f172a;
-  color: #f8fafc;
+  border-color: rgba(249, 115, 22, 0.35);
+  background: rgba(255, 237, 213, 0.96);
+  color: #9a3412;
 }
 
 .lhdb-detail-row {

@@ -3,6 +3,7 @@
 import { buildBdydsViewModel } from "./bdydsRecordParser";
 import { buildJbpViewModel } from "./jbpRecordParser";
 import { buildDwwgViewModel } from "./dwwgRecordParser";
+import { buildJlbzViewModel } from "./jlbzRecordParser";
 
 export const SUPPORTED_SETTLEMENT_DETAIL_GAME_IDS = new Set([
   3001, 3002, 3003, 3004, 3005, 3008, 3009, 3010, 3011, 3012, 3013, 3014, 3015, 3016, 3017, 3018, 3019, 3020, 3022,
@@ -1661,6 +1662,44 @@ const JQB_LINE_ARRAY = [
   [2, 3, 2],
 ];
 
+const JFN_LINE_ARRAY = [
+  [
+    [1, 0],
+    [1, 1],
+    [1, 2],
+    [1, 3],
+    [1, 4],
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+    [0, 3],
+    [0, 4],
+  ],
+  [
+    [2, 0],
+    [2, 1],
+    [2, 2],
+    [2, 3],
+    [2, 4],
+  ],
+  [
+    [0, 0],
+    [1, 1],
+    [2, 2],
+    [1, 3],
+    [0, 4],
+  ],
+  [
+    [2, 0],
+    [1, 1],
+    [0, 2],
+    [1, 3],
+    [2, 4],
+  ],
+];
+
 const GENERIC_SLOT_ICON_ATLAS_MAP = {
   cjsgj: {
     url: "/cjsgj-icons-atlas.webp",
@@ -1898,8 +1937,16 @@ const GENERIC_SLOT_ICON_ATLAS_MAP = {
     frames: {},
   },
   jfn: {
-    url: "/texture-not-supported",
-    frames: {},
+    url: "/jfn-rollers-bg.webp",
+    frames: {
+      1: { x: 2, y: 288, width: 235, height: 240, rotated: false, originalWidth: 243, originalHeight: 240, offset: { x: 3, y: 0 } },
+      2: { x: 2, y: 2, width: 219, height: 284, rotated: false, originalWidth: 219, originalHeight: 284, offset: { x: 0, y: 0 } },
+      3: { x: 2, y: 530, width: 219, height: 194, rotated: false, originalWidth: 243, originalHeight: 240, offset: { x: 1, y: 0 } },
+      11: { x: 239, y: 241, width: 207, height: 168, rotated: false, originalWidth: 243, originalHeight: 240, offset: { x: 4, y: -9 } },
+      12: { x: 223, y: 584, width: 221, height: 152, rotated: false, originalWidth: 243, originalHeight: 240, offset: { x: -1, y: -6 } },
+      13: { x: 239, y: 411, width: 171, height: 196, rotated: true, originalWidth: 243, originalHeight: 240, offset: { x: 7, y: 0 } },
+      21: { x: 223, y: 2, width: 237, height: 228, rotated: true, originalWidth: 243, originalHeight: 240, offset: { x: 3, y: -2 } },
+    },
   },
 };
 
@@ -2043,6 +2090,18 @@ const GENERIC_SLOT_FUZZY_ATLAS_MAP = {
       22: { x: 575, y: 2, width: 271, height: 259, rotated: false, originalWidth: 271, originalHeight: 259, offset: { x: 0, y: 0 } },
       23: { x: 302, y: 2, width: 271, height: 259, rotated: false, originalWidth: 271, originalHeight: 259, offset: { x: 0, y: 0 } },
       24: { x: 2, y: 276, width: 271, height: 259, rotated: false, originalWidth: 271, originalHeight: 259, offset: { x: 0, y: 0 } },
+    },
+  },
+  jfn: {
+    url: "/jfn-fuzzy-bg.webp",
+    frames: {
+      1: { x: 223, y: 2, width: 234, height: 270, rotated: false, originalWidth: 236, originalHeight: 270, offset: { x: -1, y: 0 } },
+      2: { x: 2, y: 2, width: 219, height: 322, rotated: false, originalWidth: 219, originalHeight: 322, offset: { x: 0, y: 0 } },
+      3: { x: 700, y: 2, width: 218, height: 224, rotated: false, originalWidth: 218, originalHeight: 224, offset: { x: 0, y: 0 } },
+      11: { x: 700, y: 228, width: 206, height: 199, rotated: true, originalWidth: 206, originalHeight: 199, offset: { x: 0, y: 0 } },
+      12: { x: 459, y: 260, width: 221, height: 183, rotated: false, originalWidth: 221, originalHeight: 183, offset: { x: 0, y: 0 } },
+      13: { x: 223, y: 274, width: 170, height: 226, rotated: true, originalWidth: 170, originalHeight: 226, offset: { x: 0, y: 0 } },
+      21: { x: 459, y: 2, width: 239, height: 256, rotated: false, originalWidth: 239, originalHeight: 258, offset: { x: 0, y: 0 } },
     },
   },
 };
@@ -2282,6 +2341,43 @@ function buildJqbAreaHighlight(area) {
     };
   }
   const linePos = lineTemplate.map((rowIndex, columnIndex) => [Number(rowIndex), columnIndex]);
+  return {
+    linePos,
+    highlightKeys: linePos.map(([row, col]) => `${row}-${col}`),
+    linePosText: stringifySlotLinePos(linePos),
+  };
+}
+
+function normalizeJfnIcons(rawIcons) {
+  const icons = toArray(rawIcons);
+  if (icons.length !== 15) return icons;
+  const rows = 3;
+  const columns = 5;
+  const ordered = [];
+  for (let rowIndex = 0; rowIndex < rows; rowIndex += 1) {
+    for (let columnIndex = 0; columnIndex < columns; columnIndex += 1) {
+      const sourceIndex = columnIndex * rows + rowIndex;
+      ordered.push(icons[sourceIndex]);
+    }
+  }
+  return ordered;
+}
+
+function buildJfnAreaHighlight(area) {
+  const lineTemplate = JFN_LINE_ARRAY[Number(area && area.betAreaId) - 1];
+  if (!Array.isArray(lineTemplate) || !lineTemplate.length) {
+    return {
+      linePos: [],
+      highlightKeys: [],
+      linePosText: "",
+    };
+  }
+
+  const hitCount = Math.min(
+    Math.max(Number(area && area.num) || lineTemplate.length, 0),
+    lineTemplate.length
+  );
+  const linePos = lineTemplate.slice(0, hitCount);
   return {
     linePos,
     highlightKeys: linePos.map(([row, col]) => `${row}-${col}`),
@@ -2897,11 +2993,21 @@ function buildGenericSlotViewModel(parsed, confName) {
     ...source,
   };
 
+  const normalizeGenericSlotArea = (area, index) => {
+    if (confName === "tgpd") {
+      return createSlotWinArea(normalizeTgpdArea(area), index);
+    }
+    if (confName === "xldb") {
+      return createSlotWinArea(normalizeXldbArea(area), index);
+    }
+    if (confName === "jfn") {
+      return createSlotWinArea(area, index, buildJfnAreaHighlight(area));
+    }
+    return createSlotWinArea(area, index);
+  };
+
   const allWinAreas = toArray(mergedSource.betAreas || betRecord.betAreas).map((area, index) =>
-    createSlotWinArea(
-      confName === "tgpd" ? normalizeTgpdArea(area) : confName === "xldb" ? normalizeXldbArea(area) : area,
-      index
-    )
+    normalizeGenericSlotArea(area, index)
   );
 
   const timestampList = source.timestampList || connection.timestampList || betRecord.timestampList || [];
@@ -2915,12 +3021,16 @@ function buildGenericSlotViewModel(parsed, confName) {
           ? (round.icons || []).map(normalizeTgpdIconValue)
           : confName === "xldb"
           ? (round.icons || []).map(normalizeXldbIconValue)
+          : confName === "jfn"
+          ? normalizeJfnIcons(round.icons || [])
           : round.icons || [];
       const normalizedWinAreas =
         confName === "tgpd"
           ? toArray(winAreas).map((area, index) => createSlotWinArea(normalizeTgpdArea(area), index))
           : confName === "xldb"
           ? toArray(winAreas).map((area, index) => createSlotWinArea(normalizeXldbArea(area), index))
+          : confName === "jfn"
+          ? toArray(winAreas).map((area, index) => createSlotWinArea(area, index, buildJfnAreaHighlight(area)))
           : winAreas;
       const grid = inferSlotGrid(normalizedIcons.length, normalizedWinAreas);
       const roundWinLoseGold =
@@ -2951,6 +3061,7 @@ function buildGenericSlotViewModel(parsed, confName) {
     winAreas: allWinAreas,
     iconNameMap: GENERIC_SLOT_ICON_NAME_MAP[confName] || {},
     iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP[confName] || null,
+    fuzzyAtlas: GENERIC_SLOT_FUZZY_ATLAS_MAP[confName] || null,
     iconImageMap: GENERIC_SLOT_ICON_IMAGE_MAP[confName] || null,
   };
 }
@@ -4209,6 +4320,7 @@ const SLOT_CUSTOM_VIEW_CONF_NAMES = new Set([
   "bdyds",
   "jbp",
   "dwwg",
+  "jlbz",
 ]);
 
 function buildSpecialBlocks(confName, parsed) {
@@ -4288,6 +4400,8 @@ export function buildSettlementRecordDetail(row) {
         ? buildJbpViewModel(parsed)
         : confName === "dwwg"
         ? buildDwwgViewModel(parsed)
+        : confName === "jlbz"
+        ? buildJlbzViewModel(parsed)
         : confName === "hgxs"
         ? buildHgxsViewModel(parsed)
         : confName === "dfdc"

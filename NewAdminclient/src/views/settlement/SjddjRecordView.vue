@@ -749,8 +749,9 @@ export default {
   padding: 8px;
   border-radius: 16px;
   background:
-    radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1), transparent 36%),
-    linear-gradient(135deg, #0b1525, #15263f 62%, #203452);
+    radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.08), transparent 40%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
+  border: 1px solid rgba(148, 163, 184, 0.16);
   overflow: hidden;
 }
 
@@ -768,10 +769,10 @@ export default {
   justify-content: center;
   width: 38px;
   height: 38px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(148, 163, 184, 0.14);
   border-radius: 12px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03));
-  color: #e2e8f0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
+  color: #334155;
   overflow: visible;
 }
 
@@ -900,15 +901,17 @@ export default {
   min-height: 26px;
   padding: 0 8px;
   border-radius: 8px;
-  background: rgba(15, 23, 42, 0.06);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: rgba(255, 255, 255, 0.96);
   color: #334155;
   font-size: 11px;
   font-weight: 600;
 }
 
 .sjddj-line-item.is-active {
-  background: #0f172a;
-  color: #f8fafc;
+  border-color: rgba(249, 115, 22, 0.35);
+  background: rgba(255, 237, 213, 0.96);
+  color: #9a3412;
 }
 
 .sjddj-road-grid {

@@ -449,7 +449,8 @@ export default {
 .shz-board-shell {
   padding: 12px;
   border-radius: 16px;
-  background: linear-gradient(135deg, #25130b, #4a2412 60%, #7c3a17);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
   width: fit-content;
   min-width: 0;
   max-width: 100%;
@@ -471,7 +472,8 @@ export default {
   width: 116px;
   min-height: 68px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  background: rgba(255, 255, 255, 0.96);
   transition: opacity 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -481,7 +483,7 @@ export default {
 
 .shz-cell.is-highlighted {
   box-shadow: inset 0 0 0 2px rgba(251, 191, 36, 0.92), 0 0 14px rgba(251, 191, 36, 0.35);
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 237, 213, 0.96);
 }
 
 .shz-icon-sprite,
@@ -498,7 +500,7 @@ export default {
 }
 
 .shz-cell-fallback {
-  color: #fff;
+  color: #334155;
   font-size: 12px;
   font-weight: 700;
 }
@@ -546,9 +548,9 @@ export default {
   gap: 4px;
   min-width: 92px;
   padding: 6px 7px;
-  border: 0;
+  border: 1px solid rgba(148, 163, 184, 0.16);
   border-radius: 10px;
-  background: rgba(15, 23, 42, 0.06);
+  background: rgba(255, 255, 255, 0.96);
   color: #334155;
   cursor: pointer;
   font-size: 10px;
@@ -557,8 +559,9 @@ export default {
 }
 
 .shz-line-item.is-active {
-  background: #0f172a;
-  color: #f8fafc;
+  border-color: rgba(249, 115, 22, 0.35);
+  background: rgba(255, 237, 213, 0.96);
+  color: #9a3412;
 }
 
 .shz-line-item-index {

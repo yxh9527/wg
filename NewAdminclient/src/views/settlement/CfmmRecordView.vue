@@ -381,7 +381,7 @@ export default {
 }
 
 .cfmm-board-panel {
-  background: radial-gradient(circle at 50% 36%, rgba(250, 204, 21, 0.12), transparent 42%), linear-gradient(135deg, #172033, #223350 62%, #2f456a);
+  background: radial-gradient(circle at 50% 36%, rgba(250, 204, 21, 0.1), transparent 42%), linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
 }
 
 .cfmm-board {
@@ -401,7 +401,8 @@ export default {
   height: 192px;
   padding: 0 8px;
   border-radius: 16px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.04));
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.94));
   overflow: hidden;
 }
 
@@ -420,12 +421,13 @@ export default {
   min-height: 86px;
   height: 86px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  background: rgba(255, 255, 255, 0.96);
   flex: 0 0 86px;
 }
 
 .cfmm-slot-center {
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 237, 213, 0.96);
 }
 
 .cfmm-lock {

@@ -367,7 +367,8 @@ export default {
   position: relative;
   padding: 18px 12px 12px;
   border-radius: 16px;
-  background: linear-gradient(180deg, #201008, #3a1b10 56%, #582816);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
   overflow: hidden;
 }
 
@@ -535,7 +536,8 @@ export default {
   width: 100%;
   padding: 10px 8px;
   border-radius: 12px;
-  background: rgba(15, 23, 42, 0.06);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: rgba(255, 255, 255, 0.96);
   text-align: center;
 }
 
