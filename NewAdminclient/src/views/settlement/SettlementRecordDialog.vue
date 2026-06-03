@@ -50,7 +50,7 @@
         v-if="detail.parseError"
         type="warning"
         :closable="false"
-        :title="`解析失败：${detail.parseError}`"
+        :title="`解析失败: ${detail.parseError}`"
         class="record-alert"
       />
 
@@ -69,8 +69,23 @@
         :view="detail.customView"
       />
 
+      <lzhd-record-view
+        v-else-if="detail.customView && detail.customView.mode === 'lzhd'"
+        :view="detail.customView"
+      />
+
       <xldb-record-view
         v-else-if="detail.customView && detail.customView.mode === 'xldb'"
+        :view="detail.customView"
+      />
+
+      <wcg-record-view
+        v-else-if="detail.customView && detail.customView.mode === 'wcg'"
+        :view="detail.customView"
+      />
+
+      <rhdb-record-view
+        v-else-if="detail.customView && detail.customView.mode === 'rhdb'"
         :view="detail.customView"
       />
 
@@ -80,7 +95,7 @@
       />
 
       <div
-        v-for="block in detail.customView && ['sjddj', 'shz', 'lhdb', 'xldb', 'slot'].includes(detail.customView.mode) ? [] : detail.blocks"
+        v-for="block in detail.customView ? [] : detail.blocks"
         :key="`${block.type}-${block.title}`"
         class="record-block"
       >
@@ -128,7 +143,10 @@ import SjddjRecordView from "./SjddjRecordView.vue";
 import ShzRecordView from "./ShzRecordView.vue";
 import SlotRecordView from "./SlotRecordView.vue";
 import LhdbRecordView from "./LhdbRecordView.vue";
+import LzhdRecordView from "./LzhdRecordView.vue";
 import XldbRecordView from "./XldbRecordView.vue";
+import WcgRecordView from "./WcgRecordView.vue";
+import RhdbRecordView from "./RhdbRecordView.vue";
 
 export default {
   name: "SettlementRecordDialog",
@@ -137,12 +155,10 @@ export default {
     ShzRecordView,
     SlotRecordView,
     LhdbRecordView,
+    LzhdRecordView,
     XldbRecordView,
-  },
-  data() {
-    return {
-      rawLogExpanded: false,
-    };
+    WcgRecordView,
+    RhdbRecordView,
   },
   props: {
     visible: {
@@ -158,6 +174,11 @@ export default {
       default: () => ({}),
     },
   },
+  data() {
+    return {
+      rawLogExpanded: false,
+    };
+  },
   computed: {
     innerVisible: {
       get() {
@@ -172,11 +193,7 @@ export default {
       return buildSettlementRecordDetail(this.row);
     },
     isCustomRecordDetail() {
-      return !!(
-        this.detail &&
-        this.detail.customView &&
-        ["sjddj", "shz", "lhdb", "xldb", "slot"].includes(this.detail.customView.mode)
-      );
+      return !!(this.detail && this.detail.customView);
     },
     dialogProps() {
       if (this.embedded) return {};
@@ -199,7 +216,7 @@ export default {
   methods: {
     summaryColClass(label) {
       if (label === "游戏ID" || label === "用户ID") return "is-narrow";
-      if (label === "玩家" || label === "下注") return "is-tight";
+      if (label === "玩家" || label === "投注") return "is-tight";
       if (label === "输赢") return "is-compact";
       if (label === "局号") return "is-wide";
       return "";

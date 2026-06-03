@@ -348,13 +348,13 @@ function finalizeRecord(record, raw, commonOverride) {
 
 function buildSummary(row, parsed, confName) {
   const summary = [];
-  pushEntry(summary, "娓告垙ID", row.gameId);
+  pushEntry(summary, "游戏ID", row.gameId);
   pushEntry(summary, "局号", row.roundID);
-  pushEntry(summary, "鐜╁", row.account);
-  pushEntry(summary, "鐢ㄦ埛ID", row.userId);
-  pushEntry(summary, "涓嬫敞", parsed.betRecord.totalBetGold || row.bet, (value) => toMoney(value));
-  pushEntry(summary, "杈撹耽", parsed.commonRecord.dispatchRewardGold !== undefined ? parsed.commonRecord.dispatchRewardGold : row.win, (value) => toMoney(value));
-  pushEntry(summary, "鏃堕棿", row.playedDate, formatUnixDateTime);
+  pushEntry(summary, "玩家", row.account);
+  pushEntry(summary, "用户ID", row.userId);
+  pushEntry(summary, "投注", parsed.betRecord.totalBetGold || row.bet, (value) => toMoney(value));
+  pushEntry(summary, "输赢", parsed.commonRecord.dispatchRewardGold !== undefined ? parsed.commonRecord.dispatchRewardGold : row.win, (value) => toMoney(value));
+  pushEntry(summary, "时间", row.playedDate, formatUnixDateTime);
   return summary;
 }
 
@@ -363,17 +363,17 @@ function buildCommonBlocks(parsed) {
   const commonEntries = [];
   pushEntry(commonEntries, "Record ID", parsed.commonRecord.recordId);
   pushEntry(commonEntries, "票据号", parsed.commonRecord.porderId);
-  pushEntry(commonEntries, "绉嶅瓙", parsed.commonRecord.seed);
-  pushEntry(commonEntries, "缁撶畻鏃堕棿", parsed.commonRecord.settlementTimestamp, formatUnixDateTime);
+  pushEntry(commonEntries, "种子", parsed.commonRecord.seed);
+  pushEntry(commonEntries, "结算时间", parsed.commonRecord.settlementTimestamp, formatUnixDateTime);
   pushEntry(commonEntries, "限红命中", parsed.commonRecord.IsLimit, (value) => (value ? "是" : "否"));
-  blocks.push(createEntriesBlock("閫氱敤淇℃伅", commonEntries));
+  blocks.push(createEntriesBlock("通用信息", commonEntries));
 
   const betEntries = [];
   pushEntry(betEntries, "总下注", parsed.betRecord.totalBetGold, (value) => toMoney(value));
-  pushEntry(betEntries, "缁撴灉鎻忚堪", parsed.betRecord.resultDesc);
-  pushEntry(betEntries, "鏂扮増缁撴灉", parsed.betRecord.newResultDesc);
+  pushEntry(betEntries, "结果描述", parsed.betRecord.resultDesc);
+  pushEntry(betEntries, "新版结果", parsed.betRecord.newResultDesc);
   pushEntry(betEntries, "开奖明细", parsed.betRecord.areaResult);
-  blocks.push(createEntriesBlock("娉ㄥ崟鏁版嵁", betEntries));
+  blocks.push(createEntriesBlock("注单数据", betEntries));
 
   const betAreas = toArray(parsed.betRecord.betAreas).map((area) => ({
     betAreaId: area.betAreaId,
@@ -397,13 +397,13 @@ function buildCommonBlocks(parsed) {
   );
 
   if (parsed.betRecord.resultDescParsed) {
-    blocks.push(createJsonBlock("缁撴灉鎻忚堪瑙ｆ瀽", parsed.betRecord.resultDescParsed));
+    blocks.push(createJsonBlock("结果描述解析", parsed.betRecord.resultDescParsed));
   }
   if (parsed.betRecord.newResultDescParsed) {
-    blocks.push(createJsonBlock("鏂扮増缁撴灉瑙ｆ瀽", parsed.betRecord.newResultDescParsed));
+    blocks.push(createJsonBlock("新版结果解析", parsed.betRecord.newResultDescParsed));
   }
   if (parsed.betRecord.specialInfoStrParsed) {
-    blocks.push(createJsonBlock("鐗规畩濂栧姳瑙ｆ瀽", parsed.betRecord.specialInfoStrParsed));
+    blocks.push(createJsonBlock("特殊奖励解析", parsed.betRecord.specialInfoStrParsed));
   }
   const specialInfo = parsed.betRecord.specialInfoStrParsed;
   if (specialInfo && Array.isArray(specialInfo.trigger_details)) {
@@ -1496,6 +1496,43 @@ GENERIC_SLOT_ICON_NAME_MAP.worldcup = {
   31: "WILD",
 };
 
+GENERIC_SLOT_ICON_NAME_MAP.wcg = {
+  1: "骨头",
+  2: "项圈",
+  3: "狗屋",
+  11: "A",
+  12: "K",
+  13: "Q",
+  14: "任意图",
+  15: "ANY",
+  21: "Wild1",
+  22: "Wild2",
+  23: "Wild3",
+  24: "Wild4",
+};
+
+GENERIC_SLOT_ICON_NAME_MAP.lzhd = {
+  1: "龙金",
+  2: "龙蓝",
+  3: "龙爪",
+  4: "虎金",
+  5: "虎白",
+  6: "虎爪",
+};
+
+GENERIC_SLOT_ICON_NAME_MAP.rhdb = {
+  1: "A",
+  2: "K",
+  3: "Q",
+  4: "J",
+  11: "巴西莓",
+  12: "百香果",
+  13: "火龙果",
+  14: "香蕉",
+  21: "Wild",
+  31: "Scatter",
+};
+
 const GENERIC_SLOT_ICON_IMAGE_MAP = {};
 
 const XLDB_SPECIAL_PIC_MAP = {
@@ -1642,6 +1679,21 @@ const GENERIC_SLOT_ICON_ATLAS_MAP = {
       21: { x: 2, y: 2, width: 259, height: 244, rotated: false, originalWidth: 259, originalHeight: 244, offset: { x: 0, y: 0 } },
     },
   },
+  rhdb: {
+    url: "/rhdb-icon-clear.webp",
+    frames: {
+      1: { x: 231, y: 192, width: 199, height: 181, rotated: false, originalWidth: 199, originalHeight: 181 },
+      2: { x: 3, y: 217, width: 190, height: 173, rotated: false, originalWidth: 190, originalHeight: 173 },
+      3: { x: 197, y: 377, width: 177, height: 167, rotated: false, originalWidth: 177, originalHeight: 167 },
+      4: { x: 3, y: 394, width: 170, height: 164, rotated: false, originalWidth: 170, originalHeight: 164 },
+      11: { x: 177, y: 548, width: 163, height: 143, rotated: false, originalWidth: 163, originalHeight: 143 },
+      12: { x: 3, y: 562, width: 152, height: 141, rotated: false, originalWidth: 152, originalHeight: 141 },
+      13: { x: 344, y: 548, width: 153, height: 143, rotated: false, originalWidth: 153, originalHeight: 143 },
+      14: { x: 378, y: 377, width: 119, height: 141, rotated: false, originalWidth: 119, originalHeight: 141 },
+      21: { x: 231, y: 3, width: 217, height: 185, rotated: false, originalWidth: 217, originalHeight: 185 },
+      31: { x: 3, y: 3, width: 210, height: 224, rotated: true, originalWidth: 210, originalHeight: 224 },
+    },
+  },
   worldcup: {
     url: "/worldcup-icon-clear.webp",
     frames: {
@@ -1658,6 +1710,50 @@ const GENERIC_SLOT_ICON_ATLAS_MAP = {
       21: { x: 453, y: 2, width: 208, height: 218, rotated: true, originalWidth: 212, originalHeight: 220, offset: { x: 0, y: 0 } },
       31: { x: 2, y: 2, width: 222, height: 220, rotated: false, originalWidth: 226, originalHeight: 232, offset: { x: 0, y: 5 } },
     },
+  },
+  wcg: {
+    url: "/wcg-rollers-bg.webp",
+    frames: {
+      1: { x: 243, y: 446, width: 298, height: 242, rotated: false, originalWidth: 298, originalHeight: 242, offset: { x: 0, y: 0 } },
+      2: { x: 562, y: 2, width: 217, height: 218, rotated: true, originalWidth: 217, originalHeight: 218, offset: { x: 0, y: 0 } },
+      3: { x: 780, y: 2, width: 238, height: 218, rotated: false, originalWidth: 238, originalHeight: 218, offset: { x: 0, y: 0 } },
+      11: { x: 2, y: 422, width: 239, height: 234, rotated: false, originalWidth: 239, originalHeight: 234, offset: { x: 0, y: 0 } },
+      12: { x: 2, y: 2, width: 277, height: 206, rotated: false, originalWidth: 277, originalHeight: 206, offset: { x: 0, y: 0 } },
+      13: { x: 283, y: 212, width: 228, height: 212, rotated: false, originalWidth: 228, originalHeight: 212, offset: { x: 0, y: 0 } },
+      14: { x: 1336, y: 58, width: 48, height: 31, rotated: false, originalWidth: 49, originalHeight: 32, offset: { x: 0, y: 0 } },
+      15: { x: 1223, y: 10, width: 46, height: 27, rotated: false, originalWidth: 48, originalHeight: 28, offset: { x: 1, y: 0 } },
+      21: { x: 522, y: 720, width: 272, height: 244, rotated: true, originalWidth: 272, originalHeight: 244, offset: { x: 0, y: 0 } },
+      22: { x: 276, y: 690, width: 272, height: 244, rotated: true, originalWidth: 272, originalHeight: 244, offset: { x: 0, y: 0 } },
+      23: { x: 2, y: 690, width: 272, height: 244, rotated: false, originalWidth: 272, originalHeight: 244, offset: { x: 0, y: 0 } },
+      24: { x: 543, y: 446, width: 272, height: 244, rotated: true, originalWidth: 272, originalHeight: 244, offset: { x: 0, y: 0 } },
+    },
+  },
+  lzhd: {
+    url: "/lzhd-rollers-bg.webp",
+    frames: {
+      1: { x: 761, y: 383, width: 375, height: 376, rotated: false, originalWidth: 375, originalHeight: 376 },
+      2: { x: 382, y: 383, width: 375, height: 376, rotated: false, originalWidth: 375, originalHeight: 376 },
+      3: { x: 761, y: 3, width: 375, height: 376, rotated: false, originalWidth: 375, originalHeight: 376 },
+      4: { x: 382, y: 3, width: 375, height: 376, rotated: false, originalWidth: 375, originalHeight: 376 },
+      5: { x: 3, y: 383, width: 375, height: 376, rotated: false, originalWidth: 375, originalHeight: 376 },
+      6: { x: 3, y: 3, width: 375, height: 376, rotated: false, originalWidth: 375, originalHeight: 376 },
+    },
+  },
+};
+
+const RHDB_FUZZY_ICON_ATLAS = {
+  url: "/rhdb-icon-fuzzy.webp",
+  frames: {
+    1: { x: 415, y: 3, width: 195, height: 194, rotated: true, originalWidth: 195, originalHeight: 194 },
+    2: { x: 613, y: 3, width: 186, height: 186, rotated: false, originalWidth: 186, originalHeight: 186 },
+    3: { x: 756, y: 193, width: 173, height: 180, rotated: true, originalWidth: 173, originalHeight: 180 },
+    4: { x: 415, y: 202, width: 166, height: 177, rotated: true, originalWidth: 166, originalHeight: 177 },
+    11: { x: 596, y: 202, width: 159, height: 156, rotated: true, originalWidth: 159, originalHeight: 156 },
+    12: { x: 213, y: 220, width: 148, height: 154, rotated: true, originalWidth: 148, originalHeight: 154 },
+    13: { x: 803, y: 3, width: 149, height: 156, rotated: false, originalWidth: 149, originalHeight: 156 },
+    14: { x: 3, y: 243, width: 115, height: 154, rotated: true, originalWidth: 115, originalHeight: 154 },
+    21: { x: 213, y: 3, width: 213, height: 198, rotated: true, originalWidth: 213, originalHeight: 198 },
+    31: { x: 3, y: 3, width: 206, height: 236, rotated: false, originalWidth: 206, originalHeight: 236 },
   },
 };
 
@@ -1677,6 +1773,21 @@ const GENERIC_SLOT_FUZZY_ATLAS_MAP = {
       15: { x: 631, y: 230, width: 183, height: 165, rotated: true, originalWidth: 185, originalHeight: 165, offset: { x: 0, y: 0 } },
       21: { x: 224, y: 2, width: 206, height: 233, rotated: false, originalWidth: 210, originalHeight: 235, offset: { x: -1, y: 1 } },
       31: { x: 2, y: 2, width: 220, height: 238, rotated: false, originalWidth: 226, originalHeight: 240, offset: { x: 1, y: 1 } },
+    },
+  },
+  wcg: {
+    url: "/wcg-fuzzy-bg.webp",
+    frames: {
+      1: { x: 2, y: 2, width: 298, height: 272, rotated: false, originalWidth: 300, originalHeight: 274, offset: { x: -1, y: 1 } },
+      2: { x: 792, y: 503, width: 217, height: 231, rotated: false, originalWidth: 227, originalHeight: 257, offset: { x: 1, y: -3 } },
+      3: { x: 536, y: 503, width: 254, height: 255, rotated: false, originalWidth: 256, originalHeight: 255, offset: { x: 0, y: 0 } },
+      11: { x: 579, y: 263, width: 238, height: 262, rotated: true, originalWidth: 238, originalHeight: 262, offset: { x: 0, y: 0 } },
+      12: { x: 302, y: 263, width: 275, height: 233, rotated: false, originalWidth: 275, originalHeight: 233, offset: { x: 0, y: 0 } },
+      13: { x: 2, y: 537, width: 227, height: 240, rotated: true, originalWidth: 227, originalHeight: 240, offset: { x: 0, y: 0 } },
+      21: { x: 275, y: 498, width: 271, height: 259, rotated: true, originalWidth: 271, originalHeight: 259, offset: { x: 0, y: 0 } },
+      22: { x: 575, y: 2, width: 271, height: 259, rotated: false, originalWidth: 271, originalHeight: 259, offset: { x: 0, y: 0 } },
+      23: { x: 302, y: 2, width: 271, height: 259, rotated: false, originalWidth: 271, originalHeight: 259, offset: { x: 0, y: 0 } },
+      24: { x: 2, y: 276, width: 271, height: 259, rotated: false, originalWidth: 271, originalHeight: 259, offset: { x: 0, y: 0 } },
     },
   },
 };
@@ -2161,6 +2272,131 @@ function buildWorldcupViewModel(parsed) {
     iconNameMap: GENERIC_SLOT_ICON_NAME_MAP.worldcup || {},
     iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP.worldcup || null,
     fuzzyAtlas: GENERIC_SLOT_FUZZY_ATLAS_MAP.worldcup || null,
+  };
+}
+
+function parseWcgIcons(rawIcons) {
+  const parsed = safeJsonParse(typeof rawIcons === "string" ? rawIcons : "");
+  if (Array.isArray(parsed)) {
+    return parsed
+      .map((column) =>
+        toArray(column)
+          .map((value) => Number(value))
+          .filter((value) => Number.isFinite(value))
+      )
+      .filter((column) => column.length);
+  }
+
+  const tokens = parseSlotIconTokens(rawIcons).map((value) => Number(value)).filter((value) => Number.isFinite(value));
+  if (!tokens.length) return [];
+  return [tokens];
+}
+
+function normalizeWcgArea(area, index) {
+  const normalized = createSlotWinArea(area, index);
+  const iconId = Number(area && area.iconId);
+  return {
+    ...normalized,
+    iconId: Number.isFinite(iconId) ? iconId : normalized.iconId,
+    betAreaId: area && area.betAreaId !== undefined ? area.betAreaId : normalized.betAreaId,
+  };
+}
+
+function createWcgColumn(column, columnIndex) {
+  const values = toArray(column).map((value) => Number(value));
+  const mergedIconId = Number(values[2] || 0);
+  if (mergedIconId) {
+    return {
+      key: `wcg-col-${columnIndex}`,
+      single: true,
+      primaryIconId: mergedIconId,
+      secondaryIconId: null,
+      raw: values,
+    };
+  }
+
+  return {
+    key: `wcg-col-${columnIndex}`,
+    single: false,
+    primaryIconId: Number(values[1] || 0),
+    secondaryIconId: Number(values[3] || 0),
+    raw: values,
+  };
+}
+
+function shouldUseWcgAnyIcon(winAreas) {
+  return toArray(winAreas).some((area) => Number(area && area.iconId) === 14);
+}
+
+function buildWcgViewModel(parsed) {
+  const source = parsed.source || {};
+  const connection = parsed.connectionRecord || {};
+  const betRecord = parsed.betRecord || {};
+  const mergedSource = {
+    ...betRecord,
+    ...connection,
+    ...source,
+  };
+
+  const specialRounds = toArray(mergedSource.specialInfo || connection.specialInfo || betRecord.specialInfo);
+  const roundSources = specialRounds.length
+    ? specialRounds
+    : [
+        {
+          icons: mergedSource.icons || "",
+          betAreas: mergedSource.betAreas || betRecord.betAreas || [],
+          winLoseGold: mergedSource.winLoseGold,
+          betSingle: mergedSource.betSingle,
+          betTimes: mergedSource.betTimes,
+          exTimes: mergedSource.exTimes,
+        },
+      ];
+
+  const rounds = roundSources.map((item, roundIndex) => {
+    const columns = parseWcgIcons(item && item.icons);
+    const rawWinAreas = toArray(item && item.betAreas)
+      .slice()
+      .sort((left, right) => Number(left && left.betAreaId) - Number(right && right.betAreaId))
+      .map((area, index) => normalizeWcgArea(area, index));
+    const useAnyIcon = shouldUseWcgAnyIcon(rawWinAreas);
+    const winAreas = rawWinAreas.map((area) => ({
+      ...area,
+      iconId: useAnyIcon ? 14 : area.iconId,
+    }));
+
+    return {
+      roundIndex,
+      label: `第 ${roundIndex + 1} 回合`,
+      icons: [],
+      iconColumns: columns.map((column, columnIndex) => createWcgColumn(column, columnIndex)),
+      raw: item && item.icons ? String(item.icons) : "",
+      timestamp: "",
+      winAreas,
+      columns: 3,
+      rows: 1,
+      winLoseGold: Number((item && item.winLoseGold) || 0),
+      exTimes: Number((item && item.exTimes) || mergedSource.exTimes || 0),
+      bonusTimes: winAreas.length === 5 ? 10 : 0,
+    };
+  });
+
+  if (!rounds.length) return null;
+
+  return {
+    mode: "wcg",
+    confName: "wcg",
+    betGold: Number(mergedSource.betGold || 0),
+    betSingle: Number(mergedSource.betSingle || 0),
+    betTimes: Number(mergedSource.betTimes || 0),
+    totalBetGold: Number(mergedSource.totalBetGold ?? betRecord.totalBetGold ?? 0),
+    totalWinLoseGold: Number(mergedSource.winLoseGold ?? parsed.commonRecord.dispatchRewardGold ?? 0),
+    rounds,
+    winAreas: rounds[0].winAreas,
+    iconNameMap: GENERIC_SLOT_ICON_NAME_MAP.wcg || {},
+    iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP.wcg || null,
+    fuzzyAtlas: GENERIC_SLOT_FUZZY_ATLAS_MAP.wcg || null,
+    hideLinePosChip: true,
+    wcgLayout: true,
   };
 }
 
@@ -2959,7 +3195,235 @@ function buildLhdbViewModel(parsed) {
   };
 }
 
-const SLOT_CUSTOM_VIEW_CONF_NAMES = new Set(["sjddj", "shz", "lhdb", "dfdc", "xldb", "jqb", "xldb2", "worldcup"]);
+function parseLzhdSideColumns(value) {
+  const parsed = unwrapJsonValue(value);
+  if (!Array.isArray(parsed)) return [];
+  return parsed.slice(0, 3).map((item, index) => {
+    const column = Array.isArray(item) ? item.map((icon) => Number(icon || 0)) : [];
+    return {
+      index,
+      icons: [Number(column[1] || 0), Number(column[2] || 0), Number(column[3] || 0)],
+      mergedIconId: Number(column[2] || 0),
+      topIconId: Number(column[1] || 0),
+      bottomIconId: Number(column[3] || 0),
+      isSingle: Number(column[2] || 0) > 0,
+      offsetY: Number(column[2] || 0) > 0 ? 0 : 70,
+    };
+  });
+}
+
+function getLzhdSideArea(sideEntry) {
+  return toArray(sideEntry && sideEntry.betAreas)[0] || {};
+}
+
+function buildLzhdBetInfo(area, side) {
+  const betGold = Number((area && area.betGold) || 0);
+  const winLoseGold = Number((area && area.winLoseGold) || 0);
+  const betMultiple = area && area.betMultiple !== undefined ? area.betMultiple : "";
+  const iconMultiple = area && area.iconMultiple !== undefined ? area.iconMultiple : "";
+  return {
+    side,
+    hasBet: betGold > 0,
+    betGold,
+    winLoseGold,
+    betMultiple,
+    iconMultiple,
+    formula:
+      betGold > 0 && iconMultiple
+        ? `${toMoney(betGold)} x ${betMultiple || 0} x ${iconMultiple}`
+        : "",
+  };
+}
+
+function buildLzhdViewModel(parsed) {
+  const source = parsed.source || {};
+  const connection = parsed.connectionRecord || {};
+  const betRecord = parsed.betRecord || {};
+  const mergedSource = {
+    ...betRecord,
+    ...connection,
+    ...source,
+  };
+
+  const specialInfo = toArray(connection.specialInfo || betRecord.specialInfo || mergedSource.specialInfo);
+  const dragonEntry = specialInfo[0] || {};
+  const tigerEntry = specialInfo[1] || {};
+  const dragonArea = getLzhdSideArea(dragonEntry);
+  const tigerArea = getLzhdSideArea(tigerEntry);
+  const dragonBet = buildLzhdBetInfo(dragonArea, "dragon");
+  const tigerBet = buildLzhdBetInfo(tigerArea, "tiger");
+  const showDouble = Number(dragonArea && dragonArea.iconMultiple) > 0 && Number(tigerArea && tigerArea.iconMultiple) > 0;
+
+  return {
+    mode: "lzhd",
+    confName: "lzhd",
+    betSingle: Number(mergedSource.betSingle || 0),
+    betTimes: Number(mergedSource.betTimes || 0),
+    totalBetGold: Number(mergedSource.totalBetGold ?? betRecord.totalBetGold ?? 0),
+    totalWinLoseGold: Number(
+      mergedSource.winLoseGold ??
+        mergedSource.dispatchRewardGold ??
+        parsed.commonRecord.dispatchRewardGold ??
+        0
+    ),
+    lineBetGold: Number(mergedSource.betSingle || 0),
+    lineBetTimes: Number(mergedSource.betTimes || 0),
+    battleWinLoseGold: Number(mergedSource.battleWinLoseGold || 0),
+    showDouble,
+    dragon: {
+      side: "dragon",
+      title: "龙",
+      columns: parseLzhdSideColumns(dragonEntry && dragonEntry.icons),
+      betInfo: dragonBet,
+    },
+    tiger: {
+      side: "tiger",
+      title: "虎",
+      columns: parseLzhdSideColumns(tigerEntry && tigerEntry.icons),
+      betInfo: tigerBet,
+    },
+    iconNameMap: GENERIC_SLOT_ICON_NAME_MAP.lzhd || {},
+    iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP.lzhd || null,
+  };
+}
+
+function buildRhdbRoundWinAreas(areas) {
+  return toArray(areas).map((area, index) => {
+    const normalizedLinePos = toArray(area && area.linePos)
+      .map((item, columnIndex) => ({
+        columnIndex,
+        pos: toArray(item && item.pos)
+          .map((value) => Number(value))
+          .filter((value) => Number.isFinite(value)),
+      }))
+      .filter((item) => item.pos.length);
+    const linePos = normalizedLinePos.flatMap((item) => item.pos.map((row) => [item.columnIndex, row]));
+    const lineCount = normalizedLinePos.reduce((result, item) => result * item.pos.length, 1);
+    const exMultiple = Number((area && area.exMultiple) || 0);
+    const baseFormula = [
+      toMoney(Number((area && area.betGold) || 0)),
+      Number((area && area.betMultiple) || 0),
+      lineCount,
+      Number((area && area.iconMultiple) || 0),
+    ].join(" x ");
+
+    return {
+      ...createSlotWinArea(area, index, {
+        linePos,
+        highlightKeys: linePos.map(([col, row]) => `${col}-${row}`),
+        linePosText: linePos.length ? stringifySlotLinePos(linePos) : "",
+        iconId: area && area.iconId !== undefined ? Number(area.iconId) : "",
+        betAreaId: area && area.betAreaId !== undefined ? area.betAreaId : index + 1,
+      }),
+      lineCount,
+      exMultiple,
+      formula: exMultiple > 1 ? `(${baseFormula}) x ${exMultiple}` : `(${baseFormula})`,
+    };
+  });
+}
+
+function buildRhdbCardCells(iconList) {
+  const icons = toArray(iconList).map((item) => Number(item));
+  const cells = [];
+  const columns = 5;
+  const rows = 3;
+  for (let column = 0; column < columns; column += 1) {
+    for (let row = 0; row < rows; row += 1) {
+      const index = column * rows + row;
+      cells.push({
+        index,
+        column,
+        row,
+        icon: icons[index] !== undefined ? icons[index] : "",
+      });
+    }
+  }
+  return cells;
+}
+
+function sumRhdbWinAreas(winAreas, fallbackValue) {
+  const areas = toArray(winAreas);
+  if (!areas.length) return Number(fallbackValue || 0);
+  return areas.reduce((result, area) => result + Number((area && area.winLoseGold) || 0), 0);
+}
+
+function buildRhdbViewModel(parsed) {
+  const source = parsed.source || {};
+  const connection = parsed.connectionRecord || {};
+  const betRecord = parsed.betRecord || {};
+  const commonRecord = parsed.commonRecord || {};
+  const mergedSource = {
+    ...betRecord,
+    ...connection,
+    ...source,
+  };
+
+  const specialInfo = toArray(connection.specialInfo || betRecord.specialInfo || mergedSource.specialInfo);
+  const mainIcons = parseSlotIconTokens(mergedSource.icons).map((item) => Number(item));
+  const mainWinAreas = buildRhdbRoundWinAreas(mergedSource.betAreas || betRecord.betAreas);
+  const mainScatterCount = mainIcons.filter((icon) => Number(icon) === 31).length;
+  const rounds = [
+    {
+      roundIndex: 0,
+      label: "主盘",
+      pageLabel: "",
+      icons: mainIcons,
+      cells: buildRhdbCardCells(mainIcons),
+      raw: String(mergedSource.icons || ""),
+      timestamp: commonRecord.settlementTimestamp || source.settlementTimestamp || "",
+      columns: 5,
+      rows: 3,
+      winLoseGold: sumRhdbWinAreas(mainWinAreas, mergedSource.winLoseGold ?? commonRecord.dispatchRewardGold ?? 0),
+      winAreas: mainWinAreas,
+      jewelMultiple: Number(mergedSource.jewelMultiple || 0),
+      scatterCount: mainScatterCount,
+      freeTriggerCount: specialInfo.length,
+      isTriggerRound: mainScatterCount > 2 && specialInfo.length > 0,
+      isFreeRound: false,
+    },
+  ];
+
+  specialInfo.forEach((item, index) => {
+    const icons = parseSlotIconTokens(item && item.icons).map((value) => Number(value));
+    rounds.push({
+      roundIndex: index + 1,
+      label: `免费 ${index + 1}`,
+      pageLabel: `${index + 1}/${specialInfo.length}`,
+      icons,
+      cells: buildRhdbCardCells(icons),
+      raw: item && item.icons ? String(item.icons) : "",
+      timestamp: "",
+      columns: 5,
+      rows: 3,
+      winAreas: buildRhdbRoundWinAreas(item && item.betAreas),
+      jewelMultiple: Number((item && item.jewelMultiple) || 0),
+      scatterCount: icons.filter((icon) => Number(icon) === 31).length,
+      freeTriggerCount: 0,
+      isTriggerRound: false,
+      isFreeRound: true,
+    });
+  });
+
+  rounds.forEach((round) => {
+    round.winLoseGold = sumRhdbWinAreas(round.winAreas, round.winLoseGold || 0);
+  });
+
+  return {
+    mode: "rhdb",
+    confName: "rhdb",
+    betSingle: Number(mergedSource.betSingle || 0),
+    betTimes: Number(mergedSource.betTimes || 0),
+    totalBetGold: Number(mergedSource.totalBetGold ?? betRecord.totalBetGold ?? 0),
+    totalWinLoseGold: Number(mergedSource.winLoseGold ?? commonRecord.dispatchRewardGold ?? 0),
+    rounds,
+    winAreas: mainWinAreas,
+    iconNameMap: GENERIC_SLOT_ICON_NAME_MAP.rhdb || {},
+    iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP.rhdb || null,
+    fuzzyAtlas: RHDB_FUZZY_ICON_ATLAS,
+  };
+}
+
+const SLOT_CUSTOM_VIEW_CONF_NAMES = new Set(["sjddj", "shz", "lhdb", "dfdc", "xldb", "jqb", "xldb2", "worldcup", "wcg", "lzhd", "rhdb"]);
 
 function buildSpecialBlocks(confName, parsed) {
   switch (confName) {
@@ -3020,6 +3484,12 @@ export function buildSettlementRecordDetail(row) {
         ? buildShzViewModel(parsed)
         : confName === "worldcup"
         ? buildWorldcupViewModel(parsed)
+        : confName === "wcg"
+        ? buildWcgViewModel(parsed)
+        : confName === "lzhd"
+        ? buildLzhdViewModel(parsed)
+        : confName === "rhdb"
+        ? buildRhdbViewModel(parsed)
         : confName === "hgxs"
         ? buildHgxsViewModel(parsed)
         : confName === "dfdc"
