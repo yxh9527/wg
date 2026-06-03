@@ -1,5 +1,9 @@
 ﻿import { formatUnixDateTime, toMoney } from "./settlementHelpers";
 
+import { buildBdydsViewModel } from "./bdydsRecordParser";
+import { buildJbpViewModel } from "./jbpRecordParser";
+import { buildDwwgViewModel } from "./dwwgRecordParser";
+
 export const SUPPORTED_SETTLEMENT_DETAIL_GAME_IDS = new Set([
   3001, 3002, 3003, 3004, 3005, 3008, 3009, 3010, 3011, 3012, 3013, 3014, 3015, 3016, 3017, 3018, 3019, 3020, 3022,
   3023, 3024, 3025, 3026, 3028, 3029, 3030, 3031, 3032, 3033, 3035, 3036, 3037, 3038, 3039, 3040, 3042, 3051, 5001,
@@ -1564,6 +1568,60 @@ GENERIC_SLOT_ICON_NAME_MAP.cfmm = {
   42: "高级轮盘",
 };
 
+GENERIC_SLOT_ICON_NAME_MAP.stkh = {
+  1: "A",
+  2: "K",
+  3: "Q",
+  4: "J",
+  5: "草帽",
+  6: "玉米",
+  7: "火堆",
+  8: "灯笼",
+  21: "Wild",
+  22: "Wild",
+  31: "Scatter",
+};
+
+GENERIC_SLOT_ICON_NAME_MAP.jfn = {
+  1: "面具",
+  2: "咖啡豆",
+  3: "羽毛",
+  11: "鼓",
+  12: "A",
+  13: "K",
+  21: "Wild",
+};
+
+GENERIC_SLOT_ICON_NAME_MAP.jlbs = {
+  1: "A",
+  2: "K",
+  3: "Q",
+  11: "J",
+  12: "绿宝石",
+  13: "蓝宝石",
+  14: "红宝石",
+  21: "Wild",
+  31: "1x",
+  32: "2x",
+  33: "3x",
+  34: "5x",
+  35: "10x",
+  36: "15x",
+};
+
+GENERIC_SLOT_ICON_NAME_MAP.ssff = {
+  1: "铜钱",
+  2: "花生",
+  3: "烟花",
+  11: "红包",
+  12: "元宝",
+  13: "宝箱",
+  21: "Wild",
+  "21_0": "Wild",
+  "21_1": "Wild",
+  "21_2": "Wild",
+};
+
 const GENERIC_SLOT_ICON_IMAGE_MAP = {};
 
 const XLDB_SPECIAL_PIC_MAP = {
@@ -1762,6 +1820,30 @@ const GENERIC_SLOT_ICON_ATLAS_MAP = {
       42: { x: 2, y: 2, width: 261, height: 207, rotated: false, originalWidth: 263, originalHeight: 207, offset: { x: 0, y: 0 } },
     },
   },
+  stkh: {
+    url: "/stkh-rollers-bg.webp",
+    frames: {
+      1: { x: 3, y: 390, width: 188, height: 190, rotated: false, originalWidth: 188, originalHeight: 190 },
+      2: { x: 402, y: 3, width: 188, height: 190, rotated: true, originalWidth: 188, originalHeight: 190 },
+      3: { x: 592, y: 195, width: 189, height: 189, rotated: false, originalWidth: 189, originalHeight: 189 },
+      4: { x: 596, y: 3, width: 188, height: 190, rotated: true, originalWidth: 188, originalHeight: 190 },
+      5: { x: 806, y: 505, width: 133, height: 138, rotated: true, originalWidth: 133, originalHeight: 138 },
+      6: { x: 386, y: 534, width: 128, height: 139, rotated: true, originalWidth: 128, originalHeight: 139 },
+      7: { x: 529, y: 539, width: 116, height: 140, rotated: true, originalWidth: 116, originalHeight: 140 },
+      8: { x: 673, y: 539, width: 100, height: 129, rotated: true, originalWidth: 100, originalHeight: 129 },
+      11: { x: 3, y: 197, width: 192, height: 189, rotated: false, originalWidth: 192, originalHeight: 189 },
+      12: { x: 204, y: 192, width: 190, height: 185, rotated: false, originalWidth: 190, originalHeight: 185 },
+      13: { x: 204, y: 3, width: 194, height: 185, rotated: false, originalWidth: 194, originalHeight: 185 },
+      14: { x: 398, y: 195, width: 190, height: 185, rotated: false, originalWidth: 190, originalHeight: 185 },
+      15: { x: 790, y: 3, width: 171, height: 147, rotated: false, originalWidth: 171, originalHeight: 147 },
+      16: { x: 386, y: 384, width: 159, height: 146, rotated: false, originalWidth: 159, originalHeight: 146 },
+      17: { x: 549, y: 388, width: 150, height: 147, rotated: false, originalWidth: 150, originalHeight: 147 },
+      18: { x: 790, y: 154, width: 162, height: 146, rotated: false, originalWidth: 162, originalHeight: 146 },
+      21: { x: 785, y: 304, width: 175, height: 197, rotated: false, originalWidth: 175, originalHeight: 197 },
+      22: { x: 199, y: 381, width: 183, height: 178, rotated: false, originalWidth: 183, originalHeight: 178 },
+      31: { x: 3, y: 3, width: 197, height: 190, rotated: false, originalWidth: 197, originalHeight: 190 },
+    },
+  },
   worldcup: {
     url: "/worldcup-icon-clear.webp",
     frames: {
@@ -1807,6 +1889,18 @@ const GENERIC_SLOT_ICON_ATLAS_MAP = {
       6: { x: 3, y: 3, width: 375, height: 376, rotated: false, originalWidth: 375, originalHeight: 376 },
     },
   },
+  jlbs: {
+    url: "/texture-not-supported",
+    frames: {},
+  },
+  ssff: {
+    url: "/texture-not-supported",
+    frames: {},
+  },
+  jfn: {
+    url: "/texture-not-supported",
+    frames: {},
+  },
 };
 
 const RHDB_FUZZY_ICON_ATLAS = {
@@ -1823,6 +1917,64 @@ const RHDB_FUZZY_ICON_ATLAS = {
     21: { x: 213, y: 3, width: 213, height: 198, rotated: true, originalWidth: 213, originalHeight: 198 },
     31: { x: 3, y: 3, width: 206, height: 236, rotated: false, originalWidth: 206, originalHeight: 236 },
   },
+};
+
+const STKH_FUZZY_ICON_ATLAS = {
+  url: "/stkh-fuzzy-bg.webp",
+  frames: {
+    1: { x: 203, y: 3, width: 188, height: 205, rotated: true, originalWidth: 188, originalHeight: 205 },
+    2: { x: 3, y: 418, width: 188, height: 205, rotated: false, originalWidth: 188, originalHeight: 205 },
+    3: { x: 621, y: 3, width: 189, height: 204, rotated: true, originalWidth: 189, originalHeight: 204 },
+    4: { x: 412, y: 3, width: 188, height: 205, rotated: true, originalWidth: 188, originalHeight: 205 },
+    5: { x: 772, y: 393, width: 131, height: 150, rotated: false, originalWidth: 131, originalHeight: 150 },
+    6: { x: 677, y: 556, width: 128, height: 151, rotated: false, originalWidth: 128, originalHeight: 151 },
+    7: { x: 3, y: 627, width: 116, height: 152, rotated: true, originalWidth: 116, originalHeight: 152 },
+    8: { x: 809, y: 547, width: 100, height: 143, rotated: false, originalWidth: 100, originalHeight: 143 },
+    11: { x: 3, y: 210, width: 192, height: 204, rotated: false, originalWidth: 192, originalHeight: 204 },
+    12: { x: 417, y: 195, width: 190, height: 200, rotated: true, originalWidth: 190, originalHeight: 200 },
+    13: { x: 621, y: 196, width: 193, height: 200, rotated: true, originalWidth: 193, originalHeight: 200 },
+    14: { x: 199, y: 374, width: 190, height: 200, rotated: true, originalWidth: 190, originalHeight: 200 },
+    15: { x: 598, y: 393, width: 170, height: 159, rotated: false, originalWidth: 170, originalHeight: 159 },
+    16: { x: 360, y: 576, width: 159, height: 158, rotated: false, originalWidth: 159, originalHeight: 158 },
+    17: { x: 523, y: 576, width: 150, height: 159, rotated: false, originalWidth: 150, originalHeight: 159 },
+    18: { x: 195, y: 568, width: 161, height: 159, rotated: false, originalWidth: 161, originalHeight: 159 },
+    21: { x: 203, y: 195, width: 175, height: 210, rotated: true, originalWidth: 175, originalHeight: 210 },
+    22: { x: 403, y: 389, width: 183, height: 191, rotated: true, originalWidth: 183, originalHeight: 191 },
+    31: { x: 3, y: 3, width: 196, height: 203, rotated: false, originalWidth: 196, originalHeight: 203 },
+  },
+};
+
+const STKH_REWARD_LINES = {
+  1: [[0, 1], [1, 1], [2, 1], [3, 1], [4, 1]],
+  2: [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0]],
+  3: [[0, 2], [1, 2], [2, 2], [3, 2], [4, 2]],
+  4: [[0, 0], [1, 1], [2, 2], [3, 1], [4, 0]],
+  5: [[0, 2], [1, 1], [2, 0], [3, 1], [4, 2]],
+  6: [[0, 0], [1, 0], [2, 1], [3, 0], [4, 0]],
+  7: [[0, 2], [1, 2], [2, 1], [3, 2], [4, 2]],
+  8: [[0, 1], [1, 2], [2, 2], [3, 2], [4, 1]],
+  9: [[0, 1], [1, 0], [2, 0], [3, 0], [4, 1]],
+  10: [[0, 0], [1, 1], [2, 1], [3, 1], [4, 0]],
+  11: [[0, 2], [1, 1], [2, 1], [3, 1], [4, 2]],
+  12: [[0, 1], [1, 1], [2, 0], [3, 1], [4, 1]],
+  13: [[0, 1], [1, 1], [2, 2], [3, 1], [4, 1]],
+  14: [[0, 0], [1, 2], [2, 2], [3, 2], [4, 0]],
+  15: [[0, 2], [1, 0], [2, 0], [3, 0], [4, 2]],
+  16: [[0, 1], [1, 0], [2, 1], [3, 0], [4, 1]],
+  17: [[0, 1], [1, 2], [2, 1], [3, 2], [4, 1]],
+  18: [[0, 0], [1, 2], [2, 0], [3, 2], [4, 0]],
+  19: [[0, 2], [1, 0], [2, 2], [3, 0], [4, 2]],
+  20: [[0, 0], [1, 1], [2, 0], [3, 1], [4, 0]],
+  21: [[0, 2], [1, 1], [2, 2], [3, 1], [4, 2]],
+  22: [[0, 0], [1, 2], [2, 1], [3, 2], [4, 0]],
+  23: [[0, 2], [1, 0], [2, 1], [3, 0], [4, 2]],
+  24: [[0, 1], [1, 0], [2, 2], [3, 0], [4, 1]],
+  25: [[0, 1], [1, 2], [2, 0], [3, 2], [4, 1]],
+  26: [[0, 0], [1, 0], [2, 2], [3, 0], [4, 0]],
+  27: [[0, 2], [1, 2], [2, 0], [3, 2], [4, 2]],
+  28: [[0, 0], [1, 0], [2, 0], [3, 0], [4, 1]],
+  29: [[0, 2], [1, 2], [2, 2], [3, 2], [4, 1]],
+  30: [[0, 1], [1, 1], [2, 1], [3, 1], [4, 0]],
 };
 
 const SBWH_FUZZY_ICON_ATLAS = {
@@ -2731,6 +2883,10 @@ function createSlotWinArea(area, index, overrides = {}) {
   };
 }
 
+function sumSlotWinAreaGold(winAreas) {
+  return toArray(winAreas).reduce((total, area) => total + Number((area && area.winLoseGold) || 0), 0);
+}
+
 function buildGenericSlotViewModel(parsed, confName) {
   const source = parsed.source || {};
   const connection = parsed.connectionRecord || {};
@@ -2767,12 +2923,17 @@ function buildGenericSlotViewModel(parsed, confName) {
           ? toArray(winAreas).map((area, index) => createSlotWinArea(normalizeXldbArea(area), index))
           : winAreas;
       const grid = inferSlotGrid(normalizedIcons.length, normalizedWinAreas);
+      const roundWinLoseGold =
+        rounds.length > 1
+          ? sumSlotWinAreaGold(normalizedWinAreas)
+          : sumSlotWinAreaGold(normalizedWinAreas) || Number(mergedSource.winLoseGold ?? parsed.commonRecord.dispatchRewardGold ?? 0);
       return {
         ...round,
         icons: normalizedIcons,
         winAreas: normalizedWinAreas,
         columns: grid.columns,
         rows: grid.rows,
+        winLoseGold: roundWinLoseGold,
       };
     }
   );
@@ -2994,6 +3155,202 @@ function buildCfmmViewModel(parsed) {
   };
 }
 
+function parseStkhIcons(rawIcons) {
+  return parseSlotIconTokens(rawIcons)
+    .map((item) => Number(item))
+    .filter((item) => Number.isFinite(item));
+}
+
+function splitStkhBoards(icons) {
+  const values = Array.isArray(icons) ? icons : [];
+  if (!values.length) {
+    return [];
+  }
+  if (values.length <= 15) {
+    return [values.slice(0, 15)];
+  }
+  return [values.slice(0, 15), values.slice(15, 30)];
+}
+
+function parseStkhSpecialInfoItem(rawValue) {
+  if (typeof rawValue !== "string" || !rawValue.trim()) return null;
+  const [head, iconsPart = ""] = rawValue.split("#");
+  const [betAreaPart = "", winLoseGoldPart = "0"] = String(head || "").split("$");
+  const betAreas = String(betAreaPart || "")
+    .split("*")
+    .map((item) => String(item).trim())
+    .filter(Boolean)
+    .map((item) => {
+      const parts = item.split(",");
+      return {
+        betAreaId: Number(parts[0]),
+        betGold: Number(parts[1]),
+        betMultiple: Number(parts[2]),
+        winLoseGold: Number(parts[3]),
+        num: Number(parts[4]),
+        iconMultiple: Number(parts[5]),
+        iconId: Number(parts[6]),
+        leftRight: Number(parts[7]),
+      };
+    });
+
+  return {
+    icons: iconsPart,
+    winLoseGold: Number(winLoseGoldPart || 0),
+    betAreas,
+  };
+}
+
+function parseStkhSpecialInfo(rawValue) {
+  if (Array.isArray(rawValue)) return rawValue;
+  if (typeof rawValue !== "string" || !rawValue.trim()) return [];
+  return rawValue
+    .split("|")
+    .map((item) => parseStkhSpecialInfoItem(item))
+    .filter(Boolean);
+}
+
+function buildStkhLinePos(area) {
+  const line = STKH_REWARD_LINES[Number(area && area.betAreaId)];
+  if (!Array.isArray(line) || !line.length) {
+    return {
+      linePos: [],
+      highlightKeys: [],
+      linePosText: "",
+    };
+  }
+  const boardOffset = Number(area && area.leftRight) === 3 ? 5 : 0;
+  const count = Math.min(Math.max(Number(area && area.num) || line.length, 0), line.length);
+  const linePos = line.slice(0, count).map(([columnIndex, rowIndex]) => [rowIndex, columnIndex + boardOffset]);
+  return {
+    linePos,
+    highlightKeys: linePos.map(([rowIndex, columnIndex]) => `${rowIndex}-${columnIndex}`),
+    linePosText: stringifySlotLinePos(linePos),
+  };
+}
+
+function buildStkhWinArea(area, index, extra = {}) {
+  const highlight = buildStkhLinePos(area);
+  const formulaBase = `${toMoney(Number((area && area.betGold) || 0))} x ${Number((area && area.betMultiple) || 0)} x ${Number((area && area.iconMultiple) || 0)}`;
+  return createSlotWinArea(area, index, {
+    ...highlight,
+    side: Number(area && area.leftRight) === 2 ? "上" : Number(area && area.leftRight) === 3 ? "下" : "",
+    formula: extra.formula || formulaBase,
+    lineNo: area && area.betAreaId !== undefined ? Number(area.betAreaId) : index + 1,
+  });
+}
+
+function buildStkhRound(roundSource, roundIndex, options = {}) {
+  const icons = parseStkhIcons(roundSource && roundSource.icons);
+  const boards = splitStkhBoards(icons);
+  const cells = [];
+  boards.forEach((boardIcons, boardIndex) => {
+    boardIcons.forEach((icon, index) => {
+      const row = index % 3;
+      const column = Math.floor(index / 3) + boardIndex * 5;
+      cells.push({
+        index: `${boardIndex}-${index}`,
+        icon,
+        row,
+        column,
+        boardIndex,
+      });
+    });
+  });
+
+  const winAreas = toArray(roundSource && roundSource.betAreas).map((area, index) =>
+    buildStkhWinArea(area, index, {
+      formula: options.doubleWin ? `${toMoney(Number((area && area.betGold) || 0))} x ${Number((area && area.betMultiple) || 0)} x ${Number((area && area.iconMultiple) || 0)} x8` : "",
+    })
+  );
+  const winAreaTotal = winAreas.reduce((total, area) => total + Number((area && area.winLoseGold) || 0), 0);
+  const sourceWinLoseGold = Number((roundSource && roundSource.winLoseGold) || 0);
+  const roundWinLoseGold = sourceWinLoseGold > 0 || winAreaTotal <= 0 ? sourceWinLoseGold : winAreaTotal;
+
+  return {
+    roundIndex,
+    label: options.label || `第 ${roundIndex + 1} 回合`,
+    pageLabel: options.pageLabel || "",
+    winLoseGold: roundWinLoseGold,
+    icons,
+    boards,
+    cells,
+    winAreas,
+    scatterCount: icons.filter((icon) => Number(icon) === 31).length,
+    isFreeRound: !!options.isFreeRound,
+    isTriggerRound: !!options.isTriggerRound,
+    freeTriggerCount: Number(options.freeTriggerCount || 0),
+  };
+}
+
+function buildStkhViewModel(parsed) {
+  const source = parsed.source || {};
+  const connection = parsed.connectionRecord || {};
+  const betRecord = parsed.betRecord || {};
+  const commonRecord = parsed.commonRecord || {};
+  const mergedSource = {
+    ...betRecord,
+    ...connection,
+    ...source,
+  };
+
+  const rawSpecialInfo =
+    connection.specialInfoStr ||
+    betRecord.specialInfoStr ||
+    source.specialInfoStr ||
+    "";
+  const specialRounds = parseStkhSpecialInfo(rawSpecialInfo);
+  const topRoundWinLoseGold = specialRounds.length
+    ? toArray(mergedSource.betAreas).reduce((total, area) => total + Number((area && area.winLoseGold) || 0), 0)
+    : Number(mergedSource.winLoseGold || 0);
+  const topRound = buildStkhRound(
+    {
+      icons: mergedSource.icons,
+      betAreas: mergedSource.betAreas,
+      winLoseGold: topRoundWinLoseGold,
+    },
+    0,
+    {
+      label: "主盘",
+      isTriggerRound: specialRounds.length > 0,
+      freeTriggerCount:
+        specialRounds.length > 0 && specialRounds.every((item) => {
+          const sides = new Set(toArray(item.betAreas).map((area) => Number(area && area.leftRight)).filter((value) => value > 1));
+          return sides.has(2) && sides.has(3);
+        })
+          ? 8
+          : 0,
+    }
+  );
+
+  const freeRounds = specialRounds.map((item, index) => {
+    const sides = new Set(toArray(item.betAreas).map((area) => Number(area && area.leftRight)).filter((value) => value > 1));
+    const doubleWin = sides.has(2) && sides.has(3);
+    return buildStkhRound(item, index + 1, {
+      label: `免费 ${index + 1}`,
+      pageLabel: `${index + 1}/${specialRounds.length}`,
+      isFreeRound: true,
+      doubleWin,
+    });
+  });
+
+  const rounds = [topRound].concat(freeRounds).filter(Boolean);
+  if (!rounds.length) return null;
+
+  return {
+    mode: "stkh",
+    confName: "stkh",
+    betSingle: Number(mergedSource.betSingle || 0),
+    betTimes: Number(mergedSource.betTimes || 0),
+    totalBetGold: Number(mergedSource.totalBetGold ?? betRecord.totalBetGold ?? 0),
+    totalWinLoseGold: Number(mergedSource.winLoseGold ?? commonRecord.dispatchRewardGold ?? 0),
+    rounds,
+    iconNameMap: GENERIC_SLOT_ICON_NAME_MAP.stkh || {},
+    iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP.stkh || null,
+    fuzzyAtlas: STKH_FUZZY_ICON_ATLAS,
+  };
+}
+
 function buildHgxsViewModel(parsed) {
   const source = parsed.source || {};
   const connection = parsed.connectionRecord || {};
@@ -3155,6 +3512,7 @@ function buildDfdcViewModel(parsed) {
   const rounds = roundSources.map((roundSource, roundIndex) => {
     const icons = Array.isArray(roundSource.icons) ? roundSource.icons : [];
     const grid = inferSlotGrid(icons.length, roundSource.betAreas);
+    const winAreas = buildDfdcDetailWinAreas(roundSource.detailEntry, roundSource.betAreas, icons, betSingle);
     return {
       roundIndex,
       label: `第 ${roundIndex + 1} 回合`,
@@ -3163,8 +3521,8 @@ function buildDfdcViewModel(parsed) {
       timestamp: "",
       columns: grid.columns,
       rows: grid.rows,
-      winLoseGold: Number(roundSource.winLoseGold || 0),
-      winAreas: buildDfdcDetailWinAreas(roundSource.detailEntry, roundSource.betAreas, icons, betSingle),
+      winLoseGold: Number(roundSource.winLoseGold || 0) || sumSlotWinAreaGold(winAreas),
+      winAreas,
     };
   });
 
@@ -3833,7 +4191,25 @@ function buildSbwhViewModel(parsed) {
   };
 }
 
-const SLOT_CUSTOM_VIEW_CONF_NAMES = new Set(["sjddj", "shz", "lhdb", "dfdc", "xldb", "jqb", "xldb2", "worldcup", "wcg", "lzhd", "rhdb", "sbwh", "cfmm"]);
+const SLOT_CUSTOM_VIEW_CONF_NAMES = new Set([
+  "sjddj",
+  "shz",
+  "lhdb",
+  "dfdc",
+  "xldb",
+  "jqb",
+  "xldb2",
+  "worldcup",
+  "wcg",
+  "lzhd",
+  "rhdb",
+  "sbwh",
+  "cfmm",
+  "stkh",
+  "bdyds",
+  "jbp",
+  "dwwg",
+]);
 
 function buildSpecialBlocks(confName, parsed) {
   switch (confName) {
@@ -3904,6 +4280,14 @@ export function buildSettlementRecordDetail(row) {
         ? buildSbwhViewModel(parsed)
         : confName === "cfmm"
         ? buildCfmmViewModel(parsed)
+        : confName === "stkh"
+        ? buildStkhViewModel(parsed)
+        : confName === "bdyds"
+        ? buildBdydsViewModel(parsed)
+        : confName === "jbp"
+        ? buildJbpViewModel(parsed)
+        : confName === "dwwg"
+        ? buildDwwgViewModel(parsed)
         : confName === "hgxs"
         ? buildHgxsViewModel(parsed)
         : confName === "dfdc"

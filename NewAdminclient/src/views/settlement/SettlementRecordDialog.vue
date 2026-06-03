@@ -115,6 +115,10 @@ import WcgRecordView from "./WcgRecordView.vue";
 import RhdbRecordView from "./RhdbRecordView.vue";
 import SbwhRecordView from "./SbwhRecordView.vue";
 import CfmmRecordView from "./CfmmRecordView.vue";
+import StkhRecordView from "./StkhRecordView.vue";
+import BdydsRecordView from "./BdydsRecordView.vue";
+import JbpRecordView from "./JbpRecordView.vue";
+import DwwgRecordView from "./DwwgRecordView.vue";
 
 export default {
   name: "SettlementRecordDialog",
@@ -129,6 +133,10 @@ export default {
     RhdbRecordView,
     SbwhRecordView,
     CfmmRecordView,
+    StkhRecordView,
+    BdydsRecordView,
+    JbpRecordView,
+    DwwgRecordView,
   },
   props: {
     visible: {
@@ -174,6 +182,10 @@ export default {
         rhdb: "RhdbRecordView",
         sbwh: "SbwhRecordView",
         cfmm: "CfmmRecordView",
+        stkh: "StkhRecordView",
+        bdyds: "BdydsRecordView",
+        jbp: "JbpRecordView",
+        dwwg: "DwwgRecordView",
         slot: "SlotRecordView",
       };
       return componentMap[mode] || "";
