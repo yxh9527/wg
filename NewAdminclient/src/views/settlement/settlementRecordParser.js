@@ -1533,6 +1533,37 @@ GENERIC_SLOT_ICON_NAME_MAP.rhdb = {
   31: "Scatter",
 };
 
+GENERIC_SLOT_ICON_NAME_MAP.sbwh = {
+  1: "A",
+  2: "K",
+  3: "Q",
+  11: "J",
+  12: "小提琴",
+  13: "手鼓",
+  14: "沙锤",
+  21: "Wild",
+  31: "x2",
+  32: "x3",
+  33: "x5",
+  34: "x10",
+  35: "x15",
+  36: "x20",
+};
+
+GENERIC_SLOT_ICON_NAME_MAP.cfmm = {
+  1: "1x",
+  2: "2x",
+  11: "10x",
+  12: "0",
+  13: "1",
+  21: "蓝倍奖",
+  22: "紫倍奖",
+  23: "金倍奖",
+  31: "RESPIN",
+  41: "幸运轮盘",
+  42: "高级轮盘",
+};
+
 const GENERIC_SLOT_ICON_IMAGE_MAP = {};
 
 const XLDB_SPECIAL_PIC_MAP = {
@@ -1694,6 +1725,43 @@ const GENERIC_SLOT_ICON_ATLAS_MAP = {
       31: { x: 3, y: 3, width: 210, height: 224, rotated: true, originalWidth: 210, originalHeight: 224 },
     },
   },
+  sbwh: {
+    url: "/sbwh-rollers-bg.webp",
+    width: 994,
+    height: 602,
+    frames: {
+      1: { x: 275, y: 233, width: 245, height: 214, rotated: false, originalWidth: 245, originalHeight: 214 },
+      2: { x: 524, y: 421, width: 210, height: 167, rotated: false, originalWidth: 210, originalHeight: 167 },
+      3: { x: 3, y: 453, width: 178, height: 154, rotated: false, originalWidth: 178, originalHeight: 154 },
+      11: { x: 335, y: 451, width: 164, height: 138, rotated: false, originalWidth: 164, originalHeight: 138 },
+      12: { x: 846, y: 417, width: 146, height: 132, rotated: true, originalWidth: 146, originalHeight: 132 },
+      13: { x: 185, y: 453, width: 152, height: 146, rotated: true, originalWidth: 152, originalHeight: 146 },
+      14: { x: 738, y: 421, width: 104, height: 148, rotated: false, originalWidth: 104, originalHeight: 148 },
+      21: { x: 275, y: 3, width: 254, height: 226, rotated: false, originalWidth: 254, originalHeight: 226 },
+      31: { x: 788, y: 3, width: 203, height: 203, rotated: false, originalWidth: 203, originalHeight: 203 },
+      32: { x: 788, y: 210, width: 203, height: 203, rotated: false, originalWidth: 203, originalHeight: 203 },
+      33: { x: 533, y: 3, width: 251, height: 205, rotated: false, originalWidth: 251, originalHeight: 205 },
+      34: { x: 533, y: 212, width: 251, height: 205, rotated: false, originalWidth: 251, originalHeight: 205 },
+      35: { x: 3, y: 3, width: 268, height: 221, rotated: false, originalWidth: 268, originalHeight: 221 },
+      36: { x: 3, y: 228, width: 268, height: 221, rotated: false, originalWidth: 268, originalHeight: 221 },
+    },
+  },
+  cfmm: {
+    url: "/cfmm-rollers-bg.webp",
+    frames: {
+      1: { x: 193, y: 761, width: 174, height: 155, rotated: true, originalWidth: 192, originalHeight: 161, offset: { x: -1, y: 1 } },
+      2: { x: 2, y: 564, width: 201, height: 155, rotated: false, originalWidth: 219, originalHeight: 161, offset: { x: 0, y: 1 } },
+      11: { x: 246, y: 368, width: 102, height: 155, rotated: false, originalWidth: 104, originalHeight: 161, offset: { x: 0, y: -1 } },
+      12: { x: 265, y: 2, width: 86, height: 155, rotated: false, originalWidth: 104, originalHeight: 161, offset: { x: 0, y: 1 } },
+      13: { x: 246, y: 211, width: 104, height: 155, rotated: false, originalWidth: 104, originalHeight: 161, offset: { x: 0, y: -1 } },
+      21: { x: 2, y: 863, width: 189, height: 140, rotated: false, originalWidth: 189, originalHeight: 140, offset: { x: 0, y: 0 } },
+      22: { x: 2, y: 721, width: 189, height: 140, rotated: false, originalWidth: 189, originalHeight: 140, offset: { x: 0, y: 0 } },
+      23: { x: 2, y: 399, width: 214, height: 163, rotated: false, originalWidth: 216, originalHeight: 165, offset: { x: 0, y: 1 } },
+      31: { x: 205, y: 564, width: 195, height: 144, rotated: true, originalWidth: 195, originalHeight: 144, offset: { x: 0, y: 0 } },
+      41: { x: 2, y: 211, width: 242, height: 186, rotated: false, originalWidth: 244, originalHeight: 188, offset: { x: 0, y: 0 } },
+      42: { x: 2, y: 2, width: 261, height: 207, rotated: false, originalWidth: 263, originalHeight: 207, offset: { x: 0, y: 0 } },
+    },
+  },
   worldcup: {
     url: "/worldcup-icon-clear.webp",
     frames: {
@@ -1754,6 +1822,41 @@ const RHDB_FUZZY_ICON_ATLAS = {
     14: { x: 3, y: 243, width: 115, height: 154, rotated: true, originalWidth: 115, originalHeight: 154 },
     21: { x: 213, y: 3, width: 213, height: 198, rotated: true, originalWidth: 213, originalHeight: 198 },
     31: { x: 3, y: 3, width: 206, height: 236, rotated: false, originalWidth: 206, originalHeight: 236 },
+  },
+};
+
+const SBWH_FUZZY_ICON_ATLAS = {
+  url: "/sbwh-fuzzy-bg.webp",
+  width: 774,
+  height: 876,
+  frames: {
+    1: { x: 3, y: 475, width: 245, height: 228, rotated: false, originalWidth: 245, originalHeight: 228 },
+    2: { x: 459, y: 465, width: 210, height: 186, rotated: false, originalWidth: 210, originalHeight: 186 },
+    3: { x: 485, y: 655, width: 178, height: 175, rotated: false, originalWidth: 178, originalHeight: 175 },
+    11: { x: 323, y: 693, width: 164, height: 158, rotated: true, originalWidth: 164, originalHeight: 158 },
+    12: { x: 173, y: 707, width: 146, height: 152, rotated: false, originalWidth: 146, originalHeight: 152 },
+    13: { x: 3, y: 707, width: 152, height: 166, rotated: true, originalWidth: 152, originalHeight: 166 },
+    14: { x: 667, y: 655, width: 104, height: 168, rotated: false, originalWidth: 104, originalHeight: 168 },
+    21: { x: 275, y: 3, width: 254, height: 237, rotated: false, originalWidth: 254, originalHeight: 237 },
+    31: { x: 530, y: 258, width: 203, height: 214, rotated: true, originalWidth: 203, originalHeight: 214 },
+    32: { x: 252, y: 475, width: 203, height: 214, rotated: false, originalWidth: 203, originalHeight: 214 },
+    33: { x: 533, y: 3, width: 251, height: 216, rotated: true, originalWidth: 251, originalHeight: 216 },
+    34: { x: 275, y: 242, width: 268, height: 232, rotated: false, originalWidth: 268, originalHeight: 232 },
+    35: { x: 3, y: 242, width: 268, height: 232, rotated: false, originalWidth: 268, originalHeight: 232 },
+    36: { x: 545, y: 3, width: 227, height: 253, rotated: false, originalWidth: 227, originalHeight: 253 },
+  },
+};
+
+const SBWH_LINE_ATLAS = {
+  url: "/sbwh-line-bg.webp",
+  width: 215,
+  height: 215,
+  frames: {
+    1: { x: 144, y: 2, width: 69, height: 69, rotated: false, originalWidth: 69, originalHeight: 69 },
+    2: { x: 73, y: 2, width: 69, height: 69, rotated: false, originalWidth: 69, originalHeight: 69 },
+    3: { x: 2, y: 144, width: 69, height: 69, rotated: false, originalWidth: 69, originalHeight: 69 },
+    4: { x: 2, y: 73, width: 69, height: 69, rotated: false, originalWidth: 69, originalHeight: 69 },
+    5: { x: 2, y: 2, width: 69, height: 69, rotated: false, originalWidth: 69, originalHeight: 69 },
   },
 };
 
@@ -2691,6 +2794,206 @@ function buildGenericSlotViewModel(parsed, confName) {
   };
 }
 
+function normalizeCfmmFrameId(value, betTimes) {
+  const frameId = Number(value || 0);
+  if (frameId === 41 && Number(betTimes || 0) >= 50) return 42;
+  return frameId;
+}
+
+function normalizeCfmmPages(rawPages, betTimes) {
+  return toArray(rawPages).map((page, pageIndex) => ({
+    pageIndex,
+    columns: toArray(page).map((column, columnIndex) => {
+      const values = toArray(column).map((item) => normalizeCfmmFrameId(item, betTimes));
+      return {
+        columnIndex,
+        topIcon: Number(values[0] || 0),
+        centerIcon: Number(values[1] || 0),
+        bottomIcon: Number(values[2] || 0),
+      };
+    }),
+  }));
+}
+
+function parseCfmmIconsPages(...values) {
+  for (const value of values) {
+    const structured = parseStructuredField(value);
+    if (Array.isArray(structured) && structured.length) {
+      const first = structured[0];
+      if (Array.isArray(first) && first.length && first.every((item) => Array.isArray(item))) {
+        return structured;
+      }
+      if (Array.isArray(first) && first.length) {
+        return [structured];
+      }
+    }
+
+    const unwrapped = unwrapJsonValue(value);
+    if (Array.isArray(unwrapped) && unwrapped.length) {
+      const first = unwrapped[0];
+      if (Array.isArray(first) && first.length && first.every((item) => Array.isArray(item))) {
+        return unwrapped;
+      }
+      if (Array.isArray(first) && first.length) {
+        return [unwrapped];
+      }
+    }
+  }
+  return [];
+}
+
+function buildCfmmDescription(triggerIcon, betTimes, isSpecial) {
+  if (isSpecial) return "触发幸运轮盘";
+  if (triggerIcon === 31) return Number(betTimes || 0) === 1 ? "触发 RESPIN" : "触发全盘 RESPIN";
+  if ([21, 22, 23].includes(Number(triggerIcon || 0))) {
+    return Number(betTimes || 0) === 1 ? "触发倍数奖励" : "触发高倍奖励";
+  }
+  return Number(betTimes || 0) === 1 ? "普通结果" : "倍数模式结果";
+}
+
+function buildCfmmRewardFormula(mergedSource, mode, isSpecial) {
+  const betSingle = Number(mergedSource.betSingle || 0);
+  const normalTimes = Number(mergedSource.normalTimes || 0);
+  const exTimes = Number(mergedSource.exTimes || 0);
+
+  if (mode === "lucky") {
+    return exTimes > 0 ? `${toMoney(betSingle)} x ${exTimes}` : "";
+  }
+
+  if (mode === "respin") {
+    return exTimes > 0 ? `${toMoney(betSingle)} x ${exTimes}` : "";
+  }
+
+  if (normalTimes > 0) {
+    if (exTimes > 0 && !isSpecial) {
+      return `${toMoney(betSingle)} x ${normalTimes} x ${exTimes}`;
+    }
+    return `${toMoney(betSingle)} x ${normalTimes}`;
+  }
+
+  if (exTimes > 0) {
+    return `${toMoney(betSingle)} x ${exTimes}`;
+  }
+
+  return "";
+}
+
+function buildCfmmViewModel(parsed) {
+  const source = parsed.source || {};
+  const connection = parsed.connectionRecord || {};
+  const betRecord = parsed.betRecord || {};
+  const commonRecord = parsed.commonRecord || {};
+  const mergedSource = {
+    ...betRecord,
+    ...connection,
+    ...source,
+  };
+
+  const betTimes = Number(mergedSource.betTimes || 0);
+  const rawPages = parseCfmmIconsPages(
+    mergedSource.icons,
+    connection.icons,
+    betRecord.icons,
+    source.icons,
+    source.specialInfoStrParsed,
+    connection.specialInfoStrParsed
+  );
+  const pages = normalizeCfmmPages(rawPages, betTimes);
+  const firstRawPage = toArray(rawPages)[0];
+  const firstTriggerIcon = Number(toArray(toArray(firstRawPage)[3])[1] || 0);
+  const isSpecial = firstTriggerIcon === 41;
+  const showPager = (pages.length > 1 || betTimes > 1) && firstTriggerIcon >= 31;
+  const rewardItems = toArray(mergedSource.betAreas || betRecord.betAreas).map((area, index) => ({
+    index,
+    betAreaId: area && area.betAreaId !== undefined ? Number(area.betAreaId) : "",
+    iconId: area && area.iconId !== undefined ? normalizeCfmmFrameId(area.iconId, betTimes) : "",
+    num: Number((area && area.num) || 0),
+    betMultiple: Number((area && area.betMultiple) || 0),
+    iconMultiple: Number((area && area.iconMultiple) || 0),
+    betGold: Number((area && area.betGold) || 0),
+    winLoseGold: Number((area && area.winLoseGold) || 0),
+  }));
+
+  const pageViews = [];
+  if (pages[0]) {
+    pageViews.push({
+      pageIndex: 0,
+      label: pages.length > 1 ? "触发页" : "结果页",
+      type: pages.length > 1 ? "trigger" : "main",
+      boardColumns: pages[0].columns,
+      showBoard: true,
+      lockColumnIndex: betTimes === 1 ? 2 : -1,
+      title: pages.length > 1 ? "RESPIN 触发结果" : "主盘结果",
+      description: buildCfmmDescription(firstTriggerIcon, betTimes, isSpecial),
+      triggerIcon: normalizeCfmmFrameId(firstTriggerIcon, betTimes),
+      formula: buildCfmmRewardFormula(mergedSource, "main", isSpecial),
+    });
+  }
+
+  if (showPager) {
+    if (isSpecial && pages.length <= 1) {
+      pageViews.push({
+        pageIndex: 1,
+        label: "幸运轮盘",
+        type: "lucky",
+        boardColumns: [],
+        showBoard: false,
+        lockColumnIndex: -1,
+        title: "幸运轮盘",
+        description: "触发幸运轮盘奖励",
+        triggerIcon: normalizeCfmmFrameId(firstTriggerIcon, betTimes),
+        formula: buildCfmmRewardFormula(mergedSource, "lucky", true),
+      });
+    } else if (pages[1]) {
+      pageViews.push({
+        pageIndex: 1,
+        label: "RESPIN",
+        type: "respin",
+        boardColumns: pages[1].columns,
+        showBoard: true,
+        lockColumnIndex: -1,
+        title: "RESPIN 结果",
+        description: "RESPIN 结算页",
+        triggerIcon: 31,
+        formula: buildCfmmRewardFormula(mergedSource, "respin", false),
+      });
+    }
+  }
+
+  if (!pageViews.length) {
+    pageViews.push({
+      pageIndex: 0,
+      label: "结果页",
+      type: "main",
+      boardColumns: [],
+      showBoard: true,
+      lockColumnIndex: -1,
+      title: "主盘结果",
+      description: "未解析到客户端盘面数据",
+      triggerIcon: "",
+      formula: buildCfmmRewardFormula(mergedSource, "main", false),
+    });
+  }
+
+  return {
+    mode: "cfmm",
+    confName: "cfmm",
+    betSingle: Number(mergedSource.betSingle || 0),
+    betTimes,
+    exTimes: Number(mergedSource.exTimes || 0),
+    normalTimes: Number(mergedSource.normalTimes || 0),
+    totalBetGold: Number(mergedSource.totalBetGold ?? betRecord.totalBetGold ?? 0),
+    totalWinLoseGold: Number(mergedSource.winLoseGold ?? commonRecord.dispatchRewardGold ?? 0),
+    description: buildCfmmDescription(firstTriggerIcon, betTimes, isSpecial),
+    triggerIcon: normalizeCfmmFrameId(firstTriggerIcon, betTimes),
+    rewardItems,
+    pages: pageViews,
+    iconNameMap: GENERIC_SLOT_ICON_NAME_MAP.cfmm || {},
+    iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP.cfmm || null,
+    fuzzyAtlas: GENERIC_SLOT_ICON_ATLAS_MAP.cfmm || null,
+  };
+}
+
 function buildHgxsViewModel(parsed) {
   const source = parsed.source || {};
   const connection = parsed.connectionRecord || {};
@@ -3341,6 +3644,25 @@ function buildRhdbCardCells(iconList) {
   return cells;
 }
 
+function buildSbwhCardCells(iconList) {
+  const icons = toArray(iconList).map((item) => Number(item));
+  const cells = [];
+  const columns = 4;
+  const rows = 3;
+  for (let row = 0; row < rows; row += 1) {
+    for (let column = 0; column < columns; column += 1) {
+      const index = column * rows + row;
+      cells.push({
+        index,
+        column,
+        row,
+        icon: icons[index] !== undefined ? icons[index] : "",
+      });
+    }
+  }
+  return cells;
+}
+
 function sumRhdbWinAreas(winAreas, fallbackValue) {
   const areas = toArray(winAreas);
   if (!areas.length) return Number(fallbackValue || 0);
@@ -3423,7 +3745,95 @@ function buildRhdbViewModel(parsed) {
   };
 }
 
-const SLOT_CUSTOM_VIEW_CONF_NAMES = new Set(["sjddj", "shz", "lhdb", "dfdc", "xldb", "jqb", "xldb2", "worldcup", "wcg", "lzhd", "rhdb"]);
+function buildSbwhViewModel(parsed) {
+  const source = parsed.source || {};
+  const connection = parsed.connectionRecord || {};
+  const betRecord = parsed.betRecord || {};
+  const commonRecord = parsed.commonRecord || {};
+  const mergedSource = {
+    ...betRecord,
+    ...connection,
+    ...source,
+  };
+
+  const icons = parseSlotIconTokens(mergedSource.icons).map((item) => Number(item));
+  const linePatternMap = {
+    1: [
+      [0, 1],
+      [1, 1],
+      [2, 1],
+      [3, 1],
+    ],
+    2: [
+      [0, 0],
+      [1, 0],
+      [2, 0],
+      [3, 0],
+    ],
+    3: [
+      [0, 2],
+      [1, 2],
+      [2, 2],
+      [3, 2],
+    ],
+    4: [
+      [0, 0],
+      [1, 1],
+      [2, 2],
+      [3, 1],
+    ],
+    5: [
+      [0, 2],
+      [1, 1],
+      [2, 0],
+      [3, 1],
+    ],
+  };
+  const winAreas = toArray(mergedSource.betAreas)
+    .slice()
+    .sort((left, right) => Number(left && left.betAreaId) - Number(right && right.betAreaId))
+    .map((area, index) => {
+      const betGold = Number((area && area.betGold) || 0);
+      const betMultiple = Number((area && area.betMultiple) || 0);
+      const iconMultiple = Number((area && area.iconMultiple) || 0);
+      const exMultiple = Number((area && area.exMultiple) || mergedSource.exMultiple || 1);
+      const betAreaId = Number(area && area.betAreaId);
+      const num = Number((area && area.num) || 0);
+      const template = linePatternMap[betAreaId] || [];
+      const linePos = template.slice(0, Math.min(num || template.length, template.length));
+      return {
+        index,
+        betAreaId,
+        iconId: Number(area && area.iconId),
+        betGold,
+        betMultiple,
+        iconMultiple,
+        exMultiple,
+        num,
+        winLoseGold: Number((area && area.winLoseGold) || 0),
+        formula: `(${toMoney(betGold)} x ${betMultiple} x ${iconMultiple} x ${exMultiple})`,
+        linePos,
+        highlightKeys: linePos.map(([column, row]) => `${column}-${row}`),
+      };
+    });
+
+  return {
+    mode: "sbwh",
+    confName: "sbwh",
+    betSingle: Number(mergedSource.betSingle || 0),
+    betTimes: Number(mergedSource.betTimes || 0),
+    totalBetGold: Number(mergedSource.totalBetGold ?? betRecord.totalBetGold ?? 0),
+    totalWinLoseGold: Number(mergedSource.winLoseGold ?? commonRecord.dispatchRewardGold ?? 0),
+    cells: buildSbwhCardCells(icons),
+    winAreas,
+    iconNameMap: GENERIC_SLOT_ICON_NAME_MAP.sbwh || {},
+    iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP.sbwh || null,
+    fuzzyAtlas: SBWH_FUZZY_ICON_ATLAS,
+    lineAtlas: SBWH_LINE_ATLAS,
+  };
+}
+
+const SLOT_CUSTOM_VIEW_CONF_NAMES = new Set(["sjddj", "shz", "lhdb", "dfdc", "xldb", "jqb", "xldb2", "worldcup", "wcg", "lzhd", "rhdb", "sbwh", "cfmm"]);
 
 function buildSpecialBlocks(confName, parsed) {
   switch (confName) {
@@ -3490,6 +3900,10 @@ export function buildSettlementRecordDetail(row) {
         ? buildLzhdViewModel(parsed)
         : confName === "rhdb"
         ? buildRhdbViewModel(parsed)
+        : confName === "sbwh"
+        ? buildSbwhViewModel(parsed)
+        : confName === "cfmm"
+        ? buildCfmmViewModel(parsed)
         : confName === "hgxs"
         ? buildHgxsViewModel(parsed)
         : confName === "dfdc"

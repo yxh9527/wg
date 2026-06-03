@@ -19,7 +19,7 @@
         <div v-else class="record-badge">通用解析</div>
       </div>
 
-      <div v-if="!isCustomRecordDetail" class="record-summary-wrap">
+      <div v-if="!hasCustomRenderer" class="record-summary-wrap">
         <table class="record-summary-table">
           <tbody>
             <tr>
@@ -54,48 +54,14 @@
         class="record-alert"
       />
 
-      <sjddj-record-view
-        v-if="detail.customView && detail.customView.mode === 'sjddj'"
-        :view="detail.customView"
-      />
-
-      <shz-record-view
-        v-else-if="detail.customView && detail.customView.mode === 'shz'"
-        :view="detail.customView"
-      />
-
-      <lhdb-record-view
-        v-else-if="detail.customView && detail.customView.mode === 'lhdb'"
-        :view="detail.customView"
-      />
-
-      <lzhd-record-view
-        v-else-if="detail.customView && detail.customView.mode === 'lzhd'"
-        :view="detail.customView"
-      />
-
-      <xldb-record-view
-        v-else-if="detail.customView && detail.customView.mode === 'xldb'"
-        :view="detail.customView"
-      />
-
-      <wcg-record-view
-        v-else-if="detail.customView && detail.customView.mode === 'wcg'"
-        :view="detail.customView"
-      />
-
-      <rhdb-record-view
-        v-else-if="detail.customView && detail.customView.mode === 'rhdb'"
-        :view="detail.customView"
-      />
-
-      <slot-record-view
-        v-else-if="detail.customView && detail.customView.mode === 'slot'"
+      <component
+        :is="customRendererComponent"
+        v-if="customRendererComponent"
         :view="detail.customView"
       />
 
       <div
-        v-for="block in detail.customView ? [] : detail.blocks"
+        v-for="block in hasCustomRenderer ? [] : detail.blocks"
         :key="`${block.type}-${block.title}`"
         class="record-block"
       >
@@ -147,6 +113,8 @@ import LzhdRecordView from "./LzhdRecordView.vue";
 import XldbRecordView from "./XldbRecordView.vue";
 import WcgRecordView from "./WcgRecordView.vue";
 import RhdbRecordView from "./RhdbRecordView.vue";
+import SbwhRecordView from "./SbwhRecordView.vue";
+import CfmmRecordView from "./CfmmRecordView.vue";
 
 export default {
   name: "SettlementRecordDialog",
@@ -159,6 +127,8 @@ export default {
     XldbRecordView,
     WcgRecordView,
     RhdbRecordView,
+    SbwhRecordView,
+    CfmmRecordView,
   },
   props: {
     visible: {
@@ -192,8 +162,27 @@ export default {
       if (!this.row || !Object.keys(this.row).length) return null;
       return buildSettlementRecordDetail(this.row);
     },
+    customRendererComponent() {
+      const mode = this.detail && this.detail.customView && this.detail.customView.mode;
+      const componentMap = {
+        sjddj: "SjddjRecordView",
+        shz: "ShzRecordView",
+        lhdb: "LhdbRecordView",
+        lzhd: "LzhdRecordView",
+        xldb: "XldbRecordView",
+        wcg: "WcgRecordView",
+        rhdb: "RhdbRecordView",
+        sbwh: "SbwhRecordView",
+        cfmm: "CfmmRecordView",
+        slot: "SlotRecordView",
+      };
+      return componentMap[mode] || "";
+    },
+    hasCustomRenderer() {
+      return !!this.customRendererComponent;
+    },
     isCustomRecordDetail() {
-      return !!(this.detail && this.detail.customView);
+      return this.hasCustomRenderer;
     },
     dialogProps() {
       if (this.embedded) return {};
