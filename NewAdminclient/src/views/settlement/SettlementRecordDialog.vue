@@ -120,6 +120,7 @@ import BdydsRecordView from "./BdydsRecordView.vue";
 import JbpRecordView from "./JbpRecordView.vue";
 import DwwgRecordView from "./DwwgRecordView.vue";
 import JlbzRecordView from "./JlbzRecordView.vue";
+import FksevenRecordView from "./FksevenRecordView.vue";
 
 export default {
   name: "SettlementRecordDialog",
@@ -139,6 +140,7 @@ export default {
     JbpRecordView,
     DwwgRecordView,
     JlbzRecordView,
+    FksevenRecordView,
   },
   props: {
     visible: {
@@ -173,7 +175,9 @@ export default {
       return buildSettlementRecordDetail(this.row);
     },
     customRendererComponent() {
-      const mode = this.detail && this.detail.customView && this.detail.customView.mode;
+      const detail = this.detail || {};
+      const mode = detail.customView && detail.customView.mode;
+      const confName = detail.confName || "";
       const componentMap = {
         sjddj: "SjddjRecordView",
         shz: "ShzRecordView",
@@ -189,9 +193,10 @@ export default {
         jbp: "JbpRecordView",
         dwwg: "DwwgRecordView",
         jlbz: "JlbzRecordView",
+        fkseven: "FksevenRecordView",
         slot: "SlotRecordView",
       };
-      return componentMap[mode] || "";
+      return componentMap[mode] || componentMap[confName] || "";
     },
     hasCustomRenderer() {
       return !!this.customRendererComponent;

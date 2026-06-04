@@ -203,7 +203,7 @@ export default {
   data() {
     return {
       roundIndex: 0,
-      activeLineIndex: 0,
+      activeLineIndex: this.initialActiveLineIndex(true),
     };
   },
   computed: {
@@ -224,6 +224,7 @@ export default {
       return Array.isArray(this.currentRound.winAreas) ? this.currentRound.winAreas : [];
     },
     activeArea() {
+      if (this.activeLineIndex < 0) return null;
       return this.currentWinAreas[this.activeLineIndex] || null;
     },
     hasHighlight() {
@@ -253,22 +254,40 @@ export default {
     boardCells() {
       const icons = Array.isArray(this.currentRound.icons) ? this.currentRound.icons : [];
       const columns = Number(this.currentRound.columns || 5);
-      return icons.map((icon, index) => ({
-        key: `${this.roundIndex}-${index}`,
-        icon,
-        coordKey: `${Math.floor(index / columns)}-${index % columns}`,
-      }));
+      const rows = Number(this.currentRound.rows || 3);
+      const isColumnMajor = !!(this.currentRound && this.currentRound.columnMajor);
+
+      if (!isColumnMajor) {
+        return icons.map((icon, index) => ({
+          key: `${this.roundIndex}-${index}`,
+          icon,
+          coordKey: `${Math.floor(index / columns)}-${index % columns}`,
+        }));
+      }
+
+      const cells = [];
+      for (let row = 0; row < rows; row += 1) {
+        for (let column = 0; column < columns; column += 1) {
+          const sourceIndex = column * rows + row;
+          cells.push({
+            key: `${this.roundIndex}-${sourceIndex}`,
+            icon: icons[sourceIndex],
+            coordKey: `${row}-${column}`,
+          });
+        }
+      }
+      return cells;
     },
   },
   watch: {
     roundIndex() {
-      this.activeLineIndex = 0;
+      this.activeLineIndex = this.initialActiveLineIndex(false);
     },
     view: {
       deep: false,
       handler() {
         this.roundIndex = 0;
-        this.activeLineIndex = 0;
+        this.activeLineIndex = this.initialActiveLineIndex(true);
       },
     },
     roundList(nextRounds) {
@@ -278,13 +297,29 @@ export default {
       }
     },
     currentWinAreas(nextAreas) {
-      const maxIndex = Math.max((nextAreas || []).length - 1, 0);
+      const maxIndex = Math.max((nextAreas || []).length - 1, -1);
       if (this.activeLineIndex > maxIndex) {
-        this.activeLineIndex = 0;
+        this.activeLineIndex = this.initialActiveLineIndex(this.roundIndex === 0);
       }
     },
   },
   methods: {
+    initialActiveLineIndex(useConfiguredDefault) {
+      const configured = Number(this.view && this.view.defaultActiveLineIndex);
+      if (useConfiguredDefault) {
+        if (Number.isInteger(configured) && configured >= -1) {
+          return configured;
+        }
+      }
+      const currentWinAreas = Array.isArray(this.currentWinAreas) ? this.currentWinAreas : [];
+      if (currentWinAreas.length > 0) {
+        return 0;
+      }
+      if (Number.isInteger(configured) && configured >= -1) {
+        return configured;
+      }
+      return -1;
+    },
     hasIconAsset(icon) {
       return !!(
         this.view &&
