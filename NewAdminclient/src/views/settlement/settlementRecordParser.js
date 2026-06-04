@@ -1602,6 +1602,16 @@ GENERIC_SLOT_ICON_NAME_MAP.stkh = {
   31: "Scatter",
 };
 
+GENERIC_SLOT_ICON_NAME_MAP.hhsc = {
+  1: "元宝",
+  2: "如意",
+  3: "福袋",
+  11: "红包",
+  12: "鞭炮",
+  13: "金币",
+  21: "Wild",
+};
+
 GENERIC_SLOT_ICON_NAME_MAP.jfn = {
   1: "面具",
   2: "咖啡豆",
@@ -1646,6 +1656,9 @@ const TRANSPARENT_PIXEL_DATA_URI = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAA
 
 const GENERIC_SLOT_ICON_IMAGE_MAP = {
   cjsgj2: {
+    0: TRANSPARENT_PIXEL_DATA_URI,
+  },
+  hhsc: {
     0: TRANSPARENT_PIXEL_DATA_URI,
   },
 };
@@ -1931,6 +1944,19 @@ const GENERIC_SLOT_ICON_ATLAS_MAP = {
       31: { x: 3, y: 3, width: 197, height: 190, rotated: false, originalWidth: 197, originalHeight: 190 },
     },
   },
+  hhsc: {
+    url: "/hhsc-rollers-bg.webp",
+    swapRotatedSize: true,
+    frames: {
+      1: { x: 311, y: 0, width: 291, height: 286, rotated: false, originalWidth: 291, originalHeight: 286 },
+      2: { x: 602, y: 0, width: 298, height: 273, rotated: false, originalWidth: 298, originalHeight: 273 },
+      3: { x: 602, y: 273, width: 278, height: 257, rotated: false, originalWidth: 278, originalHeight: 257 },
+      11: { x: 566, y: 530, width: 240, height: 245, rotated: false, originalWidth: 240, originalHeight: 245 },
+      12: { x: 311, y: 523, width: 252, height: 255, rotated: true, originalWidth: 252, originalHeight: 255, rotateDegrees: -90 },
+      13: { x: 311, y: 286, width: 288, height: 237, rotated: false, originalWidth: 288, originalHeight: 237 },
+      21: { x: 0, y: 341, width: 341, height: 311, rotated: true, originalWidth: 341, originalHeight: 311, rotateDegrees: -90 },
+    },
+  },
   worldcup: {
     url: "/worldcup-icon-clear.webp",
     frames: {
@@ -2150,6 +2176,18 @@ const GENERIC_SLOT_FUZZY_ATLAS_MAP = {
       12: { x: 459, y: 260, width: 221, height: 183, rotated: false, originalWidth: 221, originalHeight: 183, offset: { x: 0, y: 0 } },
       13: { x: 223, y: 274, width: 170, height: 226, rotated: true, originalWidth: 170, originalHeight: 226, offset: { x: 0, y: 0 } },
       21: { x: 459, y: 2, width: 239, height: 256, rotated: false, originalWidth: 239, originalHeight: 258, offset: { x: 0, y: 0 } },
+    },
+  },
+  hhsc: {
+    url: "/hhsc-fuzzy-bg.webp",
+    swapRotatedSize: true,
+    frames: {
+      1: { x: 2, y: 2, width: 287, height: 312, rotated: false, originalWidth: 291, originalHeight: 312, offset: { x: -1, y: 0 } },
+      2: { x: 291, y: 2, width: 295, height: 299, rotated: false, originalWidth: 297, originalHeight: 301, offset: { x: -1, y: 1 } },
+      3: { x: 588, y: 266, width: 269, height: 281, rotated: false, originalWidth: 275, originalHeight: 283, offset: { x: 0, y: 1 } },
+      11: { x: 2, y: 316, width: 236, height: 270, rotated: true, originalWidth: 238, originalHeight: 272, offset: { x: 0, y: 0 } },
+      12: { x: 291, y: 303, width: 246, height: 277, rotated: true, originalWidth: 250, originalHeight: 279, offset: { x: -1, y: 1 }, rotateDegrees: -90 },
+      13: { x: 588, y: 2, width: 286, height: 262, rotated: false, originalWidth: 288, originalHeight: 264, offset: { x: -1, y: 1 } },
     },
   },
   cjsgj2: {
@@ -2493,6 +2531,54 @@ const HGXS_LINE_ARRAY = [
     [0, 2],
   ],
 ];
+
+const HHSC_LINE_ARRAY = [
+  [
+    [1, 0],
+    [1, 1],
+    [1, 2],
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+  ],
+  [
+    [2, 0],
+    [2, 1],
+    [2, 2],
+  ],
+  [
+    [0, 0],
+    [1, 1],
+    [2, 2],
+  ],
+  [
+    [0, 2],
+    [1, 1],
+    [2, 0],
+  ],
+];
+
+function buildHhscAreaHighlight(area, icons = []) {
+  const lineTemplate = HHSC_LINE_ARRAY[Number(area && area.betAreaId) - 1];
+  if (!Array.isArray(lineTemplate) || !lineTemplate.length) {
+    return {
+      linePos: [],
+      highlightKeys: [],
+      linePosText: "",
+    };
+  }
+
+  const hitCount = Math.min(Math.max(Number(area && area.num) || 0, 0), lineTemplate.length);
+  const finalCount = Math.min(Math.max(hitCount || lineTemplate.length, 0), lineTemplate.length);
+  const linePos = lineTemplate.slice(0, finalCount);
+  return {
+    linePos,
+    highlightKeys: linePos.map(([row, col]) => `${row}-${col}`),
+    linePosText: stringifySlotLinePos(linePos),
+  };
+}
 
 function buildHgxsAreaHighlight(area, isFullScreenGame) {
   if (isFullScreenGame) {
@@ -3084,6 +3170,9 @@ function buildGenericSlotViewModel(parsed, confName) {
     if (confName === "jfn") {
       return createSlotWinArea(area, index, buildJfnAreaHighlight(area));
     }
+    if (confName === "hhsc") {
+      return createSlotWinArea(area, index, buildHhscAreaHighlight(area));
+    }
     return createSlotWinArea(area, index);
   };
 
@@ -3092,7 +3181,14 @@ function buildGenericSlotViewModel(parsed, confName) {
   );
 
   const timestampList = source.timestampList || connection.timestampList || betRecord.timestampList || [];
-  const rawIcons = String(mergedSource.icons || "");
+  const specialInfoRounds = toArray(connection.specialInfo || betRecord.specialInfo || mergedSource.specialInfo);
+  const lastSpecialInfo = specialInfoRounds.length ? specialInfoRounds[specialInfoRounds.length - 1] : null;
+  const rawIcons =
+    confName === "hhsc"
+      ? specialInfoRounds.length
+        ? String((lastSpecialInfo && lastSpecialInfo.icons) || "")
+        : String(mergedSource.icons || "")
+      : String(mergedSource.icons || "");
   const rounds = splitGenericSlotRounds(rawIcons, allWinAreas, timestampList);
   const normalizedRounds = (rounds.length ? rounds : [{ roundIndex: 0, label: "第 1 回合", icons: [], raw: "", winAreas: [] }]).map(
     (round) => {
@@ -3114,6 +3210,8 @@ function buildGenericSlotViewModel(parsed, confName) {
           ? toArray(winAreas).map((area, index) => createSlotWinArea(normalizeXldbArea(area), index))
           : confName === "jfn"
           ? toArray(winAreas).map((area, index) => createSlotWinArea(area, index, buildJfnAreaHighlight(area)))
+          : confName === "hhsc"
+          ? toArray(winAreas).map((area, index) => createSlotWinArea(area, index, buildHhscAreaHighlight(area, normalizedIcons)))
           : winAreas;
       const grid = inferSlotGrid(normalizedIcons.length, normalizedWinAreas);
       const roundWinLoseGold =
@@ -3126,7 +3224,7 @@ function buildGenericSlotViewModel(parsed, confName) {
         winAreas: normalizedWinAreas,
         columns: grid.columns,
         rows: grid.rows,
-        columnMajor: confName === "cjsgj",
+        columnMajor: confName === "cjsgj" || confName === "hhsc",
         winLoseGold: roundWinLoseGold,
       };
     }
@@ -3145,7 +3243,7 @@ function buildGenericSlotViewModel(parsed, confName) {
     winAreas: allWinAreas,
     iconNameMap: GENERIC_SLOT_ICON_NAME_MAP[confName] || {},
     iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP[confName] || null,
-    fuzzyAtlas: GENERIC_SLOT_FUZZY_ATLAS_MAP[confName] || null,
+    fuzzyAtlas: confName === "hhsc" ? null : GENERIC_SLOT_FUZZY_ATLAS_MAP[confName] || null,
     iconImageMap: GENERIC_SLOT_ICON_IMAGE_MAP[confName] || null,
   };
 }

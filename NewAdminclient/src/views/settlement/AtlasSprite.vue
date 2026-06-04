@@ -162,7 +162,9 @@ export default {
 
         if (shouldRotate) {
           const rotateDegrees =
-            this.atlas && Number.isFinite(Number(this.atlas.rotateDegrees))
+            Number.isFinite(Number(frame.rotateDegrees))
+              ? Number(frame.rotateDegrees)
+              : this.atlas && Number.isFinite(Number(this.atlas.rotateDegrees))
               ? Number(this.atlas.rotateDegrees)
               : 90;
           frameCtx.translate(trimmedWidth / 2, trimmedHeight / 2);
