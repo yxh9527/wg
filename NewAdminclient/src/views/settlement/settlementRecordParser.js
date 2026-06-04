@@ -1490,6 +1490,21 @@ GENERIC_SLOT_ICON_NAME_MAP.hgxs = {
   21: "海龟",
 };
 
+GENERIC_SLOT_ICON_NAME_MAP.cjsgj2 = {
+  1: "BAR",
+  2: "铃铛",
+  3: "樱桃",
+  11: "柠檬",
+  12: "荔枝",
+  13: "橙子",
+  14: "西瓜",
+  15: "葡萄",
+  16: "苹果",
+  17: "星星",
+  21: "Wild",
+  31: "Scatter",
+};
+
 GENERIC_SLOT_ICON_NAME_MAP.worldcup = {
   1: "姆巴佩",
   2: "哈兰德",
@@ -1627,7 +1642,13 @@ GENERIC_SLOT_ICON_NAME_MAP.ssff = {
   "21_2": "Wild",
 };
 
-const GENERIC_SLOT_ICON_IMAGE_MAP = {};
+const TRANSPARENT_PIXEL_DATA_URI = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
+
+const GENERIC_SLOT_ICON_IMAGE_MAP = {
+  cjsgj2: {
+    0: TRANSPARENT_PIXEL_DATA_URI,
+  },
+};
 
 const XLDB_SPECIAL_PIC_MAP = {
   31: 100,
@@ -1709,6 +1730,8 @@ const GENERIC_SLOT_ICON_ATLAS_MAP = {
     url: "/cjsgj-icons-atlas.webp",
     width: 435,
     height: 502,
+    swapRotatedSize: true,
+    rotateDegrees: -90,
     frames: {
       0: { x: 287, y: 286, width: 132, height: 127, rotated: false, originalWidth: 132, originalHeight: 127 },
       1: { x: 3, y: 131, width: 139, height: 120, rotated: false, originalWidth: 139, originalHeight: 120 },
@@ -1809,6 +1832,27 @@ const GENERIC_SLOT_ICON_ATLAS_MAP = {
       12: { x: 263, y: 183, width: 219, height: 204, rotated: false, originalWidth: 219, originalHeight: 204, offset: { x: 0, y: 0 } },
       13: { x: 253, y: 601, width: 205, height: 160, rotated: false, originalWidth: 207, originalHeight: 160, offset: { x: 1, y: 0 } },
       21: { x: 2, y: 2, width: 259, height: 244, rotated: false, originalWidth: 259, originalHeight: 244, offset: { x: 0, y: 0 } },
+    },
+  },
+  cjsgj2: {
+    url: "/cjsgj2-icon-clear.webp",
+    width: 504,
+    height: 798,
+    swapRotatedSize: true,
+    rotateDegrees: -90,
+    frames: {
+      1: { x: 3, y: 467, width: 179, height: 149, rotated: false, originalWidth: 179, originalHeight: 149 },
+      2: { x: 183, y: 648, width: 168, height: 145, rotated: false, originalWidth: 168, originalHeight: 145 },
+      3: { x: 210, y: 168, width: 147, height: 138, rotated: false, originalWidth: 147, originalHeight: 138 },
+      11: { x: 210, y: 310, width: 153, height: 131, rotated: false, originalWidth: 153, originalHeight: 131 },
+      12: { x: 361, y: 147, width: 147, height: 137, rotated: true, originalWidth: 147, originalHeight: 137 },
+      13: { x: 366, y: 445, width: 141, height: 135, rotated: true, originalWidth: 141, originalHeight: 135 },
+      14: { x: 347, y: 3, width: 140, height: 140, rotated: false, originalWidth: 140, originalHeight: 140 },
+      15: { x: 355, y: 648, width: 146, height: 141, rotated: false, originalWidth: 146, originalHeight: 141 },
+      16: { x: 210, y: 3, width: 161, height: 133, rotated: true, originalWidth: 161, originalHeight: 133 },
+      17: { x: 367, y: 298, width: 110, height: 110, rotated: false, originalWidth: 110, originalHeight: 110 },
+      21: { x: 3, y: 620, width: 175, height: 176, rotated: true, originalWidth: 177, originalHeight: 176 },
+      31: { x: 3, y: 235, width: 228, height: 203, rotated: true, originalWidth: 228, originalHeight: 203 },
     },
   },
   rhdb: {
@@ -2108,6 +2152,26 @@ const GENERIC_SLOT_FUZZY_ATLAS_MAP = {
       21: { x: 459, y: 2, width: 239, height: 256, rotated: false, originalWidth: 239, originalHeight: 258, offset: { x: 0, y: 0 } },
     },
   },
+  cjsgj2: {
+    url: "/cjsgj2-icon-fuzzy.webp",
+    width: 919,
+    height: 466,
+    swapRotatedSize: true,
+    rotateDegrees: -90,
+    frames: {
+      1: { x: 416, y: 3, width: 179, height: 162, rotated: false, originalWidth: 179, originalHeight: 162 },
+      2: { x: 599, y: 3, width: 168, height: 157, rotated: false, originalWidth: 168, originalHeight: 157 },
+      3: { x: 578, y: 169, width: 147, height: 150, rotated: false, originalWidth: 147, originalHeight: 150 },
+      11: { x: 412, y: 319, width: 153, height: 142, rotated: false, originalWidth: 153, originalHeight: 142 },
+      12: { x: 729, y: 164, width: 147, height: 148, rotated: false, originalWidth: 147, originalHeight: 148 },
+      13: { x: 729, y: 316, width: 141, height: 147, rotated: false, originalWidth: 141, originalHeight: 147 },
+      14: { x: 569, y: 323, width: 140, height: 152, rotated: true, originalWidth: 140, originalHeight: 152 },
+      15: { x: 771, y: 3, width: 145, height: 153, rotated: false, originalWidth: 145, originalHeight: 153 },
+      16: { x: 416, y: 169, width: 158, height: 146, rotated: false, originalWidth: 158, originalHeight: 146 },
+      21: { x: 235, y: 196, width: 173, height: 186, rotated: false, originalWidth: 173, originalHeight: 186 },
+      31: { x: 3, y: 211, width: 228, height: 204, rotated: false, originalWidth: 228, originalHeight: 204 },
+    },
+  },
 };
 
 function isFiniteNumberLike(value) {
@@ -2363,6 +2427,19 @@ function normalizeJfnIcons(rawIcons) {
       const sourceIndex = columnIndex * rows + rowIndex;
       ordered.push(icons[sourceIndex]);
     }
+  }
+  return ordered;
+}
+
+function normalizeCjsgjIcons(rawIcons) {
+  const icons = toArray(rawIcons)
+    .map((item) => Number(item))
+    .filter((item) => Number.isFinite(item));
+  if (icons.length !== 15) return icons;
+
+  const ordered = [];
+  for (let columnIndex = 0; columnIndex < 5; columnIndex += 1) {
+    ordered.push(...icons.slice(columnIndex * 3, columnIndex * 3 + 3).reverse());
   }
   return ordered;
 }
@@ -3025,6 +3102,8 @@ function buildGenericSlotViewModel(parsed, confName) {
           ? (round.icons || []).map(normalizeTgpdIconValue)
           : confName === "xldb"
           ? (round.icons || []).map(normalizeXldbIconValue)
+          : confName === "cjsgj"
+          ? normalizeCjsgjIcons(round.icons || [])
           : confName === "jfn"
           ? normalizeJfnIcons(round.icons || [])
           : round.icons || [];
@@ -3047,6 +3126,7 @@ function buildGenericSlotViewModel(parsed, confName) {
         winAreas: normalizedWinAreas,
         columns: grid.columns,
         rows: grid.rows,
+        columnMajor: confName === "cjsgj",
         winLoseGold: roundWinLoseGold,
       };
     }
@@ -3067,6 +3147,211 @@ function buildGenericSlotViewModel(parsed, confName) {
     iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP[confName] || null,
     fuzzyAtlas: GENERIC_SLOT_FUZZY_ATLAS_MAP[confName] || null,
     iconImageMap: GENERIC_SLOT_ICON_IMAGE_MAP[confName] || null,
+  };
+}
+
+function parseCjsgj2Info(rawInfo) {
+  if (isObject(rawInfo)) return rawInfo;
+  if (typeof rawInfo !== "string" || !rawInfo.trim()) return null;
+  return safeJsonParse(rawInfo);
+}
+
+function parseCjsgj2BattleRows(rawBattle) {
+  return toArray(rawBattle)
+    .map((item) =>
+      String(item || "")
+        .split(",")
+        .map((value) => Number(value))
+        .filter((value) => Number.isFinite(value))
+    )
+    .filter((row) => row.length);
+}
+
+function normalizeCjsgj2Icons(rawIcons) {
+  return parseSlotIconTokens(rawIcons)
+    .map((item) => Number(item))
+    .filter((item) => Number.isFinite(item));
+}
+
+function createCjsgj2LinePos(detail) {
+  const positions = toArray(detail && detail.linePos)
+    .map((item) => {
+      const pos = item && item.pos;
+      if (!Array.isArray(pos) || pos.length < 2) return null;
+      return [Number(pos[1] || 0), Number(pos[0] || 0)];
+    })
+    .filter(Boolean);
+  return {
+    linePos: positions,
+    highlightKeys: positions.map(([row, column]) => `${row}-${column}`),
+    linePosText: stringifySlotLinePos(positions),
+  };
+}
+
+function buildCjsgj2SpecialArea(rawDetail, index, mergedSource) {
+  const detail = String(rawDetail || "")
+    .split(",")
+    .map((item) => item.trim())
+    .filter((item) => item !== "");
+  if (detail.length < 4) return null;
+
+  const lineId = Number(detail[0] || 0);
+  const iconId = Number(detail[1] || 0);
+  const gold = Number(detail[2] || 0);
+  const odds = Number(detail[3] || 0);
+  const linePos = detail.slice(4).map((value, columnIndex) => [Number(value || 0), columnIndex]);
+  return createSlotWinArea(
+    {
+      betAreaId: lineId,
+      iconId,
+      winLoseGold: gold,
+      betGold: Number(mergedSource.betSingle || 0),
+      betMultiple: Number(mergedSource.betTimes || 0),
+      iconMultiple: odds,
+      num: linePos.length,
+      linePos,
+    },
+    index,
+    {
+      title: `线 ${String(lineId).padStart(2, "0")}`,
+      linePos,
+      highlightKeys: linePos.map(([row, column]) => `${row}-${column}`),
+      linePosText: stringifySlotLinePos(linePos),
+      formula: [mergedSource.betSingle, mergedSource.betTimes, odds]
+        .map((value) => toMoney(Number(value || 0)))
+        .join(" x "),
+    }
+  );
+}
+
+function buildCjsgj2BattleRound(info, battleRows, mergedSource) {
+  if (!battleRows.length) return null;
+  const rows = battleRows.map((row, rowIndex) => {
+    const winLoseGold = Number(row[1] || 0);
+    const iconSeed = row.slice(2);
+    return {
+      roundIndex: rowIndex,
+      label: `第 ${rowIndex + 1} 关`,
+      icons: iconSeed,
+      raw: iconSeed.join(","),
+      columns: 5,
+      rows: 1,
+      winAreas: [],
+      winLoseGold,
+      boardOrder: "row-major",
+      boardShellWidth: "100%",
+      battleLevel: rowIndex + 1,
+    };
+  });
+
+  return {
+    mode: "slot",
+    confName: "cjsgj2",
+    betSingle: Number(mergedSource.betSingle || 0),
+    betTimes: Number(mergedSource.betTimes || 0),
+    totalBetGold: Number(mergedSource.totalBetGold ?? 0),
+    totalWinLoseGold: rows.reduce((sum, row) => sum + Number(row.winLoseGold || 0), 0),
+    rounds: rows,
+    winAreas: [],
+    iconNameMap: GENERIC_SLOT_ICON_NAME_MAP.cjsgj2 || {},
+    iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP.cjsgj2 || null,
+    fuzzyAtlas: GENERIC_SLOT_FUZZY_ATLAS_MAP.cjsgj2 || null,
+    iconImageMap: GENERIC_SLOT_ICON_IMAGE_MAP.cjsgj2 || null,
+    boardShellWidth: "100%",
+    hideLinePosChip: true,
+    defaultActiveLineIndex: -1,
+  };
+}
+
+function buildCjsgj2ViewModel(parsed) {
+  const source = parsed.source || {};
+  const connection = parsed.connectionRecord || {};
+  const betRecord = parsed.betRecord || {};
+  const commonRecord = parsed.commonRecord || {};
+  const mergedSource = {
+    ...betRecord,
+    ...connection,
+    ...source,
+  };
+
+  const info =
+    parseCjsgj2Info(source.specialInfoStr) ||
+    parseCjsgj2Info(connection.specialInfoStr) ||
+    parseCjsgj2Info(betRecord.specialInfoStr) ||
+    source.specialInfoStrParsed ||
+    connection.specialInfoStrParsed ||
+    betRecord.specialInfoStrParsed ||
+    null;
+
+  const mode = Number(info && info.c);
+  const roundsSource = toArray(info && info.s);
+  const battleRows = parseCjsgj2BattleRows(info && info.f);
+  if (mode === 2 && battleRows.length) {
+    return buildCjsgj2BattleRound(info, battleRows, mergedSource);
+  }
+
+  const iconSegments = String(mergedSource.icons || "")
+    .split(";")
+    .map((segment) => segment.trim())
+    .filter(Boolean);
+
+  const baseIcons = iconSegments.map((segment) => normalizeCjsgj2Icons(segment));
+  const rounds = (baseIcons.length ? baseIcons : [normalizeCjsgj2Icons(mergedSource.icons)]).map((icons, roundIndex) => {
+    const roundInfo = roundsSource[roundIndex] || {};
+    const winAreas = toArray(roundInfo && roundInfo.l)
+      .map((detail, detailIndex) => buildCjsgj2SpecialArea(detail, detailIndex, mergedSource))
+      .filter(Boolean);
+    const scatterCount = icons.filter((icon) => Number(icon) === 31).length;
+    const scatterArea =
+      scatterCount > 2
+        ? createSlotWinArea(
+            {
+              betAreaId: `scatter-${roundIndex + 1}`,
+              iconId: 31,
+              winLoseGold: Number(roundInfo && roundInfo.r ? roundInfo.r : 0),
+              num: scatterCount,
+            },
+            winAreas.length,
+            {
+              title: "Scatter",
+              linePos: icons
+                .map((icon, index) => (Number(icon) === 31 ? [index % 3, Math.floor(index / 3)] : null))
+                .filter(Boolean),
+              linePosText: `x${scatterCount}`,
+            }
+          )
+        : null;
+    const finalAreas = scatterArea ? winAreas.concat(scatterArea) : winAreas;
+    return {
+      roundIndex,
+      label: mode === 1 && roundIndex > 0 ? `免费 ${roundIndex}` : `第 ${roundIndex + 1} 回合`,
+      icons,
+      raw: icons.join(","),
+      timestamp: "",
+      winAreas: finalAreas,
+      columns: 5,
+      rows: 3,
+      columnMajor: true,
+      winLoseGold: Number(roundInfo && roundInfo.r !== undefined ? roundInfo.r : finalAreas.reduce((sum, area) => sum + Number(area.winLoseGold || 0), 0)),
+    };
+  });
+
+  if (!rounds.length) return null;
+
+  return {
+    mode: "slot",
+    confName: "cjsgj2",
+    betSingle: Number(mergedSource.betSingle || 0),
+    betTimes: Number(mergedSource.betTimes || 0),
+    totalBetGold: Number(mergedSource.totalBetGold ?? betRecord.totalBetGold ?? 0),
+    totalWinLoseGold: Number(mergedSource.winLoseGold ?? commonRecord.dispatchRewardGold ?? 0),
+    rounds,
+    winAreas: rounds[0] ? rounds[0].winAreas : [],
+    iconNameMap: GENERIC_SLOT_ICON_NAME_MAP.cjsgj2 || {},
+    iconAtlas: GENERIC_SLOT_ICON_ATLAS_MAP.cjsgj2 || null,
+    fuzzyAtlas: GENERIC_SLOT_FUZZY_ATLAS_MAP.cjsgj2 || null,
+    iconImageMap: GENERIC_SLOT_ICON_IMAGE_MAP.cjsgj2 || null,
+    hideLinePosChip: false,
   };
 }
 
@@ -4387,6 +4672,8 @@ export function buildSettlementRecordDetail(row) {
         ? buildSjddjViewModelClient(parsed)
         : confName === "shz"
         ? buildShzViewModel(parsed)
+        : confName === "cjsgj2"
+        ? buildCjsgj2ViewModel(parsed)
         : confName === "worldcup"
         ? buildWorldcupViewModel(parsed)
         : confName === "wcg"

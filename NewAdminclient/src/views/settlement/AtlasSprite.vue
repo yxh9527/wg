@@ -103,8 +103,10 @@ export default {
       const trimmedHeight = Number(frame.height || frame.originalHeight || 1);
       const originalWidth = Number(frame.originalWidth || trimmedWidth || 1);
       const originalHeight = Number(frame.originalHeight || trimmedHeight || 1);
-      const atlasWidth = frame.rotated ? trimmedHeight : trimmedWidth;
-      const atlasHeight = frame.rotated ? trimmedWidth : trimmedHeight;
+      const shouldRotate = !!(frame.rotated && !(this.atlas && this.atlas.ignoreRotation));
+      const swapRotatedSize = !!(shouldRotate && this.atlas && this.atlas.swapRotatedSize);
+      const atlasWidth = swapRotatedSize ? trimmedHeight : trimmedWidth;
+      const atlasHeight = swapRotatedSize ? trimmedWidth : trimmedHeight;
       const logicalWidth = originalWidth;
       const logicalHeight = originalHeight;
       const scale = Math.min(this.maxWidth / logicalWidth, this.maxHeight / logicalHeight, 1);
@@ -158,10 +160,20 @@ export default {
         frameCtx.clearRect(0, 0, frameCanvas.width, frameCanvas.height);
         frameCtx.imageSmoothingEnabled = false;
 
-        if (frame.rotated) {
+        if (shouldRotate) {
+          const rotateDegrees =
+            this.atlas && Number.isFinite(Number(this.atlas.rotateDegrees))
+              ? Number(this.atlas.rotateDegrees)
+              : 90;
           frameCtx.translate(trimmedWidth / 2, trimmedHeight / 2);
-          frameCtx.rotate(-Math.PI / 2);
-          frameCtx.drawImage(atlasCropCanvas, -atlasWidth / 2, -atlasHeight / 2, atlasWidth, atlasHeight);
+          frameCtx.rotate((rotateDegrees * Math.PI) / 180);
+          frameCtx.drawImage(
+            atlasCropCanvas,
+            -atlasWidth / 2,
+            -atlasHeight / 2,
+            atlasWidth,
+            atlasHeight
+          );
         } else {
           frameCtx.drawImage(atlasCropCanvas, 0, 0, atlasWidth, atlasHeight, 0, 0, trimmedWidth, trimmedHeight);
         }
