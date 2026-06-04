@@ -121,6 +121,7 @@ import JbpRecordView from "./JbpRecordView.vue";
 import DwwgRecordView from "./DwwgRecordView.vue";
 import JlbzRecordView from "./JlbzRecordView.vue";
 import FksevenRecordView from "./FksevenRecordView.vue";
+import SbjnRecordView from "./SbjnRecordView.vue";
 
 export default {
   name: "SettlementRecordDialog",
@@ -141,6 +142,7 @@ export default {
     DwwgRecordView,
     JlbzRecordView,
     FksevenRecordView,
+    SbjnRecordView,
   },
   props: {
     visible: {
@@ -194,6 +196,7 @@ export default {
         dwwg: "DwwgRecordView",
         jlbz: "JlbzRecordView",
         fkseven: "FksevenRecordView",
+        sbjn: "SbjnRecordView",
         slot: "SlotRecordView",
       };
       return componentMap[mode] || componentMap[confName] || "";
