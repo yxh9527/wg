@@ -9,6 +9,7 @@ import { buildHshwkViewModel } from "./hshwkRecordParser";
 import { buildFksevenViewModel } from "./fksevenRecordParser";
 import { buildMjhlViewModel } from "./mjhlRecordParser";
 import { buildSbjnViewModel } from "./sbjnRecordParser";
+import { buildJqtViewModel } from "./jqtRecordParser";
 
 export const SUPPORTED_SETTLEMENT_DETAIL_GAME_IDS = new Set([
   3001, 3002, 3003, 3004, 3005, 3008, 3009, 3010, 3011, 3012, 3013, 3014, 3015, 3016, 3017, 3018, 3019, 3020, 3022,
@@ -4713,6 +4714,7 @@ const SLOT_CUSTOM_VIEW_CONF_NAMES = new Set([
   "hshwk",
   "fkseven",
   "sbjn",
+  "jqt",
 ]);
 
 function buildSpecialBlocks(confName, parsed) {
@@ -4804,6 +4806,8 @@ export function buildSettlementRecordDetail(row) {
         ? buildFksevenViewModel(parsed)
         : confName === "sbjn"
         ? buildSbjnViewModel(parsed)
+        : confName === "jqt"
+        ? buildJqtViewModel(parsed)
         : confName === "mjhl" || confName === "mjhl2"
         ? buildMjhlViewModel(parsed, confName)
         : confName === "hgxs"
