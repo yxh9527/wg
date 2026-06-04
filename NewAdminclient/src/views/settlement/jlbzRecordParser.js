@@ -31,6 +31,34 @@ function normalizeLinePos(linePos) {
     .map((item) => [toNumber(item[0], 0), toNumber(item[1], 0)]);
 }
 
+const JLBZ_LINE_POS_MAP = {
+  1: [
+    [0, 1],
+    [1, 1],
+    [2, 1],
+  ],
+  2: [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+  ],
+  3: [
+    [0, 2],
+    [1, 2],
+    [2, 2],
+  ],
+  4: [
+    [0, 0],
+    [1, 1],
+    [2, 2],
+  ],
+  5: [
+    [0, 2],
+    [1, 1],
+    [2, 0],
+  ],
+};
+
 function buildFormula(area) {
   const parts = [
     String(toNumber(area && area.betGold, 0)),
@@ -45,10 +73,15 @@ function buildFormula(area) {
 }
 
 function buildWinArea(area, index) {
-  const linePos = normalizeLinePos(area && area.linePos);
+  const betAreaId = toNumber(area && area.betAreaId, 0);
+  const lineNo = toNumber(area && area.lineNo, 0);
+  const fallbackLinePos = JLBZ_LINE_POS_MAP[betAreaId] || JLBZ_LINE_POS_MAP[lineNo] || [];
+  const linePos = normalizeLinePos(area && area.linePos).length
+    ? normalizeLinePos(area && area.linePos)
+    : fallbackLinePos;
   return {
     index,
-    betAreaId: toNumber(area && area.betAreaId, 0),
+    betAreaId,
     iconId: toNumber(area && area.iconId, 0),
     num: toNumber(area && area.num, 0),
     betGold: toNumber(area && area.betGold, 0),

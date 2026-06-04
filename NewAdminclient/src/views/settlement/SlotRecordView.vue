@@ -56,8 +56,8 @@
       </div>
     </div>
 
-    <div class="slot-stage">
-      <div class="slot-board-shell">
+    <div class="slot-stage" :style="stageStyle">
+      <div class="slot-board-shell" :style="boardShellStyle">
         <div class="slot-board" :style="boardStyle">
           <div
             v-for="cell in boardCells"
@@ -207,8 +207,11 @@ export default {
     };
   },
   computed: {
+    roundList() {
+      return Array.isArray(this.view && this.view.rounds) ? this.view.rounds : [];
+    },
     currentRound() {
-      return this.view.rounds[this.roundIndex] || {
+      return this.roundList[this.roundIndex] || {
         icons: [],
         raw: "",
         label: "第 1 回合",
@@ -231,6 +234,22 @@ export default {
         gridTemplateColumns: `repeat(${this.currentRound.columns || 5}, 64px)`,
       };
     },
+    stageStyle() {
+      const gridTemplateColumns = this.view && this.view.stageGridColumns ? this.view.stageGridColumns : "";
+      if (!gridTemplateColumns) return null;
+      return {
+        gridTemplateColumns,
+      };
+    },
+    boardShellStyle() {
+      const width = this.view && this.view.boardShellWidth ? this.view.boardShellWidth : "";
+      if (!width) return null;
+      return {
+        width,
+        marginLeft: "auto",
+        marginRight: "auto",
+      };
+    },
     boardCells() {
       const icons = Array.isArray(this.currentRound.icons) ? this.currentRound.icons : [];
       const columns = Number(this.currentRound.columns || 5);
@@ -244,6 +263,25 @@ export default {
   watch: {
     roundIndex() {
       this.activeLineIndex = 0;
+    },
+    view: {
+      deep: false,
+      handler() {
+        this.roundIndex = 0;
+        this.activeLineIndex = 0;
+      },
+    },
+    roundList(nextRounds) {
+      const maxIndex = Math.max((nextRounds || []).length - 1, 0);
+      if (this.roundIndex > maxIndex) {
+        this.roundIndex = 0;
+      }
+    },
+    currentWinAreas(nextAreas) {
+      const maxIndex = Math.max((nextAreas || []).length - 1, 0);
+      if (this.activeLineIndex > maxIndex) {
+        this.activeLineIndex = 0;
+      }
     },
   },
   methods: {
@@ -296,6 +334,7 @@ export default {
     },
     buildAreaTitle(area) {
       if (!area) return "-";
+      if (area.title) return area.title;
       if (area.betAreaId !== "" && area.betAreaId !== null && area.betAreaId !== undefined) {
         return `线 ${area.betAreaId}`;
       }

@@ -4,6 +4,8 @@ import { buildBdydsViewModel } from "./bdydsRecordParser";
 import { buildJbpViewModel } from "./jbpRecordParser";
 import { buildDwwgViewModel } from "./dwwgRecordParser";
 import { buildJlbzViewModel } from "./jlbzRecordParser";
+import { buildHdbzViewModel } from "./hdbzRecordParser";
+import { buildHshwkViewModel } from "./hshwkRecordParser";
 
 export const SUPPORTED_SETTLEMENT_DETAIL_GAME_IDS = new Set([
   3001, 3002, 3003, 3004, 3005, 3008, 3009, 3010, 3011, 3012, 3013, 3014, 3015, 3016, 3017, 3018, 3019, 3020, 3022,
@@ -4321,6 +4323,8 @@ const SLOT_CUSTOM_VIEW_CONF_NAMES = new Set([
   "jbp",
   "dwwg",
   "jlbz",
+  "hdbz",
+  "hshwk",
 ]);
 
 function buildSpecialBlocks(confName, parsed) {
@@ -4402,6 +4406,10 @@ export function buildSettlementRecordDetail(row) {
         ? buildDwwgViewModel(parsed)
         : confName === "jlbz"
         ? buildJlbzViewModel(parsed)
+        : confName === "hdbz"
+        ? buildHdbzViewModel(parsed)
+        : confName === "hshwk"
+        ? buildHshwkViewModel(parsed)
         : confName === "hgxs"
         ? buildHgxsViewModel(parsed)
         : confName === "dfdc"
