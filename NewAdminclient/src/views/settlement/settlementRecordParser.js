@@ -11,6 +11,7 @@ import { buildMjhlViewModel } from "./mjhlRecordParser";
 import { buildSbjnViewModel } from "./sbjnRecordParser";
 import { buildJqtViewModel } from "./jqtRecordParser";
 import { buildSjnwViewModel } from "./sjnwRecordParser";
+import { buildJszcViewModel } from "./jszcRecordParser";
 
 export const SUPPORTED_SETTLEMENT_DETAIL_GAME_IDS = new Set([
   3001, 3002, 3003, 3004, 3005, 3008, 3009, 3010, 3011, 3012, 3013, 3014, 3015, 3016, 3017, 3018, 3019, 3020, 3022,
@@ -75,6 +76,10 @@ const GAME_CONF_NAME_MAP = {
   5017: "bhjk",
   5018: "baviator",
 };
+
+export function getSettlementConfName(gameId) {
+  return GAME_CONF_NAME_MAP[Number(gameId)] || "";
+}
 
 const SLOT_GAME_CONF_NAMES = new Set([
   "cjsgj",
@@ -4717,6 +4722,7 @@ const SLOT_CUSTOM_VIEW_CONF_NAMES = new Set([
   "sbjn",
   "jqt",
   "sjnw",
+  "jszc",
 ]);
 
 function buildSpecialBlocks(confName, parsed) {
@@ -4766,7 +4772,7 @@ function buildSpecialBlocks(confName, parsed) {
 
 export function buildSettlementRecordDetail(row) {
   const gameId = Number(row && row.gameId);
-  const confName = GAME_CONF_NAME_MAP[gameId] || "";
+  const confName = getSettlementConfName(gameId);
   const supported = SUPPORTED_SETTLEMENT_DETAIL_GAME_IDS.has(gameId);
 
   try {
@@ -4812,6 +4818,8 @@ export function buildSettlementRecordDetail(row) {
         ? buildJqtViewModel(parsed)
         : confName === "sjnw"
         ? buildSjnwViewModel(parsed)
+        : confName === "jszc"
+        ? buildJszcViewModel(parsed)
         : confName === "mjhl" || confName === "mjhl2"
         ? buildMjhlViewModel(parsed, confName)
         : confName === "hgxs"

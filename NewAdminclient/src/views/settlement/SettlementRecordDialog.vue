@@ -56,8 +56,8 @@
 
       <component
         :is="customRendererComponent"
-        v-if="customRendererComponent"
-        :view="detail.customView"
+        v-if="customRendererComponent && resolvedCustomView"
+        :view="resolvedCustomView"
       />
 
       <div
@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { buildSettlementRecordDetail } from "./settlementRecordParser";
+import { buildSettlementRecordDetail, getSettlementConfName } from "./settlementRecordParser";
 import SjddjRecordView from "./SjddjRecordView.vue";
 import ShzRecordView from "./ShzRecordView.vue";
 import SlotRecordView from "./SlotRecordView.vue";
@@ -124,6 +124,7 @@ import FksevenRecordView from "./FksevenRecordView.vue";
 import SbjnRecordView from "./SbjnRecordView.vue";
 import JqtRecordView from "./JqtRecordView.vue";
 import SjnwRecordView from "./SjnwRecordView.vue";
+import JszcRecordView from "./JszcRecordView.vue";
 
 export default {
   name: "SettlementRecordDialog",
@@ -147,6 +148,7 @@ export default {
     SbjnRecordView,
     JqtRecordView,
     SjnwRecordView,
+    JszcRecordView,
   },
   props: {
     visible: {
@@ -178,12 +180,30 @@ export default {
     },
     detail() {
       if (!this.row || !Object.keys(this.row).length) return null;
-      return buildSettlementRecordDetail(this.row);
+      const freshDetail = buildSettlementRecordDetail(this.row);
+      const cachedDetail = this.row && this.row._recordDetail ? this.row._recordDetail : null;
+      if (!cachedDetail) return freshDetail;
+      return {
+        ...cachedDetail,
+        ...freshDetail,
+        customView: freshDetail.customView || cachedDetail.customView || null,
+        confName: freshDetail.confName || cachedDetail.confName || "",
+        summary: freshDetail.summary && freshDetail.summary.length ? freshDetail.summary : cachedDetail.summary || [],
+        blocks: freshDetail.blocks && freshDetail.blocks.length ? freshDetail.blocks : cachedDetail.blocks || [],
+        rawJson: freshDetail.rawJson || cachedDetail.rawJson || "",
+      };
+    },
+    resolvedConfName() {
+      const detail = this.detail || {};
+      return detail.confName || getSettlementConfName(this.row && this.row.gameId);
+    },
+    resolvedCustomView() {
+      const detail = this.detail || {};
+      return detail.customView || (this.row && this.row._recordDetail && this.row._recordDetail.customView) || null;
     },
     customRendererComponent() {
-      const detail = this.detail || {};
-      const mode = detail.customView && detail.customView.mode;
-      const confName = detail.confName || "";
+      const mode = this.resolvedCustomView && this.resolvedCustomView.mode;
+      const confName = this.resolvedConfName || "";
       const componentMap = {
         sjddj: "SjddjRecordView",
         shz: "ShzRecordView",
@@ -203,12 +223,13 @@ export default {
         sbjn: "SbjnRecordView",
         jqt: "JqtRecordView",
         sjnw: "SjnwRecordView",
+        jszc: "JszcRecordView",
         slot: "SlotRecordView",
       };
       return componentMap[mode] || componentMap[confName] || "";
     },
     hasCustomRenderer() {
-      return !!this.customRendererComponent;
+      return !!(this.customRendererComponent && this.resolvedCustomView);
     },
     isCustomRecordDetail() {
       return this.hasCustomRenderer;
