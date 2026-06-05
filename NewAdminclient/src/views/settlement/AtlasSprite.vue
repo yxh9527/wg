@@ -129,7 +129,7 @@ export default {
       }
 
       try {
-        const image = await loadImage(this.atlas.url);
+        const image = await loadImage(frame.url || this.atlas.url);
         if (!image) return;
 
         const sourceX = Number(frame.x || 0);

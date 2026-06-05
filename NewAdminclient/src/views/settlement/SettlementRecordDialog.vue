@@ -126,6 +126,7 @@ import JqtRecordView from "./JqtRecordView.vue";
 import SjnwRecordView from "./SjnwRecordView.vue";
 import JszcRecordView from "./JszcRecordView.vue";
 import XmwljRecordView from "./XmwljRecordView.vue";
+import CjwpRecordView from "./CjwpRecordView.vue";
 
 export default {
   name: "SettlementRecordDialog",
@@ -151,6 +152,7 @@ export default {
     SjnwRecordView,
     JszcRecordView,
     XmwljRecordView,
+    CjwpRecordView,
   },
   props: {
     visible: {
@@ -227,6 +229,7 @@ export default {
         sjnw: "SjnwRecordView",
         jszc: "JszcRecordView",
         xmwlj: "XmwljRecordView",
+        cjwp: "CjwpRecordView",
         slot: "SlotRecordView",
       };
       return componentMap[mode] || componentMap[confName] || "";

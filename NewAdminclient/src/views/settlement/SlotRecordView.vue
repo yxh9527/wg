@@ -1,5 +1,5 @@
 ﻿<template>
-  <div class="slot-view">
+  <div class="slot-view" :class="{ 'jlbs-view': view && view.confName === 'jlbs' }">
     <div class="slot-topline">
       <div class="slot-metrics">
         <div class="slot-metric">
@@ -9,6 +9,10 @@
         <div class="slot-metric">
           <span class="slot-metric-label">倍数</span>
           <span class="slot-metric-value">{{ view.betTimes }}</span>
+        </div>
+        <div v-if="showModeChip" class="slot-metric">
+          <span class="slot-metric-label">模式</span>
+          <span class="slot-metric-value">{{ currentRoundMode }}</span>
         </div>
         <div class="slot-metric">
           <span class="slot-metric-label">总投注</span>
@@ -116,7 +120,7 @@
               </span>
               <span v-else-if="hasIconAsset(area.iconId)" class="slot-line-icon">
                 <atlas-sprite
-                  :atlas="view.iconAtlas"
+                  :atlas="areaAtlas(area.iconId)"
                   :frame-key="area.iconId"
                   :max-width="24"
                   :max-height="24"
@@ -150,7 +154,7 @@
           </span>
           <span v-else-if="hasIconAsset(activeArea.iconId)" class="slot-detail-icon">
             <atlas-sprite
-              :atlas="view.iconAtlas"
+              :atlas="areaAtlas(activeArea.iconId)"
               :frame-key="activeArea.iconId"
               :max-width="24"
               :max-height="24"
@@ -174,6 +178,10 @@
         <div class="slot-detail-chip">
           <span class="slot-detail-label">中奖</span>
           <span class="slot-detail-value">+{{ formatMoney(activeArea.winLoseGold) }}</span>
+        </div>
+        <div v-if="activeArea.formula" class="slot-detail-chip slot-detail-chip-wide">
+          <span class="slot-detail-label">公式</span>
+          <span class="slot-detail-value">{{ activeArea.formula }}</span>
         </div>
         <div v-if="!view.hideLinePosChip" class="slot-detail-chip slot-detail-chip-wide">
           <span class="slot-detail-label">线位</span>
@@ -222,6 +230,13 @@ export default {
     },
     currentWinAreas() {
       return Array.isArray(this.currentRound.winAreas) ? this.currentRound.winAreas : [];
+    },
+    showModeChip() {
+      return this.view && this.view.confName === "jlbs";
+    },
+    currentRoundMode() {
+      if (!(this.view && this.view.confName === "jlbs")) return "";
+      return this.currentRound && this.currentRound.isExMode ? "EX" : "普通";
     },
     activeArea() {
       if (this.activeLineIndex < 0) return null;
@@ -336,6 +351,9 @@ export default {
     },
     cellAtlas(cell) {
       if (!cell) return null;
+      if (this.view && this.view.confName === "jlbs") {
+        return this.hasAtlasFrame(this.view && this.view.iconAtlas, cell.icon) ? this.view.iconAtlas : null;
+      }
       const isHighlighted = !!(this.activeArea && this.activeArea.highlightKeys.includes(cell.coordKey));
       if (isHighlighted && this.hasAtlasFrame(this.view && this.view.iconAtlas, cell.icon)) {
         return this.view.iconAtlas;
@@ -351,6 +369,15 @@ export default {
     iconImageSrc(icon) {
       if (!this.hasIconImage(icon)) return "";
       return this.view.iconImageMap[String(icon)];
+    },
+    areaAtlas(icon) {
+      if (this.hasAtlasFrame(this.view && this.view.iconAtlas, icon)) {
+        return this.view.iconAtlas;
+      }
+      if (this.hasAtlasFrame(this.view && this.view.fuzzyAtlas, icon)) {
+        return this.view.fuzzyAtlas;
+      }
+      return null;
     },
     formatMoney(value) {
       return toMoney(value || 0);
@@ -627,6 +654,26 @@ export default {
 
 .slot-cell.is-dimmed {
   opacity: 0.28;
+}
+
+.slot-view.jlbs-view .slot-cell.is-dimmed {
+  opacity: 1;
+}
+
+.slot-view.jlbs-view .slot-cell.is-highlight {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
+  border-color: rgba(59, 130, 246, 0.32);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.14);
+}
+
+.slot-view.jlbs-view .slot-line-item.is-active {
+  border-color: rgba(148, 163, 184, 0.28);
+  background: rgba(248, 250, 252, 0.98);
+  color: #0f172a;
+}
+
+.slot-view.jlbs-view .slot-line-item.is-active .slot-line-index {
+  background: rgba(148, 163, 184, 0.18);
 }
 
 .slot-sidebar {

@@ -13,6 +13,7 @@ import { buildJqtViewModel } from "./jqtRecordParser";
 import { buildSjnwViewModel } from "./sjnwRecordParser";
 import { buildJszcViewModel } from "./jszcRecordParser";
 import { buildXmwljViewModel } from "./xmwljRecordParser";
+import { buildCjwpViewModel } from "./cjwpRecordParser";
 
 export const SUPPORTED_SETTLEMENT_DETAIL_GAME_IDS = new Set([
   3001, 3002, 3003, 3004, 3005, 3008, 3009, 3010, 3011, 3012, 3013, 3014, 3015, 3016, 3017, 3018, 3019, 3020, 3022,
@@ -1632,13 +1633,13 @@ GENERIC_SLOT_ICON_NAME_MAP.jfn = {
 };
 
 GENERIC_SLOT_ICON_NAME_MAP.jlbs = {
-  1: "A",
-  2: "K",
-  3: "Q",
-  11: "J",
-  12: "绿宝石",
-  13: "蓝宝石",
-  14: "红宝石",
+  1: "红宝石",
+  2: "蓝宝石",
+  3: "绿宝石",
+  11: "A",
+  12: "K",
+  13: "Q",
+  14: "J",
   21: "Wild",
   31: "1x",
   32: "2x",
@@ -1744,6 +1745,105 @@ const JFN_LINE_ARRAY = [
     [0, 2],
     [1, 3],
     [2, 4],
+  ],
+];
+
+const JLBS_LINE_ARRAY = [
+  [
+    [1, 0],
+    [1, 1],
+    [1, 2],
+    [1, 3],
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+    [0, 3],
+  ],
+  [
+    [2, 0],
+    [2, 1],
+    [2, 2],
+    [2, 3],
+  ],
+  [
+    [0, 0],
+    [1, 1],
+    [2, 2],
+    [1, 3],
+  ],
+  [
+    [2, 0],
+    [1, 1],
+    [0, 2],
+    [1, 3],
+  ],
+];
+
+const SSFF_LINE_ARRAY = [
+  [
+    [1, 0],
+    [1, 1],
+    [1, 2],
+    [1, 3],
+    [1, 4],
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+    [0, 3],
+    [0, 4],
+  ],
+  [
+    [2, 0],
+    [2, 1],
+    [2, 2],
+    [2, 3],
+    [2, 4],
+  ],
+  [
+    [0, 0],
+    [1, 1],
+    [2, 2],
+    [1, 3],
+    [0, 4],
+  ],
+  [
+    [2, 0],
+    [1, 1],
+    [0, 2],
+    [1, 3],
+    [2, 4],
+  ],
+  [
+    [1, 0],
+    [0, 1],
+    [0, 2],
+    [0, 3],
+    [1, 4],
+  ],
+  [
+    [1, 0],
+    [2, 1],
+    [2, 2],
+    [2, 3],
+    [1, 4],
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [1, 2],
+    [2, 3],
+    [2, 4],
+  ],
+  [
+    [2, 0],
+    [2, 1],
+    [1, 2],
+    [0, 3],
+    [0, 4],
   ],
 ];
 
@@ -2012,12 +2112,41 @@ const GENERIC_SLOT_ICON_ATLAS_MAP = {
     },
   },
   jlbs: {
-    url: "/texture-not-supported",
-    frames: {},
+    url: "/jlbs-rollers-bg.webp",
+    swapRotatedSize: true,
+    rotateDegrees: -90,
+    frames: {
+      1: { x: 3, y: 541, width: 250, height: 234, rotated: false, originalWidth: 250, originalHeight: 234, offset: { x: 0, y: 0 } },
+      2: { x: 3, y: 779, width: 250, height: 234, rotated: false, originalWidth: 250, originalHeight: 234, offset: { x: 0, y: 0 } },
+      3: { x: 3, y: 1017, width: 250, height: 234, rotated: false, originalWidth: 250, originalHeight: 234, offset: { x: 0, y: 0 } },
+      11: { x: 3, y: 1255, width: 250, height: 234, rotated: false, originalWidth: 250, originalHeight: 234, offset: { x: 0, y: 0 } },
+      12: { x: 3, y: 1493, width: 250, height: 230, rotated: false, originalWidth: 250, originalHeight: 234, offset: { x: 0, y: 0 } },
+      13: { x: 257, y: 738, width: 250, height: 230, rotated: false, originalWidth: 250, originalHeight: 234, offset: { x: 0, y: 0 } },
+      14: { x: 257, y: 972, width: 250, height: 230, rotated: false, originalWidth: 250, originalHeight: 234, offset: { x: 0, y: 0 } },
+      21: { x: 3, y: 3, width: 283, height: 265, rotated: false, originalWidth: 287, originalHeight: 269, offset: { x: -1, y: 0 } },
+      22: { x: 3, y: 272, width: 283, height: 265, rotated: false, originalWidth: 287, originalHeight: 269, offset: { x: -1, y: 0 } },
+      31: { x: 290, y: 3, width: 241, height: 218, rotated: true, originalWidth: 241, originalHeight: 218, offset: { x: 0, y: 0 } },
+      32: { x: 290, y: 248, width: 241, height: 218, rotated: true, originalWidth: 241, originalHeight: 218, offset: { x: 0, y: 0 } },
+      33: { x: 290, y: 493, width: 241, height: 218, rotated: true, originalWidth: 241, originalHeight: 218, offset: { x: 0, y: 0 } },
+      34: { x: 257, y: 1206, width: 241, height: 218, rotated: false, originalWidth: 241, originalHeight: 218, offset: { x: 0, y: 0 } },
+      35: { x: 257, y: 1428, width: 241, height: 218, rotated: false, originalWidth: 241, originalHeight: 218, offset: { x: 0, y: 0 } },
+      36: { x: 257, y: 1650, width: 241, height: 218, rotated: false, originalWidth: 241, originalHeight: 218, offset: { x: 0, y: 0 } },
+    },
   },
   ssff: {
-    url: "/texture-not-supported",
-    frames: {},
+    url: "/ssff-rollers-bg.webp",
+    frames: {
+      1: { x: 2, y: 2, width: 315, height: 263, rotated: false, originalWidth: 315, originalHeight: 263, offset: { x: 0, y: 0 } },
+      2: { x: 316, y: 316, width: 281, height: 250, rotated: false, originalWidth: 281, originalHeight: 250, offset: { x: 0, y: 0 } },
+      3: { x: 237, y: 732, width: 228, height: 239, rotated: false, originalWidth: 228, originalHeight: 239, offset: { x: 0, y: 0 } },
+      11: { x: 2, y: 732, width: 233, height: 241, rotated: false, originalWidth: 263, originalHeight: 259, offset: { x: -1, y: -4 } },
+      12: { x: 467, y: 732, width: 218, height: 197, rotated: false, originalWidth: 218, originalHeight: 197, offset: { x: 0, y: 0 } },
+      13: { x: 316, y: 568, width: 237, height: 162, rotated: false, originalWidth: 237, originalHeight: 162, offset: { x: 0, y: 0 } },
+      21: { x: 2, y: 267, width: 312, height: 312, rotated: false, originalWidth: 312, originalHeight: 312, offset: { x: 0, y: 0 } },
+      "21_0": { x: 319, y: 2, width: 312, height: 312, rotated: false, originalWidth: 312, originalHeight: 312, offset: { x: 0, y: 0 } },
+      "21_1": { x: 633, y: 311, width: 312, height: 307, rotated: false, originalWidth: 312, originalHeight: 307, offset: { x: 0, y: 0 } },
+      "21_2": { x: 633, y: 2, width: 312, height: 307, rotated: false, originalWidth: 312, originalHeight: 307, offset: { x: 0, y: 0 } },
+    },
   },
   jfn: {
     url: "/jfn-rollers-bg.webp",
@@ -2187,6 +2316,45 @@ const GENERIC_SLOT_FUZZY_ATLAS_MAP = {
       21: { x: 459, y: 2, width: 239, height: 256, rotated: false, originalWidth: 239, originalHeight: 258, offset: { x: 0, y: 0 } },
     },
   },
+  jlbs: {
+    url: "/jlbs-fuzzy-bg.webp",
+    swapRotatedSize: true,
+    rotateDegrees: -90,
+    frames: {
+      1: { x: 511, y: 492, width: 250, height: 247, rotated: false, originalWidth: 250, originalHeight: 251, offset: { x: 0, y: 0 } },
+      2: { x: 765, y: 492, width: 250, height: 251, rotated: true, originalWidth: 250, originalHeight: 251, offset: { x: 0, y: 0 } },
+      3: { x: 3, y: 736, width: 250, height: 251, rotated: false, originalWidth: 250, originalHeight: 251, offset: { x: 0, y: 0 } },
+      11: { x: 493, y: 245, width: 250, height: 243, rotated: false, originalWidth: 250, originalHeight: 251, offset: { x: 0, y: 0 } },
+      12: { x: 3, y: 487, width: 250, height: 245, rotated: false, originalWidth: 250, originalHeight: 251, offset: { x: 0, y: -1 } },
+      13: { x: 747, y: 245, width: 250, height: 243, rotated: false, originalWidth: 250, originalHeight: 251, offset: { x: 0, y: 0 } },
+      14: { x: 257, y: 492, width: 250, height: 245, rotated: false, originalWidth: 250, originalHeight: 251, offset: { x: 0, y: 0 } },
+      21: { x: 257, y: 743, width: 282, height: 283, rotated: true, originalWidth: 282, originalHeight: 283, offset: { x: 0, y: 0 } },
+      22: { x: 544, y: 746, width: 282, height: 283, rotated: true, originalWidth: 282, originalHeight: 283, offset: { x: 0, y: 0 } },
+      31: { x: 3, y: 3, width: 241, height: 238, rotated: false, originalWidth: 241, originalHeight: 238, offset: { x: 0, y: 0 } },
+      32: { x: 248, y: 3, width: 241, height: 238, rotated: false, originalWidth: 241, originalHeight: 238, offset: { x: 0, y: 0 } },
+      33: { x: 493, y: 3, width: 241, height: 238, rotated: false, originalWidth: 241, originalHeight: 238, offset: { x: 0, y: 0 } },
+      34: { x: 738, y: 3, width: 241, height: 238, rotated: false, originalWidth: 241, originalHeight: 238, offset: { x: 0, y: 0 } },
+      35: { x: 3, y: 245, width: 241, height: 238, rotated: false, originalWidth: 241, originalHeight: 238, offset: { x: 0, y: 0 } },
+      36: { x: 248, y: 245, width: 241, height: 238, rotated: false, originalWidth: 241, originalHeight: 238, offset: { x: 0, y: 0 } },
+    },
+  },
+  ssff: {
+    url: "/ssff-fuzzy-bg.webp",
+    swapRotatedSize: true,
+    rotateDegrees: -90,
+    frames: {
+      1: { x: 2, y: 702, width: 314, height: 291, rotated: true, originalWidth: 314, originalHeight: 291, offset: { x: 0, y: 0 } },
+      2: { x: 316, y: 2, width: 281, height: 278, rotated: false, originalWidth: 281, originalHeight: 278, offset: { x: 0, y: 0 } },
+      3: { x: 316, y: 282, width: 227, height: 266, rotated: true, originalWidth: 227, originalHeight: 266, offset: { x: 0, y: 0 } },
+      11: { x: 584, y: 316, width: 233, height: 259, rotated: false, originalWidth: 263, originalHeight: 259, offset: { x: -1, y: 0 } },
+      12: { x: 633, y: 577, width: 217, height: 225, rotated: true, originalWidth: 217, originalHeight: 225, offset: { x: 0, y: 0 } },
+      13: { x: 819, y: 316, width: 235, height: 190, rotated: true, originalWidth: 235, originalHeight: 190, offset: { x: 0, y: 0 } },
+      21: { x: 295, y: 702, width: 312, height: 336, rotated: true, originalWidth: 312, originalHeight: 336, offset: { x: 0, y: 0 } },
+      "21_0": { x: 2, y: 364, width: 312, height: 336, rotated: false, originalWidth: 312, originalHeight: 336, offset: { x: 0, y: 0 } },
+      "21_1": { x: 633, y: 2, width: 312, height: 332, rotated: true, originalWidth: 312, originalHeight: 332, offset: { x: 0, y: 0 } },
+      "21_2": { x: 2, y: 2, width: 312, height: 360, rotated: false, originalWidth: 312, originalHeight: 360, offset: { x: 0, y: 0 } },
+    },
+  },
   hhsc: {
     url: "/hhsc-fuzzy-bg.webp",
     swapRotatedSize: true,
@@ -2336,6 +2504,14 @@ function parseSlotIconTokens(rawIcons) {
     .split(",")
     .map((item) => String(item).trim())
     .filter((item) => item !== "");
+}
+
+function normalizeSsffIconValue(value) {
+  if (value === null || value === undefined || value === "") return "";
+  const raw = String(value).trim();
+  if (!raw) return "";
+  if (raw === "21") return "21_0";
+  return /^-?\d+$/.test(raw) ? Number(raw) : raw;
 }
 
 function parseTgpdIconTokens(rawIcons) {
@@ -2510,6 +2686,66 @@ function buildJfnAreaHighlight(area) {
     linePos,
     highlightKeys: linePos.map(([row, col]) => `${row}-${col}`),
     linePosText: stringifySlotLinePos(linePos),
+  };
+}
+
+function buildJlbsAreaHighlight(area) {
+  const lineTemplate = JLBS_LINE_ARRAY[Number(area && area.betAreaId) - 1];
+  if (!Array.isArray(lineTemplate) || !lineTemplate.length) {
+    return {
+      linePos: [],
+      highlightKeys: [],
+      linePosText: "",
+      title: "",
+      formula: "",
+      exMultiple: Number(area && area.exMultiple) || 1,
+    };
+  }
+
+  const hitCount = Math.min(
+    Math.max(Number(area && area.num) || lineTemplate.length, 0),
+    lineTemplate.length
+  );
+  const linePos = lineTemplate.slice(0, hitCount);
+  const betAreaId = Number(area && area.betAreaId);
+  const exMultiple = Number(area && area.exMultiple) || 1;
+  return {
+    linePos,
+    highlightKeys: linePos.map(([row, col]) => `${row}-${col}`),
+    linePosText: stringifySlotLinePos(linePos),
+    title: Number.isFinite(betAreaId) && betAreaId > 0 ? `线 ${String(betAreaId).padStart(2, "0")}` : "",
+    formula:
+      area && area.betGold !== undefined
+        ? `(${toMoney(area.betGold)} x ${toMoney(area.betMultiple || 1)} x ${toMoney(area.iconMultiple || 1)} x ${toMoney(exMultiple)})`
+        : "",
+    exMultiple,
+  };
+}
+
+function buildSsffAreaHighlight(area) {
+  const betAreaId = Number(area && area.betAreaId);
+  const num = Number(area && area.num);
+  const iconId = Number(area && area.iconId);
+  const isFullScreen = num === 15 || betAreaId === 6 || betAreaId >= 10;
+
+  const linePos = isFullScreen
+    ? Array.from({ length: 3 }, (_, row) =>
+        Array.from({ length: 5 }, (_, column) => [row, column])
+      ).flat()
+    : Array.isArray(SSFF_LINE_ARRAY[betAreaId - 1])
+    ? SSFF_LINE_ARRAY[betAreaId - 1].slice(0, Math.max(0, Math.min(num || 5, 5)))
+    : [];
+
+  return {
+    linePos,
+    highlightKeys: linePos.map(([row, col]) => `${row}-${col}`),
+    linePosText: stringifySlotLinePos(linePos),
+    iconId: iconId === 21 ? "21_0" : iconId,
+    title: isFullScreen ? "满屏奖" : "",
+    formula:
+      isFullScreen && area && area.betGold !== undefined
+        ? `(${toMoney(area.betGold)} x 1000)`
+        : "",
   };
 }
 
@@ -3152,6 +3388,10 @@ function createSlotWinArea(area, index, overrides = {}) {
     linePos,
     highlightKeys,
     linePosText,
+    title: hasOverride("title") ? overrides.title : area && area.title ? area.title : "",
+    formula: hasOverride("formula") ? overrides.formula : area && area.formula ? area.formula : "",
+    exMultiple: hasOverride("exMultiple") ? overrides.exMultiple : area && area.exMultiple !== undefined ? area.exMultiple : "",
+    isExMode: hasOverride("isExMode") ? overrides.isExMode : area && area.isExMode !== undefined ? area.isExMode : false,
   };
 }
 
@@ -3178,6 +3418,12 @@ function buildGenericSlotViewModel(parsed, confName) {
     }
     if (confName === "jfn") {
       return createSlotWinArea(area, index, buildJfnAreaHighlight(area));
+    }
+    if (confName === "jlbs") {
+      return createSlotWinArea(area, index, buildJlbsAreaHighlight(area));
+    }
+    if (confName === "ssff") {
+      return createSlotWinArea(area, index, buildSsffAreaHighlight(area));
     }
     if (confName === "hhsc") {
       return createSlotWinArea(area, index, buildHhscAreaHighlight(area));
@@ -3207,6 +3453,8 @@ function buildGenericSlotViewModel(parsed, confName) {
           ? (round.icons || []).map(normalizeTgpdIconValue)
           : confName === "xldb"
           ? (round.icons || []).map(normalizeXldbIconValue)
+          : confName === "ssff"
+          ? (round.icons || []).map(normalizeSsffIconValue)
           : confName === "cjsgj"
           ? normalizeCjsgjIcons(round.icons || [])
           : confName === "jfn"
@@ -3219,6 +3467,10 @@ function buildGenericSlotViewModel(parsed, confName) {
           ? toArray(winAreas).map((area, index) => createSlotWinArea(normalizeXldbArea(area), index))
           : confName === "jfn"
           ? toArray(winAreas).map((area, index) => createSlotWinArea(area, index, buildJfnAreaHighlight(area)))
+          : confName === "jlbs"
+          ? toArray(winAreas).map((area, index) => createSlotWinArea(area, index, buildJlbsAreaHighlight(area)))
+          : confName === "ssff"
+          ? toArray(winAreas).map((area, index) => createSlotWinArea(area, index, buildSsffAreaHighlight(area)))
           : confName === "hhsc"
           ? toArray(winAreas).map((area, index) => createSlotWinArea(area, index, buildHhscAreaHighlight(area, normalizedIcons)))
           : winAreas;
@@ -3233,8 +3485,12 @@ function buildGenericSlotViewModel(parsed, confName) {
         winAreas: normalizedWinAreas,
         columns: grid.columns,
         rows: grid.rows,
-        columnMajor: confName === "cjsgj" || confName === "hhsc",
+        columnMajor: confName === "cjsgj" || confName === "hhsc" || confName === "ssff" || confName === "jlbs",
         winLoseGold: roundWinLoseGold,
+        isExMode:
+          confName === "jlbs"
+            ? !!Number(mergedSource.isExMode || mergedSource.exMode || 0)
+            : false,
       };
     }
   );
@@ -4725,6 +4981,7 @@ const SLOT_CUSTOM_VIEW_CONF_NAMES = new Set([
   "sjnw",
   "jszc",
   "xmwlj",
+  "cjwp",
 ]);
 
 function buildSpecialBlocks(confName, parsed) {
@@ -4824,6 +5081,8 @@ export function buildSettlementRecordDetail(row) {
         ? buildJszcViewModel(parsed)
         : confName === "xmwlj"
         ? buildXmwljViewModel(parsed)
+        : confName === "cjwp"
+        ? buildCjwpViewModel(parsed)
         : confName === "mjhl" || confName === "mjhl2"
         ? buildMjhlViewModel(parsed, confName)
         : confName === "hgxs"
