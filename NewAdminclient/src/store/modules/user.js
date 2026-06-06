@@ -94,7 +94,19 @@ const actions = {
   },
   logoutLocal({ commit }) {
     commit("clearUser");
+    commit("setTokenState", "");
     Cookies.remove("userInfo");
+    [
+      "typeOption",
+      "siteVal",
+      "games",
+      "siteOption",
+      "agentVal",
+      "classOption",
+      "token",
+      "node_url",
+      "sign",
+    ].forEach((key) => sessionStorage.removeItem(key));
   },
 };
 

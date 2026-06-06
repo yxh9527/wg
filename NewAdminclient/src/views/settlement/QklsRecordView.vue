@@ -394,7 +394,7 @@ export default {
       return block.type === "entries" && FANCY_ENTRY_CONF_NAMES.has(this.confName);
     },
     isInlineCommonBlock(block) {
-      return ["ld", "bxsl", "hilo"].includes(this.confName) && block.type === "entries" && block.title === "通用信息";
+      return ["ld", "bxsl", "hilo", "tower", "slide", "coin"].includes(this.confName) && block.type === "entries" && block.title === "通用信息";
     },
     isTagBlock(block) {
       return block.type === "tags";

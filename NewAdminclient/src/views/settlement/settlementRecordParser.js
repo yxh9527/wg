@@ -456,6 +456,12 @@ function getLdAreaLabel(betAreaId) {
   return LD_AREA_LABELS[id] || (betAreaId !== undefined && betAreaId !== null && betAreaId !== "" ? `区域 ${betAreaId}` : "");
 }
 
+function getLimboAreaLabel(betAreaId) {
+  const id = Number(betAreaId);
+  if (!Number.isFinite(id) || id <= 0) return "";
+  return "获胜目标";
+}
+
 function buildQklsHighlights(parsed, confName) {
   const betAreas = toArray(parsed.betRecord.betAreas);
 
@@ -494,10 +500,14 @@ function buildQklsHighlights(parsed, confName) {
     }
     case "coin": {
       const detail = parsed.betRecord.newResultDescParsed || {};
+      const roundSummary = toArray(detail.coin_bet_rsp_list)
+        .map((item, index) => `第${index + 1}轮 ${item.result === 1 ? "金" : item.result === 2 ? "银" : stringifyValue(item.result)}`)
+        .join(" / ");
       return [
         createHighlight("下注区域", COIN_AREA_LABELS[detail.bet_area] || "", "accent"),
         createHighlight("赔率", detail.odds !== undefined ? `${detail.odds}x` : "", "result"),
         createHighlight("轮次", toArray(detail.coin_bet_rsp_list).length, "neutral"),
+        createHighlight("翻币结果", roundSummary, "accent"),
       ].filter(Boolean);
     }
     case "keno": {
@@ -625,7 +635,20 @@ function buildCommonBlocks(parsed, confName = "") {
   pushEntry(commonEntries, "限红命中", parsed.commonRecord.IsLimit, (value) => (value ? "是" : "否"));
   blocks.push(createEntriesBlock("通用信息", commonEntries));
 
-  if (confName !== "yfct" && confName !== "double" && confName !== "ld" && confName !== "dice" && confName !== "bxsl" && confName !== "hilo" && confName !== "circle" && confName !== "plinko") {
+  if (
+    confName !== "yfct" &&
+    confName !== "double" &&
+    confName !== "ld" &&
+    confName !== "dice" &&
+    confName !== "bxsl" &&
+    confName !== "hilo" &&
+    confName !== "circle" &&
+    confName !== "plinko" &&
+    confName !== "tower" &&
+    confName !== "slide" &&
+    confName !== "coin" &&
+    confName !== "limbo"
+  ) {
     const betEntries = [];
     pushEntry(betEntries, "总下注", parsed.betRecord.totalBetGold, (value) => toMoney(value));
     pushEntry(betEntries, "结果描述", parsed.betRecord.resultDesc);
@@ -640,6 +663,8 @@ function buildCommonBlocks(parsed, confName = "") {
         ? getDoubleAreaLabel(area.betAreaId)
         : confName === "ld"
         ? getLdAreaLabel(area.betAreaId)
+        : confName === "limbo"
+        ? getLimboAreaLabel(area.betAreaId)
         : area.betAreaId,
     betGold: area.betGold !== undefined ? toMoney(area.betGold) : "",
     winLoseGold: area.winLoseGold !== undefined ? toMoney(area.winLoseGold) : "",
@@ -647,7 +672,7 @@ function buildCommonBlocks(parsed, confName = "") {
     multiple: area.betMultiple !== undefined ? area.betMultiple : "",
   }));
   const betAreaColumns = [
-    { key: "betAreaId", label: confName === "double" || confName === "ld" ? "区域" : "区域ID" },
+    { key: "betAreaId", label: confName === "double" || confName === "ld" || confName === "limbo" ? "区域" : "区域ID" },
     { key: "betGold", label: "下注" },
     { key: "winLoseGold", label: "输赢" },
     { key: "odds", label: "赔率/参数" },
@@ -661,18 +686,20 @@ function buildCommonBlocks(parsed, confName = "") {
     }
     return true;
   });
-  blocks.push(
-    createTableBlock(
-      "下注区域",
-      betAreaColumns,
-      betAreas
-    )
-  );
+  if (confName !== "limbo") {
+    blocks.push(
+      createTableBlock(
+        "下注区域",
+        betAreaColumns,
+        betAreas
+      )
+    );
+  }
 
   if (parsed.betRecord.resultDescParsed) {
     blocks.push(createJsonBlock("结果描述解析", parsed.betRecord.resultDescParsed));
   }
-  if (parsed.betRecord.newResultDescParsed && confName !== "circle") {
+  if (parsed.betRecord.newResultDescParsed && confName !== "circle" && confName !== "coin") {
     blocks.push(createJsonBlock("新版结果解析", parsed.betRecord.newResultDescParsed));
   }
   if (parsed.betRecord.specialInfoStrParsed) {
@@ -858,27 +885,7 @@ function buildCircleBlocks(parsed) {
 }
 
 function buildCoinBlocks(parsed) {
-  const detail = parsed.betRecord.newResultDescParsed || {};
-  const rounds = toArray(detail.coin_bet_rsp_list).map((item, index) => ({
-    round: index + 1,
-    result: item.result === 1 ? "金" : item.result === 2 ? "银" : stringifyValue(item.result),
-  }));
-  return [
-    createEntriesBlock("幸运硬币详情", [
-      { label: "投注级别", value: detail.coin_bet_rsp_list ? detail.coin_bet_rsp_list.length : "" },
-      { label: "下注区域", value: COIN_AREA_LABELS[detail.bet_area] || "" },
-      { label: "赔率", value: detail.odds !== undefined ? `${detail.odds}x` : "" },
-      { label: "下注额", value: detail.bet_gold !== undefined ? toMoney(detail.bet_gold) : "" },
-    ]),
-    createTableBlock(
-      "翻币结果",
-      [
-        { key: "round", label: "轮次" },
-        { key: "result", label: "结果" },
-      ],
-      rounds
-    ),
-  ].filter(Boolean);
+  return [];
 }
 
 function buildKenoBlocks(parsed) {
@@ -1023,24 +1030,7 @@ function buildLDBlocks(parsed) {
 }
 
 function buildSlideBlocks(parsed) {
-  return [
-    createEntriesBlock("幸运滑行详情", [
-      { label: "结果倍率", value: parsed.betRecord.resultDesc ? `${parsed.betRecord.resultDesc}x` : "" },
-    ]),
-    createTableBlock(
-      "滑行下注",
-      [
-        { key: "betGold", label: "下注" },
-        { key: "betMultiple", label: "目标倍数" },
-        { key: "winLoseGold", label: "输赢" },
-      ],
-      toArray(parsed.betRecord.betAreas).map((item) => ({
-        betGold: item.betGold !== undefined ? toMoney(item.betGold) : "",
-        betMultiple: item.betMultiple !== undefined ? `${item.betMultiple}x` : "",
-        winLoseGold: item.winLoseGold !== undefined ? toMoney(item.winLoseGold) : "",
-      }))
-    ),
-  ].filter(Boolean);
+  return [];
 }
 
 function buildYFCTBlocks(parsed) {
@@ -1052,17 +1042,7 @@ function buildYFCTBlocks(parsed) {
 }
 
 function buildLimboBlocks(parsed) {
-  const parts = String(parsed.betRecord.areaResult || "")
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean);
-  return [
-    createEntriesBlock("火箭鸟详情", [
-      { label: "开出倍率", value: parts[0] ? `${parts[0]}x` : "" },
-      { label: "目标倍率", value: parts[1] ? `${parts[1]}x` : "" },
-      { label: "下注金额", value: parsed.betRecord.totalBetGold !== undefined ? toMoney(parsed.betRecord.totalBetGold) : "" },
-    ]),
-  ].filter(Boolean);
+  return [];
 }
 
 function buildTowerBlocks(parsed) {
@@ -1090,10 +1070,6 @@ function buildTowerBlocks(parsed) {
     });
 
   return [
-    createEntriesBlock("玛雅神殿详情", [
-      { label: "难度", value: Number.isNaN(diffType) ? "" : String(diffType + 1) },
-      { label: "结果", value: parsed.betRecord.bankerLoseRatio === 0 ? "未中奖" : parsed.betRecord.bankerLoseRatio ? `${parsed.betRecord.bankerLoseRatio}x` : "" },
-    ]),
     createTableBlock(
       "层级赔率",
       [
