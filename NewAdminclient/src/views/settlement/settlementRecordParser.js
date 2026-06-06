@@ -123,6 +123,27 @@ const SLOT_GAME_CONF_NAMES = new Set([
   "jlbs",
 ]);
 
+const QKLS_GAME_CONF_NAMES = new Set([
+  "yfct",
+  "ld",
+  "double",
+  "dice",
+  "bxsl",
+  "hilo",
+  "circle",
+  "plinko",
+  "keno",
+  "limbo",
+  "tower",
+  "slide",
+  "coin",
+  "spiritParty",
+  "bbjl",
+  "roulette",
+  "bhjk",
+  "baviator",
+]);
+
 const BBJL_AREA_LABELS = {
   1: "庄",
   2: "闲",
@@ -139,10 +160,43 @@ const COIN_AREA_LABELS = {
   2: "银",
 };
 
+const DOUBLE_AREA_LABELS = {
+  1: "红",
+  2: "黑",
+};
+
+const LD_AREA_LABELS = {
+  1: "8-12",
+  2: "2-6",
+  3: "7",
+};
+
+const CIRCLE_DIFFICULTY_LABELS = {
+  1: "低级",
+  2: "中级",
+  3: "高级",
+};
+
+const CIRCLE_SEGMENT_LABELS = {
+  1: "10分段",
+  2: "20分段",
+  3: "30分段",
+  4: "40分段",
+  5: "50分段",
+};
+
+const CIRCLE_COLOR_LABELS = {
+  1: "白色",
+  2: "蓝色",
+  3: "黄色",
+  4: "绿色",
+  5: "红色",
+};
+
 const COLOR_LABELS = {
-  1: "缁胯壊",
-  2: "钃濊壊",
-  3: "绾㈣壊",
+  1: "绿色",
+  2: "蓝色",
+  3: "红色",
 };
 
 function isObject(value) {
@@ -377,7 +431,191 @@ function buildSummary(row, parsed, confName) {
   return summary;
 }
 
-function buildCommonBlocks(parsed) {
+function createHighlight(label, value, tone = "neutral") {
+  if (value === null || value === undefined || value === "") return null;
+  return {
+    label,
+    value: stringifyValue(value),
+    tone,
+  };
+}
+
+function getDoubleAreaLabel(betAreaId) {
+  const id = Number(betAreaId);
+  return DOUBLE_AREA_LABELS[id] || (betAreaId !== undefined && betAreaId !== null && betAreaId !== "" ? `区域 ${betAreaId}` : "");
+}
+
+function getDoubleResultLabel(result) {
+  if (result === null || result === undefined || result === "") return "";
+  const raw = typeof result === "string" ? result.trim() : String(result);
+  return DOUBLE_AREA_LABELS[Number(raw)] || raw;
+}
+
+function getLdAreaLabel(betAreaId) {
+  const id = Number(betAreaId);
+  return LD_AREA_LABELS[id] || (betAreaId !== undefined && betAreaId !== null && betAreaId !== "" ? `区域 ${betAreaId}` : "");
+}
+
+function buildQklsHighlights(parsed, confName) {
+  const betAreas = toArray(parsed.betRecord.betAreas);
+
+  switch (confName) {
+    case "double": {
+      const area = betAreas[0] || {};
+      return [
+        createHighlight("结果", getDoubleResultLabel(parsed.betRecord.newResultDesc || parsed.betRecord.resultDesc), "result"),
+        createHighlight("下注区域", getDoubleAreaLabel(area.betAreaId), "accent"),
+      ].filter(Boolean);
+    }
+    case "dice": {
+      const area = betAreas[0] || {};
+      return [
+        createHighlight("开奖结果", parsed.betRecord.areaResult, "result"),
+        createHighlight("下注类型", area.betAreaId ? DICE_AREA_LABELS[area.betAreaId] || `区域 ${area.betAreaId}` : "", "accent"),
+        createHighlight("下注参数", area.num, "neutral"),
+      ].filter(Boolean);
+    }
+    case "plinko": {
+      const parts = String(parsed.betRecord.resultDesc || "").split("|");
+      return [
+        createHighlight("行数", parts[0] || "", "neutral"),
+        createHighlight("颜色", COLOR_LABELS[Number(parts[1])] || parts[1] || "", "accent"),
+        createHighlight("倍率", parts[2] ? `${parts[2]}x` : "", "result"),
+      ].filter(Boolean);
+    }
+    case "circle": {
+      const detail = parsed.betRecord.newResultDescParsed || {};
+      return [
+        createHighlight("扇区", CIRCLE_SEGMENT_LABELS[Number(detail.bet_section)] || "", "neutral"),
+        createHighlight("难度", CIRCLE_DIFFICULTY_LABELS[Number(detail.bet_difficulty)] || "", "accent"),
+        createHighlight("倍率", detail.odds !== undefined ? `${detail.odds}x` : "", "result"),
+        createHighlight("结果颜色", CIRCLE_COLOR_LABELS[Number(detail.result_color)] || "", "accent"),
+      ].filter(Boolean);
+    }
+    case "coin": {
+      const detail = parsed.betRecord.newResultDescParsed || {};
+      return [
+        createHighlight("下注区域", COIN_AREA_LABELS[detail.bet_area] || "", "accent"),
+        createHighlight("赔率", detail.odds !== undefined ? `${detail.odds}x` : "", "result"),
+        createHighlight("轮次", toArray(detail.coin_bet_rsp_list).length, "neutral"),
+      ].filter(Boolean);
+    }
+    case "keno": {
+      const detail = parsed.betRecord.resultDescParsed || {};
+      return [
+        createHighlight("投注数", toArray(detail.bet).length, "neutral"),
+        createHighlight("开号数", toArray(detail.open).length, "accent"),
+        createHighlight("命中数", toArray(detail.hit).length, "result"),
+      ].filter(Boolean);
+    }
+    case "spiritParty": {
+      const parts = String(parsed.betRecord.areaResult || "").split("|");
+      const icons = parts[0] ? parts[0].split(",").filter(Boolean) : [];
+      return [
+        createHighlight("倍率", parsed.betRecord.newResultDesc ? `${parsed.betRecord.newResultDesc}x` : "", "result"),
+        createHighlight("结果图标数", icons.length, "accent"),
+      ].filter(Boolean);
+    }
+    case "bbjl": {
+      const detail = parsed.betRecord.resultDescParsed || {};
+      const result = detail.result || {};
+      return [
+        createHighlight("获胜区域", result.area_id ? BBJL_AREA_LABELS[result.area_id] || `区域 ${result.area_id}` : "", "result"),
+        createHighlight("下注区域数", toArray(detail.bet).length, "neutral"),
+      ].filter(Boolean);
+    }
+    case "roulette": {
+      return [
+        createHighlight("开奖号码", parsed.betRecord.newResultDesc || parsed.betRecord.resultDesc, "result"),
+        createHighlight("下注区域数", betAreas.length, "neutral"),
+      ].filter(Boolean);
+    }
+    case "bhjk": {
+      const detail = parsed.betRecord.newResultDescParsed || {};
+      const settlement = (((detail.black_jack_player_state_info || {}).settlement_info) || {});
+      return [
+        createHighlight("保险下注", settlement.is_insurance ? "是" : "否", "accent"),
+        createHighlight("玩家位置数", toArray((detail.black_jack_player_state_info || {}).black_jack_player).length, "neutral"),
+      ].filter(Boolean);
+    }
+    case "baviator": {
+      return [
+        createHighlight("开出倍率", parsed.betRecord.resultDesc || "", "result"),
+        createHighlight("下注区域数", betAreas.length, "neutral"),
+        createHighlight("种子", parsed.commonRecord.seed || "", "accent"),
+      ].filter(Boolean);
+    }
+    case "ld": {
+      const areas = String(parsed.betRecord.areaResult || "")
+        .split(",")
+        .filter(Boolean);
+      return [
+        createHighlight("结果组数", areas.length, "neutral"),
+        createHighlight("首组结果", areas[0] || "", "accent"),
+      ].filter(Boolean);
+    }
+    case "slide": {
+      return [
+        createHighlight("结果倍率", parsed.betRecord.resultDesc ? `${parsed.betRecord.resultDesc}x` : "", "result"),
+        createHighlight("目标数", betAreas.length, "neutral"),
+      ].filter(Boolean);
+    }
+    case "yfct": {
+      return [
+        createHighlight("开奖倍率", parsed.betRecord.areaResult || "", "result"),
+      ].filter(Boolean);
+    }
+    case "limbo": {
+      const parts = String(parsed.betRecord.areaResult || "")
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
+      return [
+        createHighlight("开出倍率", parts[0] ? `${parts[0]}x` : "", "result"),
+        createHighlight("目标倍率", parts[1] ? `${parts[1]}x` : "", "accent"),
+      ].filter(Boolean);
+    }
+    case "tower": {
+      const resultParts = String(parsed.betRecord.resultDesc || "").split(";");
+      const diffType = Number(resultParts[0] || 0);
+      return [
+        createHighlight("难度", Number.isNaN(diffType) ? "" : String(diffType + 1), "neutral"),
+        createHighlight(
+          "结果",
+          parsed.betRecord.bankerLoseRatio === 0 ? "未中奖" : parsed.betRecord.bankerLoseRatio ? `${parsed.betRecord.bankerLoseRatio}x` : "",
+          "result"
+        ),
+      ].filter(Boolean);
+    }
+    case "bxsl": {
+      const detailParts = String(parsed.betRecord.newResultDesc || "")
+        .split(",")
+        .map((item) => item.trim());
+      const opened = detailParts[3] ? detailParts[3].split("|").filter(Boolean) : [];
+      return [
+        createHighlight("结果赔率", detailParts[2] ? `${detailParts[2]}x` : "", "result"),
+        createHighlight("已开格数", opened.length, "neutral"),
+      ].filter(Boolean);
+    }
+    default:
+      return [];
+  }
+}
+
+function buildQklsViewModel(parsed, confName, row, summary) {
+  return {
+    mode: "qkls",
+    confName,
+    summary: Array.isArray(summary) ? summary : buildSummary(row || {}, parsed, confName),
+    highlights: buildQklsHighlights(parsed, confName),
+    blocks: []
+      .concat(buildSpecialBlocks(confName, parsed))
+      .concat(buildCommonBlocks(parsed, confName))
+      .filter(Boolean),
+  };
+}
+
+function buildCommonBlocks(parsed, confName = "") {
   const blocks = [];
   const commonEntries = [];
   pushEntry(commonEntries, "Record ID", parsed.commonRecord.recordId);
@@ -387,30 +625,46 @@ function buildCommonBlocks(parsed) {
   pushEntry(commonEntries, "限红命中", parsed.commonRecord.IsLimit, (value) => (value ? "是" : "否"));
   blocks.push(createEntriesBlock("通用信息", commonEntries));
 
-  const betEntries = [];
-  pushEntry(betEntries, "总下注", parsed.betRecord.totalBetGold, (value) => toMoney(value));
-  pushEntry(betEntries, "结果描述", parsed.betRecord.resultDesc);
-  pushEntry(betEntries, "新版结果", parsed.betRecord.newResultDesc);
-  pushEntry(betEntries, "开奖明细", parsed.betRecord.areaResult);
-  blocks.push(createEntriesBlock("注单数据", betEntries));
+  if (confName !== "yfct" && confName !== "double" && confName !== "ld" && confName !== "dice" && confName !== "bxsl" && confName !== "hilo" && confName !== "circle" && confName !== "plinko") {
+    const betEntries = [];
+    pushEntry(betEntries, "总下注", parsed.betRecord.totalBetGold, (value) => toMoney(value));
+    pushEntry(betEntries, "结果描述", parsed.betRecord.resultDesc);
+    pushEntry(betEntries, "新版结果", parsed.betRecord.newResultDesc);
+    pushEntry(betEntries, "开奖明细", parsed.betRecord.areaResult);
+    blocks.push(createEntriesBlock("注单数据", betEntries));
+  }
 
   const betAreas = toArray(parsed.betRecord.betAreas).map((area) => ({
-    betAreaId: area.betAreaId,
+    betAreaId:
+      confName === "double"
+        ? getDoubleAreaLabel(area.betAreaId)
+        : confName === "ld"
+        ? getLdAreaLabel(area.betAreaId)
+        : area.betAreaId,
     betGold: area.betGold !== undefined ? toMoney(area.betGold) : "",
     winLoseGold: area.winLoseGold !== undefined ? toMoney(area.winLoseGold) : "",
-    odds: area.num !== undefined ? area.num : "",
+    odds: confName === "double" ? (Number(area.num) > 0 ? area.num : "") : area.num !== undefined ? area.num : "",
     multiple: area.betMultiple !== undefined ? area.betMultiple : "",
   }));
+  const betAreaColumns = [
+    { key: "betAreaId", label: confName === "double" || confName === "ld" ? "区域" : "区域ID" },
+    { key: "betGold", label: "下注" },
+    { key: "winLoseGold", label: "输赢" },
+    { key: "odds", label: "赔率/参数" },
+    { key: "multiple", label: "倍数" },
+  ].filter((column) => {
+    if (confName === "yfct" && column.key === "multiple") {
+      return false;
+    }
+    if (column.key === "odds" || column.key === "multiple") {
+      return betAreas.some((item) => item && item[column.key] !== "" && item[column.key] !== null && item[column.key] !== undefined);
+    }
+    return true;
+  });
   blocks.push(
     createTableBlock(
-      "涓嬫敞鍖哄煙",
-      [
-        { key: "betAreaId", label: "鍖哄煙ID" },
-        { key: "betGold", label: "涓嬫敞" },
-        { key: "winLoseGold", label: "杈撹耽" },
-        { key: "odds", label: "璧旂巼/鍙傛暟" },
-        { key: "multiple", label: "鍊嶆暟" },
-      ],
+      "下注区域",
+      betAreaColumns,
       betAreas
     )
   );
@@ -418,7 +672,7 @@ function buildCommonBlocks(parsed) {
   if (parsed.betRecord.resultDescParsed) {
     blocks.push(createJsonBlock("结果描述解析", parsed.betRecord.resultDescParsed));
   }
-  if (parsed.betRecord.newResultDescParsed) {
+  if (parsed.betRecord.newResultDescParsed && confName !== "circle") {
     blocks.push(createJsonBlock("新版结果解析", parsed.betRecord.newResultDescParsed));
   }
   if (parsed.betRecord.specialInfoStrParsed) {
@@ -428,11 +682,11 @@ function buildCommonBlocks(parsed) {
   if (specialInfo && Array.isArray(specialInfo.trigger_details)) {
     blocks.push(
       createTableBlock(
-        "鍏嶈垂娓告垙瑙﹀彂",
+        "免费游戏触发",
         [
-          { key: "lineId", label: "绾胯矾" },
-          { key: "indexes", label: "鍛戒腑浣嶇疆" },
-          { key: "multiplier", label: "鍊嶇巼/璇存槑" },
+          { key: "lineId", label: "线路" },
+          { key: "indexes", label: "命中位置" },
+          { key: "multiplier", label: "倍率/说明" },
         ],
         specialInfo.trigger_details.map((item) => ({
           lineId: item.lineId !== undefined ? item.lineId : "",
@@ -446,7 +700,7 @@ function buildCommonBlocks(parsed) {
   if (specialInfo && Array.isArray(specialInfo.open_details)) {
     blocks.push(
       createTableBlock(
-        "鍏嶈垂娓告垙鍥炲悎",
+        "免费游戏回合",
         [
           { key: "set", label: "组" },
           { key: "rounds", label: "回合数" },
@@ -473,14 +727,14 @@ function buildCommonBlocks(parsed) {
     });
     blocks.push(
       createTableBlock(
-        "鍏嶈垂娓告垙鏄庣粏",
+        "免费游戏明细",
         [
           { key: "set", label: "组" },
-          { key: "round", label: "鍥炲悎" },
-          { key: "outerIncome", label: "澶栧湀鏀剁泭" },
-          { key: "innerIncome", label: "鍐呭湀鏀剁泭" },
-          { key: "outerOdds", label: "澶栧湀璧旂巼" },
-          { key: "innerOdds", label: "鍐呭湀璧旂巼" },
+          { key: "round", label: "回合" },
+          { key: "outerIncome", label: "外圈收益" },
+          { key: "innerIncome", label: "内圈收益" },
+          { key: "outerOdds", label: "外圈赔率" },
+          { key: "innerOdds", label: "内圈赔率" },
         ],
         specialRounds
       )
@@ -490,10 +744,10 @@ function buildCommonBlocks(parsed) {
   if (typeof parsed.source.icons === "string" && parsed.source.icons.includes(";")) {
     blocks.push(
       createTableBlock(
-        "澶氳疆鍥炬爣缁撴灉",
+        "多轮图标结果",
         [
-          { key: "round", label: "杞" },
-          { key: "icons", label: "鍥炬爣搴忓垪" },
+          { key: "round", label: "轮次" },
+          { key: "icons", label: "图标序列" },
         ],
         parsed.source.icons.split(";").map((item, index) => ({
           round: index + 1,
@@ -509,13 +763,13 @@ function buildCommonBlocks(parsed) {
 function buildSlotBlocks(parsed) {
   const blocks = [];
   const entries = [];
-  pushEntry(entries, "鍗曠嚎涓嬫敞", parsed.source.betSingle, (value) => toMoney(value));
-  pushEntry(entries, "涓嬫敞鍊嶆暟", parsed.source.betTimes);
+  pushEntry(entries, "单线下注", parsed.source.betSingle, (value) => toMoney(value));
+  pushEntry(entries, "下注倍数", parsed.source.betTimes);
   pushEntry(entries, "小游戏输赢", parsed.source.battleWinLoseGold, (value) => toMoney(value));
-  blocks.push(createEntriesBlock("Slot 鍩虹淇℃伅", entries));
+  blocks.push(createEntriesBlock("Slot 基础信息", entries));
 
   if (parsed.source.icons) {
-    blocks.push(createTagsBlock("Icon 缁撴灉", String(parsed.source.icons).split(",")));
+    blocks.push(createTagsBlock("Icon 结果", String(parsed.source.icons).split(",")));
   }
 
   const winAreas = toArray(parsed.source.betAreas || parsed.betRecord.betAreas).map((area) => ({
@@ -528,14 +782,14 @@ function buildSlotBlocks(parsed) {
   }));
   blocks.push(
     createTableBlock(
-      "涓绾胯矾/鍖哄煙",
+      "中奖线路/区域",
       [
-        { key: "betAreaId", label: "鍖哄煙ID" },
-        { key: "iconId", label: "鍥炬爣ID" },
-        { key: "num", label: "鏁伴噺" },
-        { key: "betMultiple", label: "绾垮€嶆暟" },
-        { key: "iconMultiple", label: "鍥炬爣鍊嶆暟" },
-        { key: "winLoseGold", label: "涓" },
+        { key: "betAreaId", label: "区域ID" },
+        { key: "iconId", label: "图标ID" },
+        { key: "num", label: "数量" },
+        { key: "betMultiple", label: "线倍数" },
+        { key: "iconMultiple", label: "图标倍数" },
+        { key: "winLoseGold", label: "中奖" },
       ],
       winAreas
     )
@@ -544,13 +798,7 @@ function buildSlotBlocks(parsed) {
 }
 
 function buildDoubleBlocks(parsed) {
-  const area = toArray(parsed.betRecord.betAreas)[0] || {};
-  return [
-    createEntriesBlock("猜红黑详情", [
-      { label: "缁撴灉", value: stringifyValue(parsed.betRecord.newResultDesc || parsed.betRecord.resultDesc) },
-      { label: "涓嬫敞鍖哄煙", value: area.betAreaId !== undefined ? `鍖哄煙 ${area.betAreaId}` : "" },
-    ]),
-  ].filter(Boolean);
+  return [];
 }
 
 function buildDiceBlocks(parsed) {
@@ -558,21 +806,14 @@ function buildDiceBlocks(parsed) {
   return [
     createEntriesBlock("猜数字详情", [
       { label: "开奖结果", value: stringifyValue(parsed.betRecord.areaResult) },
-      { label: "涓嬫敞绫诲瀷", value: area.betAreaId ? DICE_AREA_LABELS[area.betAreaId] || `鍖哄煙 ${area.betAreaId}` : "" },
-      { label: "涓嬫敞鍙傛暟", value: area.num !== undefined ? stringifyValue(area.num) : "" },
+      { label: "下注类型", value: area.betAreaId ? DICE_AREA_LABELS[area.betAreaId] || `区域 ${area.betAreaId}` : "" },
+      { label: "下注参数", value: area.num !== undefined ? stringifyValue(area.num) : "" },
     ]),
   ].filter(Boolean);
 }
 
 function buildPlinkoBlocks(parsed) {
-  const parts = String(parsed.betRecord.resultDesc || "").split("|");
-  return [
-    createEntriesBlock("普林科详情", [
-      { label: "琛屾暟", value: parts[0] || "" },
-      { label: "棰滆壊", value: COLOR_LABELS[Number(parts[1])] || parts[1] || "" },
-      { label: "鍊嶇巼", value: parts[2] || "" },
-    ]),
-  ].filter(Boolean);
+  return [];
 }
 
 function buildHiloBlocks(parsed) {
@@ -591,13 +832,13 @@ function buildHiloBlocks(parsed) {
     });
   return [
     createTableBlock(
-      "楂樹綆绾哥墝杩囩▼",
+      "高低纸牌过程",
       [
-        { key: "round", label: "杞" },
-        { key: "card", label: "鐗岄潰" },
-        { key: "betArea", label: "涓嬫敞鍖哄煙" },
-        { key: "ratio", label: "鍊嶇巼" },
-        { key: "skipped", label: "璺宠繃" },
+        { key: "round", label: "轮次" },
+        { key: "card", label: "牌面" },
+        { key: "betArea", label: "下注区域" },
+        { key: "ratio", label: "倍率" },
+        { key: "skipped", label: "跳过" },
       ],
       rounds
     ),
@@ -607,12 +848,11 @@ function buildHiloBlocks(parsed) {
 function buildCircleBlocks(parsed) {
   const detail = parsed.betRecord.newResultDescParsed || {};
   return [
-    createEntriesBlock("骞歌繍杞洏璇︽儏", [
-      { label: "闅惧害", value: detail.bet_difficulty !== undefined ? stringifyValue(detail.bet_difficulty) : "" },
-      { label: "鎵囧尯", value: detail.bet_section !== undefined ? String(Number(detail.bet_section) * 10) : "" },
-      { label: "涓嬫敞", value: detail.bet_gold !== undefined ? toMoney(detail.bet_gold) : "" },
-      { label: "鍊嶇巼", value: detail.odds !== undefined ? `${detail.odds}x` : "" },
-      { label: "缁撴灉棰滆壊", value: detail.result_color !== undefined ? stringifyValue(detail.result_color) : "" },
+    createEntriesBlock("幸运转盘详情", [
+      { label: "难度", value: CIRCLE_DIFFICULTY_LABELS[Number(detail.bet_difficulty)] || "" },
+      { label: "扇区", value: CIRCLE_SEGMENT_LABELS[Number(detail.bet_section)] || "" },
+      { label: "倍率", value: detail.odds !== undefined ? `${detail.odds}x` : "" },
+      { label: "结果颜色", value: CIRCLE_COLOR_LABELS[Number(detail.result_color)] || "" },
     ]),
   ].filter(Boolean);
 }
@@ -624,17 +864,17 @@ function buildCoinBlocks(parsed) {
     result: item.result === 1 ? "金" : item.result === 2 ? "银" : stringifyValue(item.result),
   }));
   return [
-    createEntriesBlock("骞歌繍纭竵璇︽儏", [
-      { label: "鎶曟敞绾у埆", value: detail.coin_bet_rsp_list ? detail.coin_bet_rsp_list.length : "" },
-      { label: "涓嬫敞鍖哄煙", value: COIN_AREA_LABELS[detail.bet_area] || "" },
-      { label: "璧旂巼", value: detail.odds !== undefined ? `${detail.odds}x` : "" },
+    createEntriesBlock("幸运硬币详情", [
+      { label: "投注级别", value: detail.coin_bet_rsp_list ? detail.coin_bet_rsp_list.length : "" },
+      { label: "下注区域", value: COIN_AREA_LABELS[detail.bet_area] || "" },
+      { label: "赔率", value: detail.odds !== undefined ? `${detail.odds}x` : "" },
       { label: "下注额", value: detail.bet_gold !== undefined ? toMoney(detail.bet_gold) : "" },
     ]),
     createTableBlock(
-      "缈诲竵缁撴灉",
+      "翻币结果",
       [
-        { key: "round", label: "杞" },
-        { key: "result", label: "缁撴灉" },
+        { key: "round", label: "轮次" },
+        { key: "result", label: "结果" },
       ],
       rounds
     ),
@@ -644,19 +884,19 @@ function buildCoinBlocks(parsed) {
 function buildKenoBlocks(parsed) {
   const detail = parsed.betRecord.resultDescParsed || {};
   return [
-    createTagsBlock("鎶曟敞鍙风爜", detail.bet),
+    createTagsBlock("投注号码", detail.bet),
     createTagsBlock("开奖号码", detail.open),
-    createTagsBlock("鍛戒腑鍙风爜", detail.hit),
+    createTagsBlock("命中号码", detail.hit),
   ].filter(Boolean);
 }
 
 function buildSpiritPartyBlocks(parsed) {
   const parts = String(parsed.betRecord.areaResult || "").split("|");
   return [
-    createEntriesBlock("浜＄伒娲惧璇︽儏", [
-      { label: "鍊嶇巼", value: parsed.betRecord.newResultDesc ? `${parsed.betRecord.newResultDesc}x` : "" },
+    createEntriesBlock("精灵派对详情", [
+      { label: "倍率", value: parsed.betRecord.newResultDesc ? `${parsed.betRecord.newResultDesc}x` : "" },
     ]),
-    createTagsBlock("缁撴灉鍥炬爣", parts[0] ? parts[0].split(",") : []),
+    createTagsBlock("结果图标", parts[0] ? parts[0].split(",") : []),
   ].filter(Boolean);
 }
 
@@ -665,18 +905,18 @@ function buildBBJLBlocks(parsed) {
   const result = detail.result || {};
   return [
     createEntriesBlock("百家樂结果", [
-      { label: "鑾疯儨鍖哄煙", value: result.area_id ? BBJL_AREA_LABELS[result.area_id] || `鍖哄煙 ${result.area_id}` : "" },
+      { label: "获胜区域", value: result.area_id ? BBJL_AREA_LABELS[result.area_id] || `区域 ${result.area_id}` : "" },
     ]),
-    createTagsBlock("搴勫鐗岄潰", toArray((detail.banker || {}).cards)),
-    createTagsBlock("闂插鐗岄潰", toArray((detail.player || {}).cards)),
+    createTagsBlock("庄家牌面", toArray((detail.banker || {}).cards)),
+    createTagsBlock("玩家牌面", toArray((detail.player || {}).cards)),
     createTableBlock(
-      "涓嬫敞鏄庣粏",
+      "下注明细",
       [
-        { key: "area", label: "鍖哄煙" },
-        { key: "bet", label: "涓嬫敞" },
+        { key: "area", label: "区域" },
+        { key: "bet", label: "下注" },
       ],
       toArray(detail.bet).map((item) => ({
-        area: BBJL_AREA_LABELS[item.area_id] || `鍖哄煙 ${item.area_id}`,
+        area: BBJL_AREA_LABELS[item.area_id] || `区域 ${item.area_id}`,
         bet: item.bet !== undefined ? toMoney(item.bet) : "",
       }))
     ),
@@ -690,15 +930,15 @@ function buildRouletteBlocks(parsed) {
     winLoseGold: item.winLoseGold !== undefined ? toMoney(item.winLoseGold) : "",
   }));
   return [
-    createEntriesBlock("杞洏缁撴灉", [
+    createEntriesBlock("轮盘结果", [
       { label: "开奖号码", value: stringifyValue(parsed.betRecord.newResultDesc || parsed.betRecord.resultDesc) },
     ]),
     createTableBlock(
-      "杞洏涓嬫敞",
+      "轮盘下注",
       [
-        { key: "betAreaId", label: "鍖哄煙ID" },
-        { key: "betGold", label: "涓嬫敞" },
-        { key: "winLoseGold", label: "杈撹耽" },
+        { key: "betAreaId", label: "区域ID" },
+        { key: "betGold", label: "下注" },
+        { key: "winLoseGold", label: "输赢" },
       ],
       betAreas
     ),
@@ -715,15 +955,15 @@ function buildBHJKBlocks(parsed) {
   return [
     createEntriesBlock("21点详情", [
       { label: "保险下注", value: settlement.is_insurance ? "是" : "否" },
-      { label: "淇濋櫓閲戦", value: settlement.insurance_gold !== undefined ? toMoney(settlement.insurance_gold) : "" },
-      { label: "淇濋櫓璧斾粯", value: settlement.insurance_payout !== undefined ? toMoney(settlement.insurance_payout) : "" },
+      { label: "保险金额", value: settlement.insurance_gold !== undefined ? toMoney(settlement.insurance_gold) : "" },
+      { label: "保险赔付", value: settlement.insurance_payout !== undefined ? toMoney(settlement.insurance_payout) : "" },
     ]),
-    createTagsBlock("搴勫鐗岄潰", toArray((((detail.black_jack_player_state_info || {}).black_jack_dealer) || {}).black_jack_cards)),
+    createTagsBlock("庄家牌面", toArray((((detail.black_jack_player_state_info || {}).black_jack_dealer) || {}).black_jack_cards)),
     createTableBlock(
-      "鐜╁鐗岄潰",
+      "玩家牌面",
       [
-        { key: "seat", label: "浣嶇疆" },
-        { key: "cards", label: "鐗岄潰" },
+        { key: "seat", label: "位置" },
+        { key: "cards", label: "牌面" },
       ],
       players
     ),
@@ -739,16 +979,16 @@ function buildBaviatorBlocks(parsed) {
   }));
   return [
     createEntriesBlock("飞行员详情", [
-      { label: "绉嶅瓙", value: parsed.commonRecord.seed || "" },
-      { label: "寮€鍑哄€嶇巼", value: parsed.betRecord.resultDesc || "" },
+      { label: "种子", value: parsed.commonRecord.seed || "" },
+      { label: "开出倍率", value: parsed.betRecord.resultDesc || "" },
     ]),
     createTableBlock(
-      "涓嬫敞鍖哄煙",
+      "下注区域",
       [
-        { key: "betAreaId", label: "鍖哄煙ID" },
-        { key: "betGold", label: "涓嬫敞" },
-        { key: "winLoseGold", label: "杈撹耽" },
-        { key: "rate", label: "璧旂巼" },
+        { key: "betAreaId", label: "区域ID" },
+        { key: "betGold", label: "下注" },
+        { key: "winLoseGold", label: "输赢" },
+        { key: "rate", label: "赔率" },
       ],
       betAreas
     ),
@@ -771,11 +1011,11 @@ function buildLDBlocks(parsed) {
     });
   return [
     createTableBlock(
-      "骞歌繍楠板瓙璇︽儏",
+      "幸运两点详情",
       [
-        { key: "dice", label: "楠板瓙" },
-        { key: "range", label: "缁撴灉鍖洪棿" },
-        { key: "odds", label: "鍊嶇巼" },
+        { key: "dice", label: "骰子" },
+        { key: "range", label: "结果区间" },
+        { key: "odds", label: "倍率" },
       ],
       areas
     ),
@@ -784,15 +1024,15 @@ function buildLDBlocks(parsed) {
 
 function buildSlideBlocks(parsed) {
   return [
-    createEntriesBlock("骞歌繍婊戣璇︽儏", [
-      { label: "缁撴灉鍊嶇巼", value: parsed.betRecord.resultDesc ? `${parsed.betRecord.resultDesc}x` : "" },
+    createEntriesBlock("幸运滑行详情", [
+      { label: "结果倍率", value: parsed.betRecord.resultDesc ? `${parsed.betRecord.resultDesc}x` : "" },
     ]),
     createTableBlock(
-      "婊戣涓嬫敞",
+      "滑行下注",
       [
-        { key: "betGold", label: "涓嬫敞" },
-        { key: "betMultiple", label: "鐩爣鍊嶆暟" },
-        { key: "winLoseGold", label: "杈撹耽" },
+        { key: "betGold", label: "下注" },
+        { key: "betMultiple", label: "目标倍数" },
+        { key: "winLoseGold", label: "输赢" },
       ],
       toArray(parsed.betRecord.betAreas).map((item) => ({
         betGold: item.betGold !== undefined ? toMoney(item.betGold) : "",
@@ -806,7 +1046,7 @@ function buildSlideBlocks(parsed) {
 function buildYFCTBlocks(parsed) {
   return [
     createEntriesBlock("一飞冲天详情", [
-      { label: "寮€濂栧€嶇巼", value: parsed.betRecord.areaResult || "" },
+      { label: "开奖倍率", value: parsed.betRecord.areaResult || "" },
     ]),
   ].filter(Boolean);
 }
@@ -818,9 +1058,9 @@ function buildLimboBlocks(parsed) {
     .filter(Boolean);
   return [
     createEntriesBlock("火箭鸟详情", [
-      { label: "寮€鍑哄€嶇巼", value: parts[0] ? `${parts[0]}x` : "" },
-      { label: "鐩爣鍊嶇巼", value: parts[1] ? `${parts[1]}x` : "" },
-      { label: "涓嬫敞閲戦", value: parsed.betRecord.totalBetGold !== undefined ? toMoney(parsed.betRecord.totalBetGold) : "" },
+      { label: "开出倍率", value: parts[0] ? `${parts[0]}x` : "" },
+      { label: "目标倍率", value: parts[1] ? `${parts[1]}x` : "" },
+      { label: "下注金额", value: parsed.betRecord.totalBetGold !== undefined ? toMoney(parsed.betRecord.totalBetGold) : "" },
     ]),
   ].filter(Boolean);
 }
@@ -850,15 +1090,15 @@ function buildTowerBlocks(parsed) {
     });
 
   return [
-    createEntriesBlock("鐜涢泤绁炴璇︽儏", [
-      { label: "闅惧害", value: Number.isNaN(diffType) ? "" : String(diffType + 1) },
+    createEntriesBlock("玛雅神殿详情", [
+      { label: "难度", value: Number.isNaN(diffType) ? "" : String(diffType + 1) },
       { label: "结果", value: parsed.betRecord.bankerLoseRatio === 0 ? "未中奖" : parsed.betRecord.bankerLoseRatio ? `${parsed.betRecord.bankerLoseRatio}x` : "" },
     ]),
     createTableBlock(
-      "灞傜骇璧旂巼",
+      "层级赔率",
       [
-        { key: "level", label: "灞傜骇" },
-        { key: "odds", label: "璧旂巼" },
+        { key: "level", label: "层级" },
+        { key: "odds", label: "赔率" },
       ],
       odds
     ),
@@ -866,8 +1106,8 @@ function buildTowerBlocks(parsed) {
       "开格过程",
       [
         { key: "row", label: "行" },
-        { key: "cells", label: "鏍煎瓙鏁版嵁" },
-        { key: "opened", label: "鎵撳紑浣嶇疆" },
+        { key: "cells", label: "格子数据" },
+        { key: "opened", label: "打开位置" },
       ],
       board
     ),
@@ -879,25 +1119,21 @@ function buildBxslBlocks(parsed) {
     .split(",")
     .map((item) => item.trim());
   const opened = detailParts[3] ? detailParts[3].split("|").filter(Boolean) : [];
+  const hasExplicitOpened = opened.length > 0;
   const board = detailParts[4]
     ? detailParts[4].split("|").map((item, index) => ({
         index: index + 1,
-        type: item === "2" ? "瀹濈煶" : "鍦伴浄",
-        opened: opened.includes(String(index)) ? "是" : "否",
+        type: item === "2" ? "宝石" : "地雷",
+        kind: item === "2" ? "gem" : "mine",
+        opened: hasExplicitOpened ? opened.includes(String(index)) : item !== "2",
       }))
     : [];
 
   return [
-    createEntriesBlock("鎵浄璇︽儏", [
-      { label: "缁撴灉璧旂巼", value: detailParts[2] ? `${detailParts[2]}x` : "" },
-      { label: "宸插紑鏍煎瓙", value: opened.length ? opened.map((value) => Number(value) + 1).join(", ") : "" },
-    ]),
     createTableBlock(
-      "妫嬬洏缁撴灉",
+      "棋盘结果",
       [
-        { key: "index", label: "浣嶇疆" },
-        { key: "type", label: "绫诲瀷" },
-        { key: "opened", label: "宸叉墦寮€" },
+        { key: "index", label: "位置" },
       ],
       board
     ),
@@ -5036,8 +5272,11 @@ export function buildSettlementRecordDetail(row) {
 
   try {
     const parsed = normalizeRecordLog(row ? row.log : "");
+    const summary = buildSummary(row || {}, parsed, confName);
     const customView =
-      confName === "sjddj"
+      QKLS_GAME_CONF_NAMES.has(confName)
+        ? buildQklsViewModel(parsed, confName, row, summary)
+        : confName === "sjddj"
         ? buildSjddjViewModelClient(parsed)
         : confName === "shz"
         ? buildShzViewModel(parsed)
@@ -5107,7 +5346,7 @@ export function buildSettlementRecordDetail(row) {
     return {
       supported,
       confName,
-      summary: buildSummary(row || {}, parsed, confName),
+      summary,
       blocks,
       customView,
       rawJson,

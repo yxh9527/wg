@@ -5,10 +5,10 @@
         <div>
           <div class="panel-kicker">Player</div>
           <div class="panel-title">玩家注单</div>
-          <div class="panel-note">查看玩家注单明细、回放和对应流水入口。</div>
+          <div class="panel-note">查看玩家注单明细和对应流水入口。</div>
         </div>
       </div>
-      <el-descriptions :column="2" border v-if="userInfo" class="info-descriptions">
+      <el-descriptions v-if="userInfo" :column="2" border class="info-descriptions">
         <el-descriptions-item label="玩家ID">{{ userInfo.id }}</el-descriptions-item>
         <el-descriptions-item label="玩家昵称">{{ userInfo.nickName }}</el-descriptions-item>
         <el-descriptions-item label="站点">{{ userInfo.webName }}</el-descriptions-item>
@@ -71,8 +71,14 @@
       </div>
     </el-card>
 
-    <el-dialog title="注单详情回放" :visible.sync="detailVisible" width="70%">
-      <iframe :src="detailUrl" width="100%" height="520" frameborder="0"></iframe>
+    <el-dialog
+      title="游戏详情"
+      :visible.sync="detailVisible"
+      width="70%"
+      custom-class="settlement-detail-dialog"
+      append-to-body
+    >
+      <settlement-record-dialog :row="detailRow" embedded />
       <span slot="footer"></span>
     </el-dialog>
   </div>
@@ -80,13 +86,15 @@
 
 <script>
 import AppTable from "@/components/AppTable.vue";
-import { getGameData2, getGameServers, getPlayerFwDetailData, getPlayerInfoData } from "@/api/data";
+import SettlementRecordDialog from "@/views/settlement/SettlementRecordDialog.vue";
+import { getGameData2, getPlayerFwDetailData, getPlayerInfoData } from "@/api/data";
 import { formatDateTime, toFixedValue } from "./playersHelpers";
 
 export default {
   name: "PlayerGamePage",
   components: {
     AppTable,
+    SettlementRecordDialog,
   },
   data() {
     return {
@@ -97,10 +105,9 @@ export default {
       officeNumber: "",
       gameId: "",
       gameOptions: [],
-      replays: [],
       tableData: [],
       detailVisible: false,
-      detailUrl: "",
+      detailRow: null,
       pageData: {
         current: 0,
         page: 1,
@@ -127,6 +134,7 @@ export default {
           align: "center",
           render: (h, { row }) => h("span", row.playedDate ? new Date(row.playedDate).toLocaleString() : ""),
         },
+        { title: "Symbol", key: "symbol", minWidth: 140, align: "center" },
         { title: "货币", key: "currency", width: 100, align: "center" },
         {
           title: "有效下注",
@@ -136,7 +144,7 @@ export default {
           render: (h, { row }) => h("span", toFixedValue(row.bet)),
         },
         {
-          title: "总盈亏",
+          title: "总输赢",
           key: "win",
           minWidth: 120,
           align: "center",
@@ -148,15 +156,11 @@ export default {
         {
           title: "操作",
           type: "action",
-          width: 180,
+          width: 140,
           buttons: [
             {
-              label: "详情页",
+              label: "查看",
               onClick: (row) => this.openSettlementDetail(row),
-            },
-            {
-              label: "回放",
-              onClick: (row) => this.openReplay(row),
             },
             {
               label: "流水查询",
@@ -185,10 +189,6 @@ export default {
           label: item.nameZH ? `${item.name} [${item.nameZH}]` : item.name,
         }))
       );
-    },
-    async initGameServers() {
-      const response = await getGameServers();
-      this.replays = (((response.data.data || {}).data || {}).replays || []);
     },
     buildQuery() {
       return [
@@ -236,21 +236,7 @@ export default {
       this.fetchGameList();
     },
     openSettlementDetail(row) {
-      this.$router.push({
-        name: "settlement-detail",
-        query: {
-          siteId: this.$route.query.siteId || "",
-          agentId: this.$route.query.agent || "",
-          userId: this.$route.query.id || "",
-          order: row.roundID,
-          account: this.userInfo ? this.userInfo.userId || "" : "",
-          nickName: this.userInfo ? this.userInfo.nickName || "" : "",
-        },
-      });
-    },
-    openReplay(row) {
-      if (!this.replays.length || !row.hash) return;
-      this.detailUrl = `${this.replays[0]}/share/${row.hash}`;
+      this.detailRow = row;
       this.detailVisible = true;
     },
     openRecord(row) {
@@ -266,7 +252,7 @@ export default {
     },
   },
   async mounted() {
-    await Promise.all([this.initUser(), this.initGames(), this.initGameServers()]);
+    await Promise.all([this.initUser(), this.initGames()]);
     await this.fetchGameList();
   },
 };
@@ -284,5 +270,24 @@ export default {
 .inner-toolbar {
   margin-top: 16px;
   margin-bottom: 12px;
+}
+
+:global(.settlement-detail-dialog) {
+  width: min(1360px, calc(100vw - 48px)) !important;
+  max-width: calc(100vw - 48px);
+  margin: 0 auto !important;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+:global(.settlement-detail-dialog .el-dialog__body) {
+  padding: 12px 16px 16px;
+}
+
+@media (max-width: 768px) {
+  :global(.settlement-detail-dialog) {
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px);
+  }
 }
 </style>
