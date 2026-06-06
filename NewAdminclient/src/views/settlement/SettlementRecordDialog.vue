@@ -127,6 +127,8 @@ import SjnwRecordView from "./SjnwRecordView.vue";
 import JszcRecordView from "./JszcRecordView.vue";
 import XmwljRecordView from "./XmwljRecordView.vue";
 import CjwpRecordView from "./CjwpRecordView.vue";
+import BhjkRecordView from "./BhjkRecordView.vue";
+import BaviatorRecordView from "./BaviatorRecordView.vue";
 import QklsRecordView from "./QklsRecordView.vue";
 
 export default {
@@ -154,6 +156,8 @@ export default {
     JszcRecordView,
     XmwljRecordView,
     CjwpRecordView,
+    BhjkRecordView,
+    BaviatorRecordView,
     QklsRecordView,
   },
   props: {
@@ -232,6 +236,8 @@ export default {
         jszc: "JszcRecordView",
         xmwlj: "XmwljRecordView",
         cjwp: "CjwpRecordView",
+        bhjk: "BhjkRecordView",
+        baviator: "BaviatorRecordView",
         qkls: "QklsRecordView",
         slot: "SlotRecordView",
       };

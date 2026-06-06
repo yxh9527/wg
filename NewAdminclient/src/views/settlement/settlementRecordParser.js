@@ -16,12 +16,14 @@ import { buildXmwljViewModel } from "./xmwljRecordParser";
 import { buildCjwpViewModel } from "./cjwpRecordParser";
 
 export const SUPPORTED_SETTLEMENT_DETAIL_GAME_IDS = new Set([
+  1035,
   3001, 3002, 3003, 3004, 3005, 3008, 3009, 3010, 3011, 3012, 3013, 3014, 3015, 3016, 3017, 3018, 3019, 3020, 3022,
   3023, 3024, 3025, 3026, 3028, 3029, 3030, 3031, 3032, 3033, 3035, 3036, 3037, 3038, 3039, 3040, 3042, 3051, 5001,
   5002, 5003, 5004, 5005, 5006, 5007, 5008, 5009, 5010, 5011, 5012, 5013, 5014, 5015, 5016, 5017, 5018,
 ]);
 
 const GAME_CONF_NAME_MAP = {
+  1035: "roulette",
   3001: "cjsgj",
   3002: "shz",
   3003: "lhdb",
@@ -332,6 +334,240 @@ function toArray(value) {
   return Array.isArray(value) ? value : [];
 }
 
+const ROULETTE_RED_NUMBERS = new Set([1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]);
+
+const ROULETTE_AREA_LABELS = {
+  0: "0",
+  1: "1",
+  2: "2",
+  3: "3",
+  4: "4",
+  5: "5",
+  6: "6",
+  7: "7",
+  8: "8",
+  9: "9",
+  10: "10",
+  11: "11",
+  12: "12",
+  13: "13",
+  14: "14",
+  15: "15",
+  16: "16",
+  17: "17",
+  18: "18",
+  19: "19",
+  20: "20",
+  21: "21",
+  22: "22",
+  23: "23",
+  24: "24",
+  25: "25",
+  26: "26",
+  27: "27",
+  28: "28",
+  29: "29",
+  30: "30",
+  31: "31",
+  32: "32",
+  33: "33",
+  34: "34",
+  35: "35",
+  36: "36",
+  // broulette client mapping: clientv3/assets/broulette/index.18cc5.js -> BET_GAME_AREATEXT
+  37: "\u7b2c1\u5217",
+  38: "\u7b2c2\u5217",
+  39: "\u7b2c3\u5217",
+  40: "1-12",
+  41: "13-24",
+  42: "25-36",
+  43: "\u5c0f",
+  44: "\u53cc",
+  45: "\u7ea2",
+  46: "\u9ed1",
+  47: "\u5355",
+  48: "\u5927",
+  6001: "\u7b2c1\u5217",
+  6002: "\u7b2c2\u5217",
+  6003: "\u7b2c3\u5217",
+  7001: "1-12",
+  7002: "13-24",
+  7003: "25-36",
+  8001: "\u5c0f",
+  9001: "\u5927",
+  10001: "\u53cc",
+  11001: "\u5355",
+  12001: "\u7ea2",
+  13001: "\u9ed1",
+  14001: "Tiers",
+  15001: "Orphelins",
+  16001: "Voisins",
+  17001: "Zero",
+};
+
+const ROULETTE_COMBO_LABELS = {
+  2001: "0\u30011",
+  2002: "0\u30012",
+  2003: "0\u30013",
+  2004: "1\u30012",
+  2005: "2\u30013",
+  2006: "4\u30015",
+  2007: "5\u30016",
+  2008: "7\u30018",
+  2009: "8\u30019",
+  2010: "10\u300111",
+  2011: "11\u300112",
+  2012: "13\u300114",
+  2013: "14\u300115",
+  2014: "16\u300117",
+  2015: "17\u300118",
+  2016: "19\u300120",
+  2017: "20\u300121",
+  2018: "22\u300123",
+  2019: "23\u300124",
+  2020: "25\u300126",
+  2021: "26\u300127",
+  2022: "28\u300129",
+  2023: "29\u300130",
+  2024: "31\u300132",
+  2025: "32\u300133",
+  2026: "34\u300135",
+  2027: "35\u300136",
+  2028: "1\u30014",
+  2029: "2\u30015",
+  2030: "3\u30016",
+  2031: "4\u30017",
+  2032: "5\u30018",
+  2033: "6\u30019",
+  2034: "7\u300110",
+  2035: "8\u300111",
+  2036: "9\u300112",
+  2037: "10\u300113",
+  2038: "11\u300114",
+  2039: "12\u300115",
+  2040: "13\u300116",
+  2041: "14\u300117",
+  2042: "15\u300118",
+  2043: "16\u300119",
+  2044: "17\u300120",
+  2045: "18\u300121",
+  2046: "19\u300122",
+  2047: "20\u300123",
+  2048: "21\u300124",
+  2049: "22\u300125",
+  2050: "23\u300126",
+  2051: "24\u300127",
+  2052: "25\u300128",
+  2053: "26\u300129",
+  2054: "27\u300130",
+  2055: "28\u300131",
+  2056: "29\u300132",
+  2057: "30\u300133",
+  2058: "31\u300134",
+  2059: "32\u300135",
+  2060: "33\u300136",
+  3001: "0\u30011\u30012",
+  3002: "0\u30012\u30013",
+  3003: "1\u30012\u30013",
+  3004: "4\u30015\u30016",
+  3005: "7\u30018\u30019",
+  3006: "10\u300111\u300112",
+  3007: "13\u300114\u300115",
+  3008: "16\u300117\u300118",
+  3009: "19\u300120\u300121",
+  3010: "22\u300123\u300124",
+  3011: "25\u300126\u300127",
+  3012: "28\u300129\u300130",
+  3013: "31\u300132\u300133",
+  3014: "34\u300135\u300136",
+  4001: "0\u30011\u30012\u30013",
+  4002: "1\u30012\u30014\u30015",
+  4003: "2\u30013\u30015\u30016",
+  4004: "4\u30015\u30017\u30018",
+  4005: "5\u30016\u30018\u30019",
+  4006: "7\u30018\u300110\u300111",
+  4007: "8\u30019\u300111\u300112",
+  4008: "10\u300111\u300113\u300114",
+  4009: "11\u300112\u300114\u300115",
+  4010: "13\u300114\u300116\u300117",
+  4011: "14\u300115\u300117\u300118",
+  4012: "16\u300117\u300119\u300120",
+  4013: "17\u300118\u300120\u300121",
+  4014: "19\u300120\u300122\u300123",
+  4015: "20\u300121\u300123\u300124",
+  4016: "22\u300123\u300125\u300126",
+  4017: "23\u300124\u300126\u300127",
+  4018: "25\u300126\u300128\u300129",
+  4019: "26\u300127\u300129\u300130",
+  4020: "28\u300129\u300131\u300132",
+  4021: "29\u300130\u300132\u300133",
+  4022: "31\u300132\u300134\u300135",
+  4023: "32\u300133\u300135\u300136",
+  5001: "1\u30012\u30013\u30014\u30015\u30016",
+  5002: "4\u30015\u30016\u30017\u30018\u30019",
+  5003: "7\u30018\u30019\u300110\u300111\u300112",
+  5004: "10\u300111\u300112\u300113\u300114\u300115",
+  5005: "13\u300114\u300115\u300116\u300117\u300118",
+  5006: "16\u300117\u300118\u300119\u300120\u300121",
+  5007: "19\u300120\u300121\u300122\u300123\u300124",
+  5008: "22\u300123\u300124\u300125\u300126\u300127",
+  5009: "25\u300126\u300127\u300128\u300129\u300130",
+  5010: "28\u300129\u300130\u300131\u300132\u300133",
+  5011: "31\u300132\u300133\u300134\u300135\u300136",
+};
+
+function getRouletteAreaLabel(areaId) {
+  const numericAreaId = Number(areaId);
+  if (!Number.isFinite(numericAreaId)) return stringifyValue(areaId);
+  if (numericAreaId >= 1000 && numericAreaId <= 1036) {
+    return String(numericAreaId - 1000);
+  }
+  if (ROULETTE_AREA_LABELS[numericAreaId]) {
+    return ROULETTE_AREA_LABELS[numericAreaId];
+  }
+  if (ROULETTE_COMBO_LABELS[numericAreaId]) {
+    return ROULETTE_COMBO_LABELS[numericAreaId];
+  }
+  return String(numericAreaId);
+}
+
+function parseRouletteOpenNumber(value) {
+  if (typeof value === "number" && value >= 0 && value <= 36) return value;
+  const source = String(value === undefined || value === null ? "" : value).trim();
+  if (!source) return null;
+  const matched = source.match(/(^|[^0-9])([0-9]{1,2})(?![0-9])/);
+  if (!matched) return null;
+  const numeric = Number(matched[2]);
+  return numeric >= 0 && numeric <= 36 ? numeric : null;
+}
+
+function buildRouletteResultEntries(rawValue) {
+  const openNumber = parseRouletteOpenNumber(rawValue);
+  const entries = [
+    { label: "\u5f00\u5956\u53f7\u7801", value: stringifyValue(rawValue) },
+  ];
+  if (openNumber === null) return entries;
+
+  const color = openNumber === 0 ? "\u7eff" : ROULETTE_RED_NUMBERS.has(openNumber) ? "\u7ea2" : "\u9ed1";
+  entries.push({ label: "\u989c\u8272", value: color });
+
+  if (openNumber !== 0) {
+    entries.push(
+      { label: "\u5927\u5c0f", value: openNumber >= 19 ? "\u5927" : "\u5c0f" },
+      { label: "\u5355\u53cc", value: openNumber % 2 === 0 ? "\u53cc" : "\u5355" },
+      {
+        label: "\u5206\u6bb5",
+        value: openNumber <= 12 ? "1-12" : openNumber <= 24 ? "13-24" : "25-36",
+      },
+      {
+        label: "\u5217",
+        value: `\u7b2c${((openNumber - 1) % 3) + 1}\u5217`,
+      }
+    );
+  }
+  return entries;
+}
+
 function parseStructuredField(value) {
   const unwrapped = unwrapJsonValue(value);
   if (isObject(unwrapped) || Array.isArray(unwrapped)) return unwrapped;
@@ -529,23 +765,38 @@ function buildQklsHighlights(parsed, confName) {
     case "bbjl": {
       const detail = parsed.betRecord.resultDescParsed || {};
       const result = detail.result || {};
+      const betSummary = toArray(detail.bet)
+        .map((item) => {
+          const area = BBJL_AREA_LABELS[item.area_id] || `区域 ${item.area_id}`;
+          const bet = item.bet !== undefined ? toMoney(item.bet) : "";
+          return area && bet ? `${area} ${bet}` : area || bet;
+        })
+        .filter(Boolean)
+        .join(" / ");
       return [
         createHighlight("获胜区域", result.area_id ? BBJL_AREA_LABELS[result.area_id] || `区域 ${result.area_id}` : "", "result"),
-        createHighlight("下注区域数", toArray(detail.bet).length, "neutral"),
+        createHighlight("下注明细", betSummary, "accent"),
       ].filter(Boolean);
     }
     case "roulette": {
+      const resultValue = parsed.betRecord.newResultDesc || parsed.betRecord.resultDesc;
+      const openNumber = parseRouletteOpenNumber(resultValue);
+      const color = openNumber === null ? "" : openNumber === 0 ? "绿" : ROULETTE_RED_NUMBERS.has(openNumber) ? "红" : "黑";
       return [
-        createHighlight("开奖号码", parsed.betRecord.newResultDesc || parsed.betRecord.resultDesc, "result"),
-        createHighlight("下注区域数", betAreas.length, "neutral"),
+        createHighlight("开奖号码", resultValue, "result"),
+        createHighlight("颜色", color, color === "红" ? "accent" : color === "黑" ? "neutral" : "result"),
+        createHighlight("大小", openNumber !== null && openNumber !== 0 ? (openNumber >= 19 ? "大" : "小") : "", "accent"),
+        createHighlight("单双", openNumber !== null && openNumber !== 0 ? (openNumber % 2 === 0 ? "双" : "单") : "", "neutral"),
+        createHighlight("分段", openNumber !== null && openNumber !== 0 ? (openNumber <= 12 ? "1-12" : openNumber <= 24 ? "13-24" : "25-36") : "", "neutral"),
+        createHighlight("列", openNumber !== null && openNumber !== 0 ? `第${((openNumber - 1) % 3) + 1}列` : "", "neutral"),
       ].filter(Boolean);
     }
     case "bhjk": {
       const detail = parsed.betRecord.newResultDescParsed || {};
       const settlement = (((detail.black_jack_player_state_info || {}).settlement_info) || {});
       return [
-        createHighlight("保险下注", settlement.is_insurance ? "是" : "否", "accent"),
-        createHighlight("玩家位置数", toArray((detail.black_jack_player_state_info || {}).black_jack_player).length, "neutral"),
+        createHighlight("保险决策", getBhjkInsuranceDecision(detail.black_jack_player_state_info || {}, toArray((detail.black_jack_player_state_info || {}).black_jack_player)), "accent"),
+        createHighlight("玩家手牌数", toArray((detail.black_jack_player_state_info || {}).black_jack_player).length, "neutral"),
       ].filter(Boolean);
     }
     case "baviator": {
@@ -625,6 +876,197 @@ function buildQklsViewModel(parsed, confName, row, summary) {
   };
 }
 
+const BHJK_ACTION_LABELS = {
+  1: "下注",
+  2: "加倍",
+  3: "要牌",
+  4: "停牌",
+  5: "分牌",
+  6: "买保险",
+  7: "不买保险",
+  8: "爆牌",
+};
+
+const BHJK_RESULT_LABELS = {
+  1: "赢",
+  2: "输",
+  3: "平",
+};
+
+function getBhjkDetail(parsed) {
+  const detail = parsed.betRecord.newResultDescParsed || parsed.betRecord.resultDescParsed || {};
+  return detail.black_jack_player_state_info || detail.blackJackPlayerStateInfo || detail || {};
+}
+
+function getBhjkHandRecord(entry) {
+  return (entry && (entry.blackJackCards || entry.black_jack_cards)) || entry || {};
+}
+
+function getBhjkActionList(hand) {
+  return toArray(hand && (hand.blackJackActions || hand.black_jack_actions));
+}
+
+function hasBhjkAction(hand, actionId) {
+  return getBhjkActionList(hand).some((item) => Number(item && item.actions) === Number(actionId));
+}
+
+function getBhjkInsuranceDecision(detail, players) {
+  const insuranceGold = Number(detail && detail.insuranceGold);
+  const allHands = toArray(players).map((entry) => getBhjkHandRecord(entry));
+  if (allHands.some((hand) => hasBhjkAction(hand, 6)) || insuranceGold > 0) return "买保险";
+  if (allHands.some((hand) => hasBhjkAction(hand, 7))) return "不买保险";
+  return "";
+}
+
+function getBhjkHandResultLabel(hand) {
+  const playerResult = Number(hand && (hand.playerResult ?? hand.player_result));
+  if (BHJK_RESULT_LABELS[playerResult]) return BHJK_RESULT_LABELS[playerResult];
+  if (hasBhjkAction(hand, 8) || Number(hand && hand.value) > 21) return "爆牌";
+  return "";
+}
+
+function getBhjkHandTone(hand) {
+  const playerResult = Number(hand && (hand.playerResult ?? hand.player_result));
+  if (playerResult === 1) return "win";
+  if (playerResult === 2) return "lose";
+  if (playerResult === 3) return "draw";
+  if (hasBhjkAction(hand, 8) || Number(hand && hand.value) > 21) return "lose";
+  if (Number(hand && hand.value) === 21 && toArray(hand && hand.cards).length === 2) return "accent";
+  return "neutral";
+}
+
+function normalizeBhjkHand(entry, index, totalPlayers) {
+  const hand = getBhjkHandRecord(entry);
+  const cards = toArray(hand.cards).map((item) => stringifyValue(item));
+  const actions = getBhjkActionList(hand).map((item) => ({
+    id: Number(item && item.actions),
+    label: BHJK_ACTION_LABELS[Number(item && item.actions)] || `操作 ${item && item.actions}`,
+  }));
+  const value = hand && hand.value !== undefined && hand.value !== null ? String(hand.value) : "";
+  const result = getBhjkHandResultLabel(hand);
+  const total = Number((hand && hand.betGold) || 0);
+  const isSplit = totalPlayers > 1 && index > 0;
+  const title = totalPlayers > 1 ? `玩家${index + 1}` : "玩家";
+  const badges = [];
+
+  if (Number(value) === 21 && cards.length === 2 && !isSplit) badges.push("Blackjack");
+  if (hasBhjkAction(hand, 2)) badges.push("加倍");
+  if (hasBhjkAction(hand, 5) || isSplit) badges.push("分牌");
+  if (hasBhjkAction(hand, 8) || Number(value) > 21) badges.push("爆牌");
+  if (hasBhjkAction(hand, 4)) badges.push("停牌");
+
+  return {
+    key: `player-${index}`,
+    title,
+    subtitle: isSplit ? "分牌手" : "",
+    cards,
+    value,
+    result,
+    tone: getBhjkHandTone(hand),
+    betGold: total > 0 ? toMoney(total) : "",
+    badges,
+    actions,
+  };
+}
+
+function normalizeBhjkDealer(detail) {
+  const dealerRecord = (detail && (detail.black_jack_dealer || detail.blackJackDealer)) || {};
+  const hand = getBhjkHandRecord(dealerRecord);
+  const cards = toArray(hand.cards).map((item) => stringifyValue(item));
+  const actions = getBhjkActionList(hand).map((item) => ({
+    id: Number(item && item.actions),
+    label: BHJK_ACTION_LABELS[Number(item && item.actions)] || `操作 ${item && item.actions}`,
+  }));
+  const value = hand && hand.value !== undefined && hand.value !== null ? String(hand.value) : "";
+  const badges = [];
+
+  if (Number(value) === 21 && cards.length === 2) badges.push("Blackjack");
+  if (hasBhjkAction(hand, 8) || Number(value) > 21) badges.push("爆牌");
+
+  return {
+    title: "庄家",
+    cards,
+    value,
+    badges,
+    actions,
+  };
+}
+
+function buildBhjkViewModel(parsed, row, summary) {
+  const detail = getBhjkDetail(parsed);
+  const players = toArray(detail.black_jack_player || detail.blackJackPlayer);
+  const dealer = normalizeBhjkDealer(detail);
+  const hands = players.map((entry, index) => normalizeBhjkHand(entry, index, players.length));
+  const insuranceDecision = getBhjkInsuranceDecision(detail, players);
+  const settlement = detail.settlement_info || detail.settlementInfo || {};
+  const commonSummary = Array.isArray(summary) ? summary : buildSummary(row || {}, parsed, "bhjk");
+  const infoEntries = [];
+  const metaEntries = [];
+
+  pushEntry(infoEntries, "Record ID", parsed.commonRecord.recordId);
+  pushEntry(infoEntries, "票据号", parsed.commonRecord.porderId);
+  pushEntry(infoEntries, "局号", row && row.roundID);
+  pushEntry(infoEntries, "结算时间", parsed.commonRecord.settlementTimestamp, formatUnixDateTime);
+
+  pushEntry(metaEntries, "保险决策", insuranceDecision);
+  pushEntry(metaEntries, "保险金额", detail.insuranceGold ?? settlement.insurance_gold, (value) => toMoney(value));
+  pushEntry(metaEntries, "保险赔付", settlement.insurance_payout, (value) => toMoney(value));
+  pushEntry(metaEntries, "手牌数", hands.length);
+  pushEntry(metaEntries, "状态", detail.active === false ? "已结算" : detail.active === true ? "进行中" : "");
+
+  return {
+    mode: "bhjk",
+    confName: "bhjk",
+    summary: commonSummary,
+    infoEntries,
+    metaEntries,
+    dealer,
+    hands,
+    totalBetGold: toMoney(parsed.betRecord.totalBetGold || 0),
+    totalWinLoseGold: toMoney(parsed.commonRecord.dispatchRewardGold || 0),
+  };
+}
+
+function buildBaviatorViewModel(parsed, row, summary) {
+  const source = parsed.source || {};
+  const connection = parsed.connectionRecord || {};
+  const betRecord = parsed.betRecord || {};
+  const commonRecord = parsed.commonRecord || {};
+  const mergedSource = {
+    ...betRecord,
+    ...connection,
+    ...source,
+  };
+
+  const betAreas = toArray(mergedSource.betAreas || betRecord.betAreas).map((item, index) => {
+    const rateNumber = Number(item && item.num);
+    return {
+      key: `area-${index}`,
+      label: item && item.betAreaId !== undefined ? `区域 ${item.betAreaId}` : `下注 ${index + 1}`,
+      betGold: item && item.betGold !== undefined ? toMoney(item.betGold) : "",
+      winLoseGold: item && item.winLoseGold !== undefined ? toMoney(item.winLoseGold) : "",
+      rate: Number.isFinite(rateNumber) && rateNumber > 0 ? `${rateNumber / 100}x` : "",
+    };
+  });
+
+  const infoEntries = [];
+  pushEntry(infoEntries, "票据号", commonRecord.porderId);
+  pushEntry(infoEntries, "局号", row && row.roundID);
+  pushEntry(infoEntries, "结算时间", commonRecord.settlementTimestamp, formatUnixDateTime);
+  pushEntry(infoEntries, "种子", commonRecord.seed);
+
+  return {
+    mode: "baviator",
+    confName: "baviator",
+    summary: Array.isArray(summary) ? summary : buildSummary(row || {}, parsed, "baviator"),
+    infoEntries,
+    resultRate: mergedSource.resultDesc ? String(mergedSource.resultDesc) : "",
+    totalBetGold: toMoney(mergedSource.totalBetGold ?? betRecord.totalBetGold ?? 0),
+    totalWinLoseGold: toMoney(mergedSource.winLoseGold ?? commonRecord.dispatchRewardGold ?? 0),
+    betAreas,
+  };
+}
+
 function buildCommonBlocks(parsed, confName = "") {
   const blocks = [];
   const commonEntries = [];
@@ -647,6 +1089,8 @@ function buildCommonBlocks(parsed, confName = "") {
     confName !== "tower" &&
     confName !== "slide" &&
     confName !== "coin" &&
+    confName !== "bbjl" &&
+    confName !== "roulette" &&
     confName !== "limbo"
   ) {
     const betEntries = [];
@@ -665,6 +1109,8 @@ function buildCommonBlocks(parsed, confName = "") {
         ? getLdAreaLabel(area.betAreaId)
         : confName === "limbo"
         ? getLimboAreaLabel(area.betAreaId)
+        : confName === "roulette"
+        ? getRouletteAreaLabel(area.betAreaId)
         : area.betAreaId,
     betGold: area.betGold !== undefined ? toMoney(area.betGold) : "",
     winLoseGold: area.winLoseGold !== undefined ? toMoney(area.winLoseGold) : "",
@@ -672,7 +1118,7 @@ function buildCommonBlocks(parsed, confName = "") {
     multiple: area.betMultiple !== undefined ? area.betMultiple : "",
   }));
   const betAreaColumns = [
-    { key: "betAreaId", label: confName === "double" || confName === "ld" || confName === "limbo" ? "区域" : "区域ID" },
+    { key: "betAreaId", label: confName === "double" || confName === "ld" || confName === "limbo" || confName === "roulette" ? "区域" : "区域ID" },
     { key: "betGold", label: "下注" },
     { key: "winLoseGold", label: "输赢" },
     { key: "odds", label: "赔率/参数" },
@@ -686,7 +1132,7 @@ function buildCommonBlocks(parsed, confName = "") {
     }
     return true;
   });
-  if (confName !== "limbo") {
+  if (confName !== "limbo" && confName !== "bbjl") {
     blocks.push(
       createTableBlock(
         "下注区域",
@@ -696,7 +1142,7 @@ function buildCommonBlocks(parsed, confName = "") {
     );
   }
 
-  if (parsed.betRecord.resultDescParsed) {
+  if (parsed.betRecord.resultDescParsed && confName !== "bbjl") {
     blocks.push(createJsonBlock("结果描述解析", parsed.betRecord.resultDescParsed));
   }
   if (parsed.betRecord.newResultDescParsed && confName !== "circle" && confName !== "coin") {
@@ -909,47 +1355,14 @@ function buildSpiritPartyBlocks(parsed) {
 
 function buildBBJLBlocks(parsed) {
   const detail = parsed.betRecord.resultDescParsed || {};
-  const result = detail.result || {};
   return [
-    createEntriesBlock("百家樂结果", [
-      { label: "获胜区域", value: result.area_id ? BBJL_AREA_LABELS[result.area_id] || `区域 ${result.area_id}` : "" },
-    ]),
     createTagsBlock("庄家牌面", toArray((detail.banker || {}).cards)),
     createTagsBlock("玩家牌面", toArray((detail.player || {}).cards)),
-    createTableBlock(
-      "下注明细",
-      [
-        { key: "area", label: "区域" },
-        { key: "bet", label: "下注" },
-      ],
-      toArray(detail.bet).map((item) => ({
-        area: BBJL_AREA_LABELS[item.area_id] || `区域 ${item.area_id}`,
-        bet: item.bet !== undefined ? toMoney(item.bet) : "",
-      }))
-    ),
   ].filter(Boolean);
 }
 
 function buildRouletteBlocks(parsed) {
-  const betAreas = toArray(parsed.betRecord.betAreas).map((item) => ({
-    betAreaId: item.betAreaId,
-    betGold: item.betGold !== undefined ? toMoney(item.betGold) : "",
-    winLoseGold: item.winLoseGold !== undefined ? toMoney(item.winLoseGold) : "",
-  }));
-  return [
-    createEntriesBlock("轮盘结果", [
-      { label: "开奖号码", value: stringifyValue(parsed.betRecord.newResultDesc || parsed.betRecord.resultDesc) },
-    ]),
-    createTableBlock(
-      "轮盘下注",
-      [
-        { key: "betAreaId", label: "区域ID" },
-        { key: "betGold", label: "下注" },
-        { key: "winLoseGold", label: "输赢" },
-      ],
-      betAreas
-    ),
-  ].filter(Boolean);
+  return [];
 }
 
 function buildBHJKBlocks(parsed) {
@@ -5251,7 +5664,11 @@ export function buildSettlementRecordDetail(row) {
     const summary = buildSummary(row || {}, parsed, confName);
     const customView =
       QKLS_GAME_CONF_NAMES.has(confName)
-        ? buildQklsViewModel(parsed, confName, row, summary)
+        ? confName === "bhjk"
+          ? buildBhjkViewModel(parsed, row, summary)
+          : confName === "baviator"
+          ? buildBaviatorViewModel(parsed, row, summary)
+          : buildQklsViewModel(parsed, confName, row, summary)
         : confName === "sjddj"
         ? buildSjddjViewModelClient(parsed)
         : confName === "shz"

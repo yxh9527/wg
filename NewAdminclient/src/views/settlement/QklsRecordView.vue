@@ -1,5 +1,5 @@
 <template>
-  <div class="qkls-view">
+  <div class="qkls-view" :class="`qkls-view--${confName}`">
     <div class="qkls-hero">
       <div
         v-for="entry in metricEntries"
@@ -295,7 +295,7 @@
 <script>
 const METRIC_LABELS = new Set(["投注", "输赢", "时间"]);
 const NUMBER_TAG_TITLES = new Set(["投注号码", "开奖号码", "命中号码"]);
-const FANCY_ENTRY_CONF_NAMES = new Set(["double", "dice", "plinko", "circle", "yfct", "limbo", "spiritParty"]);
+const FANCY_ENTRY_CONF_NAMES = new Set(["double", "dice", "plinko", "circle", "yfct", "limbo", "spiritParty", "roulette"]);
 
 const HILO_RECORD_IDS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ12".split("");
 const HILO_POKER_IDS = [
@@ -394,7 +394,7 @@ export default {
       return block.type === "entries" && FANCY_ENTRY_CONF_NAMES.has(this.confName);
     },
     isInlineCommonBlock(block) {
-      return ["ld", "bxsl", "hilo", "tower", "slide", "coin"].includes(this.confName) && block.type === "entries" && block.title === "通用信息";
+      return ["ld", "bxsl", "hilo", "tower", "slide", "coin", "bbjl"].includes(this.confName) && block.type === "entries" && block.title === "通用信息";
     },
     isTagBlock(block) {
       return block.type === "tags";
@@ -516,7 +516,7 @@ export default {
       const rows = Array.isArray(block.rows) ? block.rows : [];
       if (this.confName === "roulette") {
         return rows.map((row) => ({
-          main: `区域 ${row.betAreaId}`,
+          main: row.betAreaId || "",
           sub: row.betGold ? `下注 ${row.betGold}` : "",
           win: row.winLoseGold ? `输赢 ${row.winLoseGold}` : "",
         }));
@@ -635,6 +635,7 @@ export default {
 
 .qkls-highlight-card,
 .qkls-base-card {
+
   padding: 10px 12px;
   border: 1px solid rgba(148, 163, 184, 0.16);
   border-radius: 12px;
@@ -650,8 +651,12 @@ export default {
 
 .qkls-highlight-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
   gap: 8px;
+}
+
+.qkls-view--roulette .qkls-highlight-list {
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
 }
 
 .qkls-highlight-item {
@@ -842,6 +847,65 @@ export default {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.qkls-view--roulette .qkls-highlight-card {
+  border-color: rgba(226, 232, 240, 0.9);
+  background: linear-gradient(135deg, #fffef7, #f8fafc 48%, #fff7ed);
+}
+
+.qkls-view--roulette .qkls-highlight-list {
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 10px;
+}
+
+.qkls-view--roulette .qkls-highlight-item {
+  min-height: 68px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.qkls-view--roulette .qkls-highlight-item.is-result {
+  background: linear-gradient(180deg, #eff6ff, #dbeafe);
+  border-color: rgba(59, 130, 246, 0.22);
+}
+
+.qkls-view--roulette .qkls-highlight-item.is-accent {
+  background: linear-gradient(180deg, #fff7ed, #ffedd5);
+  border-color: rgba(249, 115, 22, 0.2);
+}
+
+.qkls-view--roulette .qkls-highlight-label {
+  font-size: 10px;
+  letter-spacing: 0.02em;
+}
+
+.qkls-view--roulette .qkls-highlight-value {
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.qkls-view--roulette .qkls-bet-pill-list {
+  gap: 10px;
+}
+
+.qkls-view--roulette .qkls-bet-pill {
+  min-width: 132px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fffef7, #f8fafc);
+  border-color: rgba(245, 158, 11, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.qkls-view--roulette .qkls-bet-pill-main {
+  color: #0f172a;
+  font-size: 13px;
+}
+
+.qkls-view--roulette .qkls-bet-pill-meta,
+.qkls-view--roulette .qkls-bet-pill-win {
+  font-size: 12px;
 }
 
 .qkls-number-chip,
