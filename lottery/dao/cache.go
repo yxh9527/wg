@@ -257,15 +257,15 @@ func (gcm *GameCacheMgr) GetAgent(agentId int64) *AgentData {
 }
 
 func (gcm *GameCacheMgr) GetUser(agentId, userId int64) *User {
-	gcm.lock.RLock()
-	defer gcm.lock.RUnlock()
-
-	agent := gcm.agents[agentId]
+	agent := gcm.GetAgent(agentId)
 	if agent == nil {
 		return nil
 	}
+	//细分代理锁
+	agent.lock.Lock()
+	defer agent.lock.Unlock()
 
-	return agent.userCache[uint32(userId)]
+	return agent.GetUser(uint32(userId))
 }
 
 func (gcm *GameCacheMgr) poolType(pool decimal.Decimal, pv *config.Pool) (int, decimal.Decimal) {
