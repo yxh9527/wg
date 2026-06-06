@@ -202,6 +202,33 @@ const MJHL_FUZZY_ATLAS = {
   },
 };
 
+const MJHL_MAHJONG_ICON_ATLAS = {
+  url: "/mjhl-icon-mahjong.webp",
+  ignoreRotation: false,
+  frames: {
+    15: {
+      x: 321,
+      y: 468,
+      width: 40,
+      height: 31,
+      originalWidth: 306,
+      originalHeight: 322,
+      offsetX: 139,
+      offsetY: 80,
+    },
+    55: {
+      x: 622,
+      y: 504,
+      width: 40,
+      height: 45,
+      originalWidth: 306,
+      originalHeight: 322,
+      offsetX: 139,
+      offsetY: 73,
+    },
+  },
+};
+
 export function buildMjhlViewModel(parsed, confName = "mjhl") {
   const source = parsed.source || {};
   const connection = parsed.connectionRecord || {};
@@ -239,6 +266,11 @@ export function buildMjhlViewModel(parsed, confName = "mjhl") {
     defaultActiveLineIndex: -1,
     iconAtlas: MJHL_ICON_ATLAS,
     fuzzyAtlas: null,
+    iconImageMap: null,
+    extraIconAtlases: {
+      15: MJHL_MAHJONG_ICON_ATLAS,
+      55: MJHL_MAHJONG_ICON_ATLAS,
+    },
     stageGridColumns: "minmax(0, 1.12fr) minmax(300px, 0.88fr)",
     boardShellWidth: "100%",
     iconNameMap: {
@@ -250,6 +282,7 @@ export function buildMjhlViewModel(parsed, confName = "mjhl") {
       12: "白板",
       13: "二条",
       14: "二万",
+      15: "元宝",
       21: "Wild",
       31: "Scatter",
       41: "蓝",
@@ -260,6 +293,7 @@ export function buildMjhlViewModel(parsed, confName = "mjhl") {
       52: "黄",
       53: "黄",
       54: "黄",
+      55: "元宝",
     },
   };
 }

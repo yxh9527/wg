@@ -93,10 +93,15 @@
       </div>
 
       <div class="record-block">
-        <div class="record-block-title">原始 log</div>
-        <button type="button" class="record-collapse-trigger" @click="rawLogExpanded = !rawLogExpanded">
-          <span class="record-collapse-icon">{{ rawLogExpanded ? "收起" : "展开" }}</span>
-        </button>
+        <div class="record-block-head">
+          <div class="record-block-title">原始 log</div>
+          <div class="record-block-actions">
+            <button type="button" class="record-action-trigger" @click="copyRawLog">Copy</button>
+            <button type="button" class="record-action-trigger" @click="rawLogExpanded = !rawLogExpanded">
+              <span class="record-collapse-icon">{{ rawLogExpanded ? "收起" : "展开" }}</span>
+            </button>
+          </div>
+        </div>
         <pre v-if="rawLogExpanded" class="record-json">{{ detail.rawJson }}</pre>
       </div>
     </div>
@@ -275,6 +280,31 @@ export default {
       if (label === "局号") return "is-wide";
       return "";
     },
+    async copyRawLog() {
+      const text = this.detail && this.detail.rawJson ? this.detail.rawJson : "";
+      if (!text) {
+        this.$message && this.$message.warning ? this.$message.warning("没有可复制的原始 log") : null;
+        return;
+      }
+      try {
+        if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const textarea = document.createElement("textarea");
+          textarea.value = text;
+          textarea.setAttribute("readonly", "readonly");
+          textarea.style.position = "absolute";
+          textarea.style.left = "-9999px";
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand("copy");
+          document.body.removeChild(textarea);
+        }
+        this.$message && this.$message.success ? this.$message.success("原始 log 已复制") : null;
+      } catch (error) {
+        this.$message && this.$message.error ? this.$message.error("复制失败") : null;
+      }
+    },
   },
 };
 </script>
@@ -415,26 +445,44 @@ export default {
 }
 
 .record-block-title {
-  margin-bottom: 8px;
   color: #0f172a;
   font-size: 13px;
   font-weight: 700;
 }
 
-.record-collapse-trigger {
-  display: inline-flex;
+.record-block-head {
+  display: flex;
   align-items: center;
-  padding: 0;
+  justify-content: space-between;
+  gap: 12px;
   margin-bottom: 8px;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
 }
 
-.record-collapse-icon {
+.record-block-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.record-action-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
   color: #64748b;
   font-size: 12px;
   font-weight: 600;
+}
+
+.record-collapse-icon {
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
 }
 
 .record-entry-list {

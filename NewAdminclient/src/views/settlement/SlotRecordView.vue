@@ -349,28 +349,15 @@ export default {
     hasAtlasFrame(atlas, icon) {
       return !!(atlas && atlas.frames && atlas.frames[String(icon)]);
     },
-    cellAtlas(cell) {
-      if (!cell) return null;
-      if (this.view && this.view.confName === "jlbs") {
-        return this.hasAtlasFrame(this.view && this.view.iconAtlas, cell.icon) ? this.view.iconAtlas : null;
+    resolveAtlasByIcon(icon, preferredAtlas = null) {
+      if (preferredAtlas && this.hasAtlasFrame(preferredAtlas, icon)) {
+        return preferredAtlas;
       }
-      const isHighlighted = !!(this.activeArea && this.activeArea.highlightKeys.includes(cell.coordKey));
-      if (isHighlighted && this.hasAtlasFrame(this.view && this.view.iconAtlas, cell.icon)) {
-        return this.view.iconAtlas;
+      const extraAtlases = this.view && this.view.extraIconAtlases;
+      const extraAtlas = extraAtlases ? extraAtlases[String(icon)] || extraAtlases[icon] : null;
+      if (this.hasAtlasFrame(extraAtlas, icon)) {
+        return extraAtlas;
       }
-      if (!this.hasHighlight && this.hasAtlasFrame(this.view && this.view.iconAtlas, cell.icon)) {
-        return this.view.iconAtlas;
-      }
-      if (this.hasHighlight && this.hasAtlasFrame(this.view && this.view.fuzzyAtlas, cell.icon)) {
-        return this.view.fuzzyAtlas;
-      }
-      return this.hasAtlasFrame(this.view && this.view.iconAtlas, cell.icon) ? this.view.iconAtlas : null;
-    },
-    iconImageSrc(icon) {
-      if (!this.hasIconImage(icon)) return "";
-      return this.view.iconImageMap[String(icon)];
-    },
-    areaAtlas(icon) {
       if (this.hasAtlasFrame(this.view && this.view.iconAtlas, icon)) {
         return this.view.iconAtlas;
       }
@@ -378,6 +365,31 @@ export default {
         return this.view.fuzzyAtlas;
       }
       return null;
+    },
+    cellAtlas(cell) {
+      if (!cell) return null;
+      if (this.view && this.view.confName === "jlbs") {
+        return this.resolveAtlasByIcon(cell.icon, this.view && this.view.iconAtlas);
+      }
+      const preferredAtlas = this.resolveAtlasByIcon(cell.icon, this.view && this.view.iconAtlas);
+      const isHighlighted = !!(this.activeArea && this.activeArea.highlightKeys.includes(cell.coordKey));
+      if (isHighlighted && preferredAtlas) {
+        return preferredAtlas;
+      }
+      if (!this.hasHighlight && preferredAtlas) {
+        return preferredAtlas;
+      }
+      if (this.hasHighlight && this.hasAtlasFrame(this.view && this.view.fuzzyAtlas, cell.icon)) {
+        return this.view.fuzzyAtlas;
+      }
+      return preferredAtlas;
+    },
+    iconImageSrc(icon) {
+      if (!this.hasIconImage(icon)) return "";
+      return this.view.iconImageMap[String(icon)];
+    },
+    areaAtlas(icon) {
+      return this.resolveAtlasByIcon(icon, this.view && this.view.iconAtlas);
     },
     formatMoney(value) {
       return toMoney(value || 0);
