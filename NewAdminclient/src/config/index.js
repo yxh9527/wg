@@ -1,10 +1,10 @@
 const config = {
   title: "游戏管理后台",
   baseUrl: {
-    dev: "http://172.21.211.219:9529/api/auth/",
-    pro: "http://172.21.211.219:9529/api/auth/",
-    // dev: "/api/auth/",
-    // pro: "/api/auth/",
+    // dev: "http://172.21.211.219:9529/api/auth/",
+    // pro: "http://172.21.211.219:9529/api/auth/",
+    dev: "/api/auth/",
+    pro: "/api/auth/",
   },
   homeName: "new-home",
 };

@@ -4,37 +4,72 @@
       <div class="toolbar-row report-filter-row">
         <div class="field-inline">
           <label>开始日期</label>
-          <el-date-picker v-model="filters.startTime" type="date" placeholder="选择开始日期" @change="clearQuickRange" />
+          <el-date-picker
+            v-model="filters.startTime"
+            type="date"
+            placeholder="选择开始日期"
+            @change="clearQuickRange"
+          />
         </div>
         <div class="field-inline">
           <label>结束日期</label>
-          <el-date-picker v-model="filters.endTime" type="date" placeholder="选择结束日期" @change="clearQuickRange" />
+          <el-date-picker
+            v-model="filters.endTime"
+            type="date"
+            placeholder="选择结束日期"
+            @change="clearQuickRange"
+          />
         </div>
         <div class="field-inline">
           <label>快捷范围</label>
-          <el-radio-group v-model="filters.timeType" size="small" @change="resetDatePickers">
+          <el-radio-group
+            v-model="filters.timeType"
+            size="small"
+            @change="resetDatePickers"
+          >
             <el-radio-button :label="4">今日</el-radio-button>
             <el-radio-button :label="5">昨日</el-radio-button>
           </el-radio-group>
         </div>
         <div class="field-inline">
           <label>站点选择</label>
-          <el-select v-model="webId" filterable placeholder="选择站点" @change="setSite">
-            <el-option v-for="item in siteOption" :key="item.id" :label="item.name" :value="item.id" />
+          <el-select
+            v-model="webId"
+            filterable
+            placeholder="选择站点"
+            @change="setSite"
+          >
+            <el-option
+              v-for="item in siteOption"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
           </el-select>
         </div>
         <div class="field-inline">
           <label>代理选择</label>
           <el-select v-model="agentId" filterable placeholder="选择代理">
-            <el-option v-for="item in agentOption" :key="item.id" :label="item.name" :value="item.id" />
+            <el-option
+              v-for="item in agentOption"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
           </el-select>
         </div>
         <div class="field-inline">
-          <el-button type="primary" :loading="loading" @click="searchFirstPage">搜索</el-button>
+          <el-button type="primary" :loading="loading" @click="searchFirstPage"
+            >搜索</el-button
+          >
           <el-button @click="handleAllSearch">重置</el-button>
         </div>
         <div class="field-inline">
-          <el-button type="primary" :loading="exportLoading" @click="exportAgentDataWithTime">
+          <el-button
+            type="primary"
+            :loading="exportLoading"
+            @click="exportAgentDataWithTime"
+          >
             导出代理数据(注单统计)
           </el-button>
         </div>
@@ -108,7 +143,12 @@ import AppTable from "@/components/AppTable.vue";
 import { setting } from "@/config";
 import { exportExcel } from "@/libs/excel";
 import { exportAgentData, getLinkageList, getReportData } from "@/api/data";
-import { calcKillRate, calcProfit, toFixedNumber, toNumber } from "./reportHelpers";
+import {
+  calcKillRate,
+  calcProfit,
+  toFixedNumber,
+  toNumber,
+} from "./reportHelpers";
 
 export default {
   name: "ReportPage",
@@ -151,7 +191,9 @@ export default {
   computed: {
     rangeText() {
       if (this.filters.startTime && this.filters.endTime) {
-        return `${this.formatterTime(this.filters.startTime)} - ${this.formatterTime(this.filters.endTime)}`;
+        return `${this.formatterTime(
+          this.filters.startTime
+        )} - ${this.formatterTime(this.filters.endTime)}`;
       }
       if (this.filters.timeType === 4) return "今日";
       if (this.filters.timeType === 5) return "昨日";
@@ -162,15 +204,29 @@ export default {
       return site ? site.name : "全部站点";
     },
     currentAgentName() {
-      if (this.agentId === 9999999 || this.agentId === null || this.agentId === undefined) return "全部代理";
+      if (
+        this.agentId === 9999999 ||
+        this.agentId === null ||
+        this.agentId === undefined
+      )
+        return "全部代理";
       const agent = this.agentOption.find((item) => item.id === this.agentId);
       return agent ? agent.name : String(this.agentId);
     },
     profitValue() {
-      return calcProfit(this.summaryRaw.effectiveBetsTotal, this.summaryRaw.profitLossTotal).toFixed(2);
+      return calcProfit(
+        this.summaryRaw.effectiveBetsTotal,
+        this.summaryRaw.profitLossTotal
+      ).toFixed(2);
     },
     killValue() {
-      return calcKillRate(calcProfit(this.summaryRaw.effectiveBetsTotal, this.summaryRaw.profitLossTotal), this.summaryRaw.chipsTotal);
+      return calcKillRate(
+        calcProfit(
+          this.summaryRaw.effectiveBetsTotal,
+          this.summaryRaw.profitLossTotal
+        ),
+        this.summaryRaw.effectiveBetsTotal
+      );
     },
     columns() {
       return [
@@ -182,7 +238,8 @@ export default {
           key: "effectiveBetsTotal",
           align: "right",
           minWidth: 110,
-          render: (h, { row }) => h("span", toFixedNumber(row.effectiveBetsTotal)),
+          render: (h, { row }) =>
+            h("span", toFixedNumber(row.effectiveBetsTotal)),
         },
         {
           title: "有效打码",
@@ -204,8 +261,15 @@ export default {
           align: "right",
           minWidth: 110,
           render: (h, { row }) => {
-            const value = calcProfit(row.effectiveBetsTotal, row.profitLossTotal);
-            return h("span", { class: value >= 0 ? "positive" : "negative" }, value.toFixed(2));
+            const value = calcProfit(
+              row.effectiveBetsTotal,
+              row.profitLossTotal
+            );
+            return h(
+              "span",
+              { class: value >= 0 ? "positive" : "negative" },
+              value.toFixed(2)
+            );
           },
         },
         {
@@ -221,7 +285,13 @@ export default {
           align: "right",
           minWidth: 90,
           render: (h, { row }) =>
-            h("span", calcKillRate(calcProfit(row.effectiveBetsTotal, row.profitLossTotal), row.chipsTotal)),
+            h(
+              "span",
+              calcKillRate(
+                calcProfit(row.effectiveBetsTotal, row.profitLossTotal),
+                row.chipsTotal
+              )
+            ),
         },
         {
           title: "操作",
@@ -257,12 +327,22 @@ export default {
         return;
       }
       if (this.filters.timeType === 5) {
-        this.searchData.startTime = dayjs().subtract(1, "day").startOf("day").unix();
-        this.searchData.endTime = dayjs().subtract(1, "day").endOf("day").unix();
+        this.searchData.startTime = dayjs()
+          .subtract(1, "day")
+          .startOf("day")
+          .unix();
+        this.searchData.endTime = dayjs()
+          .subtract(1, "day")
+          .endOf("day")
+          .unix();
         return;
       }
-      this.searchData.startTime = this.filters.startTime ? dayjs(this.filters.startTime).unix() : 0;
-      this.searchData.endTime = this.filters.endTime ? dayjs(this.filters.endTime).endOf("day").unix() : 0;
+      this.searchData.startTime = this.filters.startTime
+        ? dayjs(this.filters.startTime).unix()
+        : 0;
+      this.searchData.endTime = this.filters.endTime
+        ? dayjs(this.filters.endTime).endOf("day").unix()
+        : 0;
     },
     searchFirstPage() {
       this.pageData.page = 1;
@@ -284,11 +364,15 @@ export default {
         this.tableData = (payload.data || []).map((item) => ({
           ...item,
           userNumber:
-            item.userNumber !== undefined && item.userNumber !== null && item.userNumber !== ""
+            item.userNumber !== undefined &&
+            item.userNumber !== null &&
+            item.userNumber !== ""
               ? item.userNumber
               : toNumber(item.userTotal),
           gameNumber:
-            item.gameNumber !== undefined && item.gameNumber !== null && item.gameNumber !== ""
+            item.gameNumber !== undefined &&
+            item.gameNumber !== null &&
+            item.gameNumber !== ""
               ? item.gameNumber
               : toNumber(item.docCount),
         }));
@@ -337,7 +421,10 @@ export default {
           zip.file(`${key}.xlsx`, excelContent, { binary: true });
         });
         const content = await zip.generateAsync({ type: "blob" });
-        FileSaver.saveAs(content, `agent统计[${this.searchData.startTime}-${this.searchData.endTime}].zip`);
+        FileSaver.saveAs(
+          content,
+          `agent统计[${this.searchData.startTime}-${this.searchData.endTime}].zip`
+        );
       } finally {
         this.exportLoading = false;
       }
@@ -409,7 +496,8 @@ export default {
         label: item.name,
       }));
       if (!this.siteOption.length) return;
-      const savedSite = Number(sessionStorage.getItem("siteVal")) || this.siteOption[0].id;
+      const savedSite =
+        Number(sessionStorage.getItem("siteVal")) || this.siteOption[0].id;
       this.webId = savedSite;
       this.setSite(this.webId);
     },
@@ -430,9 +518,16 @@ export default {
   padding: 14px 16px;
   border: 1px solid rgba(191, 219, 254, 0.62);
   border-radius: 16px;
-  background:
-    linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(255, 255, 255, 0.9) 42%),
-    linear-gradient(180deg, rgba(248, 250, 252, 0.98), rgba(255, 255, 255, 0.95));
+  background: linear-gradient(
+      135deg,
+      rgba(37, 99, 235, 0.08),
+      rgba(255, 255, 255, 0.9) 42%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(248, 250, 252, 0.98),
+      rgba(255, 255, 255, 0.95)
+    );
 }
 
 .report-summary-card :deep(.el-card__body) {
@@ -450,9 +545,16 @@ export default {
   padding: 14px 15px;
   border-radius: 16px;
   border: 1px solid rgba(148, 163, 184, 0.16);
-  background:
-    radial-gradient(circle at top right, rgba(37, 99, 235, 0.09), transparent 30%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(248, 250, 252, 0.95));
+  background: radial-gradient(
+      circle at top right,
+      rgba(37, 99, 235, 0.09),
+      transparent 30%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.99),
+      rgba(248, 250, 252, 0.95)
+    );
   box-shadow: 0 12px 22px rgba(15, 23, 42, 0.04);
 }
 

@@ -786,15 +786,20 @@ export const getGovernPoolList = (params) =>
     },
   });
 
-export const updateGovernPoolConfig = (params) =>
-  request({
+export const updateGovernPoolConfig = (params) => {
+  const nextParams = { ...params };
+  if (nextParams.value !== null && typeof nextParams.value === "object") {
+    nextParams.value = JSON.stringify(nextParams.value);
+  }
+  return request({
     url: "v2/govern/edit",
     method: "post",
     params: {
       token: getToken(),
-      ...params,
+      ...nextParams,
     },
   });
+};
 
 export const getStockWarningList = (params) =>
   request({
