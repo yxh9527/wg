@@ -256,6 +256,46 @@ export const updateGameUrlConfig = (payload) =>
     },
   });
 
+export const getAgentDomainConfigList = (params) =>
+  request({
+    url: "v2/game/apiConfigList",
+    method: "post",
+    params: {
+      token: getToken(),
+      ...params,
+    },
+  });
+
+export const addAgentDomainConfig = (payload) =>
+  request({
+    url: "v2/game/apiConfigAdd",
+    method: "post",
+    params: {
+      token: getToken(),
+      ...payload,
+    },
+  });
+
+export const updateAgentDomainConfig = (payload) =>
+  request({
+    url: "v2/game/apiConfigUpdate",
+    method: "post",
+    params: {
+      token: getToken(),
+      ...payload,
+    },
+  });
+
+export const deleteAgentDomainConfig = (params) =>
+  request({
+    url: "v2/game/apiConfigDel",
+    method: "post",
+    params: {
+      token: getToken(),
+      ...params,
+    },
+  });
+
 export const getPlayerData = (items) =>
   request({
     url: "v2/user/list",
