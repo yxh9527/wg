@@ -8,3 +8,4 @@ open-api-access.doc
 .codex_pydeps
 NewAdminclient/node_modules/
 NewAdminclient/dist/
+.tmp
