@@ -528,7 +528,6 @@ func (gcm *GameCacheMgr) FinishRoundData(agentId int64, roundId string) *RoundIt
 低水位：水池余额*百分比、A*100(可配置倍数)；取两者最小值
 正常水位：水池余额*百分比、A*500(可配置倍数)；取两者取最小值
 高水位：水池余额*百分比、A*1000(可配置倍数)；取两者取最小值
-单次开奖：返奖超过当前投注300倍则直接开奖失败
 
 单控时：水池余额*百分比、A*20(可配置倍数)；取两者最小值
 
@@ -552,10 +551,6 @@ func (gcm *GameCacheMgr) Lottery(agentId int64, userId int32, pc *config.Pool, s
 
 	revence := bet.Mul(pc.Pool[1].Revenue).Truncate(4)
 	pool := (bet.Add(game.TotalEffectBet).Sub(game.TotalProfLoss)).Sub(game.TotalRevenue.Add(revence)).Add(pc.Pool[1].Base)
-	if bet.GreaterThan(decimal.Zero) && award.GreaterThan(bet.Mul(decimal.NewFromInt(300))) {
-		zap.L().Debug("Lottery:超过300倍限制", zap.Any("agentId", agentId), zap.Any("symbol", symbol), zap.Any("roundId", roundId), zap.Any("playerId", userId), zap.Any("bet", bet), zap.Any("返奖值", award))
-		return pool, false
-	}
 	//判断pool等级
 	t, r := gcm.poolType(pool, pc)
 	//计算可赔付值
