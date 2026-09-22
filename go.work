@@ -8,6 +8,5 @@ use (
 	./web-api
 	./web-api-ex
 	./lottery
-	./tools/lottery-loadtest
 	./game-data-summary
 )
