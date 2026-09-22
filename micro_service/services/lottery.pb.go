@@ -2011,6 +2011,7 @@ type SlotsLotteryReq struct {
 	MaxProfitLoss string                 `protobuf:"bytes,13,opt,name=maxProfitLoss,proto3" json:"maxProfitLoss,omitempty"` //最大赔付
 	Complete      bool                   `protobuf:"varint,14,opt,name=complete,proto3" json:"complete,omitempty"`          //注单是否结束
 	Account       string                 `protobuf:"bytes,15,opt,name=account,proto3" json:"account,omitempty"`             //三方平台账号
+	AverageBet    string                 `protobuf:"bytes,16,opt,name=averageBet,proto3" json:"averageBet,omitempty"`       // 购买金额/10；大于0表示购买免费，否则为"0"
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2125,6 +2126,13 @@ func (x *SlotsLotteryReq) GetComplete() bool {
 func (x *SlotsLotteryReq) GetAccount() string {
 	if x != nil {
 		return x.Account
+	}
+	return ""
+}
+
+func (x *SlotsLotteryReq) GetAverageBet() string {
+	if x != nil {
+		return x.AverageBet
 	}
 	return ""
 }
@@ -2364,7 +2372,7 @@ const file_lottery_proto_rawDesc = "" +
 	"\fcurrencyType\x18\v \x01(\tR\fcurrencyType\"T\n" +
 	"\x10QKLDoBetInitResp\x12$\n" +
 	"\x04code\x18\x01 \x01(\x0e2\x10.base.error_codeR\x04code\x12\x1a\n" +
-	"\bcurrency\x18\x02 \x01(\tR\bcurrency\"\xd7\x02\n" +
+	"\bcurrency\x18\x02 \x01(\tR\bcurrency\"\xf7\x02\n" +
 	"\x0fSlotsLotteryReq\x12\x1a\n" +
 	"\bplayerId\x18\x01 \x01(\rR\bplayerId\x12\"\n" +
 	"\fcurrencyType\x18\x05 \x01(\tR\fcurrencyType\x12\x18\n" +
@@ -2380,7 +2388,10 @@ const file_lottery_proto_rawDesc = "" +
 	"\aroundID\x18\f \x01(\tR\aroundID\x12$\n" +
 	"\rmaxProfitLoss\x18\r \x01(\tR\rmaxProfitLoss\x12\x1a\n" +
 	"\bcomplete\x18\x0e \x01(\bR\bcomplete\x12\x18\n" +
-	"\aaccount\x18\x0f \x01(\tR\aaccount\"\x84\x01\n" +
+	"\aaccount\x18\x0f \x01(\tR\aaccount\x12\x1e\n" +
+	"\n" +
+	"averageBet\x18\x10 \x01(\tR\n" +
+	"averageBet\"\x84\x01\n" +
 	"\x10SlotsLotteryResp\x12 \n" +
 	"\vnewCurrency\x18\x01 \x01(\tR\vnewCurrency\x12\x16\n" +
 	"\x06result\x18\x02 \x01(\bR\x06result\x12\x10\n" +
