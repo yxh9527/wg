@@ -386,7 +386,15 @@ func (d *LotteryService) SlotsBet(webId uint32, exchange decimal.Decimal, ur *en
 	award, _ := decimal.NewFromString(req.ProfitLoss)
 	bet, _ := decimal.NewFromString(req.Bet)
 	avgBet, _ := decimal.NewFromString(req.AverageBet)
-	if !avgBet.GreaterThan(decimal.Zero) {
+	maxMultiple := decimal.Zero
+	if avgBet.GreaterThan(decimal.Zero) {
+		if avgBet.LessThanOrEqual(dao.SmallBetLimit) {
+			maxMultiple = dao.SmallBetMaxMultiple
+		}
+	} else {
+		if bet.LessThanOrEqual(dao.SmallBetLimit) {
+			maxMultiple = dao.SmallBetMaxMultiple
+		}
 		avgBet = bet
 	}
 	exBet := bet.Mul(exchange)
@@ -418,11 +426,12 @@ func (d *LotteryService) SlotsBet(webId uint32, exchange decimal.Decimal, ur *en
 		zap.Any("award", award),
 		zap.Any("awardMax", awardMax),
 		zap.Any("averageBet", avgBet),
+		zap.Any("maxMultiple", maxMultiple),
 		zap.Any("currenType", req.CurrencyType))
 	if award.GreaterThan(decimal.Zero) {
 		if bet.LessThan(award) {
 			b = true
-			_, ok := dao.CacheIns().Lottery(int64(req.AgentId), int32(req.PlayerId), pc, eGame.ConfName, req.CurrencyType, exBet, exAward, exAvgBet, ur.Common.RecordId)
+			_, ok := dao.CacheIns().Lottery(int64(req.AgentId), int32(req.PlayerId), pc, eGame.ConfName, req.CurrencyType, exBet, exAward, exAvgBet, ur.Common.RecordId, maxMultiple)
 			if !ok {
 				return 0, false, services.ErrorCode_NO_ENOUGH_POOL_MONEY
 			}
