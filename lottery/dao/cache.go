@@ -21,9 +21,28 @@ const (
 )
 
 var (
-	SmallBetLimit       = decimal.RequireFromString("0.5")
-	SmallBetMaxMultiple = decimal.NewFromInt(30)
+	SmallBetLimit        = decimal.RequireFromString("0.5")
+	SmallBetMaxMultiple  = decimal.NewFromInt(50)
+	MediumBetLimit       = decimal.RequireFromString("2")
+	MediumBetMaxMultiple = decimal.NewFromInt(80)
+	LargeBetLimit        = decimal.RequireFromString("10")
+	LargeBetMaxMultiple  = decimal.NewFromInt(100)
 )
+
+// MaxMultipleForAverageBet returns the low-bet cap. A zero value means that
+// the original pool-configured multiplier should be used.
+func MaxMultipleForAverageBet(averageBet decimal.Decimal) decimal.Decimal {
+	switch {
+	case averageBet.LessThan(SmallBetLimit):
+		return SmallBetMaxMultiple
+	case averageBet.LessThan(MediumBetLimit):
+		return MediumBetMaxMultiple
+	case averageBet.LessThan(LargeBetLimit):
+		return LargeBetMaxMultiple
+	default:
+		return decimal.Zero
+	}
+}
 
 var gameCache *GameCacheMgr = nil
 var singleCtrl *SingleCtrlMgr = nil
@@ -544,7 +563,7 @@ func (gcm *GameCacheMgr) FinishRoundData(agentId int64, roundId string) *RoundIt
 触发进入单控后：总是按以下条件进行中奖条件判定：
 
 单控时：水池余额*百分比、A*20(可配置倍数)；取两者最小值。
-普通下注 bet<=0.5，或购买免费且 averageBet<=0.5 时，开奖倍数最高 30。
+低倍数开奖限制：averageBet<0.5 时最高 50 倍，0.5<=averageBet<2 时最高 80 倍，2<=averageBet<10 时最高 100 倍，averageBet>=10 时使用原有限制倍数。
 */
 func (gcm *GameCacheMgr) Lottery(agentId int64, userId int32, pc *config.Pool, symbol, currencyType string, bet, award, averageBet decimal.Decimal, roundId string, maxMultiple decimal.Decimal) (decimal.Decimal, bool) {
 	agent := gcm.GetAgent(agentId)

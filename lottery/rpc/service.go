@@ -1,4 +1,4 @@
-﻿package rpc
+package rpc
 
 import (
 	"app/config"
@@ -386,17 +386,10 @@ func (d *LotteryService) SlotsBet(webId uint32, exchange decimal.Decimal, ur *en
 	award, _ := decimal.NewFromString(req.ProfitLoss)
 	bet, _ := decimal.NewFromString(req.Bet)
 	avgBet, _ := decimal.NewFromString(req.AverageBet)
-	maxMultiple := decimal.Zero
-	if avgBet.GreaterThan(decimal.Zero) {
-		if avgBet.LessThanOrEqual(dao.SmallBetLimit) {
-			maxMultiple = dao.SmallBetMaxMultiple
-		}
-	} else {
-		if bet.LessThanOrEqual(dao.SmallBetLimit) {
-			maxMultiple = dao.SmallBetMaxMultiple
-		}
+	if avgBet.Equal(decimal.Zero) {
 		avgBet = bet
 	}
+	maxMultiple := dao.MaxMultipleForAverageBet(avgBet)
 	exBet := bet.Mul(exchange)
 	exAward := award.Mul(exchange)
 	exAvgBet := avgBet.Mul(exchange)
