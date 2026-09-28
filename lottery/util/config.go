@@ -51,6 +51,13 @@ func ParseConfig(key string, value string) {
 				} else {
 					zap.L().Error("加载ctrl配置失败", zap.Any("err", err))
 				}
+			case "controlCoefficient":
+				tmp := config.DefaultControlCoefficientConfig()
+				if err := jsoniter.UnmarshalFromString(value, tmp); err == nil {
+					config.CfgIns.SetControlCoefficient(tmp)
+				} else {
+					zap.L().Error("加载控制系数配置失败", zap.Any("err", err))
+				}
 			// /config/autoCtrl
 			case "autoCtrl":
 				tmp := &config.AutoCtrlMgr{

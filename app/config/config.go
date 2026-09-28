@@ -87,6 +87,45 @@ type AwardConfig struct {
 	Symbol     string                 `json:"symbol"`
 }
 
+// ControlCoefficientRange describes a configurable payout coefficient rule.
+// Bet ranges use (min, max] semantics; a max of zero means no upper bound.
+// Single-control ranges use min as the threshold and ignore max.
+type ControlCoefficientRange struct {
+	Min         decimal.Decimal `json:"min"`
+	Max         decimal.Decimal `json:"max"`
+	Coefficient decimal.Decimal `json:"coefficient"`
+}
+
+type ControlCoefficientConfig struct {
+	Bet          []*ControlCoefficientRange `json:"bet"`
+	Single       []*ControlCoefficientRange `json:"single"`
+	SingleRounds decimal.Decimal            `json:"single_rounds"`
+}
+
+func DefaultControlCoefficientConfig() *ControlCoefficientConfig {
+	return &ControlCoefficientConfig{
+		Bet: []*ControlCoefficientRange{
+			{Min: decimal.Zero, Max: decimal.RequireFromString("0.5"), Coefficient: decimal.RequireFromString("0.25")},
+			{Min: decimal.RequireFromString("0.5"), Max: decimal.NewFromInt(2), Coefficient: decimal.RequireFromString("0.5")},
+			{Min: decimal.NewFromInt(2), Max: decimal.NewFromInt(4), Coefficient: decimal.RequireFromString("0.6")},
+			{Min: decimal.NewFromInt(4), Max: decimal.NewFromInt(8), Coefficient: decimal.RequireFromString("0.9")},
+			{Min: decimal.NewFromInt(8), Max: decimal.Zero, Coefficient: decimal.NewFromInt(1)},
+		},
+		Single: []*ControlCoefficientRange{
+			{Min: decimal.NewFromInt(1), Coefficient: decimal.RequireFromString("0.9")},
+			{Min: decimal.NewFromInt(2), Coefficient: decimal.RequireFromString("0.8")},
+			{Min: decimal.NewFromInt(3), Coefficient: decimal.RequireFromString("0.7")},
+			{Min: decimal.NewFromInt(4), Coefficient: decimal.RequireFromString("0.6")},
+			{Min: decimal.NewFromInt(5), Coefficient: decimal.RequireFromString("0.5")},
+			{Min: decimal.NewFromInt(6), Coefficient: decimal.RequireFromString("0.4")},
+			{Min: decimal.NewFromInt(7), Coefficient: decimal.RequireFromString("0.35")},
+			{Min: decimal.NewFromInt(8), Coefficient: decimal.RequireFromString("0.3")},
+			{Min: decimal.NewFromInt(9), Coefficient: decimal.RequireFromString("0.25")},
+		},
+		SingleRounds: decimal.NewFromInt(500),
+	}
+}
+
 type AutoCtrlItem struct {
 	TotalEffect       decimal.Decimal `json:"totalEffect"`       // 打吗
 	TotalProfLoss     decimal.Decimal `json:"totalProfLoss"`     //yk
@@ -123,13 +162,14 @@ type GatewaysMgr struct {
 }
 
 type Configs struct {
-	Lock     *sync.RWMutex
-	Pool     *PoolMgr
-	Award    *AwardMgr
-	System   *SystemConfig
-	Currency *CurrencyMgr
-	AC       *AutoCtrlMgr
-	Gateway  *GatewaysMgr
+	Lock        *sync.RWMutex
+	Pool        *PoolMgr
+	Award       *AwardMgr
+	Coefficient *ControlCoefficientConfig
+	System      *SystemConfig
+	Currency    *CurrencyMgr
+	AC          *AutoCtrlMgr
+	Gateway     *GatewaysMgr
 }
 
 func (cfg *Configs) SetGatewayCfg(c *GatewaysMgr) {
@@ -186,6 +226,54 @@ func (cfg *Configs) SetCtrl(symbol string, ac *AwardConfig) {
 	defer cfg.Lock.Unlock()
 
 	cfg.Award.Data[symbol] = ac
+}
+
+func (cfg *Configs) SetControlCoefficient(c *ControlCoefficientConfig) {
+	cfg.Lock.Lock()
+	defer cfg.Lock.Unlock()
+	cfg.Coefficient = c
+}
+
+func (cfg *Configs) IsSingleControlEnabled(roundCount decimal.Decimal) bool {
+	cfg.Lock.RLock()
+	c := cfg.Coefficient
+	cfg.Lock.RUnlock()
+	if c == nil {
+		c = DefaultControlCoefficientConfig()
+	}
+	return roundCount.GreaterThan(c.SingleRounds)
+}
+
+func (cfg *Configs) GetControlCoefficient(averageBet, effectBet, profitLoss, roundCount decimal.Decimal, singleControl bool) decimal.Decimal {
+	cfg.Lock.RLock()
+	c := cfg.Coefficient
+	cfg.Lock.RUnlock()
+	if c == nil {
+		c = DefaultControlCoefficientConfig()
+	}
+	coefficient := decimal.NewFromInt(1)
+	for _, item := range c.Bet {
+		if item == nil || averageBet.LessThanOrEqual(item.Min) || (item.Max.GreaterThan(decimal.Zero) && averageBet.GreaterThan(item.Max)) {
+			continue
+		}
+		coefficient = item.Coefficient
+		break
+	}
+	if singleControl && roundCount.GreaterThan(c.SingleRounds) {
+		ratio := profitLoss.Div(effectBet)
+		for _, item := range c.Single {
+			if item != nil && ratio.GreaterThan(item.Min) && item.Coefficient.LessThan(coefficient) {
+				coefficient = item.Coefficient
+			}
+		}
+	}
+	if coefficient.LessThan(decimal.Zero) {
+		return decimal.Zero
+	}
+	if coefficient.GreaterThan(decimal.NewFromInt(1)) {
+		return decimal.NewFromInt(1)
+	}
+	return coefficient
 }
 
 func (cfg *Configs) GetAutoCtrl(effectBet, profitLoss decimal.Decimal) *AutoCtrlItem {

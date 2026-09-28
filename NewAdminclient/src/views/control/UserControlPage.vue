@@ -156,6 +156,66 @@
           </div>
         </el-tab-pane>
 
+        <el-tab-pane label="控制系数" name="coefficient">
+          <div class="tab-stack coefficient-config">
+            <el-card shadow="never" class="content-card section-card section-card--table">
+              <div class="table-toolbar">
+                <div>
+                  <div class="panel-kicker">Coefficient</div>
+                  <div class="panel-title panel-title--sm">投注系数</div>
+                  <div class="table-toolbar__note">按单次基础 BET 值匹配区间，区间下限不含、上限包含。</div>
+                </div>
+                <div class="toolbar-actions">
+                  <el-button @click="addBetCoefficient">新增区间</el-button>
+                </div>
+              </div>
+              <el-table :data="controlCoefficient.bet" border stripe>
+                <el-table-column label="区间下限（不含）" min-width="190">
+                  <template slot-scope="scope"><el-input-number v-model="scope.row.min" :controls="false" :min="0" /></template>
+                </el-table-column>
+                <el-table-column label="区间上限（包含，0 为无上限）" min-width="240">
+                  <template slot-scope="scope"><el-input-number v-model="scope.row.max" :controls="false" :min="0" /></template>
+                </el-table-column>
+                <el-table-column label="系数" min-width="150">
+                  <template slot-scope="scope"><el-input-number v-model="scope.row.coefficient" :controls="false" :min="0" :max="1" :step="0.01" /></template>
+                </el-table-column>
+                <el-table-column label="操作" width="100" align="center">
+                  <template slot-scope="scope"><el-button type="text" @click="removeBetCoefficient(scope.$index)">删除</el-button></template>
+                </el-table-column>
+              </el-table>
+            </el-card>
+
+            <el-card shadow="never" class="content-card section-card section-card--table">
+              <div class="table-toolbar">
+                <div>
+                  <div class="panel-kicker">Single Control</div>
+                  <div class="panel-title panel-title--sm">单控系数</div>
+                  <div class="table-toolbar__note">累计局数超过阈值且进入单控时，按盈利/有效下注区间取最小系数。</div>
+                </div>
+                <div class="toolbar-actions">
+                  <el-button @click="addSingleCoefficient">新增阈值</el-button>
+                </div>
+              </div>
+              <div class="coefficient-threshold">
+                <span>周期局数阈值</span>
+                <el-input-number v-model="controlCoefficient.single_rounds" :controls="false" :min="0" />
+              </div>
+              <el-table :data="controlCoefficient.single" border stripe>
+                <el-table-column label="盈利 / 有效下注比例阈值（大于）" min-width="280">
+                  <template slot-scope="scope"><el-input-number v-model="scope.row.min" :controls="false" :min="0" /></template>
+                </el-table-column>
+                <el-table-column label="系数" min-width="150">
+                  <template slot-scope="scope"><el-input-number v-model="scope.row.coefficient" :controls="false" :min="0" :max="1" :step="0.01" /></template>
+                </el-table-column>
+                <el-table-column label="操作" width="100" align="center">
+                  <template slot-scope="scope"><el-button type="text" @click="removeSingleCoefficient(scope.$index)">删除</el-button></template>
+                </el-table-column>
+              </el-table>
+            </el-card>
+            <div class="coefficient-actions"><el-button type="primary" @click="saveControlCoefficients">保存控制系数</el-button></div>
+          </div>
+        </el-tab-pane>
+
         <el-tab-pane label="库存预警" name="stock">
           <div class="tab-stack">
             <el-card shadow="never" class="content-card section-card section-card--table">
@@ -353,6 +413,7 @@ import * as echarts from "echarts";
 import dayjs from "dayjs";
 import AppTable from "@/components/AppTable.vue";
 import {
+  getControlCoefficientConfig,
   getExchangeConfig,
   getGameAwardConfig,
   getGameData2,
@@ -363,6 +424,7 @@ import {
   getUserControlResetInfo,
   resetPoolNow,
   saveGameAwardConfig,
+  saveControlCoefficientConfig,
   syncAllPoolConfig,
   updateExchangeConfig,
   updateGovernPoolConfig,
@@ -403,6 +465,14 @@ const createAwardForm = () => ({
   high_rate: 0,
 });
 
+const createBetCoefficient = () => ({ min: 0, max: 0, coefficient: 1 });
+const createSingleCoefficient = () => ({ min: 1, max: 0, coefficient: 1 });
+const createControlCoefficient = () => ({
+  bet: [],
+  single: [],
+  single_rounds: 500,
+});
+
 const createExchangeForm = () => ({
   currency: "",
   exchange: 0,
@@ -432,6 +502,7 @@ export default {
       loading: {
         pool: false,
         award: false,
+        coefficient: false,
         stock: false,
         exchange: false,
       },
@@ -453,6 +524,7 @@ export default {
       awardDialogVisible: false,
       awardDialogIsAdd: false,
       awardForm: createAwardForm(),
+      controlCoefficient: createControlCoefficient(),
       stockData: [],
       stockPage: 1,
       stockTotal: 0,
@@ -497,6 +569,10 @@ export default {
           title: "分段奖励配置",
           note: "维护不同盈亏区间的概率、倍数和权重。",
         },
+        coefficient: {
+          title: "控制系数",
+          note: "维护投注金额和单控条件对应的最终赔付系数。",
+        },
         stock: {
           title: "库存预警",
           note: "查看库存波动、税收比例和曲线走势。",
@@ -511,6 +587,7 @@ export default {
     activeRecordCount() {
       if (this.activeTab === "game") return this.poolConfigData.length;
       if (this.activeTab === "award") return this.awardConfigData.length;
+      if (this.activeTab === "coefficient") return this.controlCoefficient.bet.length + this.controlCoefficient.single.length;
       if (this.activeTab === "stock") return this.stockTotal || this.stockData.length;
       if (this.activeTab === "exchange") return this.exchangeData.length;
       return 0;
@@ -518,6 +595,7 @@ export default {
     activeRecordCaption() {
       if (this.activeTab === "game") return "当前游戏下的水池配置数";
       if (this.activeTab === "award") return "分段奖励配置条目";
+      if (this.activeTab === "coefficient") return "两张控制系数表的配置条目";
       if (this.activeTab === "stock") return "库存预警相关记录";
       if (this.activeTab === "exchange") return "当前汇率币种数量";
       return "";
@@ -710,6 +788,10 @@ export default {
         this.fetchAwardConfigs();
         return;
       }
+      if (this.activeTab === "coefficient" && !this.controlCoefficient.bet.length && !this.controlCoefficient.single.length) {
+        this.fetchControlCoefficients();
+        return;
+      }
       if (this.activeTab === "exchange" && !this.exchangeData.length) {
         this.fetchExchangeConfigs();
       }
@@ -724,6 +806,10 @@ export default {
       this.fetchPoolConfigs();
       if (this.activeTab === "award") {
         this.fetchAwardConfigs();
+        return;
+      }
+      if (this.activeTab === "coefficient") {
+        this.fetchControlCoefficients();
         return;
       }
       if (this.activeTab === "stock") {
@@ -927,6 +1013,63 @@ export default {
       } finally {
         this.loading.award = false;
       }
+    },
+    async fetchControlCoefficients() {
+      this.loading.coefficient = true;
+      try {
+        const response = await getControlCoefficientConfig();
+        const parsed = parseMaybeJson(response.data.data, {});
+        const defaults = createControlCoefficient();
+        this.controlCoefficient = {
+          single_rounds: Number(parsed.single_rounds === undefined ? defaults.single_rounds : parsed.single_rounds),
+          bet: (parsed.bet || []).map((item) => ({
+            min: Number(item.min || 0),
+            max: Number(item.max || 0),
+            coefficient: Number(item.coefficient === undefined ? 1 : item.coefficient),
+          })),
+          single: (parsed.single || []).map((item) => ({
+            min: Number(item.min || 0),
+            max: Number(item.max || 0),
+            coefficient: Number(item.coefficient === undefined ? 1 : item.coefficient),
+          })),
+        };
+      } finally {
+        this.loading.coefficient = false;
+      }
+    },
+    addBetCoefficient() {
+      this.controlCoefficient.bet.push(createBetCoefficient());
+    },
+    removeBetCoefficient(index) {
+      this.controlCoefficient.bet.splice(index, 1);
+    },
+    addSingleCoefficient() {
+      this.controlCoefficient.single.push(createSingleCoefficient());
+    },
+    removeSingleCoefficient(index) {
+      this.controlCoefficient.single.splice(index, 1);
+    },
+    async saveControlCoefficients() {
+      const config = {
+        single_rounds: Number(this.controlCoefficient.single_rounds),
+        bet: this.controlCoefficient.bet.map((item) => ({
+          min: Number(item.min),
+          max: Number(item.max),
+          coefficient: Number(item.coefficient),
+        })),
+        single: this.controlCoefficient.single.map((item) => ({
+          min: Number(item.min),
+          max: Number(item.max || 0),
+          coefficient: Number(item.coefficient),
+        })),
+      };
+      if (!config.bet.length || !config.single.length) {
+        this.$message.error("两张控制系数表都至少需要一项");
+        return;
+      }
+      await saveControlCoefficientConfig({ config: JSON.stringify(config) });
+      this.$message.success("控制系数已保存");
+      this.fetchControlCoefficients();
     },
     openAwardDialog(row) {
       this.awardDialogIsAdd = !row;
@@ -1164,7 +1307,13 @@ export default {
   },
   async mounted() {
     await this.initBaseData();
-    await Promise.all([this.fetchResetInfo(), this.fetchPoolConfigs(), this.fetchAwardConfigs(), this.fetchExchangeConfigs()]);
+    await Promise.all([
+      this.fetchResetInfo(),
+      this.fetchPoolConfigs(),
+      this.fetchAwardConfigs(),
+      this.fetchControlCoefficients(),
+      this.fetchExchangeConfigs(),
+    ]);
   },
   beforeDestroy() {
     clearTimeout(this.stockChartTimer);
@@ -1426,6 +1575,29 @@ export default {
 
 .section-card--table :deep(.el-card__body) {
   padding: 16px 18px;
+}
+
+.coefficient-config {
+  gap: 14px;
+}
+
+.coefficient-config :deep(.el-input-number) {
+  width: 150px;
+}
+
+.coefficient-threshold {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  color: var(--text-sub);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.coefficient-actions {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .table-toolbar__note {

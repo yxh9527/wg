@@ -316,7 +316,8 @@ func ConfigsInit() {
 			Award: &config.AwardMgr{
 				Data: make(map[string]*config.AwardConfig),
 			},
-			System: &config.SystemConfig{},
+			Coefficient: config.DefaultControlCoefficientConfig(),
+			System:      &config.SystemConfig{},
 			Currency: &config.CurrencyMgr{
 				Data: make(map[string]decimal.Decimal),
 			},
@@ -383,6 +384,13 @@ func ParseConfig(key string, value string) {
 					config.CfgIns.SetCtrl(arr[3], tmp)
 				} else {
 					zap.L().Error("加载ctrl配置失败", zap.Any("err", err))
+				}
+			case "controlCoefficient":
+				tmp := config.DefaultControlCoefficientConfig()
+				if err := jsoniter.UnmarshalFromString(value, tmp); err == nil {
+					config.CfgIns.SetControlCoefficient(tmp)
+				} else {
+					zap.L().Error("加载控制系数配置失败", zap.Any("err", err))
 				}
 			// /config/autoCtrl
 			case "autoCtrl":

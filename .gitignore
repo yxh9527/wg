@@ -10,3 +10,5 @@ NewAdminclient/node_modules/
 NewAdminclient/dist/
 .tmp
 .gocache-lottery
+.go*
+.agents

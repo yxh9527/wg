@@ -17,6 +17,7 @@ import (
 	"github.com/gin-gonic/gin"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/olivere/elastic/v7"
+	"github.com/shopspring/decimal"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -331,6 +332,47 @@ func GetGameSettingData(ctx *gin.Context) {
 	} else {
 		ctx.JSON(http.StatusOK, &entity.Response{Code: http.StatusOK, Msg: "成功", Data: str})
 	}
+}
+
+func SaveControlCoefficientData(ctx *gin.Context) {
+	value := config.DefaultControlCoefficientConfig()
+	str := ctx.Query("config")
+	if err := jsoniter.UnmarshalFromString(str, value); err != nil {
+		ctx.JSON(http.StatusOK, &entity.Response{Code: http.StatusBadRequest, Msg: "控制系数配置格式错误", Data: nil})
+		return
+	}
+	if value.Bet == nil || value.Single == nil || value.SingleRounds.LessThan(decimal.Zero) {
+		ctx.JSON(http.StatusOK, &entity.Response{Code: http.StatusBadRequest, Msg: "控制系数配置不能为空", Data: nil})
+		return
+	}
+	for _, item := range append(value.Bet, value.Single...) {
+		if item == nil || item.Coefficient.LessThan(decimal.Zero) || item.Coefficient.GreaterThan(decimal.NewFromInt(1)) {
+			ctx.JSON(http.StatusOK, &entity.Response{Code: http.StatusBadRequest, Msg: "控制系数必须在 0 到 1 之间", Data: nil})
+			return
+		}
+	}
+	str, _ = jsoniter.MarshalToString(value)
+	key := "/config/controlCoefficient"
+	if err := dao.RedisIns().Set(key, str, -1); err != nil {
+		zap.L().Error("保存控制系数配置失败", zap.Error(err))
+		ctx.JSON(http.StatusOK, &entity.Response{Code: http.StatusInternalServerError, Msg: "保存失败", Data: nil})
+		return
+	}
+	dataStr, _ := jsoniter.MarshalToString(map[string]interface{}{"key": key, "data": str})
+	msg, _ := jsoniter.MarshalToString(map[string]interface{}{"event": "config", "data": dataStr})
+	if err := dao.RedisIns().Publish("message", msg); err != nil {
+		zap.L().Error("发布控制系数配置失败", zap.Error(err))
+	}
+	ctx.JSON(http.StatusOK, &entity.Response{Code: http.StatusOK, Msg: "成功", Data: str})
+}
+
+func GetControlCoefficientData(ctx *gin.Context) {
+	key := "/config/controlCoefficient"
+	str, err := dao.RedisIns().Get(key)
+	if err != nil {
+		str, _ = jsoniter.MarshalToString(config.DefaultControlCoefficientConfig())
+	}
+	ctx.JSON(http.StatusOK, &entity.Response{Code: http.StatusOK, Msg: "成功", Data: str})
 }
 
 func SyncAllPool(ctx *gin.Context) {

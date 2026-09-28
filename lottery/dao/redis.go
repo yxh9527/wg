@@ -537,7 +537,8 @@ func ConfigsInit() {
 			Award: &AwardMgr{
 				Data: make(map[string]*AwardConfig),
 			},
-			System: &SystemConfig{},
+			Coefficient: DefaultControlCoefficientConfig(),
+			System:      &SystemConfig{},
 			Currency: &CurrencyMgr{
 				Data: make(map[string]decimal.Decimal),
 			},
